@@ -51,7 +51,7 @@
     </v-flex>
   </v-layout>
 </template>
-<style scoped>
+<style>
 .cardText {
   padding-top: 5px;
   padding-left: 30px;
@@ -69,6 +69,12 @@
 }
 .plyr__menu {
   display: none;
+}
+
+@media only screen and (max-width: 480px) {
+  .modal-fly-out {
+    width: 100vw !important;
+  }
 }
 </style>
 <script>

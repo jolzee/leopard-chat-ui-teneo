@@ -7,6 +7,8 @@ import Listening from "./components/Listening.vue";
 // import VueYouTubeEmbed from "vue-youtube-embed";
 import VueSession from "vue-session";
 import "vue-loaders/dist/vue-loaders.css";
+import longpress from "vue-long-press-directive";
+
 import {
   BallScaleRippleMultipleLoader,
   LineScalePulseOutRapidLoader,
@@ -60,6 +62,8 @@ if (parseBool(localStorage.getItem("darkTheme")) === null) {
 store.state.dark = parseBool(localStorage.getItem("darkTheme")) !== false;
 
 Vue.prototype.moment = moment;
+
+Vue.use(longpress, { duration: 2000 });
 Vue.use(Vuetify, {
   theme: store.state.theme,
   components: {

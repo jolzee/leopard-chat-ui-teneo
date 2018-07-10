@@ -28,6 +28,7 @@
     "vue-jsonp": "^0.1.8",
     "vue-loaders": "^2.0.0",
     "vue-localstorage": "^0.6.2",
+    "vue-long-press-directive": "^1.0.2",
     "vue-plyr": "^3.0.0",
     "vue-prism-component": "^1.0.1",
     "vue-router": "^3.0.1",

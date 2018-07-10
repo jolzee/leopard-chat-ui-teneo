@@ -1,4 +1,5 @@
 <template>
+
   <v-app toolbar :dark="dark" class="elevation-4">
     <div id="chat-open-close-button">
       <v-fab-transition>
@@ -39,13 +40,70 @@
       <v-progress-linear :indeterminate="true" :active="progressBar" class="loading" height="3"></v-progress-linear>
     </div>
   </v-app>
-
 </template>
+<style scoped>
+.v-toolbar {
+  width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  left: auto !important;
+}
+.v-overlay {
+  width: 360px;
+  left: auto !important;
+  right: auto !important;
+}
+</style>
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
 html {
   overflow: hidden !important;
+}
+
+#chat-open-close-button {
+  position: fixed;
+  bottom: 60px;
+  right: 50px;
+}
+
+.move-button-left {
+  right: 410px !important;
+}
+
+#teneo {
+  width: 360px;
+}
+
+.show-the-chat {
+  right: 0 !important;
+}
+
+.application {
+  max-width: 360px !important;
+  height: 100vh;
+  position: fixed;
+  right: 0;
+  top: 0;
+  overflow: hidden;
+}
+
+.content-area {
+  overflow-y: auto;
+  height: auto;
+  position: fixed;
+  top: 65px;
+  padding-top: 0 !important;
+}
+
+.loading {
+  position: fixed;
+  bottom: 50px;
+}
+
+.v-navigation-drawer {
+  left: auto !important;
 }
 
 iframe#site-frame {
@@ -68,66 +126,33 @@ iframe#site-frame {
   height: auto !important;
   padding-left: 1.5em;
   padding-right: 1.5em;
-  /* padding: 10px; */
-}
-</style>
-<style scoped>
-#chat-open-close-button {
-  position: fixed;
-  bottom: 60px;
-  right: 50px;
 }
 
-.move-button-left {
-  right: 410px !important;
-}
+@media only screen and (max-width: 480px) {
+  #teneo {
+    width: 100vw !important;
+  }
 
-#teneo {
-  width: 360px;
-}
+  .application {
+    max-width: 100vw !important;
+  }
 
-.show-the-chat {
-  right: 0 !important;
-}
+  .v-toolbar {
+    width: 100vw !important;
+  }
 
-.v-toolbar {
-  width: 360px;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-  left: auto !important;
-}
+  .v-overlay {
+    width: 100vw !important;
+  }
 
-.application {
-  max-width: 360px !important;
-  height: 100vh;
-  position: fixed;
-  right: 0;
-  top: 0;
-  overflow: hidden;
-}
+  iframe#site-frame {
+    width: 0vw !important;
+    display: none !important;
+  }
 
-.v-overlay {
-  width: 360px;
-  left: auto !important;
-  right: auto !important;
-}
-
-.content-area {
-  overflow-y: auto;
-  height: auto;
-  position: fixed;
-  top: 65px;
-  padding-top: 0 !important;
-}
-
-.loading {
-  position: fixed;
-  bottom: 50px;
-}
-
-.v-navigation-drawer {
-  left: auto !important;
+  #chat-open-close-button {
+    display: none;
+  }
 }
 </style>
 <script>
@@ -174,6 +199,10 @@ export default {
       rightDrawer: false
     };
   },
+  mounted() {
+    window.addEventListener("resize", this.onResize);
+    // this.onResize();
+  },
   computed: {
     toolbarTitle() {
       if (this.$route.name === "history") {
@@ -203,6 +232,39 @@ export default {
     }
   },
   methods: {
+    onResize() {
+      if (window.innerWidth <= 480 && this.hideChat) {
+        this.hideChatButton = true;
+        this.hideChat = false; // show the chat window
+        //animate the IFrame
+        let siteFrame = document.getElementById("site-frame");
+        let chatButton = document.getElementById("chat-open-close-button");
+
+        console.log("ok smaller than 480px");
+        // open the chat automatially and hide the open and close chat button
+        this.$router.push({ name: "chat" }); // make sure we show the main chat window
+        this.$store.commit("showChatLoading"); // display the loading spinner
+
+        setTimeout(
+          function() {
+            // wait just a bit before animating things - need the chat button to hide first
+            chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+            siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+          }.bind(this),
+          400
+        );
+        this.$store
+          .dispatch("login")
+          .then(() => {
+            console.log("Successfully logged into chat");
+          })
+          .catch(err => {
+            console.log("ERROR LOGGING IN TO CHAT: ", err.message);
+          });
+      } else if (window.innerWidth > 480 && !this.hideChat) {
+        this.hideChatButton = false;
+      }
+    },
     toggleBrightness() {
       this.$store.commit("changeTheme");
     },

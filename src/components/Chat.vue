@@ -86,7 +86,7 @@
                 <div v-if="item.type === 'reply'">
                   <v-layout row>
                     <v-flex xs2 class="text-xs-left mr-2">
-                      <v-btn color="secondary" fab small>
+                      <v-btn v-long-press="swapInputButton" color="secondary" fab small>
                         <v-icon class="white--text">{{responseIcon}}</v-icon>
                       </v-btn>
                     </v-flex>
@@ -126,7 +126,7 @@
                     </v-card>
                   </v-flex>
                   <v-flex class="text-xs-right">
-                    <v-btn fab small color="primary white--text" @click="updateInputBox(item.text)">
+                    <v-btn v-long-press="swapInputButton" fab small color="primary white--text" @click="updateInputBox(item.text)">
                       <v-icon color="white">{{userIcon}}</v-icon>
                     </v-btn>
                   </v-flex>
@@ -172,13 +172,13 @@
         <v-layout row>
           <v-flex xs12 pl-3>
             <v-divider></v-divider>
-            <v-text-field v-shortkey="['ctrl', 'alt', '/']" @shortkey.native="swapInputButton" clearable auto-grow solo name="userInput" ref="userInput" @keyup.enter="sendUserInput" v-model.trim="userInput" :label="$t('input.box.label')" single-line></v-text-field>
+            <v-text-field v-long-press="swapInputButton" v-shortkey="['ctrl', 'alt', '/']" @shortkey.native="swapInputButton" clearable auto-grow solo name="userInput" ref="userInput" @keyup.enter="sendUserInput" v-model.trim="userInput" :label="$t('input.box.label')" single-line></v-text-field>
           </v-flex>
           <v-flex>
-            <v-btn fab v-if="!showAudioInput" small color="primary" class="white--text" @click="sendUserInput">
+            <v-btn fab v-long-press="swapInputButton" v-if="!showAudioInput" small color="primary" class="white--text" @click="sendUserInput">
               <v-icon>fa-angle-double-right</v-icon>
             </v-btn>
-            <v-btn fab small v-if="showAudioInput" v-shortkey="['ctrl', 'alt', '.']" @shortkey.native="captureAudio" :color="audioButtonColor" :class="audioButtonClasses" @click="captureAudio">
+            <v-btn fab v-long-press="swapInputButton" small v-if="showAudioInput" v-shortkey="['ctrl', 'alt', '.']" @shortkey.native="captureAudio" :color="audioButtonColor" :class="audioButtonClasses" @click="captureAudio">
               <v-icon>mic</v-icon>
             </v-btn>
           </v-flex>
@@ -405,48 +405,13 @@ export default {
   }
 };
 </script>
-
-<style>
-span.teneo-reply ul {
-  padding-left: 17px !important;
-}
-
-.teneo-footer {
-  padding-top: 8px;
-}
-
-.teneo-dialog {
-  width: 360px;
-  padding: 0px;
+<style scoped>
+.container {
+  padding: 0 !important;
+  display: block;
 }
 </style>
-<style scoped>
-#chat-area {
-  overflow-x: hidden !important;
-}
-
-.light-scroll::-webkit-scrollbar {
-  height: 14px;
-  width: 14px;
-  background: #ffffff;
-}
-
-.dark-scroll::-webkit-scrollbar {
-  height: 14px;
-  width: 14px;
-  background: #424242;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #2196f3;
-  -webkit-border-radius: 2ex;
-  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
-}
-
-::-webkit-scrollbar-corner {
-  background: black;
-}
-
+<style>
 .chat-card {
   font-size: 16px !important;
   font-weight: 500;
@@ -474,8 +439,64 @@ span.teneo-reply ul {
   width: 360px;
 }
 
-.container {
-  padding: 0 !important;
-  display: block;
+#chat-area {
+  overflow-x: hidden !important;
 }
+
+span.teneo-reply ul {
+  padding-left: 17px !important;
+}
+
+.teneo-footer {
+  padding-top: 8px;
+}
+
+.teneo-dialog {
+  width: 360px;
+  padding: 0px;
+}
+
+.light-scroll::-webkit-scrollbar {
+  height: 14px;
+  width: 14px;
+  background: #ffffff;
+}
+
+.dark-scroll::-webkit-scrollbar {
+  height: 14px;
+  width: 14px;
+  background: #424242;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2196f3;
+  -webkit-border-radius: 2ex;
+  border-radius: 2ex;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
+}
+
+::-webkit-scrollbar-corner {
+  background: black;
+}
+
+@media only screen and (max-width: 480px) {
+  .v-snack {
+    width: 100vw !important;
+  }
+
+  .v-footer {
+    width: 100vw !important;
+  }
+
+  .chat-container {
+    width: 100vw !important;
+  }
+
+  .teneo-dialog {
+    width: 100vw !important;
+  }
+}
+</style>
+<style scoped>
 </style>
