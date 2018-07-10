@@ -4,6 +4,8 @@
 >
 > This chat application **should not be used in production**. It primary use is to quickly expose a Teneo CAI Chat client over an IFRAME of another site. The client allows you to define any number of configurations that are all stored in localstorage.
 
+![](https://i.imgur.com/OFWvc4h.gif)
+
 ## Build Setup
 
 ```bash
