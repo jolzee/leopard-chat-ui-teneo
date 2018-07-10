@@ -6,7 +6,7 @@
 
 ## Build Setup
 
-``` bash
+```bash
 # clone
 git clone https://github.com/jolzee/chat-teneo-vue.git
 
@@ -30,9 +30,8 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 For details on the component library used, check out https://vuetifyjs.com/en/
 
-If you want to get the live chat integration working then sign up for an account at https://www.livechatinc.com/ Remember to update the licence key in ++*store.js*++
+If you want to get the live chat integration working then sign up for an account at https://www.livechatinc.com/ Remember to update the licence key in _store.js_
 
-``` javascript
+```javascript
 const liveChatIncLicense = <license>;
-
 ```
