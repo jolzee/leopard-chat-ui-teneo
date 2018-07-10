@@ -1,0 +1,272 @@
+<template>
+  <v-app toolbar :dark="dark" class="elevation-4">
+    <div id="chat-open-close-button">
+      <v-fab-transition>
+        <v-btn fab dark color="primary" @click="toggleChat" v-show="!hideChatButton">
+          <v-icon dark v-text="hideChat ? 'chat' : 'close'"></v-icon>
+        </v-btn>
+      </v-fab-transition>
+    </div>
+    <div id="teneo" :class="getChatState" v-if="!hideChat">
+      <transition name="menu-transition" enter-active-class="animated slideInRight" leave-active-class="animated slideOutRight">
+        <v-navigation-drawer light app :clipped="clipped" v-if="drawer" v-model="drawer" enable-resize-watcher temporary right width="200">
+          <v-list light>
+            <v-list-tile ripple value="true" v-for="(menuItem, i) in menuItems" :key="i" :to="menuItem.route">
+              <v-list-tile-action>
+                <v-icon :color="menuItem.color">{{menuItem.icon}}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>{{ $t(menuItem.titleKey) }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-navigation-drawer>
+      </transition>
+      <v-toolbar app :clipped-left="clipped" height="65px" :color="toolbarColor" :dark="dark">
+        <v-toolbar-side-icon @click.stop="drawer = !drawer" :color="toolbarColor"></v-toolbar-side-icon>
+        <v-toolbar-title v-text="toolbarTitle"></v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn small dark fab @click="toggleBrightness" :color="dark ? 'primary' : 'secondary'">
+          <v-icon dark v-text="dark ? 'fa-moon' : 'fa-sun'"></v-icon>
+        </v-btn>
+      </v-toolbar>
+      <v-content app class="content-area">
+        <transition name="page-transition" enter-active-class="animation fadeIn">
+          <router-view/>
+        </transition>
+        <teneo-modal></teneo-modal>
+      </v-content>
+      <v-progress-linear :indeterminate="true" :active="progressBar" class="loading" height="3"></v-progress-linear>
+    </div>
+  </v-app>
+
+</template>
+<style>
+@import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
+
+html {
+  overflow: hidden !important;
+}
+
+iframe#site-frame {
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: width 1s ease-in-out;
+}
+
+.contract-iframe {
+  width: calc(100vw - 360px) !important;
+}
+
+.v-expansion-panel__header {
+  height: auto !important;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+  /* padding: 10px; */
+}
+</style>
+<style scoped>
+#chat-open-close-button {
+  position: fixed;
+  bottom: 60px;
+  right: 50px;
+}
+
+.move-button-left {
+  right: 410px !important;
+}
+
+#teneo {
+  width: 360px;
+}
+
+.show-the-chat {
+  right: 0 !important;
+}
+
+.v-toolbar {
+  width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  left: auto !important;
+}
+
+.application {
+  max-width: 360px !important;
+  height: 100vh;
+  position: fixed;
+  right: 0;
+  top: 0;
+  overflow: hidden;
+}
+
+.v-overlay {
+  width: 360px;
+  left: auto !important;
+  right: auto !important;
+}
+
+.content-area {
+  overflow-y: auto;
+  height: auto;
+  position: fixed;
+  top: 65px;
+  padding-top: 0 !important;
+}
+
+.loading {
+  position: fixed;
+  bottom: 50px;
+}
+
+.v-navigation-drawer {
+  left: auto !important;
+}
+</style>
+<script>
+export default {
+  data() {
+    return {
+      hideChatButton: false,
+      hideChat: true,
+      clipped: false,
+      drawer: false,
+      menuItems: [
+        {
+          icon: "chat",
+          titleKey: "menu.chat",
+          route: "/",
+          color: "success"
+        },
+        {
+          icon: "help_outline",
+          titleKey: "menu.help",
+          route: "help",
+          color: "info"
+        },
+        {
+          icon: "history",
+          titleKey: "menu.history",
+          route: "history",
+          color: "warning"
+        },
+        {
+          icon: "info",
+          titleKey: "menu.about",
+          route: "about",
+          color: "primary"
+        },
+        {
+          icon: "settings",
+          titleKey: "menu.config",
+          route: "config",
+          color: "secondary"
+        }
+      ],
+      miniVariant: true,
+      rightDrawer: false
+    };
+  },
+  computed: {
+    toolbarTitle() {
+      if (this.$route.name === "history") {
+        return this.$t("menu.history");
+      } else if (this.$route.name === "help") {
+        return this.$t("menu.help");
+      } else if (this.$route.name === "about") {
+        return this.$t("menu.about");
+      } else {
+        return this.$store.getters.chatTitle;
+      }
+    },
+    toolbarColor() {
+      return !this.$store.getters.dark ? "primary white--text" : "";
+    },
+    dark() {
+      return this.$store.getters.dark;
+    },
+    progressBar() {
+      return this.$store.getters.progressBar;
+    },
+    getChatState() {
+      if (!this.hideChat) {
+        return "show-the-chat";
+      }
+      return "";
+    }
+  },
+  methods: {
+    toggleBrightness() {
+      this.$store.commit("changeTheme");
+    },
+    toggleChat() {
+      if (
+        !this.$store.state.chatConfig ||
+        !this.$store.state.chatConfig.activeSolution
+      ) {
+        this.hideChat = !this.hideChat;
+        this.$router.push({ name: "config" });
+        return;
+      }
+      this.hideChatButton = !this.hideChatButton; // toggle the chat button visibility
+
+      //animate the IFrame
+      let siteFrame = document.getElementById("site-frame");
+      let chatButton = document.getElementById("chat-open-close-button");
+
+      // show chat window - button clicked - login
+      if (this.hideChat) {
+        this.$router.push({ name: "chat" }); // make sure we show the main chat window
+        this.$store.commit("showChatLoading"); // display the loading spinner
+        setTimeout(
+          function() {
+            // wait just a bit before animating things - need the chat button to hide first
+            this.hideChat = !this.hideChat; // show the chat window
+            chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+            siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+          }.bind(this),
+          400
+        );
+
+        this.$store
+          .dispatch("login")
+          .then(() => {
+            console.log("Successfully logged into chat");
+            this.hideChatButton = !this.hideChatButton; // only show the chat button after a successful login
+          })
+          .catch(err => {
+            console.log("ERROR LOGGING IN TO CHAT: ", err.message);
+          });
+      } else {
+        // hide chat window - button clicked - logout
+        this.$store.commit("hideModal");
+        siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
+        setTimeout(
+          function() {
+            this.hideChat = !this.hideChat; // close the chat window - i want the iframe to resize first and then the chat window to close
+            chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
+          }.bind(this),
+          1000
+        );
+
+        this.$store.dispatch("endSession").then(() => {
+          this.$store.commit("clearChatHistory"); // clear the dialogs once we have successfully ended the session
+          setTimeout(
+            function() {
+              this.hideChatButton = !this.hideChatButton; // only show the open chat button once the session has ended
+            }.bind(this),
+            800
+          );
+        });
+      }
+    }
+  }
+};
+</script>
