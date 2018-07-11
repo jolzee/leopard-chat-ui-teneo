@@ -28,17 +28,21 @@ npm run build
 npm run build --report
 ```
 
-:heavy_check_mark: Responsive
-:heavy_check_mark: ASR and TTS on Google Chrome - long press on send icon to toggle
-:heavy_check_mark: Localized for English, French, German and Dutch
-:heavy_check_mark: Configurable to serve multiple solutions
-:heavy_check_mark: Media Players for YouTube, Vimeo, mp4, mp3
-:heavy_check_mark: Date time picker for dialogs requiring date input
-:heavy_check_mark: Live chat handover integration
+---
+
+:heavy_check_mark: Responsive<br/>
+:heavy_check_mark: ASR and TTS on Google Chrome - long press on send icon to toggle<br/>
+:heavy_check_mark: Localized for English, French, German and Dutch<br/>
+:heavy_check_mark: Configurable to serve multiple solutions<br/>
+:heavy_check_mark: Media Players for YouTube, Vimeo, mp4, mp3<br/>
+:heavy_check_mark: Date time picker for dialogs requiring date input<br/>
+:heavy_check_mark: Live chat handover integration<br/>
+
+---
 
 For details on the Material Design component framework used, check out https://vuetifyjs.com/en/
 
-:information*source: If you want to get the live chat integration working then sign up for an account at https://www.livechatinc.com/ Remember to update the licence key in \_store.js*
+If you want to get the live chat integration working then sign up for an account at https://www.livechatinc.com/ Remember to update the licence key in \_store.js\*
 
 ```javascript
 const liveChatIncLicense = <license>;
