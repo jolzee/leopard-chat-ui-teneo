@@ -57,8 +57,7 @@
   padding-left: 30px;
   text-align: left;
 }
-</style>
-<style>
+
 .modal-fly-out {
   position: absolute !important;
   width: 360px !important;
@@ -68,7 +67,7 @@
   height: 100% !important;
 }
 .plyr__menu {
-  display: none;
+  display: none !important;
 }
 
 @media only screen and (max-width: 480px) {

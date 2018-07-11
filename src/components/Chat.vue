@@ -27,15 +27,12 @@
     <teneo-listening v-bind:value="listening" :message="$t('listening')"></teneo-listening>
 
     <!-- show the initial loding ball animation when first loading the chat window -->
-    <div class="text-xs-center mt-3" v-if="showChatLoading">
-      <v-layout row justify-center>
-        <v-container fill-height class="centered-dialog">
-          <v-layout column justify-center align-center>
-            <ball-scale-ripple-multiple-loader color="#C2C2C2" size="80px"></ball-scale-ripple-multiple-loader>
-          </v-layout>
-        </v-container>
-      </v-layout>
-    </div>
+
+    <v-layout row wrap justify-center align-center class="loading-ball text-xs-center mt-3" v-if="showChatLoading">
+      <v-flex xs12>
+        <ball-scale-ripple-multiple-loader color="#C2C2C2" size="60px"></ball-scale-ripple-multiple-loader>
+      </v-flex>
+    </v-layout>
 
     <v-layout column>
       <v-expansion-panel focusable>
@@ -406,6 +403,9 @@ export default {
 };
 </script>
 <style scoped>
+.loading-ball {
+  width: 360px;
+}
 .container {
   padding: 0 !important;
   display: block;
@@ -480,22 +480,12 @@ span.teneo-reply ul {
 }
 
 @media only screen and (max-width: 480px) {
-  .v-snack {
-    width: 100vw !important;
-  }
-
-  .v-footer {
-    width: 100vw !important;
-  }
-
-  .chat-container {
-    width: 100vw !important;
-  }
-
-  .teneo-dialog {
+  .v-snack,
+  .v-footer,
+  .chat-container,
+  .teneo-dialog,
+  .loading-ball {
     width: 100vw !important;
   }
 }
-</style>
-<style scoped>
 </style>

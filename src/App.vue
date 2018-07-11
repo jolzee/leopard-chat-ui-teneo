@@ -81,7 +81,7 @@ html {
 }
 
 .application {
-  max-width: 360px !important;
+  max-width: 360px;
   height: 100vh;
   position: fixed;
   right: 0;
@@ -129,20 +129,13 @@ iframe#site-frame {
 }
 
 @media only screen and (max-width: 480px) {
-  #teneo {
-    width: 100vw !important;
-  }
-
-  .application {
-    max-width: 100vw !important;
-  }
-
-  .v-toolbar {
-    width: 100vw !important;
-  }
-
+  #teneo,
+  .v-toolbar,
   .v-overlay {
     width: 100vw !important;
+  }
+  .application {
+    max-width: 100vw !important;
   }
 
   iframe#site-frame {
@@ -201,7 +194,9 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.onResize);
-    // this.onResize();
+    if (window.innerWidth <= 480) {
+      this.onResize();
+    }
   },
   computed: {
     toolbarTitle() {
@@ -233,6 +228,7 @@ export default {
   },
   methods: {
     onResize() {
+      // on mobile devices open the chat window automatically
       if (window.innerWidth <= 480 && this.hideChat) {
         this.hideChatButton = true;
         this.hideChat = false; // show the chat window
