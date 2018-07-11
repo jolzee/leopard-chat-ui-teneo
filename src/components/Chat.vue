@@ -410,6 +410,13 @@ export default {
   padding: 0 !important;
   display: block;
 }
+.v-footer {
+  width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  left: auto !important;
+}
 </style>
 <style>
 .chat-card {
@@ -421,14 +428,6 @@ export default {
 
 .v-snack {
   width: 360px;
-  text-align: center;
-  left: auto !important;
-}
-
-.v-footer {
-  width: 360px;
-  margin-left: auto;
-  margin-right: auto;
   text-align: center;
   left: auto !important;
 }

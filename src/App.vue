@@ -115,7 +115,7 @@ iframe#site-frame {
   left: 0;
   right: 0;
   bottom: 0;
-  transition: width 1s ease-in-out;
+  /* transition: width 0.2s ease-in-out; */
 }
 
 .contract-iframe {
