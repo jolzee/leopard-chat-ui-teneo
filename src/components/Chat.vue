@@ -156,7 +156,7 @@
     <!-- Date picker dialog -->
     <v-flex xs12 key="datePicker">
       <v-dialog ref="dialogDate" v-model="showDate" :return-value.sync="date" lazy width="290px">
-        <v-date-picker v-model="date" scrollable :min="moment().format('YYYY-MM-DD')">
+        <v-date-picker v-model="date" scrollable :min="this.$dayjs().format('YYYY-MM-DD')">
           <v-spacer></v-spacer>
           <v-btn flat color="primary" @click="showDate = false">Cancel</v-btn>
           <v-btn flat color="primary" @click="sendUserInput">OK</v-btn>
@@ -191,8 +191,6 @@
 </template>
 
 <script>
-import moment from "moment";
-
 if (window.Element && !Element.prototype.closest) {
   Element.prototype.closest = function(s) {
     let matches = (this.document || this.ownerDocument).querySelectorAll(s),
@@ -261,7 +259,7 @@ export default {
     userInput: {
       get: function() {
         if (this.date !== "") {
-          this.updateInputBox(moment(this.date).format("Do MMMM YYYY"));
+          this.updateInputBox(this.$dayjs(this.date).format("D MMMM YYYY"));
         }
         if (this.$store.state.userInputReadyForSending) {
           this.$store.state.userInputReadyForSending = false;
@@ -292,6 +290,17 @@ export default {
   mounted() {
     this.$el.addEventListener("click", this.onHtmlClick);
     this.$refs.userInput.focus();
+    // if being shown in webview then show the microphone button by default
+    // if (
+    //   "Android" in window ||
+    //   "webkit" in window ||
+    //   "webkitSpeechRecognition" in window ||
+    //   "SpeechRecognition" in window
+    // ) {
+    //   // this.swapInputButton();
+    //   this.showAudioInput = true;
+    //   this.$store.commit("speakBackResponses", this.showAudioInput);
+    // }
   },
   methods: {
     onHtmlClick(event) {
@@ -384,8 +393,10 @@ export default {
     },
     captureAudio() {
       if (
-        window.hasOwnProperty("webkitSpeechRecognition") &&
-        window.hasOwnProperty("speechSynthesis")
+        (window.hasOwnProperty("webkitSpeechRecognition") &&
+          window.hasOwnProperty("speechSynthesis")) ||
+        Android ||
+        webkit
       ) {
         this.$store.commit("hideModal");
         this.audioButtonColor = "error";

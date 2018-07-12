@@ -484,14 +484,9 @@
 
 <script>
 import { Compact } from "vue-color";
-
-// require("@/assets/prism.css");
 import urlRegex from "url-regex";
 import { SOLUTION_DEFAULT, COLOR_NAMES } from "./../constants/constants.js";
-// import prism from "@/assets/prism.js";
-import moment from "moment";
 import HelpDialog from "./config/HelpDialog";
-// import "prismjs";
 import "@/assets/prism.css";
 import Prism from "vue-prism-component";
 import prism from "@/assets/prism.js";
@@ -615,7 +610,7 @@ export default {
     downloadSolutionConfig() {
       this.download(
         this.getFullSolutionConfig,
-        `leopard-all-config-${moment().format("YYYYMMDD[-]H[-]mm")}.txt`
+        `leopard-all-config-${this.$dayjs().format("YYYYMMDD[-]H[-]mm")}.txt`
       );
     },
     downloadSelectedSolutionConfig() {
@@ -624,7 +619,9 @@ export default {
         `leopard-${this.selectedSolution.name
           .replace(/[|&;$%@"<>()+,]/g, "")
           .replace(/\s+/g, "-")
-          .toLowerCase()}-config-${moment().format("YYYYMMDD[-]H[-]mm")}.txt`
+          .toLowerCase()}-config-${this.$dayjs().format(
+          "YYYYMMDD[-]H[-]mm"
+        )}.txt`
       );
     },
     download(data, filename, type = "text/plain") {
