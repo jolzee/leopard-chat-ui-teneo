@@ -8,6 +8,7 @@ import Listening from "./components/Listening.vue";
 import VueSession from "vue-session";
 import "vue-loaders/dist/vue-loaders.css";
 import longpress from "vue-long-press-directive";
+import Dayjs from "vue-dayjs";
 
 import {
   BallScaleRippleMultipleLoader,
@@ -18,7 +19,6 @@ import vueSmoothScroll from "vue-smoothscroll";
 import "babel-polyfill";
 import parseBool from "parseboolean";
 import "vue2-animate/dist/vue2-animate.min.css";
-import moment from "moment";
 
 import {
   Vuetify,
@@ -61,7 +61,9 @@ if (parseBool(localStorage.getItem("darkTheme")) === null) {
 
 store.state.dark = parseBool(localStorage.getItem("darkTheme")) !== false;
 
-Vue.prototype.moment = moment;
+Vue.use(Dayjs, {
+  lang: "en"
+});
 
 Vue.use(longpress, { duration: 2000 });
 Vue.use(Vuetify, {
@@ -100,8 +102,6 @@ Vue.use(Vuetify, {
   }
 });
 
-// Vue.use(VueYouTubeEmbed);
-// Vue.use(AnimatedVue)
 Vue.component("teneo-modal", Modal);
 Vue.component("teneo-listening", Listening);
 Vue.use(VueSession);

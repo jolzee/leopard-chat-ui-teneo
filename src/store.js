@@ -534,6 +534,7 @@ const store = new Vuex.Store({
               ),
               teneoResponse: json.responseData
             };
+            webviewSay(response.teneoAnswer);
             // check if this browser supports the Web Speech API
             if (
               window.hasOwnProperty("webkitSpeechRecognition") &&
@@ -591,6 +592,8 @@ const store = new Vuex.Store({
         }
         UserDictation.start();
       }
+      // webview asr for android and iOS
+      webviewStartAsr();
     }
   }
 });
@@ -747,6 +750,7 @@ if (store.state.enableLiveChat) {
           hasExtraData: false
         };
         store.state.dialog.push(liveChatResponse); // push the getting message onto the dialog
+        this.webviewSay(newMessage.text);
         if (
           window.hasOwnProperty("webkitSpeechRecognition") &&
           window.hasOwnProperty("speechSynthesis")
@@ -799,3 +803,62 @@ function doLiveChatRequest(message) {
       console.log(error);
     });
 }
+
+// android and ios webview ASR and TTS
+
+window.sendVoiceInput = function(userInput) {
+  console.log(`In SendVoiceInput: ${userInput}`);
+  store.state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
+  store.state.userInputReadyForSending = true;
+  store.state.listening = false;
+};
+
+window.webviewStartAsr = function() {
+  // Android
+  try {
+    Android.startASR("sendVoiceInput");
+  } catch (Exception) {
+    //console.log('Could not start Android ASR: ' + Exception);
+  }
+
+  // iOS
+  try {
+    webkit.messageHandlers.startASR.postMessage("sendVoiceInput");
+  } catch (Exception) {
+    //console.log('Could not start iOS ASR: ' + Exception);
+  }
+};
+
+window.webviewSay = function(message) {
+  // Android
+  try {
+    console.log("TTS Message: " + message);
+    Android.speak("<speak>" + message + "</speak>");
+  } catch (Exception) {
+    // ignore
+  }
+
+  // iOS
+  try {
+    webkit.messageHandlers.speak.postMessage(message);
+  } catch (Exception) {
+    // ignore
+  }
+};
+
+window.webviewStartAsrAfterTTS = function() {
+  console.log("startASRAfterTTS");
+  // Android
+  try {
+    Android.startASRAfterTTS("sendVoiceInput");
+  } catch (Exception) {
+    //console.log('Could not start Android ASR: ' + Exception);
+  }
+
+  // iOS
+  try {
+    webkit.messageHandlers.startASRAfterTTS.postMessage("sendVoiceInput");
+  } catch (Exception) {
+    //console.log('Could not start iOS ASR: ' + Exception);
+  }
+};
