@@ -62,6 +62,10 @@ html {
   overflow: hidden !important;
 }
 
+body {
+  overscroll-behavior-y: contain;
+}
+
 #chat-open-close-button {
   position: fixed;
   bottom: 60px;
