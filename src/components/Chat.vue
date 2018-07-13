@@ -137,7 +137,7 @@
             <v-card v-if="hasCollection(item) && (i === dialog.length - 1)" class="text-xs-center">
               <v-card-text>
                 <h2 v-text="getOptions(item).title"></h2>
-                <v-btn color="success" v-for="(option,i) in getOptions(item).items" :key="i" @click="optionClicked(option.name)">{{option.name}}
+                <v-btn color="success" v-for="(option,i) in getOptions(item).items" :key="i" @click="optionClicked(option)">{{option.name}}
                 </v-btn>
               </v-card-text>
             </v-card>
@@ -291,11 +291,12 @@ export default {
     this.$el.addEventListener("click", this.onHtmlClick);
     this.$refs.userInput.focus();
     // if being shown in webview then show the microphone button by default
+
     // if (
     //   "Android" in window ||
-    //   "webkit" in window ||
-    //   "webkitSpeechRecognition" in window ||
-    //   "SpeechRecognition" in window
+    //   "webkit" in window
+    //   // "webkitSpeechRecognition" in window ||
+    //   // "SpeechRecognition" in window
     // ) {
     //   // this.swapInputButton();
     //   this.showAudioInput = true;
@@ -381,11 +382,13 @@ export default {
       }
       this.$refs.userInput.focus();
     },
-    optionClicked(optionValue) {
+    optionClicked(option) {
       this.$store.commit("showProgressBar");
-      this.$store.commit("setUserInput", optionValue);
+      this.$store.commit("setUserInput", option.name);
+      if (option.params) {
+      }
       this.$store
-        .dispatch("sendUserInput", optionValue)
+        .dispatch("sendUserInput", option.params ? option.params : "")
         .then(this.$refs.userInput.focus());
     },
     showModal(item) {
@@ -417,14 +420,22 @@ export default {
 .loading-ball {
   width: 360px;
 }
+
 .container {
   padding: 0 !important;
   display: block;
 }
+
 .v-footer {
   width: 360px;
   margin-left: auto;
   margin-right: auto;
+  text-align: center;
+  left: auto !important;
+}
+
+.v-snack {
+  width: 360px;
   text-align: center;
   left: auto !important;
 }
@@ -435,12 +446,6 @@ export default {
   font-weight: 500;
   padding: 5px;
   margin-top: 6px;
-}
-
-.v-snack {
-  width: 360px;
-  text-align: center;
-  left: auto !important;
 }
 
 .chat-container {

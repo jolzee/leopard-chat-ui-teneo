@@ -39,7 +39,7 @@
 
                         Where myItems is an array formatted as follows:
 
-                        <prism language="groovy">def myItems = [ "title":"Please confirm", "items":[ ["name":"Yes"], ["name":"No"], ["name":"Maybe"] ] ]</prism>
+                        <prism language="groovy">def myItems = [ "title":"Please confirm", "items":[ ["name":"Yes", "params": "jolzee=washere&peter=joles"], ["name":"No"], ["name":"Maybe"] ] ]</prism>
                         Example media files that can be used with "displayVideo":<br/><br/>
                         <p>
                             <a href="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</a><br/>

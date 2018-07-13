@@ -1,7 +1,7 @@
 <template>
   <v-layout>
-    <v-dialog v-model="showModal" fullscreen hide-overlay transition="dialog-bottom-transition">
 
+    <v-dialog v-model="showModal" fullscreen hide-overlay transition="dialog-bottom-transition">
       <v-card>
         <v-toolbar fixed>
           <v-flex>
@@ -34,58 +34,60 @@
               <v-snackbar :timeout="globalSnackbarTimeout" :value="globalSnackbar" :color="globalSnackbarColor">
                 {{ globalSnackbarMessage }}
               </v-snackbar>
-
-              <v-flex xs6 v-if="hasSolutions" d-inline-flex>
-                <v-select color="light-blue darken-1" item-avatar="userIcon" dense ref="selectedSolution" item-text="name" item-value="name" v-model="selectedSolution" content-class="select-options" solo :items="sortedSolutions" return-object no-data-text="No Solutions" label="Select Teneo Solution" append-icon="fa-arrow-circle-down"></v-select>
-              </v-flex>
-              <v-flex xs6 wrap>
-                <v-tooltip open-delay="600" bottom>
-                  <v-btn slot="activator" fab dark color="light-blue darken-1" small @click="setActiveSolution" v-if="selectedSolution">
-                    <v-icon dark>{{(selectedSolution && (config.activeSolution === selectedSolution.name)) ? "fa-check-square" : "fa-square"}}
-                    </v-icon>
-                  </v-btn>
-                  <span>Active/Deactive</span>
-                </v-tooltip>
-                <span v-if="selectedSolution">
-                  <v-tooltip open-delay="600" bottom>
-                    <v-btn slot="activator" fab dark small color="pink darken-4" @click="editSolution">
-                      <v-icon dark>fa-cog</v-icon>
-                    </v-btn>
-                    <span>Edit</span>
-                  </v-tooltip>
-                  <v-tooltip open-delay="600" bottom>
-                    <v-btn slot="activator" fab dark small @click="cloneSolution" color="orange">
-                      <v-icon dark>fa-clone</v-icon>
-                    </v-btn>
-                    <span>Clone</span>
-                  </v-tooltip>
-                  <v-tooltip open-delay="600" bottom>
-                    <v-btn slot="activator" fab dark small @click="deleteSolutionConfig" color="red">
-                      <v-icon dark>fa-trash</v-icon>
-                    </v-btn>
-                    <span>Delete</span>
-                  </v-tooltip>
-                  <v-tooltip open-delay="600" bottom>
-                    <v-btn slot="activator" fab dark small color="indigo" @click="copySolutionToClipboard">
-                      <v-icon dark>fa-clipboard</v-icon>
-                    </v-btn>
-                    <span>Copy selected solution config to clipboard</span>
-                  </v-tooltip>
-                  <v-tooltip open-delay="600" bottom>
-                    <v-btn slot="activator" fab dark small color="teal darken-3" @click="downloadSelectedSolutionConfig">
-                      <v-icon dark>fa-download</v-icon>
-                    </v-btn>
-                    <span>Download selected solution's config as a file</span>
-                  </v-tooltip>
-                  <v-tooltip open-delay="600" bottom>
-                    <v-btn slot="activator" fab dark small color="indigo" :href="getActiveSolutionDeepLink" target="_blank">
-                      <v-icon dark>fa-link</v-icon>
-                    </v-btn>
-                    <span>Deep Link</span>
-                  </v-tooltip>
-                </span>
-
-              </v-flex>
+              <v-container fluid>
+                <v-layout row wrap>
+                  <v-flex xs12 sm3 md4 lg6 v-if="hasSolutions">
+                    <v-select color="light-blue darken-1" item-avatar="userIcon" dense ref="selectedSolution" item-text="name" item-value="name" v-model="selectedSolution" content-class="select-options" solo :items="sortedSolutions" return-object no-data-text="No Solutions" label="Select Teneo Solution" append-icon="fa-arrow-circle-down"></v-select>
+                  </v-flex>
+                  <v-flex xs12 sm9 md8 lg6>
+                    <v-tooltip open-delay="600" bottom>
+                      <v-btn slot="activator" fab dark color="light-blue darken-1" small @click="setActiveSolution" v-if="selectedSolution">
+                        <v-icon dark>{{(selectedSolution && (config.activeSolution === selectedSolution.name)) ? "fa-check-square" : "fa-square"}}
+                        </v-icon>
+                      </v-btn>
+                      <span>Active/Deactive</span>
+                    </v-tooltip>
+                    <span v-if="selectedSolution">
+                      <v-tooltip open-delay="600" bottom>
+                        <v-btn slot="activator" fab dark small color="pink darken-4" @click="editSolution">
+                          <v-icon dark>fa-cog</v-icon>
+                        </v-btn>
+                        <span>Edit</span>
+                      </v-tooltip>
+                      <v-tooltip open-delay="600" bottom>
+                        <v-btn slot="activator" fab dark small @click="cloneSolution" color="orange">
+                          <v-icon dark>fa-clone</v-icon>
+                        </v-btn>
+                        <span>Clone</span>
+                      </v-tooltip>
+                      <v-tooltip open-delay="600" bottom>
+                        <v-btn slot="activator" fab dark small @click="deleteSolutionConfig" color="red">
+                          <v-icon dark>fa-trash</v-icon>
+                        </v-btn>
+                        <span>Delete</span>
+                      </v-tooltip>
+                      <v-tooltip open-delay="600" bottom>
+                        <v-btn slot="activator" fab dark small color="indigo" @click="copySolutionToClipboard">
+                          <v-icon dark>fa-clipboard</v-icon>
+                        </v-btn>
+                        <span>Copy selected solution config to clipboard</span>
+                      </v-tooltip>
+                      <v-tooltip open-delay="600" bottom>
+                        <v-btn slot="activator" fab dark small color="teal darken-3" @click="downloadSelectedSolutionConfig">
+                          <v-icon dark>fa-download</v-icon>
+                        </v-btn>
+                        <span>Download selected solution's config as a file</span>
+                      </v-tooltip>
+                      <v-tooltip open-delay="600" bottom>
+                        <v-btn slot="activator" fab dark small color="indigo" :href="getActiveSolutionDeepLink" target="_blank">
+                          <v-icon dark>fa-link</v-icon>
+                        </v-btn>
+                        <span>Deep Link</span>
+                      </v-tooltip>
+                    </span>
+                  </v-flex>
+                </v-layout>
+              </v-container>
             </v-layout>
 
             <!-- show the nicely formatted view of the full configuration -->
@@ -184,65 +186,64 @@
 
                     <v-container fluid>
                       <v-layout row wrap>
-                        <v-flex xs4>
+                        <v-flex xs12 sm4 class="hidden-xs-only">
                           <v-subheader>Solution Name</v-subheader>
                         </v-flex>
-                        <v-flex xs8>
+                        <v-flex xs12 sm8>
                           <v-text-field color="light-blue darken-1" v-model.trim="solution.name" validate-on-blur :tabindex="getTabIndex" label="Solution Name" :rules="[ruleMustHaveValue]"></v-text-field>
                         </v-flex>
-                        <v-flex xs4>
+                        <v-flex xs12 sm4 class="hidden-xs-only">
                           <v-subheader>Solution URL</v-subheader>
                         </v-flex>
-                        <v-flex xs8>
+                        <v-flex xs12 sm8>
                           <v-text-field color="light-blue darken-1" v-model.trim="solution.url" validate-on-blur :tabindex="getTabIndex" label="URL to Teneo Runtime - no parameters" append-icon="link" :rules="[ruleMustHaveValue, ruleMustBeUrl]"></v-text-field>
                         </v-flex>
-                        <v-flex xs4>
+                        <v-flex xs12 sm4 class="hidden-xs-only">
                           <v-subheader>IFRAME URL</v-subheader>
                         </v-flex>
-                        <v-flex xs8>
+                        <v-flex xs12 sm8>
                           <v-text-field color="light-blue darken-1" v-model.trim="solution.iframeUrl" validate-on-blur :tabindex="getTabIndex" label="Enter the IFRAME URL" append-icon="link" :rules="[ruleMustHaveValue, ruleMustBeUrl]"></v-text-field>
                         </v-flex>
-                        <v-flex xs4>
+                        <v-flex xs12 sm4 class="hidden-xs-only">
                           <v-subheader>Chat Window Title</v-subheader>
                         </v-flex>
-                        <v-flex xs8>
-                          <v-text-field color="light-blue darken-1" validate-on-blur v-model.trim="solution.chatTitle" :tabindex="getTabIndex" label="Speak to with Carrie" :rules="[ruleMustHaveValue]"></v-text-field>
+                        <v-flex xs12 sm8>
+                          <v-text-field color="light-blue darken-1" validate-on-blur v-model.trim="solution.chatTitle" :tabindex="getTabIndex" label="Chat Window Title" :rules="[ruleMustHaveValue]"></v-text-field>
                         </v-flex>
-                        <v-flex xs4>
+                        <v-flex xs12 sm4 class="hidden-xs-only">
                           <v-subheader>Deep Link (?dl=[deep-link])
                           </v-subheader>
                         </v-flex>
-                        <v-flex xs8>
+                        <v-flex xs12 sm8>
                           <v-text-field color="light-blue darken-1" v-model.trim="solution.deepLink" validate-on-blur :tabindex="getTabIndex" label="Deep links can be accessed with ?dl=<deep-link>" :rules="[ruleMustHaveValue, ruleNoSpaces, ruleDeepLinkUnique]"></v-text-field>
                         </v-flex>
-                        <v-flex xs4>
+                        <v-flex xs12 sm4 class="hidden-xs-only">
                           <v-subheader>Locale</v-subheader>
                         </v-flex>
-                        <v-flex xs8>
-                          <v-select :items="locales" color="light-blue darken-1" content-class="select-options" :tabindex="getTabIndex" v-model="solution.locale" label="Specify Chat Locale" single-line append-icon="language"></v-select>
+                        <v-flex xs12 sm8>
+                          <v-select :items="locales" color="light-blue darken-1" content-class="select-options" outline :tabindex="getTabIndex" v-model="solution.locale" label="Specify Chat Locale" append-icon="language"></v-select>
                         </v-flex>
-                        <v-flex xs4>
+                        <v-flex xs12 sm4 class="hidden-xs-only">
                           <v-subheader>Response Icon</v-subheader>
                         </v-flex>
-                        <v-flex xs8>
-                          <v-text-field v-model.trim="solution.responseIcon" validate-on-blur color="light-blue darken-1" :tabindex="getTabIndex" label="Material Icons or FontAwesome (fa-)" :append-icon="solution.responseIcon" :rules="[ruleMustHaveValue]"></v-text-field>
+                        <v-flex xs12 sm8>
+                          <v-text-field v-model.trim="solution.responseIcon" validate-on-blur color="light-blue darken-1" :tabindex="getTabIndex" label="Response Icon - Material Icons or FontAwesome (fa-)" :append-icon="solution.responseIcon" :rules="[ruleMustHaveValue]"></v-text-field>
                         </v-flex>
-                        <v-flex xs4>
+                        <v-flex xs12 sm4 class="hidden-xs-only">
                           <v-subheader>User Icon</v-subheader>
                         </v-flex>
-                        <v-flex xs8>
-                          <v-text-field v-model.trim="solution.userIcon" validate-on-blur color="light-blue darken-1" :tabindex="getTabIndex" label="Material Icons or FontAwesome (fa-)" :append-icon="solution.userIcon" :rules="[ruleMustHaveValue]"></v-text-field>
+                        <v-flex xs12 sm8>
+                          <v-text-field v-model.trim="solution.userIcon" validate-on-blur color="light-blue darken-1" :tabindex="getTabIndex" label="User Icon - Material Icons or FontAwesome (fa-)" :append-icon="solution.userIcon" :rules="[ruleMustHaveValue]"></v-text-field>
                         </v-flex>
-                        <v-flex xs4>
-                          <v-subheader>Enable Live Chat (livechat.inc). Keep as false. Speak to Peter if you need this.
-                          </v-subheader>
+                        <v-flex xs12 sm4 class="hidden-xs-only">
+                          <v-subheader>Enable Live Chat (livechat.inc)</v-subheader>
                         </v-flex>
-                        <v-flex xs8>
-                          <v-select :items="trueFalseOptions" validate-on-blur color="light-blue darken-1" label="Keep as false Speak to Peter" content-class="select-options" :tabindex="getTabIndex" v-model="solution.enableLiveChat" single-line append-icon="contact_phone"></v-select>
+                        <v-flex xs12 sm8>
+                          <v-select :items="trueFalseOptions" validate-on-blur color="light-blue darken-1" outline hint="Enable Live Chat" label="Enable Live Chat" content-class="select-options" :tabindex="getTabIndex" v-model="solution.enableLiveChat" append-icon="contact_phone"></v-select>
                         </v-flex>
                         <v-divider></v-divider>
-                        <v-flex xs4>
-                          <v-subheader>Theme
+                        <v-flex xs12 sm4>
+                          <v-subheader class="mb-2">Theme
                             <v-tooltip open-delay="600" bottom>
                               <v-btn slot="activator" fab dark small @click="resetColorsToDefault" color="green">
                                 <v-icon dark>fa-undo</v-icon>
@@ -256,7 +257,7 @@
                               <v-flex d-flex>
                                 <compact-picker v-model="colors" @input="updateColor" class="mb-3" />
                               </v-flex>
-                              <v-flex d-flex>
+                              <v-flex xs12 d-flex>
                                 <v-chip @click="setActiveColor('primary')" :style="getBackGroundColor(solution.theme.primary)" text-color="white">
                                   <v-avatar>
                                     <v-icon>invert_colors</v-icon>
@@ -315,7 +316,7 @@
                             </v-layout>
                           </v-flex>
                         </v-flex>
-                        <v-flex xs8>
+                        <v-flex xs12 sm8>
                           <v-layout>
                             <v-flex d-flex>
                               <v-text-field v-model.trim="solution.theme.primary" @click="setActiveColor('primary')" validate-on-blur color="light-blue darken-1" :v-text="solution.theme.primary" :tabindex="getTabIndex" label="primary" :rules="[ruleMustHaveValue, ruleMustHaveColor]"></v-text-field>
@@ -334,80 +335,80 @@
                             <v-flex d-flex>
                               <v-text-field v-model.trim="solution.theme.info" @click="setActiveColor('info')" validate-on-blur color="light-blue darken-1" :value="solution.theme.info" :tabindex="getTabIndex" label="info" :rules="[ruleMustHaveValue, ruleMustHaveColor]"></v-text-field>
                               <v-text-field v-model.trim="solution.theme.success" @click="setActiveColor('success')" validate-on-blur color="light-blue darken-1" :value="solution.theme.success" :tabindex="getTabIndex" label="success" :rules="[ruleMustHaveValue, ruleMustHaveColor]"></v-text-field>
-
                             </v-flex>
                           </v-layout>
                           <v-text-field v-model.trim="solution.theme.warning" @click="setActiveColor('warning')" validate-on-blur color="light-blue darken-1" :value="solution.theme.warning" :tabindex="getTabIndex" label="warning" :rules="[ruleMustHaveValue, ruleMustHaveColor]"></v-text-field>
                         </v-flex>
                         <v-divider></v-divider>
                         <!-- help -->
-                        <v-flex xs4>
+                        <v-flex xs12 sm4>
                           <v-btn color="red" class="white--text" @click="addUserInput">
                             Help
                             <v-icon right dark>add_circle</v-icon>
                           </v-btn>
                         </v-flex>
-                        <v-flex xs8>
+                        <v-flex xs12 sm8>
                           <v-layout v-for="(question, index) in solution.knowledgeData" v-bind:key="index" row wrap>
                             <v-flex xs11>
                               <v-text-field v-model.trim="solution.knowledgeData[index]" :value="question" validate-on-blur color="light-blue darken-1" :tabindex="getTabIndex" label="Example question" append-icon="fa-question-circle" :rules="[ruleMustHaveValue]"></v-text-field>
                             </v-flex>
-                            <v-flex xs1>
-                              <v-btn @click="solution.knowledgeData.splice(index, 1)" fab dark small color="red">
-                                <v-icon dark>remove_circle</v-icon>
-                              </v-btn>
+                            <v-flex xs1 class="pl-2 pt-3">
+                              <!-- <v-btn @click="solution.knowledgeData.splice(index, 1)" fab dark small color="red"> -->
+                              <v-icon @click="solution.knowledgeData.splice(index, 1)" color="red" dark>remove_circle</v-icon>
+                              <!-- </v-btn> -->
                             </v-flex>
                           </v-layout>
                         </v-flex>
                         <v-divider></v-divider>
                         <!-- context parameters -->
-                        <v-flex xs4>
-                          <v-subheader>When to send CTX params
-                          </v-subheader>
+                        <v-flex xs12 sm4 class="hidden-xs-only">
+                          <v-subheader>When to send CTX params</v-subheader>
                         </v-flex>
-                        <v-flex xs8>
-                          <v-radio-group :tabindex="getTabIndex" v-model="solution.sendContextParams" mandatory>
+                        <v-flex xs12 sm8>
+                          <v-radio-group :tabindex="getTabIndex" label="When to send CTX params" v-model="solution.sendContextParams" mandatory>
                             <v-radio label="At login" value="login"></v-radio>
                             <v-radio label="All requests" value="all"></v-radio>
                           </v-radio-group>
                         </v-flex>
-                        <v-flex xs4>
+                        <v-flex xs12 sm4>
                           <v-btn color="red" class="white--text" @click="addContextParam">
                             CTX Param
                             <v-icon right dark>add_circle</v-icon>
                           </v-btn>
                         </v-flex>
-                        <v-flex xs8>
+                        <v-flex xs12 sm8>
+                          <!-- Itterate over all CTX parameters and their values -->
+                          <v-layout class="mb-3" align-start justify-start v-for="(contextParam, index) in solution.contextParams" v-bind:key="index" row wrap>
 
-                          <v-layout v-for="(contextParam, index) in solution.contextParams" v-bind:key="index" row wrap>
-                            <v-flex xs11>
+                            <v-flex xs10 sm11>
                               <v-text-field v-model.trim="contextParam.name" validate-on-blur color="light-blue darken-1" :tabindex="getTabIndex" label="Parameter Name" append-icon="fa-key" :rules="[ruleMustHaveValue]"></v-text-field>
-                              <v-layout v-for="(value, valueIndex) in contextParam.values" v-bind:key="valueIndex">
-                                <v-flex xs4>
-                                  <!-- remove button for a single context parameter value -->
-                                  <v-btn @click="contextParam.values.splice(valueIndex, 1)" fab dark small color="red">
-                                    <v-icon dark>remove_circle</v-icon>
-                                  </v-btn>
-                                  <v-btn @click="toggleActiveContextParameterValue(value.active, index, valueIndex)" fab dark small :color="value.active ? 'green' : 'black'">
-                                    <v-icon dark>{{ value.active ? 'fa-check-square': 'fa-square' }}</v-icon>
-                                  </v-btn>
-                                </v-flex>
-                                <v-flex>
-                                  <!-- show input box for context parameter value -->
-                                  <v-text-field v-model.trim="value.text" validate-on-blur color="light-blue darken-1" label="Parameter Value" :tabindex="getTabIndex" :rules="[ruleMustHaveValue]"></v-text-field>
-                                </v-flex>
-                              </v-layout>
                             </v-flex>
-                            <v-flex xs1>
-                              <!-- remove context param and all values -->
-                              <v-btn @click="solution.contextParams.splice(index, 1)" fab dark small color="red">
-                                <v-icon dark>remove_circle</v-icon>
-                              </v-btn>
-                              <!-- add new context param value -->
-                              <v-btn fab dark small @click="addNewContextParameterValue(index)" color="green">
-                                <v-icon dark>fa-plus</v-icon>
-                              </v-btn>
+                            <v-flex xs2 sm1>
+                              <v-tooltip top>
+                                <v-icon slot="activator" @click="solution.contextParams.splice(index, 1)" color="red" dark>remove_circle</v-icon>
+                                <span>Remove CTX Parameter</span>
+                              </v-tooltip>
+                              <v-tooltip top>
+                                <v-icon slot="activator" @click="addNewContextParameterValue(index)" color="green" dark>fa-plus</v-icon>
+                                <span>Add Parameter Value</span>
+                              </v-tooltip>
                             </v-flex>
+
+                            <!-- Show each ctx parameter value -->
+                            <v-layout align-space-around justify-start row fluid v-for="(value, valueIndex) in contextParam.values" v-bind:key="valueIndex">
+                              <v-flex class="elevation-5 pa-3 mb-2 mr-2">
+                                <v-tooltip top>
+                                  <v-icon slot="activator" @click="contextParam.values.splice(valueIndex, 1)" color="red" dark>remove_circle</v-icon>
+                                  <span>Delete Parameter Value</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                  <v-icon slot="activator" @click="toggleActiveContextParameterValue(value.active, index, valueIndex)" :color="value.active ? 'green' : 'blue-grey lighten-4'" dark>{{ value.active ? 'fa-check-square': 'fa-square' }}</v-icon>
+                                  <span>Enable/Disable</span>
+                                </v-tooltip>
+                                <!-- show input box for context parameter value -->
+                                <v-text-field v-model.trim="value.text" validate-on-blur color="light-blue darken-1" label="Parameter Value" :tabindex="getTabIndex" :rules="[ruleMustHaveValue]"></v-text-field>
+                              </v-flex>
+                            </v-layout>
                           </v-layout>
                         </v-flex>
                       </v-layout>

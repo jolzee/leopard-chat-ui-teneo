@@ -496,6 +496,13 @@ const store = new Vuex.Store({
           .then(json => {
             store.commit("hideChatLoading"); // about to show the greeting - hide the chat loading spinner
             // console.log(decodeURIComponent(json.responseData.answer))
+            let hasExtraData = false;
+            if (
+              json.responseData.extraData.extensions ||
+              json.responseData.extraData.liveChat
+            ) {
+              hasExtraData = true;
+            }
             const response = {
               type: "reply",
               text: decodeURIComponent(json.responseData.answer).replace(
@@ -504,10 +511,14 @@ const store = new Vuex.Store({
               ),
               bodyText: "",
               teneoResponse: json.responseData,
-              hasExtraData: false
+              hasExtraData: hasExtraData
             };
             // sessionStorage.setItem(TENEO_CHAT_HISTORY, JSON.stringify(response))
             store.state.dialog.push(response); // push the getting message onto the dialog
+            if (hasExtraData) {
+              state.modalItem = newReply;
+              state.showModal = true;
+            }
             resolve();
           })
           .catch(err => {
@@ -516,12 +527,12 @@ const store = new Vuex.Store({
           });
       });
     },
-    sendUserInput(context) {
+    sendUserInput(context, params = "") {
       // send user input to Teneo when a live chat has not begun
       if (!store.getters.isLiveChat) {
         Vue.jsonp(
           store.state.teneoUrl +
-            (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS : ""),
+            (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params),
           { userinput: store.state.userInput }
         )
           .then(json => {
@@ -846,7 +857,7 @@ window.webviewSay = function(message) {
   }
 };
 
-window.webviewStartAsrAfterTTS = function() {
+window.startASRAfterTTS = function() {
   console.log("startASRAfterTTS");
   // Android
   try {
