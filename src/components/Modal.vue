@@ -113,6 +113,7 @@ export default {
       let response = this.$store.getters.getModalItem;
       if (response) {
         let teneoResponse = response.teneoResponse;
+        console.log(teneoResponse);
         let outputLink = decodeURIComponent(teneoResponse.link.href);
         let actionRAW = decodeURIComponent(teneoResponse.extraData.extensions);
         let transcript = decodeURIComponent(
@@ -131,10 +132,20 @@ export default {
           );
           this.$store.commit("hideModal"); // stops the transcript from being sent back constantly during a live chat
         }
-
+        console.log(outputLink);
         // send URL's to the I-FRAME
         if (outputLink !== "") {
-          document.getElementById("site-frame").src = outputLink;
+          if (outputLink.startsWith("./")) {
+            let currentIframeUrl = document.getElementById("site-frame").src;
+            currentIframeUrl =
+              currentIframeUrl.substring(0, currentIframeUrl.lastIndexOf("/")) +
+              "/" +
+              outputLink.substring(2, outputLink.length);
+            console.log(currentIframeUrl);
+            document.getElementById("site-frame").src = currentIframeUrl;
+          } else {
+            document.getElementById("site-frame").src = outputLink;
+          }
         }
 
         if (actionRAW !== "undefined") {
@@ -173,7 +184,7 @@ export default {
           }
 
           // check for collection action
-          if (action.name === "displayCollection") {
+          if (action.name.startsWith("displayCollection")) {
             displayModal = false;
             // this.title = action.parameters.title;
             // items: action.parameters.item

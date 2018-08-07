@@ -24,6 +24,7 @@
       </v-flex>
     </v-layout>
     <!-- show the listening modal when recognizing audio input -->
+    <!-- start -->
     <teneo-listening v-bind:value="listening" :message="$t('listening')"></teneo-listening>
 
     <!-- show the initial loding ball animation when first loading the chat window -->
@@ -35,9 +36,10 @@
     </v-layout>
 
     <v-layout column>
-      <v-expansion-panel focusable>
+      <v-expansion-panel focusable :value="getOpenedItem">
         <transition-group name="chat-line-transition" enter-active-class="animated zoomIn">
-          <v-expansion-panel-content class="teneo-dialog" v-for="(item,i) in dialog" :key="i" :hide-actions="(item && !hasCollection(item)) || (i <= dialog.length)" :value="item && hasCollection(item)">
+          <!-- item && hasCollection(item) -->
+          <v-expansion-panel-content class="teneo-dialog" v-for="(item,i) in dialog" :key="i" :hide-actions="(item && !hasCollection(item)) || (i <= dialog.length)">
 
             <div slot="header">
               <v-container grid-list-xs fluid>
@@ -132,13 +134,17 @@
               </v-container>
               <!-- live chat typing -->
             </div>
-
             <!-- show any options in the response: for example Yes, No Maybe -->
             <v-card v-if="hasCollection(item) && (i === dialog.length - 1)" class="text-xs-center">
               <v-card-text>
                 <h2 v-text="getOptions(item).title"></h2>
-                <v-btn color="success" v-for="(option,i) in getOptions(item).items" :key="i" @click="optionClicked(option)">{{option.name}}
-                </v-btn>
+                <div v-if="getOptions(item).html" class="elevation-5 mt-2" v-html="getOptions(item).items">
+                </div>
+                <span v-else v-for="(option,i) in getOptions(item).items" :key="i">
+                  <v-btn color="success" @click="optionClicked(option)">{{option.name}}
+                  </v-btn>
+                </span>
+
               </v-card-text>
             </v-card>
           </v-expansion-panel-content>
@@ -152,7 +158,7 @@
 
       </v-expansion-panel>
     </v-layout>
-
+    <!-- end -->
     <!-- Date picker dialog -->
     <v-flex xs12 key="datePicker">
       <v-dialog ref="dialogDate" v-model="showDate" :return-value.sync="date" lazy width="290px">
@@ -217,6 +223,9 @@ export default {
     };
   },
   computed: {
+    getOpenedItem() {
+      return this.dialog.length - 1;
+    },
     isHistoryPage() {
       return this.$route.name === "history";
     },
@@ -342,7 +351,7 @@ export default {
         );
         if (extensionsRAW !== "undefined") {
           let action = JSON.parse(extensionsRAW);
-          if (action.name === "displayCollection") {
+          if (action.name.startsWith("displayCollection")) {
             return true;
           }
         }
@@ -364,6 +373,14 @@ export default {
           let action = JSON.parse(extensionsRAW);
           if (action.name === "displayCollection") {
             return action.parameters.content;
+          } else if (action.name.startsWith("displayCollectionBasic")) {
+            console.log(action);
+            action.parameters.html = true;
+            action.parameters.items = action.parameters.items.replace(
+              /left/g,
+              ""
+            );
+            return action.parameters;
           }
         }
       }
@@ -388,7 +405,7 @@ export default {
       if (option.params) {
       }
       this.$store
-        .dispatch("sendUserInput", option.params ? option.params : "")
+        .dispatch("sendUserInput", option.params ? "&" + option.params : "")
         .then(this.$refs.userInput.focus());
     },
     showModal(item) {

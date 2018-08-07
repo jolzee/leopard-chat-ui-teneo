@@ -1,0 +1,84 @@
+{
+  "activeSolution": "myATT",
+  "solutions": [
+    {
+      "name": "CarryMe",
+      "url": "https://newton.presales.artificial-solutions.com/engine3/",
+      "deepLink": "carryme",
+      "iframeUrl":
+        "https://wi.presales.artificial-solutions.com/carryme3/frame.html",
+      "sendContextParams": "all",
+      "contextParams": [
+        {
+          "name": "channel",
+          "values": [
+            {
+              "text": "webview",
+              "active": true
+            }
+          ]
+        }
+      ],
+      "locale": "en",
+      "chatTitle": "Speak with Carrie",
+      "responseIcon": "fa-robot",
+      "userIcon": "fa-comment-alt",
+      "useLocalStorage": "false",
+      "enableLiveChat": "false",
+      "theme": {
+        "primary": "#1277D3",
+        "secondary": "#EF8800",
+        "accent": "#4CAF50",
+        "error": "#FF5252",
+        "info": "#2196F3",
+        "success": "#4CAF50",
+        "warning": "#FFC107"
+      },
+      "knowledgeData": [
+        "What's your name?",
+        "Who created you?",
+        "I want to travel from SanFrancisco to Dallas on Sunday and return 5 days later"
+      ]
+    },
+    {
+      "name": "myATT",
+      "url": "https://operations-t4-dev.teneocloud.com/myattml/",
+      "deepLink": "myatt",
+      "iframeUrl": "https://www.att.com/",
+      "sendContextParams": "login",
+      "contextParams": [
+        {
+          "name": "channel",
+          "values": [
+            {
+              "text": "webview",
+              "active": true
+            }
+          ]
+        }
+      ],
+      "locale": "en",
+      "chatTitle": "My AT&T Assistant",
+      "responseIcon": "fa-bell",
+      "userIcon": "fa-smile",
+      "useLocalStorage": "false",
+      "enableLiveChat": "false",
+      "theme": {
+        "primary": "#0568AE",
+        "secondary": "#DB6606",
+        "accent": "#087AC2",
+        "error": "#FF5252",
+        "info": "#2196F3",
+        "success": "#4CAF50",
+        "warning": "#FFC107"
+      },
+      "knowledgeData": [
+        "Want to pay my wireless bill",
+        "What's my balance?",
+        "My bill is too high",
+        "When does my bill cycle end?",
+        "Check data usage"
+      ]
+    }
+  ]
+}

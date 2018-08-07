@@ -62,8 +62,9 @@ html {
   overflow: hidden !important;
 }
 
+html,
 body {
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: contain !important;
 }
 
 #chat-open-close-button {
