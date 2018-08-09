@@ -314,6 +314,7 @@ export default {
   },
   methods: {
     onHtmlClick(event) {
+      console.log("html link clicked 1");
       // Find the closest anchor to the target.
       const anchor = event.target.closest("a");
       if (!anchor) return;
@@ -393,7 +394,10 @@ export default {
         this.date = "";
         this.$store
           .dispatch("sendUserInput")
-          .then(this.$refs.userInput.focus());
+          .then(this.$refs.userInput.focus())
+          .catch(err => {
+            // TODO: add some logic
+          });
       } else {
         this.snackbar = true;
       }
@@ -406,7 +410,10 @@ export default {
       }
       this.$store
         .dispatch("sendUserInput", option.params ? "&" + option.params : "")
-        .then(this.$refs.userInput.focus());
+        .then(this.$refs.userInput.focus())
+        .catch(err => {
+          // TODO: add some logic
+        });
     },
     showModal(item) {
       this.$store.commit("showModal", item);

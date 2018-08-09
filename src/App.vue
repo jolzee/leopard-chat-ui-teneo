@@ -67,6 +67,10 @@ body {
   overscroll-behavior-y: contain !important;
 }
 
+.headline {
+  font-size: 1.4em !important;
+}
+
 #chat-open-close-button {
   position: fixed;
   bottom: 60px;

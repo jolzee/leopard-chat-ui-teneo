@@ -102,7 +102,7 @@ const translationsEs = {
 };
 
 Vue.use(VueLocalStorage);
-Vue.use(VueJsonp, 5000);
+Vue.use(VueJsonp, 10000);
 Vue.use(Vuex);
 
 const TENEO_CHAT_HISTORY = "teneo-chat-history";
@@ -497,7 +497,7 @@ function setupStore(callback) {
       hideModal(state) {
         state.showModal = false;
         state.modalItem = null;
-        console.log("modal item should be empty");
+        // console.log("modal item should be empty");
       }
     },
     actions: {
@@ -689,7 +689,7 @@ function setupStore(callback) {
   let visitorSDK = null;
 
   if (store.state.enableLiveChat) {
-    const liveChatIncLicense = 123456; // change me https://www.livechatinc.com/
+    const liveChatIncLicense = 9243615; // change me https://www.livechatinc.com/
     visitorSDK = LivechatVisitorSDK.init({
       license: liveChatIncLicense
     });

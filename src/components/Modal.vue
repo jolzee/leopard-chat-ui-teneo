@@ -1,9 +1,9 @@
 <template>
   <v-layout>
     <v-flex xs12>
-      <v-dialog v-model="showModal" scrollable content-class="modal-fly-out" hide-overlay transition="dialog-bottom-transition">
-        <v-card height="100vh">
-          <v-toolbar dark color="primary">
+      <v-dialog v-model="showModal" scrollable persistent content-class="modal-fly-out" hide-overlay>
+        <v-card class="pt-5 modal-height">
+          <v-toolbar dark color="primary" fixed>
             <v-btn fab small @click="hideModal" color="secondary">
               <v-icon dark medium>close</v-icon>
             </v-btn>
@@ -24,38 +24,92 @@
               <source :src="videoUrl" :type="videoType" />
             </video>
           </plyr>
+          <v-container class="modal-container">
+            <transition name="modal-image-transition" enter-active-class="animated zoomIn">
+              <v-card-media v-if="imageUrl" :src="imageUrl" height="226px" contain></v-card-media>
+            </transition>
 
-          <transition name="modal-image-transition" enter-active-class="animated zoomIn">
-            <v-card-media v-if="imageUrl" :src="imageUrl" height="226px" contain></v-card-media>
-          </transition>
-          <v-layout align-content-start row wrap column>
-
-            <v-card-title primary-title>
-              <div>
-                <div class="headline" v-if="title">{{title}}</div>
+            <v-layout align-start justify-start column>
+              <v-card-title primary-title>
+                <div class="modal-headline" v-if="title">{{title}}</div>
                 <span class="grey--text" v-if="subTitle">{{subTitle}}</span>
-              </div>
-            </v-card-title>
-            <v-layout justify-center class="pb-3" row fill-height align-start>
+              </v-card-title>
+            </v-layout>
+            <v-layout align-start justify-center row>
               <v-card-actions>
                 <v-btn color="primary" v-shortkey="['ctrl', 'alt', 'arrowleft']" @shortkey.native="hideModal" @click.native="hideModal">{{ $t('back.to.chat.button') }}
                 </v-btn>
               </v-card-actions>
             </v-layout>
+            <div class="pt-3">
+              <flight-itinerary v-if="itinerary" :itinerary="itinerary"></flight-itinerary>
+              <v-card-text class="cardText" id="chat-modal-html" v-if="bodyText" v-html="bodyText" scrollable></v-card-text>
+            </div>
             <v-spacer></v-spacer>
-          </v-layout>
-          <flight-itinerary v-if="itinerary" :itinerary="itinerary"></flight-itinerary>
-          <v-card-text class="cardText" v-if="bodyText" v-html="bodyText" scrollable></v-card-text>
+          </v-container>
+
         </v-card>
       </v-dialog>
     </v-flex>
   </v-layout>
 </template>
+<style scoped>
+.v-toolbar--fixed {
+  left: unset !important;
+}
+
+.modal-container {
+  padding: 0px;
+}
+
+.modal-height {
+  min-height: 100vh;
+  height: fit-content;
+}
+</style>
 <style>
 .cardText {
   padding-top: 5px;
   padding-left: 30px;
   text-align: left;
+}
+
+.modal-headline {
+  font-size: 1.2em;
+}
+
+.cardText table {
+  border-collapse: collapse;
+  text-align: left;
+  width: 100%;
+  border: 3px solid #0070a8;
+}
+.cardText table td,
+.cardText table th {
+  padding: 3px 10px;
+}
+.cardText table thead th {
+  background-color: #006699;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: bold;
+  border-left: 1px solid #ffffff;
+}
+.cardText table td.summaryHeader {
+  border-top: 1px solid #0070a8;
+  border-bottom: 1px solid #0070a8;
+  background-color: rgb(165, 165, 165);
+}
+.cardText table tbody td {
+  border-left: 1px solid #0070a8;
+  font-size: 12px;
+  font-weight: normal;
+}
+.cardText table tbody td:first-child {
+  border-left: none;
+}
+.cardText table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .modal-fly-out {
@@ -64,7 +118,7 @@
   right: 0 !important;
   margin: 0 !important;
   max-height: 100% !important;
-  height: 100% !important;
+  /* height: 100% !important; */
 }
 .plyr__menu {
   display: none !important;
@@ -113,7 +167,7 @@ export default {
       let response = this.$store.getters.getModalItem;
       if (response) {
         let teneoResponse = response.teneoResponse;
-        console.log(teneoResponse);
+        // console.log(teneoResponse);
         let outputLink = decodeURIComponent(teneoResponse.link.href);
         let actionRAW = decodeURIComponent(teneoResponse.extraData.extensions);
         let transcript = decodeURIComponent(
@@ -122,7 +176,7 @@ export default {
         let displayModal = false;
 
         // check if user wants to talk to a live agent
-        console.log("Live Chat? :" + this.$store.getters.isLiveChat);
+        // console.log("Live Chat? :" + this.$store.getters.isLiveChat);
         if (transcript !== "undefined" && this.$store.getters.isLiveChat) {
           this.$store.commit(
             "liveChat",
@@ -132,7 +186,6 @@ export default {
           );
           this.$store.commit("hideModal"); // stops the transcript from being sent back constantly during a live chat
         }
-        console.log(outputLink);
         // send URL's to the I-FRAME
         if (outputLink !== "") {
           if (outputLink.startsWith("./")) {
@@ -227,15 +280,56 @@ export default {
             this.title = response.text;
           }
         }
-
+        if (this.bodyText) {
+          this.bodyText = this.bodyText.replace(
+            /(?:onclick='DI\.VA\.hope\.sendInput\(")([^"]+)(?:"\)')/g,
+            'data-callback="$1" class="sendInput"'
+          );
+        }
         return displayModal ? this.$store.getters.getShowModal : false;
       }
       return false;
     }
   },
-  updated: function() {},
-  mounted() {},
+  updated() {
+    if (this.bodyText) {
+      let chatModalDiv = document.getElementById("chat-modal-html");
+      if (chatModalDiv) {
+        chatModalDiv.addEventListener("click", this.onHtmlClickInModal);
+      }
+    }
+  },
   methods: {
+    onHtmlClickInModal(event) {
+      console.log("html link clicked in modal");
+      // Find the closest anchor to the target.
+      const anchor = event.target.closest("a");
+      if (!anchor) return;
+
+      // Check to make sure this is from our v-html because
+      // we don't want to handle clicks from other things in
+      // the Vue
+      if (!anchor.classList.contains("sendInput")) return;
+      console.log(anchor.dataset.callback);
+      event.stopPropagation();
+      event.preventDefault();
+      this.updateInputBox(anchor.dataset.callback);
+      this.sendUserInput();
+    },
+    sendUserInput() {
+      if (this.$store.getters.getUserInput) {
+        this.$store.commit("showProgressBar");
+        this.$store
+          .dispatch("sendUserInput")
+          .then(console.log("Sent user input"))
+          .catch(err => {
+            // TODO: add some logic
+          });
+      }
+    },
+    updateInputBox(userInput) {
+      this.$store.commit("setUserInput", userInput);
+    },
     isVideoFile(url) {
       console.log("IsVideo:" + url);
       const regExp = /\.(?:mp4|webm|ogg)$/i;
@@ -268,6 +362,8 @@ export default {
     },
     hideModal() {
       this.$store.commit("hideModal");
+      // this.$refs.userInput.focus();
+      // TODO: Find a way to make the user input box have focus
     },
     resetModal() {
       this.title = "";
