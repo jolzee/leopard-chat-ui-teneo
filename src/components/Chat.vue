@@ -36,10 +36,10 @@
     </v-layout>
 
     <v-layout column>
-      <v-expansion-panel focusable :value="getOpenedItem">
+      <v-expansion-panel :value="getOpenedItem">
         <transition-group name="chat-line-transition" enter-active-class="animated zoomIn">
           <!-- item && hasCollection(item) -->
-          <v-expansion-panel-content class="teneo-dialog" v-for="(item,i) in dialog" :key="i" :hide-actions="(item && !hasCollection(item)) || (i <= dialog.length)">
+          <v-expansion-panel-content class="teneo-dialog" v-for="(item,i) in dialog" :key="i" :hide-actions="true">
 
             <div slot="header">
               <v-container grid-list-xs fluid>
@@ -95,6 +95,20 @@
                       </v-card>
                     </v-flex>
                   </v-layout>
+
+                  <!-- show any options in the response: for example Yes, No Maybe -->
+                  <v-card flat v-if="hasCollection(item) && (i === dialog.length - 1)" class="text-xs-center">
+                    <v-card-text>
+                      <h2 v-text="getOptions(item).title"></h2>
+                      <div v-if="getOptions(item).html" class="elevation-5 mt-2" v-html="getOptions(item).items">
+                      </div>
+                      <span v-else v-for="(option,i) in getOptions(item).items" :key="i">
+                        <v-btn color="success" @click="optionClicked(option)">{{option.name}}
+                        </v-btn>
+                      </span>
+
+                    </v-card-text>
+                  </v-card>
                   <!-- more info & calendar picker -->
                   <v-layout row>
                     <v-flex xs12 class="text-xs-right" v-if="item.hasExtraData && !hasCollection(item) && notLiveChatTranscript(item)">
@@ -134,19 +148,7 @@
               </v-container>
               <!-- live chat typing -->
             </div>
-            <!-- show any options in the response: for example Yes, No Maybe -->
-            <v-card v-if="hasCollection(item) && (i === dialog.length - 1)" class="text-xs-center">
-              <v-card-text>
-                <h2 v-text="getOptions(item).title"></h2>
-                <div v-if="getOptions(item).html" class="elevation-5 mt-2" v-html="getOptions(item).items">
-                </div>
-                <span v-else v-for="(option,i) in getOptions(item).items" :key="i">
-                  <v-btn color="success" @click="optionClicked(option)">{{option.name}}
-                  </v-btn>
-                </span>
 
-              </v-card-text>
-            </v-card>
           </v-expansion-panel-content>
 
         </transition-group>

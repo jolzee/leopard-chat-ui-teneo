@@ -420,7 +420,7 @@ function setupStore(callback) {
       speakBackResponses(state, useTTS) {
         state.speakBackResponses = useTTS;
       },
-      sendUserInput(state, response) {
+      updateChatWindowAndStorage(state, response) {
         store.commit("hideProgressBar");
         let hasExtraData = false;
         if (
@@ -441,6 +441,7 @@ function setupStore(callback) {
           hasExtraData: false
         };
 
+        // add the user input - display it on the chat dialog
         state.dialog.push(newUserInput);
 
         let newReply = {
@@ -451,13 +452,16 @@ function setupStore(callback) {
           hasExtraData: hasExtraData
         };
 
+        // add the teneo response - display it on the chat dialog
         state.dialog.push(newReply);
         if (hasExtraData) {
           state.modalItem = newReply;
           state.showModal = true;
         }
 
-        state.userInput = "";
+        state.userInput = ""; // reset the user input to nothing
+
+        // deal with persiting the chat history
         if (USE_LOCAL_STORAGE) {
           Vue.localStorage.set(
             TENEO_CHAT_HISTORY,
@@ -470,9 +474,11 @@ function setupStore(callback) {
         if (state.dialogHistory === null) {
           state.dialogHistory = state.dialog;
         } else {
+          // add current user input and teneo response to the dialog history
           state.dialogHistory.push(newUserInput);
           state.dialogHistory.push(newReply);
         }
+        // save the dislaog history in session storage
         sessionStorage.setItem(
           TENEO_CHAT_HISTORY,
           JSON.stringify(state.dialogHistory)
@@ -588,6 +594,7 @@ function setupStore(callback) {
                 ).replace(/onclick="[^"]+"/g, 'class="sendInput"'),
                 teneoResponse: json.responseData
               };
+
               webviewSay(response.teneoAnswer);
               // check if this browser supports the Web Speech API
               if (
@@ -599,7 +606,36 @@ function setupStore(callback) {
                 }
               }
 
-              context.commit("sendUserInput", response);
+              context.commit("updateChatWindowAndStorage", response);
+
+              let langInput = decodeURIComponent(
+                response.teneoResponse.extraData.langinput
+              );
+              let langEngineUrl = decodeURIComponent(
+                response.teneoResponse.extraData.langengineurl
+              );
+
+              // added on request from Mark J
+              if (langEngineUrl !== "undefined" && langInput !== "undefined") {
+                store.state.teneoUrl =
+                  langEngineUrl + "?viewname=STANDARDJSONP";
+                console.log(store.state.teneoUrl);
+                store.state.userInput = langInput;
+                store.commit("showProgressBar");
+                store
+                  .dispatch("sendUserInput")
+                  .then(
+                    console.log(
+                      "Sent original lang input to new lang specific solution"
+                    )
+                  )
+                  .catch(err => {
+                    console.err(
+                      "Unable to send lang input to new lang specific solution",
+                      err.message
+                    );
+                  });
+              }
             })
             .catch(err => {
               console.log(err);
