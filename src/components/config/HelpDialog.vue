@@ -11,7 +11,8 @@
                         <p>
                             To show any bells and whistles in the chat client interface. You will first need to add the contents of the following file to Solution loaded or upload the file to Resources and save it in /script_lib</p>
                         <p>
-                            <a href="https://www.dropbox.com/s/mqaovq0q52wb0ww/ExtensionHelper.groovy?dl=0" target="_blank">https://www.dropbox.com/s/mqaovq0q52wb0ww/ExtensionHelper.groovy?dl=0</a>
+                            <a href="https://www.dropbox.com/s/zp3oyudt1jv640m/ExtensionHelper.groovy?dl=0" target="_blank">https://www.dropbox.com/s/zp3oyudt1jv640m/ExtensionHelper.groovy?dl=0</a>
+                            <!-- <a href="https://www.dropbox.com/s/mqaovq0q52wb0ww/ExtensionHelper.groovy?dl=0" target="_blank">https://www.dropbox.com/s/mqaovq0q52wb0ww/ExtensionHelper.groovy?dl=0</a> -->
                         </p>
                         <p>
                             Then you need to add an

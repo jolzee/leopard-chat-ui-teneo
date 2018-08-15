@@ -95,19 +95,28 @@
                       </v-card>
                     </v-flex>
                   </v-layout>
-
                   <!-- show any options in the response: for example Yes, No Maybe -->
-                  <v-card flat v-if="hasCollection(item) && (i === dialog.length - 1)" class="text-xs-center">
-                    <v-card-text>
+                  <v-card flat v-if="hasCollection(item) && (i === dialog.length - 1)" class="text-xs-center" width="320px">
+                    <v-card-text v-if="!hasLongOptions(item)">
                       <h2 v-text="getOptions(item).title"></h2>
                       <div v-if="getOptions(item).html" class="elevation-5 mt-2" v-html="getOptions(item).items">
                       </div>
                       <span v-else v-for="(option,i) in getOptions(item).items" :key="i">
-                        <v-btn color="success" @click="optionClicked(option)">{{option.name}}
+                        <v-btn class="option-btn" small color="success" @click="optionClicked(option)">{{option.name}}
                         </v-btn>
                       </span>
-
                     </v-card-text>
+
+                    <v-list three-line dense subheader v-else class="pt-1">
+                      <template v-for="(option,i) in getOptions(item).items">
+                        <v-divider :key="i"></v-divider>
+                        <v-list-tile :key="i" ripple @click="optionClicked(option)" class="options-list">
+                          <v-list-tile-content>
+                            <v-list-tile-sub-title class="options-list-subtile">{{option.name}}</v-list-tile-sub-title>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                      </template>
+                    </v-list>
                   </v-card>
                   <!-- more info & calendar picker -->
                   <v-layout row>
@@ -367,6 +376,22 @@ export default {
       );
       return transcript === "undefined";
     },
+    hasLongOptions(item) {
+      if (item.hasExtraData) {
+        let extensionsRAW = decodeURIComponent(
+          item.teneoResponse.extraData.extensions
+        );
+        if (extensionsRAW !== "undefined") {
+          let action = JSON.parse(extensionsRAW);
+          if (action.name.startsWith("displayCollection")) {
+            if (action.hasLongOptions !== "undefined") {
+              return action.hasLongOptions;
+            }
+          }
+        }
+      }
+      return false;
+    },
     getOptions(item) {
       if (item.hasExtraData) {
         let extensionsRAW = decodeURIComponent(
@@ -465,6 +490,21 @@ export default {
   text-align: center;
   left: auto !important;
 }
+
+.option-btn {
+  font-size: 13px;
+  text-transform: unset;
+  white-space: normal;
+}
+
+.options-list {
+  /* height: 50px !important; */
+  height: 50px !important;
+}
+
+.options-list-subtile {
+  color: unset !important;
+}
 </style>
 <style>
 .chat-card {
@@ -472,6 +512,11 @@ export default {
   font-weight: 500;
   padding: 5px;
   margin-top: 6px;
+}
+
+div.options-list a.v-list__tile--link {
+  cursor: pointer;
+  height: inherit !important;
 }
 
 .chat-container {
