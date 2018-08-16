@@ -147,9 +147,7 @@
                           Upload
                           <v-icon dark right>publish</v-icon>
                         </label>
-
                       </div>
-
                       <v-textarea v-model="getUploadConfig" :loading="uploadTextAreaLoading" ref="newConfig" box name="new-config" label="Paste in full or partial configurations" :value="getUploadConfig" auto-grow prepend-icon="fa-cog" class="coding-font"></v-textarea>
                     </v-flex>
                   </v-layout>
