@@ -402,7 +402,7 @@ export default {
           if (action.name === "displayCollection") {
             return action.parameters.content;
           } else if (action.name.startsWith("displayCollectionBasic")) {
-            console.log(action);
+            // console.log(action);
             action.parameters.html = true;
             action.parameters.items = action.parameters.items.replace(
               /left/g,
