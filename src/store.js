@@ -597,14 +597,23 @@ function setupStore(callback) {
                 teneoResponse: json.responseData
               };
 
-              webviewSay(stripHtml(response.teneoAnswer));
+              // const ttsText = store.getters.getTTSInput(json.responseData);
+
+              let ttsText = stripHtml(response.teneoAnswer);
+              if (response.teneoResponse.extraData.tts) {
+                ttsText = stripHtml(
+                  decodeURIComponent(response.teneoResponse.extraData.tts)
+                );
+              }
+
+              webviewSay(ttsText);
               // check if this browser supports the Web Speech API
               if (
                 window.hasOwnProperty("webkitSpeechRecognition") &&
                 window.hasOwnProperty("speechSynthesis")
               ) {
                 if (artyom && store.state.speakBackResponses) {
-                  artyom.say(stripHtml(response.teneoAnswer));
+                  artyom.say(ttsText);
                 }
               }
 
@@ -617,7 +626,6 @@ function setupStore(callback) {
               let langEngineUrl = decodeURIComponent(
                 response.teneoResponse.extraData.langengineurl
               );
-
 
               if (langEngineUrl !== "undefined" && langInput !== "undefined") {
                 store.state.teneoUrl =

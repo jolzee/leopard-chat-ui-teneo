@@ -29,13 +29,13 @@
             <v-container class="modal-container">
 
               <transition name="modal-image-transition" enter-active-class="animated zoomIn">
-                <v-card-media v-if="imageUrl" :src="imageUrl" height="226px" contain></v-card-media>
+                <v-card-media v-if="imageUrl" :src="imageUrl" height="226px"></v-card-media>
               </transition>
 
               <v-layout align-start justify-start column>
                 <v-card-title primary-title>
-                  <div class="modal-headline" v-if="title">{{title}}</div>
-                  <span class="grey--text" v-if="subTitle">{{subTitle}}</span>
+                  <div class="modal-headline" v-if="title" v-html="title"></div>
+                  <span class="grey--text" v-if="subTitle" v-html="subTitle"></span>
                 </v-card-title>
               </v-layout>
               <v-layout align-start justify-center row>
@@ -359,7 +359,7 @@ export default {
             });
           }
 
-          // check for display video action
+          // check for display image action
           if (action.name === "displayImage") {
             this.title = response.text;
             this.imageUrl = action.parameters.image_url;
