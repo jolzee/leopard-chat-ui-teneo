@@ -1,7 +1,7 @@
 <template>
-    <v-card-text scrollable class="elevation-4 px-3 text-xs-center">
+    <v-card-text scrollable class="px-3 text-xs-center">
         <h1 class="mb-2">Flight details</h1>
-        <div class="info white--text title elevation-4 py-1">OUTBOUND</div>
+        <div class="info title elevation-4 py-1">OUTBOUND</div>
         <v-layout class="text-xs-center my-2">
             <v-flex xs4>
                 <h1>{{ itinerary.outbound_departure_airport }}</h1>
@@ -16,7 +16,7 @@
                 <div v-html="itinerary.outbound_arrival_date"></div>
             </v-flex>
         </v-layout>
-        <div class="info white--text title elevation-4 py-1">INBOUND</div>
+        <div class="info  title elevation-4 py-1">INBOUND</div>
         <v-layout class="text-xs-center my-2">
             <v-flex xs4>
                 <h1>{{ itinerary.inbound_departure_airport }}</h1>

@@ -5,18 +5,14 @@
         <v-card-title primary-title>
           <div>
             <h2>{{ $t('help.page.title') }}</h2>
-            <div class="mt-4">
-              <template>
-                <v-expansion-panel>
-                  <v-expansion-panel-content v-for="(item,i) in knowledgeData" :key="i" hide-actions ripple>
-                    <div slot="header" @click="sendUserInput(item)">{{ item }}</div>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </template>
-            </div>
           </div>
         </v-card-title>
       </v-card>
+      <v-expansion-panel class="my-2">
+        <v-expansion-panel-content v-for="(item,i) in knowledgeData" :key="i" hide-actions ripple>
+          <div slot="header" @click="sendUserInput(item)">{{ item }}</div>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
     </v-flex>
   </v-layout>
 </template>

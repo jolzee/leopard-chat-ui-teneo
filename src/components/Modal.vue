@@ -1,56 +1,102 @@
 <template>
   <v-layout>
-    <v-flex xs12>
-      <v-dialog v-model="showModal" scrollable persistent content-class="modal-fly-out" hide-overlay>
-        <v-card class="pt-5 modal-height">
-          <v-toolbar dark color="primary" fixed>
+    <vue-draggable-resizable :parent="true" axis="x" :handles="['ml','mr']">
+      <v-flex xs12>
+
+        <v-dialog v-model="showModal" leave-absolute scrollable persistent content-class="teneo-modal" hide-overlay fullscreen>
+          <v-toolbar dark color="primary" fixed height="64px">
             <v-btn fab small @click="hideModal" color="secondary">
               <v-icon dark medium>close</v-icon>
             </v-btn>
             <v-toolbar-title>{{ $t('more.info.title') }}</v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
+          <v-card class="mb-1 pt-5 modal-height" tile>
 
-          <!-- video and audio -->
-          <plyr-youtube v-if="youTubeVideoId" :id="youTubeVideoId" allowtransparency allow="autoplay" />
-          <plyr-vimeo v-if="vimeoVideoId" :id="vimeoVideoId" allowtransparency allow="autoplay" />
-          <plyr v-if="audioUrl">
-            <audio>
-              <source :src="audioUrl" :type="audioType" />
-            </audio>
-          </plyr>
-          <plyr v-if="videoUrl">
-            <video>
-              <source :src="videoUrl" :type="videoType" />
-            </video>
-          </plyr>
-          <v-container class="modal-container">
-            <transition name="modal-image-transition" enter-active-class="animated zoomIn">
-              <v-card-media v-if="imageUrl" :src="imageUrl" height="226px" contain></v-card-media>
-            </transition>
+            <!-- video and audio -->
+            <plyr-youtube v-if="youTubeVideoId" :id="youTubeVideoId" allowtransparency allow="autoplay" />
+            <plyr-vimeo v-if="vimeoVideoId" :id="vimeoVideoId" allowtransparency allow="autoplay" />
+            <plyr v-if="audioUrl">
+              <audio>
+                <source :src="audioUrl" :type="audioType" />
+              </audio>
+            </plyr>
+            <plyr v-if="videoUrl">
+              <video>
+                <source :src="videoUrl" :type="videoType" />
+              </video>
+            </plyr>
+            <v-container class="modal-container">
 
-            <v-layout align-start justify-start column>
-              <v-card-title primary-title>
-                <div class="modal-headline" v-if="title">{{title}}</div>
-                <span class="grey--text" v-if="subTitle">{{subTitle}}</span>
-              </v-card-title>
-            </v-layout>
-            <v-layout align-start justify-center row>
-              <v-card-actions>
-                <v-btn color="primary" v-shortkey="['ctrl', 'alt', 'arrowleft']" @shortkey.native="hideModal" @click.native="hideModal">{{ $t('back.to.chat.button') }}
-                </v-btn>
-              </v-card-actions>
-            </v-layout>
-            <div class="pt-3">
-              <flight-itinerary v-if="itinerary" :itinerary="itinerary"></flight-itinerary>
-              <v-card-text class="cardText" id="chat-modal-html" v-if="bodyText" v-html="bodyText" scrollable></v-card-text>
-            </div>
-            <v-spacer></v-spacer>
-          </v-container>
+              <transition name="modal-image-transition" enter-active-class="animated zoomIn">
+                <v-card-media v-if="imageUrl" :src="imageUrl" height="226px" contain></v-card-media>
+              </transition>
 
-        </v-card>
-      </v-dialog>
-    </v-flex>
+              <v-layout align-start justify-start column>
+                <v-card-title primary-title>
+                  <div class="modal-headline" v-if="title">{{title}}</div>
+                  <span class="grey--text" v-if="subTitle">{{subTitle}}</span>
+                </v-card-title>
+              </v-layout>
+              <v-layout align-start justify-center row>
+                <v-card-actions>
+                  <v-btn color="primary" v-shortkey="['ctrl', 'alt', 'arrowleft']" @shortkey.native="hideModal" @click.native="hideModal">{{ $t('back.to.chat.button') }}
+                  </v-btn>
+                </v-card-actions>
+              </v-layout>
+              <div class=" mt-3" v-if="itinerary || bodyText || transactionItems.length || tableRows.length">
+                <flight-itinerary v-if="itinerary" :itinerary="itinerary"></flight-itinerary>
+                <v-card-text class="cardText" id="chat-modal-html" v-if="bodyText" v-html="bodyText" scrollable></v-card-text>
+
+                <!-- data table tranactions -->
+                <v-layout v-if="transactionItems.length > 0 || tableRows.length > 0" align-end justify-start fill-height>
+                  <v-layout v-if="tableTitle">
+                    <v-flex xs8 ml-4 class="">
+                      <h3>{{tableTitle}}</h3>
+                    </v-flex>
+                  </v-layout>
+                  <v-spacer v-else></v-spacer>
+                  <v-flex xs4 class="mr-2">
+                    <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+                  </v-flex>
+                </v-layout>
+
+                <v-data-table v-if="transactionItems.length > 0" :headers="transactionHeaders" :items="transactionItems" :search="search">
+                  <template slot="items" slot-scope="props">
+                    <td class="text-xs-left">{{ props.item.date }}</td>
+                    <td class="text-xs-left">{{ props.item.description }}</td>
+                    <td class="text-xs-left">{{ props.item.amount }}</td>
+                  </template>
+                  <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                    Your search for "{{ search }}" found no results.
+                  </v-alert>
+                </v-data-table>
+
+                <v-data-table v-if="tableRows.length > 0" :headers="tableHeaders" :items="tableRows" :search="search">
+                  <template slot="items" slot-scope="props">
+                    <td v-for="(row, key) in tableRows" :key='key' class="text-xs-left">
+                      {{ props.item[Object.keys(row)[key]] }}
+                    </td>
+                  </template>
+                  <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                    Your search for "{{ search }}" found no results.
+                  </v-alert>
+                  <template v-if="tableFooter" slot="footer">
+                    <td colspan="100%">
+                      <strong>{{ tableFooter }}</strong>
+                    </td>
+                  </template>
+                </v-data-table>
+              </div>
+              <v-spacer></v-spacer>
+            </v-container>
+
+          </v-card>
+
+        </v-dialog>
+
+      </v-flex>
+    </vue-draggable-resizable>
   </v-layout>
 </template>
 <style scoped>
@@ -63,11 +109,14 @@
 }
 
 .modal-height {
-  min-height: 100vh;
+  min-height: calc(100vh - 64px) !important;
   height: fit-content;
 }
 </style>
 <style>
+.v-menu__content {
+  position: inherit !important;
+}
 .cardText {
   padding-top: 5px;
   padding-left: 30px;
@@ -112,14 +161,46 @@
   border-bottom: none;
 }
 
-.modal-fly-out {
+.teneo-modal {
   position: absolute !important;
-  width: 360px !important;
   right: 0 !important;
   margin: 0 !important;
-  max-height: 100% !important;
-  /* height: 100% !important; */
+  padding-top: 64px !important;
 }
+
+.teneo-modal-center {
+  margin-right: auto !important;
+  margin-left: auto !important;
+  right: unset !important;
+  position: unset !important;
+}
+
+.teneo-modal-right {
+  left: unset !important;
+  right: 0px !important;
+}
+
+.teneo-modal-left {
+  right: unset !important;
+  left: 0px !important;
+}
+
+.teneo-modal-small-width {
+  max-width: 360px !important;
+}
+
+.teneo-modal-medium-width {
+  max-width: 500px !important;
+}
+
+.teneo-modal-large-width {
+  max-width: 700px !important;
+}
+
+.teneo-modal-x-large-width {
+  max-width: 900px !important;
+}
+
 .plyr__menu {
   display: none !important;
 }
@@ -158,18 +239,54 @@ export default {
       audioType: "",
       audioUrl: "",
       videoType: "",
-      videoUrl: ""
+      videoUrl: "",
+      tableTitle: "",
+      tableHeaders: [],
+      tableRows: [],
+      tableFooter: "",
+      search: "",
+      modalSize: "small", // small / medium / large / x-large / "" = full screen
+      modalPosition: "right", // left / right / center
+      transactionHeaders: [
+        {
+          text: "Date",
+          sortable: false,
+          value: "date",
+          width: "20%",
+          align: "left"
+        },
+        {
+          text: "Description",
+          value: "description",
+          width: "70%",
+          align: "left"
+        },
+        {
+          text: "Amount",
+          value: "amount",
+          sortable: true,
+          width: "10%",
+          align: "left"
+        }
+      ],
+      transactionItems: []
     };
   },
   computed: {
     showModal() {
-      this.resetModal();
       let response = this.$store.getters.getModalItem;
+      if (this.$store.getters.getShowModal) {
+        this.resetModal();
+      }
       if (response) {
         let teneoResponse = response.teneoResponse;
         // console.log(teneoResponse);
         let outputLink = decodeURIComponent(teneoResponse.link.href);
         let actionRAW = decodeURIComponent(teneoResponse.extraData.extensions);
+        let modalPosition = decodeURIComponent(
+          teneoResponse.extraData.modalPosition
+        );
+        let modalSize = decodeURIComponent(teneoResponse.extraData.modalSize);
         let transcript = decodeURIComponent(
           response.teneoResponse.extraData.liveChat
         );
@@ -205,10 +322,41 @@ export default {
           let action = JSON.parse(actionRAW);
           displayModal = true;
 
+          if (modalSize !== "undefined") {
+            this.modalSize = modalSize.toLowerCase();
+          }
+
+          if (modalPosition !== "undefined") {
+            this.modalPosition = modalPosition.toLowerCase();
+          }
+
           // check for flight itinerary
           if (action.name === "displayItinerary") {
             this.title = response.text;
             this.itinerary = action.parameters;
+          }
+
+          // check for displayTranactionTable - myBank
+          if (action.name === "displayTable") {
+            this.title = response.text;
+            this.tableTitle = action.parameters.title;
+            this.tableRows = action.parameters.rows;
+            this.tableHeaders = action.parameters.headers;
+          }
+
+          // check for displayTranactionTable - myBank
+          if (action.name === "displayTransactionsTable") {
+            // this.modalSize = "medium";
+            // this.modalPosition = "center";
+            this.title = response.text;
+            action.parameters.transactions.transactions.forEach(transaction => {
+              // console.log(transaction);
+              this.transactionItems.push({
+                date: transaction.Date,
+                description: transaction.Description,
+                amount: transaction.Amount
+              });
+            });
           }
 
           // check for display video action
@@ -286,12 +434,14 @@ export default {
             'data-callback="$1" class="sendInput"'
           );
         }
+
         return displayModal ? this.$store.getters.getShowModal : false;
       }
       return false;
     }
   },
   updated() {
+    this.modalClass();
     if (this.bodyText) {
       let chatModalDiv = document.getElementById("chat-modal-html");
       if (chatModalDiv) {
@@ -300,8 +450,42 @@ export default {
     }
   },
   methods: {
+    removeCustomStylesFromModal() {
+      var modalElements = document.getElementsByClassName("teneo-modal");
+      if (modalElements !== "undefined") {
+        for (var i = 0; i < modalElements.length; i++) {
+          // console.log("Removing existing modal styles - reset");
+          modalElements[i].classList.remove("teneo-modal-center");
+          modalElements[i].classList.remove("teneo-modal-right");
+          modalElements[i].classList.remove("teneo-modal-left");
+          modalElements[i].classList.remove("teneo-modal-small-width");
+          modalElements[i].classList.remove("teneo-modal-medium-width");
+          modalElements[i].classList.remove("teneo-modal-large-width");
+          modalElements[i].classList.remove("teneo-modal-x-large-width");
+        }
+      }
+    },
+    modalClass() {
+      var modalElements = document.getElementsByClassName("teneo-modal");
+      if (modalElements !== "undefined") {
+        for (var i = 0; i < modalElements.length; i++) {
+          if (this.modalPosition != "") {
+            modalElements[i].className += ` teneo-modal-${this.modalPosition}`;
+          }
+        }
+        if (this.modalSize !== "") {
+          for (var i = 0; i < modalElements.length; i++) {
+            modalElements[i].className += ` teneo-modal-${
+              this.modalSize
+            }-width`;
+          }
+        } else {
+          // it's going to be full screen
+        }
+      }
+    },
     onHtmlClickInModal(event) {
-      console.log("html link clicked in modal");
+      // console.log("html link clicked in modal");
       // Find the closest anchor to the target.
       const anchor = event.target.closest("a");
       if (!anchor) return;
@@ -310,7 +494,7 @@ export default {
       // we don't want to handle clicks from other things in
       // the Vue
       if (!anchor.classList.contains("sendInput")) return;
-      console.log(anchor.dataset.callback);
+      // console.log(anchor.dataset.callback);
       event.stopPropagation();
       event.preventDefault();
       this.updateInputBox(anchor.dataset.callback);
@@ -321,7 +505,7 @@ export default {
         this.$store.commit("showProgressBar");
         this.$store
           .dispatch("sendUserInput")
-          .then(console.log("Sent user input"))
+          // .then(console.log("Sent user input"))
           .catch(err => {
             // TODO: add some logic
           });
@@ -331,19 +515,19 @@ export default {
       this.$store.commit("setUserInput", userInput);
     },
     isVideoFile(url) {
-      console.log("IsVideo:" + url);
+      // console.log("IsVideo:" + url);
       const regExp = /\.(?:mp4|webm|ogg)$/i;
       const match = url.match(regExp);
       let result = match ? match[0].substring(1, match[0].length) : false;
-      console.log(result);
+      // console.log(result);
       return result;
     },
     isAudioFile(url) {
-      console.log("ISAudio:" + url);
+      // console.log("ISAudio:" + url);
       const regExp = /\.(?:wav|mp3|ogg)$/i;
       const match = url.match(regExp);
       let result = match ? match[0].substring(1, match[0].length) : false;
-      console.log(result);
+      // console.log(result);
       return result;
     },
     getYoutubeId(url) {
@@ -366,6 +550,7 @@ export default {
       // TODO: Find a way to make the user input box have focus
     },
     resetModal() {
+      // console.log("reseting modal values");
       this.title = "";
       this.subTitle = "";
       this.imageUrl = "";
@@ -378,6 +563,14 @@ export default {
       this.audioUrl = "";
       this.videoType = "";
       this.videoUrl = "";
+      this.modalSize = "small";
+      this.modalPosition = "right";
+      this.removeCustomStylesFromModal();
+      this.search = "";
+      this.tableTitle = "";
+      this.tableHeaders = [];
+      this.tableRows = [];
+      this.tableFooter = "";
     }
   }
 };

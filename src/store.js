@@ -9,6 +9,7 @@ import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk";
 import URL from "url-parse";
 import toHex from "colornames";
 import request from "simple-json-request";
+import stripHtml from "string-strip-html";
 
 const translationsEn = {
   "input.box.label": "Say something...",
@@ -501,6 +502,7 @@ function setupStore(callback) {
         state.showModal = true;
       },
       hideModal(state) {
+        console.log("hiding modal");
         state.showModal = false;
         state.modalItem = null;
         // console.log("modal item should be empty");
@@ -595,19 +597,20 @@ function setupStore(callback) {
                 teneoResponse: json.responseData
               };
 
-              webviewSay(response.teneoAnswer);
+              webviewSay(stripHtml(response.teneoAnswer));
               // check if this browser supports the Web Speech API
               if (
                 window.hasOwnProperty("webkitSpeechRecognition") &&
                 window.hasOwnProperty("speechSynthesis")
               ) {
                 if (artyom && store.state.speakBackResponses) {
-                  artyom.say(response.teneoAnswer);
+                  artyom.say(stripHtml(response.teneoAnswer));
                 }
               }
 
               context.commit("updateChatWindowAndStorage", response);
 
+              // added on request from Mark J - switch languages based on NER language detection
               let langInput = decodeURIComponent(
                 response.teneoResponse.extraData.langinput
               );
@@ -615,7 +618,7 @@ function setupStore(callback) {
                 response.teneoResponse.extraData.langengineurl
               );
 
-              // added on request from Mark J
+
               if (langEngineUrl !== "undefined" && langInput !== "undefined") {
                 store.state.teneoUrl =
                   langEngineUrl + "?viewname=STANDARDJSONP";
@@ -838,13 +841,13 @@ function setupStore(callback) {
             hasExtraData: false
           };
           store.state.dialog.push(liveChatResponse); // push the getting message onto the dialog
-          this.webviewSay(newMessage.text);
+          this.webviewSay(stripHtml(newMessage.text));
           if (
             window.hasOwnProperty("webkitSpeechRecognition") &&
             window.hasOwnProperty("speechSynthesis")
           ) {
             if (artyom && store.state.speakBackResponses) {
-              artyom.say(newMessage.text);
+              artyom.say(stripHtml(newMessage.text));
             }
           }
 
@@ -921,14 +924,14 @@ function setupStore(callback) {
     // Android
     try {
       console.log("TTS Message: " + message);
-      Android.speak("<speak>" + message + "</speak>");
+      Android.speak("<speak>" + stripHtml(message) + "</speak>");
     } catch (Exception) {
       // ignore
     }
 
     // iOS
     try {
-      webkit.messageHandlers.speak.postMessage(message);
+      webkit.messageHandlers.speak.postMessage(stripHtml(message));
     } catch (Exception) {
       // ignore
     }

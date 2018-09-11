@@ -9,6 +9,7 @@ import VueSession from "vue-session";
 import "vue-loaders/dist/vue-loaders.css";
 import longpress from "vue-long-press-directive";
 import Dayjs from "vue-dayjs";
+import VueDraggableResizable from "vue-draggable-resizable";
 
 import {
   BallScaleRippleMultipleLoader,
@@ -51,7 +52,8 @@ import {
   VRadioGroup,
   VBadge,
   VTextarea,
-  VProgressCircular
+  VProgressCircular,
+  VDataTable
 } from "vuetify";
 import "../node_modules/vuetify/src/stylus/app.styl";
 
@@ -101,10 +103,12 @@ storeInit(function(store) {
       VRadioGroup,
       VBadge,
       VTextarea,
-      VProgressCircular
+      VProgressCircular,
+      VDataTable
     }
   });
 
+  Vue.component("vue-draggable-resizable", VueDraggableResizable);
   Vue.component("teneo-modal", Modal);
   Vue.component("teneo-listening", Listening);
   Vue.use(VueSession);

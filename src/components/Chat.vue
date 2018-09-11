@@ -283,6 +283,7 @@ export default {
         }
         if (this.$store.state.userInputReadyForSending) {
           this.$store.state.userInputReadyForSending = false;
+          this.$store.commit("hideModal"); // hide all modals
           this.sendUserInput();
           this.audioButtonColor = "success";
         }
@@ -443,6 +444,7 @@ export default {
         });
     },
     showModal(item) {
+      this.$store.commit("hideModal"); // hide all modals first
       this.$store.commit("showModal", item);
     },
     captureAudio() {
