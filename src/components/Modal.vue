@@ -1,6 +1,5 @@
 <template>
   <v-layout>
-    <vue-draggable-resizable :parent="true" axis="x" :handles="['ml','mr']">
       <v-flex xs12>
 
         <v-dialog v-model="showModal" leave-absolute scrollable persistent content-class="teneo-modal" hide-overlay fullscreen>
@@ -96,7 +95,6 @@
         </v-dialog>
 
       </v-flex>
-    </vue-draggable-resizable>
   </v-layout>
 </template>
 <style scoped>

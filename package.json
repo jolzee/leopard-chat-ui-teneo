@@ -28,7 +28,6 @@
     "vue": "^2.5.2",
     "vue-color": "^2.4.6",
     "vue-dayjs": "^1.0.2",
-    "vue-draggable-resizable": "^1.7.1",
     "vue-jsonp": "^0.1.8",
     "vue-loaders": "^2.0.0",
     "vue-localstorage": "^0.6.2",

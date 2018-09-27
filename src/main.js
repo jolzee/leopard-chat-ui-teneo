@@ -4,12 +4,10 @@ import router from "./router";
 import { storeInit } from "./store.js";
 import Modal from "./components/Modal.vue";
 import Listening from "./components/Listening.vue";
-// import VueYouTubeEmbed from "vue-youtube-embed";
 import VueSession from "vue-session";
 import "vue-loaders/dist/vue-loaders.css";
 import longpress from "vue-long-press-directive";
 import Dayjs from "vue-dayjs";
-import VueDraggableResizable from "vue-draggable-resizable";
 
 import {
   BallScaleRippleMultipleLoader,
@@ -108,7 +106,6 @@ storeInit(function(store) {
     }
   });
 
-  Vue.component("vue-draggable-resizable", VueDraggableResizable);
   Vue.component("teneo-modal", Modal);
   Vue.component("teneo-listening", Listening);
   Vue.use(VueSession);

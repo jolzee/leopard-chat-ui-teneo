@@ -33,6 +33,28 @@ const translationsEn = {
   "help.page.title": "Here are some things that you can ask me"
 };
 
+const translationsFr = {
+  "input.box.label": "Dis quelquechose...",
+  "empty.user.input": "Tu ne m'as rien dit",
+  listening: "j'écoute",
+  "more.button": "plus",
+  "more.info.title": "Plus d'information",
+  "back.to.chat.button": "retour au chat",
+  "menu.chat": "Parler",
+  "menu.about": "À propos de nous",
+  "menu.help": "Aidez-moi",
+  "menu.history": "Histoire",
+  "menu.config": "Config",
+  "no.chat.history.title": "Aucun historique de discussion",
+  "no.chat.history.body": "Posez-moi quelques questions pour faire avancer les choses..",
+  "about.page.button": "Apprendre encore plus",
+  "about.page.title": "Teneo par des Artificial Solutions",
+  "about.page.content":
+    "Teneo permet à vos clients de parler des applications, des appareils et des services Web de manière naturelle, humaine et intelligente",
+  "about.page.url": "https://www.artificial-solutions.com/",
+  "help.page.title": "Voici quelques choses que vous pouvez me demander"
+};
+
 const translationsDe = {
   "input.box.label": "Sag etwas...",
   "empty.user.input": "Sieht aus, als hättest du mir nichts gesagt",
@@ -260,7 +282,9 @@ function setupStore(callback) {
     ];
     artyom.initialize({
       lang:
-        LOCALE === "de"
+      LOCALE === "fr"
+      ? "fr-FR"
+        : LOCALE === "de"
           ? "de-DE"
           : LOCALE === "nl"
             ? "nl-NL"
@@ -702,10 +726,13 @@ function setupStore(callback) {
   Vue.use(vuexI18n.plugin, store);
 
   Vue.i18n.add("en", translationsEn);
+  Vue.i18n.add("fr", translationsFr);
   Vue.i18n.add("de", translationsDe);
   Vue.i18n.add("nl", translationsNl);
   Vue.i18n.add("nl", translationsNl);
   Vue.i18n.add("es", translationsEs);
+
+
   Vue.i18n.set(LOCALE);
 
   let UserDictation = null;
