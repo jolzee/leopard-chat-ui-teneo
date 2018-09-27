@@ -317,6 +317,9 @@ export default {
         }
 
         if (actionRAW !== "undefined") {
+
+          this.transactionItems = [];
+
           let action = JSON.parse(actionRAW);
           displayModal = true;
 
