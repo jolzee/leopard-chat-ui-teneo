@@ -1,100 +1,100 @@
 <template>
   <v-layout>
-      <v-flex xs12>
+    <v-flex xs12>
 
-        <v-dialog v-model="showModal" leave-absolute scrollable persistent content-class="teneo-modal" hide-overlay fullscreen>
-          <v-toolbar dark color="primary" fixed height="64px">
-            <v-btn fab small @click="hideModal" color="secondary">
-              <v-icon dark medium>close</v-icon>
-            </v-btn>
-            <v-toolbar-title>{{ $t('more.info.title') }}</v-toolbar-title>
-            <v-spacer></v-spacer>
-          </v-toolbar>
-          <v-card class="mb-1 pt-5 modal-height" tile>
+      <v-dialog v-model="showModal" leave-absolute scrollable persistent content-class="teneo-modal" hide-overlay fullscreen>
+        <v-toolbar dark color="primary" fixed height="64px">
+          <v-btn fab small @click="hideModal" color="secondary">
+            <v-icon dark medium>close</v-icon>
+          </v-btn>
+          <v-toolbar-title>{{ $t('more.info.title') }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-card class="mb-1 pt-5 modal-height" tile>
 
-            <!-- video and audio -->
-            <plyr-youtube v-if="youTubeVideoId" :id="youTubeVideoId" allowtransparency allow="autoplay" />
-            <plyr-vimeo v-if="vimeoVideoId" :id="vimeoVideoId" allowtransparency allow="autoplay" />
-            <plyr v-if="audioUrl">
-              <audio>
-                <source :src="audioUrl" :type="audioType" />
+          <!-- video and audio -->
+          <plyr-youtube v-if="youTubeVideoId" :id="youTubeVideoId" allowtransparency allow="autoplay" />
+          <plyr-vimeo v-if="vimeoVideoId" :id="vimeoVideoId" allowtransparency allow="autoplay" />
+          <plyr v-if="audioUrl">
+            <audio>
+              <source :src="audioUrl" :type="audioType" />
               </audio>
-            </plyr>
-            <plyr v-if="videoUrl">
-              <video>
-                <source :src="videoUrl" :type="videoType" />
+          </plyr>
+          <plyr v-if="videoUrl">
+            <video>
+              <source :src="videoUrl" :type="videoType" />
               </video>
-            </plyr>
-            <v-container class="modal-container">
+          </plyr>
+          <v-container class="modal-container">
 
-              <transition name="modal-image-transition" enter-active-class="animated zoomIn">
-                <v-card-media v-if="imageUrl" :src="imageUrl" height="226px"></v-card-media>
-              </transition>
+            <transition name="modal-image-transition" enter-active-class="animated zoomIn">
+              <v-card-media v-if="imageUrl" :src="imageUrl" height="226px"></v-card-media>
+            </transition>
 
-              <v-layout align-start justify-start column>
-                <v-card-title primary-title>
-                  <div class="modal-headline" v-if="title" v-html="title"></div>
-                  <span class="grey--text" v-if="subTitle" v-html="subTitle"></span>
-                </v-card-title>
-              </v-layout>
-              <v-layout align-start justify-center row>
-                <v-card-actions>
-                  <v-btn color="primary" v-shortkey="['ctrl', 'alt', 'arrowleft']" @shortkey.native="hideModal" @click.native="hideModal">{{ $t('back.to.chat.button') }}
-                  </v-btn>
-                </v-card-actions>
-              </v-layout>
-              <div class=" mt-3" v-if="itinerary || bodyText || transactionItems.length || tableRows.length">
-                <flight-itinerary v-if="itinerary" :itinerary="itinerary"></flight-itinerary>
-                <v-card-text class="cardText" id="chat-modal-html" v-if="bodyText" v-html="bodyText" scrollable></v-card-text>
+            <v-layout align-start justify-start column>
+              <v-card-title primary-title>
+                <div class="modal-headline" v-if="title" v-html="title"></div>
+                <span class="grey--text" v-if="subTitle" v-html="subTitle"></span>
+              </v-card-title>
+            </v-layout>
+            <v-layout align-start justify-center row>
+              <v-card-actions>
+                <v-btn color="primary" v-shortkey="['ctrl', 'alt', 'arrowleft']" @shortkey.native="hideModal" @click.native="hideModal">{{ $t('back.to.chat.button') }}
+                </v-btn>
+              </v-card-actions>
+            </v-layout>
+            <div class=" mt-3" v-if="itinerary || bodyText || transactionItems.length || tableRows.length">
+              <flight-itinerary v-if="itinerary" :itinerary="itinerary"></flight-itinerary>
+              <v-card-text class="cardText" id="chat-modal-html" v-if="bodyText" v-html="bodyText" scrollable></v-card-text>
 
-                <!-- data table tranactions -->
-                <v-layout v-if="transactionItems.length > 0 || tableRows.length > 0" align-end justify-start fill-height>
-                  <v-layout v-if="tableTitle">
-                    <v-flex xs8 ml-4 class="">
-                      <h3>{{tableTitle}}</h3>
-                    </v-flex>
-                  </v-layout>
-                  <v-spacer v-else></v-spacer>
-                  <v-flex xs4 class="mr-2">
-                    <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+              <!-- data table tranactions -->
+              <v-layout v-if="transactionItems.length > 0 || tableRows.length > 0" align-end justify-start fill-height>
+                <v-layout v-if="tableTitle">
+                  <v-flex xs8 ml-4 class="">
+                    <h3>{{tableTitle}}</h3>
                   </v-flex>
                 </v-layout>
+                <v-spacer v-else></v-spacer>
+                <v-flex xs4 class="mr-2">
+                  <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+                </v-flex>
+              </v-layout>
 
-                <v-data-table v-if="transactionItems.length > 0" :headers="transactionHeaders" :items="transactionItems" :search="search">
-                  <template slot="items" slot-scope="props">
-                    <td class="text-xs-left">{{ props.item.date }}</td>
-                    <td class="text-xs-left">{{ props.item.description }}</td>
-                    <td class="text-xs-left">{{ props.item.amount }}</td>
-                  </template>
-                  <v-alert slot="no-results" :value="true" color="error" icon="warning">
-                    Your search for "{{ search }}" found no results.
-                  </v-alert>
-                </v-data-table>
+              <v-data-table v-if="transactionItems.length > 0" :headers="transactionHeaders" :items="transactionItems" :search="search">
+                <template slot="items" slot-scope="props">
+                  <td class="text-xs-left">{{ props.item.date }}</td>
+                  <td class="text-xs-left">{{ props.item.description }}</td>
+                  <td class="text-xs-left">{{ props.item.amount }}</td>
+                </template>
+                <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                  Your search for "{{ search }}" found no results.
+                </v-alert>
+              </v-data-table>
 
-                <v-data-table v-if="tableRows.length > 0" :headers="tableHeaders" :items="tableRows" :search="search">
-                  <template slot="items" slot-scope="props">
-                    <td v-for="(row, key) in tableRows" :key='key' class="text-xs-left">
-                      {{ props.item[Object.keys(row)[key]] }}
-                    </td>
-                  </template>
-                  <v-alert slot="no-results" :value="true" color="error" icon="warning">
-                    Your search for "{{ search }}" found no results.
-                  </v-alert>
-                  <template v-if="tableFooter" slot="footer">
-                    <td colspan="100%">
-                      <strong>{{ tableFooter }}</strong>
-                    </td>
-                  </template>
-                </v-data-table>
-              </div>
-              <v-spacer></v-spacer>
-            </v-container>
+              <v-data-table v-if="tableRows.length > 0" :headers="tableHeaders" :items="tableRows" :search="search">
+                <template slot="items" slot-scope="props">
+                  <td v-for="(header, key) in tableHeaders" :key='key' class="text-xs-left">
+                    {{ props.item[header.value] }}
+                  </td>
+                </template>
+                <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                  Your search for "{{ search }}" found no results.
+                </v-alert>
+                <template v-if="tableFooter" slot="footer">
+                  <td colspan="100%">
+                    <strong>{{ tableFooter }}</strong>
+                  </td>
+                </template>
+              </v-data-table>
+            </div>
+            <v-spacer></v-spacer>
+          </v-container>
 
-          </v-card>
+        </v-card>
 
-        </v-dialog>
+      </v-dialog>
 
-      </v-flex>
+    </v-flex>
   </v-layout>
 </template>
 <style scoped>
