@@ -347,6 +347,7 @@ export default {
             // this.modalSize = "medium";
             // this.modalPosition = "center";
             this.title = response.text;
+            this.transactionItems = [];
             action.parameters.transactions.transactions.forEach(transaction => {
               // console.log(transaction);
               this.transactionItems.push({
