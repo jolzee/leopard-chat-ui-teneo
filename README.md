@@ -32,9 +32,10 @@ npm run build --report
 
 :heavy_check_mark: Responsive<br/>
 :heavy_check_mark: ASR and TTS on Google Chrome - long press on send icon to toggle<br/>
-:heavy_check_mark: Localized for English, French, German and Dutch<br/>
+:heavy_check_mark: Localized for English, French, German, Spanish and Dutch<br/>
 :heavy_check_mark: Configurable to serve multiple solutions<br/>
 :heavy_check_mark: Media Players for YouTube, Vimeo, mp4, mp3<br/>
+:heavy_check_mark: Data Table capable<br/>
 :heavy_check_mark: Date time picker for dialogs requiring date input<br/>
 :heavy_check_mark: Live chat handover integration<br/>
 
