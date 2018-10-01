@@ -186,13 +186,13 @@
         <v-layout row>
           <v-flex xs12 pl-3>
             <v-divider></v-divider>
-            <v-text-field v-long-press="swapInputButton" v-shortkey="['ctrl', 'alt', '/']" @shortkey.native="swapInputButton" clearable auto-grow solo name="userInput" ref="userInput" @keyup.enter="sendUserInput" v-model.trim="userInput" :label="$t('input.box.label')" single-line></v-text-field>
+            <v-text-field v-long-press="swapInputButton" v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}" @shortkey.native="swapInputButton" clearable auto-grow solo name="userInput" ref="userInput" @keyup.enter="sendUserInput" v-model.trim="userInput" :label="$t('input.box.label')" single-line></v-text-field>
           </v-flex>
           <v-flex>
             <v-btn fab v-long-press="swapInputButton" v-if="!showAudioInput" small color="primary" class="white--text" @click="sendUserInput">
               <v-icon>fa-angle-double-right</v-icon>
             </v-btn>
-            <v-btn fab v-long-press="swapInputButton" small v-if="showAudioInput" v-shortkey="['ctrl', 'alt', '.']" @shortkey.native="captureAudio" :color="audioButtonColor" :class="audioButtonClasses" @click="captureAudio">
+            <v-btn fab v-long-press="swapInputButton" small v-if="showAudioInput" v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}" @shortkey.native="captureAudio" :color="audioButtonColor" :class="audioButtonClasses" @click="captureAudio">
               <v-icon>mic</v-icon>
             </v-btn>
           </v-flex>
