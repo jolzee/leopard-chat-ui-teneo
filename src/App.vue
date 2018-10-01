@@ -24,10 +24,10 @@
         </v-navigation-drawer>
       </transition>
       <v-toolbar app :clipped-left="clipped" height="65px" :color="toolbarColor" :dark="dark">
-        <v-toolbar-side-icon @click.stop="drawer = !drawer" :color="toolbarColor"></v-toolbar-side-icon>
+        <v-toolbar-side-icon @click.stop="drawer = !drawer" style="flex: 0 0 auto;" :color="toolbarColor"></v-toolbar-side-icon>
         <v-toolbar-title v-text="toolbarTitle"></v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn small dark fab @click="toggleBrightness" :color="dark ? 'primary' : 'secondary'">
+        <v-btn round small dark fab @click="toggleBrightness" style="flex: 0 0 auto;" :color="dark ? 'primary' : 'secondary'">
           <v-icon dark v-text="dark ? 'fa-moon' : 'fa-sun'"></v-icon>
         </v-btn>
       </v-toolbar>
@@ -99,7 +99,7 @@ body {
 }
 
 .content-area {
-  overflow-y: auto;
+  overflow-y: auto !important;
   height: auto;
   position: fixed;
   top: 65px;

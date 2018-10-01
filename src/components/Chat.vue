@@ -474,6 +474,8 @@ export default {
   width: 360px;
 }
 
+
+
 .container {
   padding: 0 !important;
   display: block;
@@ -509,6 +511,20 @@ export default {
 }
 </style>
 <style>
+.v-toolbar__title:not(:first-child) {
+    margin-left: 12px !important;
+}
+
+.v-toolbar__title {
+    font-size: 17px !important;
+    white-space: unset !important;
+}
+
+.v-toolbar__content, .v-toolbar__extension {
+    padding: 0 12px;
+}
+
+
 .chat-card {
   font-size: 16px !important;
   font-weight: 500;
@@ -522,13 +538,14 @@ div.options-list a.v-list__tile--link {
 }
 
 .chat-container {
-  overflow-y: auto;
+  overflow-y: auto !important;
   height: calc(100vh - 130px);
   width: 360px;
 }
 
 #chat-area {
   overflow-x: hidden !important;
+  overflow-y: overlay;
 }
 
 span.teneo-reply ul {
