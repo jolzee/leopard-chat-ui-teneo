@@ -411,7 +411,9 @@ function setupStore(callback) {
         store.state.listening = false;
       },
       setUserInput(state, userInput) {
-        state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
+        if (userInput) {
+          state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
+        }
       },
       speakBackResponses(state, useTTS) {
         state.speakBackResponses = useTTS;
@@ -528,7 +530,7 @@ function setupStore(callback) {
               store.state.dialog = [];
               store.state.resetSession = true;
               store.state.modalItem = null;
-              router.push("/");
+              // router.push("/");
               // store.dispatch("login").then((store.state.dialogHistory = []));
               resolve();
             })

@@ -3,8 +3,7 @@
     <v-layout v-if="noHistory && isHistoryPage">
       <v-flex xs12>
         <v-card>
-          <v-card-media :src="noHistoryImage" height="280px" class="elevation-4">
-          </v-card-media>
+          <v-img :src="noHistoryImage" class="elevation-4"></v-img>
           <v-card-title primary-title>
             <v-card-text>
               <div class="text-xs-center">

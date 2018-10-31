@@ -1,6 +1,6 @@
 <template>
   <v-card class="teneo-about-card">
-    <v-img :src="teneoImage"></v-img>
+    <v-img :src="teneoImage" class="elevation-4"></v-img>
     <!-- <v-card-media :src="teneoImage" height="200px"></v-card-media> -->
     <v-card-title primary-title>
       <div>
@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     teneoImage() {
-      return require("../assets/teneo.jpg");
+      return require("../assets/teneo.png");
     }
   }
 };
