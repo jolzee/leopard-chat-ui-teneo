@@ -13,3 +13,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.log
+static/default.json
