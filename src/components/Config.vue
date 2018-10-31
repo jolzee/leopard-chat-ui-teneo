@@ -37,7 +37,7 @@
               <v-container fluid>
                 <v-layout row wrap>
                   <v-flex xs12 sm3 md4 lg6 v-if="hasSolutions">
-                    <v-select color="light-blue darken-1" item-avatar="userIcon" dense ref="selectedSolution" item-text="name" item-value="name" v-model="selectedSolution" content-class="select-options" solo :items="sortedSolutions" return-object no-data-text="No Solutions" label="Select Teneo Solution" append-icon="fa-arrow-circle-down"></v-select>
+                    <v-select color="light-blue darken-1" item-avatar="userIcon" dense ref="selectedSolution" item-text="name" item-value="name" v-model="selectedSolution" :menu-props="{contentClass:'select-options'}" solo :items="sortedSolutions" return-object no-data-text="No Solutions" label="Select Teneo Solution" append-icon="fa-arrow-circle-down"></v-select>
                   </v-flex>
                   <v-flex xs12 sm9 md8 lg6>
                     <v-tooltip open-delay="600" bottom>
@@ -219,7 +219,7 @@
                           <v-subheader>Locale</v-subheader>
                         </v-flex>
                         <v-flex xs12 sm8>
-                          <v-select :items="locales" color="light-blue darken-1" content-class="select-options" outline :tabindex="getTabIndex" v-model="solution.locale" label="Specify Chat Locale" append-icon="language"></v-select>
+                          <v-select :items="locales" color="light-blue darken-1" :menu-props="{contentClass:'select-options'}" outline :tabindex="getTabIndex" v-model="solution.locale" label="Specify Chat Locale" append-icon="language"></v-select>
                         </v-flex>
                         <v-flex xs12 sm4 class="hidden-xs-only">
                           <v-subheader>Response Icon</v-subheader>
@@ -237,7 +237,7 @@
                           <v-subheader>Enable Live Chat (livechat.inc)</v-subheader>
                         </v-flex>
                         <v-flex xs12 sm8>
-                          <v-select :items="trueFalseOptions" validate-on-blur color="light-blue darken-1" outline hint="Enable Live Chat" label="Enable Live Chat" content-class="select-options" :tabindex="getTabIndex" v-model="solution.enableLiveChat" append-icon="contact_phone"></v-select>
+                          <v-select :items="trueFalseOptions" validate-on-blur color="light-blue darken-1" outline hint="Enable Live Chat" label="Enable Live Chat" :menu-props="{contentClass:'select-options'}" :tabindex="getTabIndex" v-model="solution.enableLiveChat" append-icon="contact_phone"></v-select>
                         </v-flex>
                         <v-divider></v-divider>
                         <v-flex xs12 sm4>
@@ -484,7 +484,7 @@
 <script>
 import { Compact } from "vue-color";
 import urlRegex from "url-regex";
-import { SOLUTION_DEFAULT, COLOR_NAMES } from "./../constants/constants.js";
+import { STORAGE_KEY, SOLUTION_DEFAULT, COLOR_NAMES } from "./../constants/constants.js";
 import HelpDialog from "./config/HelpDialog";
 import "@/assets/prism.css";
 import Prism from "vue-prism-component";
@@ -549,10 +549,8 @@ export default {
       return JSON.stringify(this.config, null, 2);
     },
     getActiveSolutionDeepLink() {
-      sessionStorage.removeItem("teneo-chat-history");
-      return `${location.protocol}//${location.host}${location.pathname}?dl=${
-        this.selectedSolution.deepLink
-      }`;
+      sessionStorage.removeItem(STORAGE_KEY + "teneo-chat-history");
+      return `${location.protocol}//${location.host}${location.pathname}?dl=${this.selectedSolution.deepLink}`;
     },
     getCurrentSelectedSolutionConfig() {
       const result = JSON.stringify(this.selectedSolution, null, 2);
@@ -607,10 +605,7 @@ export default {
       return 0;
     },
     downloadSolutionConfig() {
-      this.download(
-        this.getFullSolutionConfig,
-        `leopard-all-config-${this.$dayjs().format("YYYYMMDD[-]H[-]mm")}.txt`
-      );
+      this.download(this.getFullSolutionConfig, `leopard-all-config-${this.$dayjs().format("YYYYMMDD[-]H[-]mm")}.txt`);
     },
     downloadSelectedSolutionConfig() {
       this.download(
@@ -618,9 +613,7 @@ export default {
         `leopard-${this.selectedSolution.name
           .replace(/[|&;$%@"<>()+,]/g, "")
           .replace(/\s+/g, "-")
-          .toLowerCase()}-config-${this.$dayjs().format(
-          "YYYYMMDD[-]H[-]mm"
-        )}.txt`
+          .toLowerCase()}-config-${this.$dayjs().format("YYYYMMDD[-]H[-]mm")}.txt`
       );
     },
     download(data, filename, type = "text/plain") {
@@ -658,9 +651,7 @@ export default {
       this.displaySnackBar("📋 Copied to clipboard");
     },
     setActiveSolutionAsSelected() {
-      this.selectedSolution = this.config.solutions.find(
-        solution => solution.name === this.config.activeSolution
-      );
+      this.selectedSolution = this.config.solutions.find(solution => solution.name === this.config.activeSolution);
     },
     randId() {
       return Math.random()
@@ -683,13 +674,11 @@ export default {
     refreshBrowser() {
       this.refresh = true;
       sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
-      window.location = `${location.protocol}//${location.host}${
-        location.pathname
-      }`;
+      window.location = `${location.protocol}//${location.host}${location.pathname}`;
       // window.location.reload(false);
     },
     saveToLocalStorage() {
-      this.$localStorage.set("config", JSON.stringify(this.config));
+      localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
     },
     editSolution() {
       if (this.selectedSolution !== null) {
@@ -707,19 +696,14 @@ export default {
       const newName = this.selectedSolution.name + " - Copy";
       let clonedSolution = this.cloneObject(this.selectedSolution);
       clonedSolution.name = newName;
-      const duplicateSolutions = this.config.solutions.filter(
-        solution => solution.name === newName
-      );
+      const duplicateSolutions = this.config.solutions.filter(solution => solution.name === newName);
       if (duplicateSolutions.length > 0) {
         clonedSolution.name = clonedSolution.name + " [" + this.randId() + "]";
       }
       clonedSolution.deepLink = clonedSolution.deepLink + this.randId();
       this.config.solutions.push(clonedSolution);
       this.selectedSolution = this.cloneObject(clonedSolution);
-      this.displaySnackBar(
-        "Solution was cloned. New name is " + clonedSolution.name,
-        3000
-      );
+      this.displaySnackBar("Solution was cloned. New name is " + clonedSolution.name, 3000);
       this.saveToLocalStorage();
     },
     deleteSolutionConfig() {
@@ -769,9 +753,7 @@ export default {
           this.displaySnackBar("Imported a new full configuration", 3000);
         } else if (newConfig && "name" in newConfig) {
           // uploading a single config - add it to the current solution config
-          let existingSolution = this.config.solutions.findIndex(
-            solution => solution.name === newConfig.name
-          );
+          let existingSolution = this.config.solutions.findIndex(solution => solution.name === newConfig.name);
           if (existingSolution < 0) {
             this.config.solutions.push(newConfig);
           } else {
@@ -786,11 +768,7 @@ export default {
         this.closeUploadDialog();
         this.saveToLocalStorage();
       } else {
-        this.displaySnackBar(
-          "Please provide a valid configuration",
-          3000,
-          "red"
-        );
+        this.displaySnackBar("Please provide a valid configuration", 3000, "red");
       }
     },
     displaySnackBar(message, timeout = 2000, color = "") {
@@ -805,18 +783,11 @@ export default {
       }
       if (this.currentModeEdit === "edit") {
         for (let index = 0; index < this.config.solutions.length; index++) {
-          if (
-            JSON.stringify(this.config.solutions[index]) ===
-            JSON.stringify(this.selectedSolution)
-          ) {
+          if (JSON.stringify(this.config.solutions[index]) === JSON.stringify(this.selectedSolution)) {
             if (this.config.activeSolution === this.selectedSolution.name) {
               this.config.activeSolution = this.solution.name;
             }
-            this.config.solutions.splice(
-              index,
-              1,
-              this.cloneObject(this.solution)
-            );
+            this.config.solutions.splice(index, 1, this.cloneObject(this.solution));
 
             this.currentModeEdit = "";
             this.selectedSolution = this.cloneObject(this.solution);
@@ -839,9 +810,7 @@ export default {
     ruleDeepLinkUnique(value) {
       if (!this.currentModeEdit) {
         // adding a new solution
-        const foundSolutions = this.config.solutions.filter(
-          solution => solution.deepLink === value
-        );
+        const foundSolutions = this.config.solutions.filter(solution => solution.deepLink === value);
         if (foundSolutions && foundSolutions.length > 0) {
           return "That deep link is already taken";
         } else {
@@ -850,14 +819,9 @@ export default {
       } else {
         // editing and existing solution config
         // console.log("Editing solution: checking deep link validity");
-        const foundSolution = this.config.solutions.find(
-          solution => solution.deepLink === value
-        );
+        const foundSolution = this.config.solutions.find(solution => solution.deepLink === value);
         // console.log(foundSolution);
-        if (
-          foundSolution &&
-          foundSolution.name !== this.selectedSolution.name
-        ) {
+        if (foundSolution && foundSolution.name !== this.selectedSolution.name) {
           return "That deep link is already taken!!";
         } else {
           return true;
@@ -898,13 +862,9 @@ export default {
     isValidColor(color) {
       if (color && color.charAt(0) === "#") {
         color = color.substring(1);
-        return (
-          [3, 4, 6, 8].indexOf(color.length) > -1 && !isNaN(parseInt(color, 16))
-        );
+        return [3, 4, 6, 8].indexOf(color.length) > -1 && !isNaN(parseInt(color, 16));
       } else if (color) {
-        const resultIndex = COLOR_NAMES.findIndex(
-          item => color.toLowerCase() === item.toLowerCase()
-        );
+        const resultIndex = COLOR_NAMES.findIndex(item => color.toLowerCase() === item.toLowerCase());
         return resultIndex !== -1;
       }
     },

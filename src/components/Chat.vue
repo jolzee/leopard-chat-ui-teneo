@@ -192,8 +192,9 @@
             <v-btn fab v-long-press="swapInputButton" v-if="!showAudioInput" small color="primary" class="white--text" @click="sendUserInput">
               <v-icon>fa-angle-double-right</v-icon>
             </v-btn>
+            <span v-shortkey="['esc']" @shortkey="stopAudioCapture"></span>
             <v-btn fab v-long-press="swapInputButton" small v-if="showAudioInput" v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}" @shortkey.native="captureAudio" :color="audioButtonColor" :class="audioButtonClasses" @click="captureAudio">
-              <v-icon>mic</v-icon>
+              <v-icon medium>fa-microphone-alt</v-icon>
             </v-btn>
           </v-flex>
         </v-layout>
@@ -296,12 +297,7 @@ export default {
   },
   updated: function() {
     try {
-      this.$SmoothScroll(
-        this.$refs.pageBottom,
-        2000,
-        null,
-        this.$refs.chatContainer
-      );
+      this.$SmoothScroll(this.$refs.pageBottom, 2000, null, this.$refs.chatContainer);
       this.$refs.userInput.focus();
     } catch (e) {
       // do nothing
@@ -325,8 +321,12 @@ export default {
     // }
   },
   methods: {
+    stopAudioCapture() {
+      this.$store.commit("hideListening");
+      this.$store.dispatch("stopAudioCapture");
+      this.audioButtonColor = "success";
+    },
     onHtmlClick(event) {
-      console.log("html link clicked 1");
       // Find the closest anchor to the target.
       const anchor = event.target.closest("a");
       if (!anchor) return;
@@ -349,19 +349,14 @@ export default {
       this.$store.commit("hideProgressBar");
     },
     mustShowDate(item) {
-      if (
-        decodeURIComponent(item.teneoResponse.extraData.datePicker) !==
-        "undefined"
-      ) {
+      if (decodeURIComponent(item.teneoResponse.extraData.datePicker) !== "undefined") {
         return true;
       }
       return false;
     },
     hasCollection(item) {
       if (item.hasExtraData && item.type === "reply") {
-        let extensionsRAW = decodeURIComponent(
-          item.teneoResponse.extraData.extensions
-        );
+        let extensionsRAW = decodeURIComponent(item.teneoResponse.extraData.extensions);
         if (extensionsRAW !== "undefined") {
           let action = JSON.parse(extensionsRAW);
           if (action.name.startsWith("displayCollection")) {
@@ -372,16 +367,12 @@ export default {
       return false;
     },
     notLiveChatTranscript(item) {
-      let transcript = decodeURIComponent(
-        item.teneoResponse.extraData.liveChat
-      );
+      let transcript = decodeURIComponent(item.teneoResponse.extraData.liveChat);
       return transcript === "undefined";
     },
     hasLongOptions(item) {
       if (item.hasExtraData) {
-        let extensionsRAW = decodeURIComponent(
-          item.teneoResponse.extraData.extensions
-        );
+        let extensionsRAW = decodeURIComponent(item.teneoResponse.extraData.extensions);
         if (extensionsRAW !== "undefined") {
           let action = JSON.parse(extensionsRAW);
           if (action.name.startsWith("displayCollection")) {
@@ -395,9 +386,7 @@ export default {
     },
     getOptions(item) {
       if (item.hasExtraData) {
-        let extensionsRAW = decodeURIComponent(
-          item.teneoResponse.extraData.extensions
-        );
+        let extensionsRAW = decodeURIComponent(item.teneoResponse.extraData.extensions);
         if (extensionsRAW !== "undefined") {
           let action = JSON.parse(extensionsRAW);
           if (action.name === "displayCollection") {
@@ -405,10 +394,7 @@ export default {
           } else if (action.name.startsWith("displayCollectionBasic")) {
             // console.log(action);
             action.parameters.html = true;
-            action.parameters.items = action.parameters.items.replace(
-              /left/g,
-              ""
-            );
+            action.parameters.items = action.parameters.items.replace(/left/g, "");
             return action.parameters;
           }
         }
@@ -449,8 +435,7 @@ export default {
     },
     captureAudio() {
       if (
-        (window.hasOwnProperty("webkitSpeechRecognition") &&
-          window.hasOwnProperty("speechSynthesis")) ||
+        (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) ||
         Android ||
         webkit
       ) {
@@ -462,7 +447,6 @@ export default {
       }
     },
     swapInputButton() {
-      console.log("Entering listening mode...");
       this.showAudioInput = !this.showAudioInput;
       this.$store.commit("speakBackResponses", this.showAudioInput);
     }
@@ -473,8 +457,6 @@ export default {
 .loading-ball {
   width: 360px;
 }
-
-
 
 .container {
   padding: 0 !important;
@@ -512,18 +494,18 @@ export default {
 </style>
 <style>
 .v-toolbar__title:not(:first-child) {
-    margin-left: 12px !important;
+  margin-left: 12px !important;
 }
 
 .v-toolbar__title {
-    font-size: 17px !important;
-    white-space: unset !important;
+  font-size: 17px !important;
+  white-space: unset !important;
 }
 
-.v-toolbar__content, .v-toolbar__extension {
-    padding: 0 12px;
+.v-toolbar__content,
+.v-toolbar__extension {
+  padding: 0 12px;
 }
-
 
 .chat-card {
   font-size: 16px !important;

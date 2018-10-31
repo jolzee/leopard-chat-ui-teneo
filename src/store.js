@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import VueJsonp from "vue-jsonp";
-import VueLocalStorage from "vue-localstorage";
+// import VueLocalStorage from "vue-localstorage";
 import Artyom from "artyom.js";
 import vuexI18n from "vuex-i18n";
 import parseBool from "parseboolean";
@@ -10,6 +10,7 @@ import URL from "url-parse";
 import toHex from "colornames";
 import request from "simple-json-request";
 import stripHtml from "string-strip-html";
+import { STORAGE_KEY, ASR_CORRECTIONS } from "./constants/constants";
 
 const translationsEn = {
   "input.box.label": "Say something...",
@@ -68,8 +69,7 @@ const translationsDe = {
   "menu.history": "Geschichte",
   "menu.config": "Config",
   "no.chat.history.title": "Kein Chatverlauf",
-  "no.chat.history.body":
-    "Stellen Sie mir ein paar Fragen, um die Dinge ins Rollen zu bringen",
+  "no.chat.history.body": "Stellen Sie mir ein paar Fragen, um die Dinge ins Rollen zu bringen",
   "about.page.button": "Erfahren Sie mehr",
   "about.page.title": "Teneo von Artificial Solutions",
   "about.page.content":
@@ -91,8 +91,7 @@ const translationsNl = {
   "menu.history": "Geschiedenis",
   "menu.config": "Config",
   "no.chat.history.title": "Geen chatgeschiedenis",
-  "no.chat.history.body":
-    "Stel me een paar vragen om dingen aan het rollen te krijgen",
+  "no.chat.history.body": "Stel me een paar vragen om dingen aan het rollen te krijgen",
   "about.page.button": "Meer informatie",
   "about.page.title": "Teneo van Artificial Solutions",
   "about.page.content":
@@ -114,8 +113,7 @@ const translationsEs = {
   "menu.history": "Historia",
   "menu.config": "Config",
   "no.chat.history.title": "Sin historial de chat",
-  "no.chat.history.body":
-    "Hazme algunas preguntas para que las cosas funcionen",
+  "no.chat.history.body": "Hazme algunas preguntas para que las cosas funcionen",
   "about.page.button": "Aprende más",
   "about.page.title": "Teneo por Artificial Solutions",
   "about.page.content":
@@ -124,7 +122,7 @@ const translationsEs = {
   "help.page.title": "Aquí hay algunas cosas que puedes preguntarme"
 };
 
-Vue.use(VueLocalStorage);
+// Vue.use(VueLocalStorage);
 Vue.use(VueJsonp, 10000);
 Vue.use(Vuex);
 
@@ -155,7 +153,7 @@ let THEME = {
   warning: "#FFC107"
 }; // default theme
 let artyom = null;
-let chatConfig = JSON.parse(localStorage.getItem("config"));
+let chatConfig = JSON.parse(localStorage.getItem(STORAGE_KEY + "config"));
 let activeSolution = null;
 
 function getParameterByName(name, url) {
@@ -181,9 +179,7 @@ export function storeInit(callback) {
 
 async function loadDefaultConfig(callback) {
   // look for default config on the server
-  const defaultConfigUrl = `${location.protocol}//${location.host}${
-    location.pathname
-  }static/default.json`;
+  const defaultConfigUrl = `${location.protocol}//${location.host}${location.pathname}static/default.json`;
 
   request
     .request({
@@ -192,7 +188,7 @@ async function loadDefaultConfig(callback) {
     })
     .then(data => {
       console.log("Found and loaded default config");
-      Vue.localStorage.set("config", JSON.stringify(data));
+      localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(data));
       chatConfig = data;
       callback();
     })
@@ -207,23 +203,17 @@ function setupStore(callback) {
     let deepLink = getParameterByName("dl"); // look for deep link
     if (!deepLink) {
       activeSolution = chatConfig.activeSolution;
-      const matchingSolutions = chatConfig.solutions.filter(
-        solution => solution.name === activeSolution
-      );
+      const matchingSolutions = chatConfig.solutions.filter(solution => solution.name === activeSolution);
       activeSolution = matchingSolutions[0];
     } else {
       // allow for deep linking to a specific solution ?dl=<deepLink>
-      const matchingSolutions = chatConfig.solutions.filter(
-        solution => solution.deepLink === deepLink
-      );
+      const matchingSolutions = chatConfig.solutions.filter(solution => solution.deepLink === deepLink);
       if (matchingSolutions.length > 0) {
         activeSolution = matchingSolutions[0];
       } else {
         // fall back to default
         activeSolution = chatConfig.activeSolution;
-        const matchingSolutions = chatConfig.solutions.filter(
-          solution => solution.name === activeSolution
-        );
+        const matchingSolutions = chatConfig.solutions.filter(solution => solution.name === activeSolution);
         activeSolution = matchingSolutions[0];
       }
     }
@@ -235,9 +225,7 @@ function setupStore(callback) {
     RESPONSE_ICON = activeSolution.responseIcon;
     USER_ICON = activeSolution.userIcon;
     KNOWLEDGE_DATA = activeSolution.knowledgeData;
-    SEND_CTX_PARAMS = activeSolution.sendContextParams
-      ? activeSolution.sendContextParams
-      : "login";
+    SEND_CTX_PARAMS = activeSolution.sendContextParams ? activeSolution.sendContextParams : "login";
     // const USE_LOCAL_STORAGE = parseBool(activeSolution.useLocalStorage);
     USE_LOCAL_STORAGE = false;
     let theme = activeSolution.theme;
@@ -254,12 +242,7 @@ function setupStore(callback) {
       if (contextParam) {
         contextParam.values.forEach(function(value) {
           if (value.active) {
-            REQUEST_PARAMETERS =
-              REQUEST_PARAMETERS +
-              "&" +
-              contextParam.name +
-              "=" +
-              encodeURIComponent(value.text);
+            REQUEST_PARAMETERS = REQUEST_PARAMETERS + "&" + contextParam.name + "=" + encodeURIComponent(value.text);
           }
         });
       }
@@ -269,28 +252,24 @@ function setupStore(callback) {
   // update the IFRAME URL
   document.getElementById("site-frame").src = IFRAME_URL;
 
-  if (
-    window.hasOwnProperty("webkitSpeechRecognition") &&
-    window.hasOwnProperty("speechSynthesis")
-  ) {
+  if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
     artyom = new Artyom();
-    artyom.ArtyomVoicesIdentifiers["en-GB"] = [
-      "Google UK English Female",
-      "Google UK English Male",
-      "en-GB",
-      "en_GB"
-    ];
+    artyom.ArtyomVoicesIdentifiers["en-GB"] = ["Google UK English Female", "Google UK English Male", "en-GB", "en_GB"];
+    // artyom.ArtyomVoicesIdentifiers["en-ZA"] = ["Google US English", "en-US", "en_US"];
     artyom.initialize({
+      soundex: true,
+      continuous: false,
+      listen: false, // Start recognizing
       lang:
-      LOCALE === "fr"
-      ? "fr-FR"
-        : LOCALE === "de"
-          ? "de-DE"
-          : LOCALE === "nl"
-            ? "nl-NL"
-            : LOCALE === "es"
-              ? "es-US"
-              : "en-GB",
+        LOCALE === "fr"
+          ? "fr-FR"
+          : LOCALE === "de"
+            ? "de-DE"
+            : LOCALE === "nl"
+              ? "nl-NL"
+              : LOCALE === "es"
+                ? "es-ES"
+                : "en-GB",
       debug: false
     });
   }
@@ -325,7 +304,8 @@ function setupStore(callback) {
       liveChatMessage: null,
       showLiveChatProcessing: false,
       showChatLoading: false,
-      showConfigModal: true
+      showConfigModal: true,
+      stopAudioCapture: false
     },
     getters: {
       chatConfig() {
@@ -349,16 +329,12 @@ function setupStore(callback) {
       getChatHistory() {
         if (USE_LOCAL_STORAGE) {
           if (store.state.dialog.length !== 0) {
-            let chatHistory = JSON.parse(
-              Vue.localStorage.get(TENEO_CHAT_HISTORY, "[]")
-            );
+            let chatHistory = JSON.parse(localStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY, "[]"));
             if (chatHistory.length !== 0) {
               store.state.dialog.concat(chatHistory);
             }
           } else {
-            store.state.dialog = JSON.parse(
-              Vue.localStorage.get(TENEO_CHAT_HISTORY, "[]")
-            );
+            store.state.dialog = JSON.parse(localStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY, "[]"));
           }
         }
         return store.state.dialog;
@@ -366,9 +342,7 @@ function setupStore(callback) {
       getChatHistorySessionStorage() {
         // TODO: Try and make the chat history in session storage unique to the deeplink
         if (store.state.dialogHistory.length === 0) {
-          store.state.dialogHistory = JSON.parse(
-            sessionStorage.getItem(TENEO_CHAT_HISTORY)
-          );
+          store.state.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
           if (store.state.dialogHistory === null) {
             store.state.dialogHistory = [];
           }
@@ -428,10 +402,7 @@ function setupStore(callback) {
       },
       changeTheme() {
         store.state.dark = !store.state.dark;
-        Vue.localStorage.set(
-          TENEO_CHAT_DARK_THEME,
-          JSON.stringify(store.state.dark)
-        );
+        localStorage.setItem(STORAGE_KEY + TENEO_CHAT_DARK_THEME, JSON.stringify(store.state.dark));
       },
       showListening() {
         store.state.listening = true;
@@ -488,14 +459,9 @@ function setupStore(callback) {
 
         // deal with persiting the chat history
         if (USE_LOCAL_STORAGE) {
-          Vue.localStorage.set(
-            TENEO_CHAT_HISTORY,
-            JSON.stringify(state.dialog)
-          );
+          localStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(state.dialog));
         }
-        state.dialogHistory = JSON.parse(
-          sessionStorage.getItem(TENEO_CHAT_HISTORY)
-        );
+        state.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
         if (state.dialogHistory === null) {
           state.dialogHistory = state.dialog;
         } else {
@@ -504,10 +470,7 @@ function setupStore(callback) {
           state.dialogHistory.push(newReply);
         }
         // save the dislaog history in session storage
-        sessionStorage.setItem(
-          TENEO_CHAT_HISTORY,
-          JSON.stringify(state.dialogHistory)
-        );
+        sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(state.dialogHistory));
       },
       showProgressBar() {
         store.state.progressBar = true;
@@ -533,6 +496,17 @@ function setupStore(callback) {
       }
     },
     actions: {
+      stopAudioCapture() {
+        if (artyom.isSpeaking()) {
+          console.log("muted TTS!");
+          artyom.shutUp();
+        }
+        if (artyom.isObeying()) {
+          UserDictation.stop();
+          store.state.stopAudioCapture = true;
+          console.log("stopped audio capture!");
+        }
+      },
       endSession() {
         return new Promise((resolve, reject) => {
           let fullUrl = new URL(store.state.teneoUrl);
@@ -544,14 +518,18 @@ function setupStore(callback) {
             "endsession" +
             (SEND_CTX_PARAMS === "all"
               ? REQUEST_PARAMETERS.length > 0
-                ? "?" +
-                  REQUEST_PARAMETERS.substring(1, REQUEST_PARAMETERS.length)
+                ? "?" + REQUEST_PARAMETERS.substring(1, REQUEST_PARAMETERS.length)
                 : ""
               : "");
 
           Vue.jsonp(endSessionUrl, {})
             .then(() => {
               console.log("Session Ended");
+              store.state.dialog = [];
+              store.state.resetSession = true;
+              store.state.modalItem = null;
+              router.push("/");
+              // store.dispatch("login").then((store.state.dialogHistory = []));
               resolve();
             })
             .catch(err => {
@@ -571,27 +549,21 @@ function setupStore(callback) {
               store.commit("hideChatLoading"); // about to show the greeting - hide the chat loading spinner
               // console.log(decodeURIComponent(json.responseData.answer))
               let hasExtraData = false;
-              if (
-                json.responseData.extraData.extensions ||
-                json.responseData.extraData.liveChat
-              ) {
+              if (json.responseData.extraData.extensions || json.responseData.extraData.liveChat) {
                 hasExtraData = true;
               }
               const response = {
                 type: "reply",
-                text: decodeURIComponent(json.responseData.answer).replace(
-                  /onclick="[^"]+"/g,
-                  'class="sendInput"'
-                ),
+                text: decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"'),
                 bodyText: "",
                 teneoResponse: json.responseData,
                 hasExtraData: hasExtraData
               };
-              // sessionStorage.setItem(TENEO_CHAT_HISTORY, JSON.stringify(response))
+              // sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(response))
               store.state.dialog.push(response); // push the getting message onto the dialog
               if (hasExtraData) {
-                state.modalItem = newReply;
-                state.showModal = true;
+                store.state.modalItem = response;
+                store.state.showModal = true;
               }
               resolve();
             })
@@ -603,21 +575,28 @@ function setupStore(callback) {
       },
       sendUserInput(context, params = "") {
         // send user input to Teneo when a live chat has not begun
+        if (artyom.isSpeaking()) {
+          // console.log("Artyom is speaking something. Let's shut it up");
+          artyom.shutUp();
+        }
         if (!store.getters.isLiveChat) {
-          Vue.jsonp(
-            store.state.teneoUrl +
-              (SEND_CTX_PARAMS === "all"
-                ? REQUEST_PARAMETERS + params
-                : params),
-            { userinput: store.state.userInput }
-          )
+          Vue.jsonp(store.state.teneoUrl + (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params), {
+            userinput: store.state.userInput
+          })
             .then(json => {
+              if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
+                console.log("Session is stale");
+                store.commit("hideProgressBar");
+                store.dispatch("endSession");
+                return true;
+              }
               // console.log(decodeURIComponent(json.responseData.answer))
               const response = {
                 userInput: store.state.userInput,
-                teneoAnswer: decodeURIComponent(
-                  json.responseData.answer
-                ).replace(/onclick="[^"]+"/g, 'class="sendInput"'),
+                teneoAnswer: decodeURIComponent(json.responseData.answer).replace(
+                  /onclick="[^"]+"/g,
+                  'class="sendInput"'
+                ),
                 teneoResponse: json.responseData
               };
 
@@ -625,17 +604,12 @@ function setupStore(callback) {
 
               let ttsText = stripHtml(response.teneoAnswer);
               if (response.teneoResponse.extraData.tts) {
-                ttsText = stripHtml(
-                  decodeURIComponent(response.teneoResponse.extraData.tts)
-                );
+                ttsText = stripHtml(decodeURIComponent(response.teneoResponse.extraData.tts));
               }
 
               webviewSay(ttsText);
               // check if this browser supports the Web Speech API
-              if (
-                window.hasOwnProperty("webkitSpeechRecognition") &&
-                window.hasOwnProperty("speechSynthesis")
-              ) {
+              if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
                 if (artyom && store.state.speakBackResponses) {
                   artyom.say(ttsText);
                 }
@@ -644,31 +618,19 @@ function setupStore(callback) {
               context.commit("updateChatWindowAndStorage", response);
 
               // added on request from Mark J - switch languages based on NER language detection
-              let langInput = decodeURIComponent(
-                response.teneoResponse.extraData.langinput
-              );
-              let langEngineUrl = decodeURIComponent(
-                response.teneoResponse.extraData.langengineurl
-              );
+              let langInput = decodeURIComponent(response.teneoResponse.extraData.langinput);
+              let langEngineUrl = decodeURIComponent(response.teneoResponse.extraData.langengineurl);
 
               if (langEngineUrl !== "undefined" && langInput !== "undefined") {
-                store.state.teneoUrl =
-                  langEngineUrl + "?viewname=STANDARDJSONP";
+                store.state.teneoUrl = langEngineUrl + "?viewname=STANDARDJSONP";
                 console.log(store.state.teneoUrl);
                 store.state.userInput = langInput;
                 store.commit("showProgressBar");
                 store
                   .dispatch("sendUserInput")
-                  .then(
-                    console.log(
-                      "Sent original lang input to new lang specific solution"
-                    )
-                  )
+                  .then(console.log("Sent original lang input to new lang specific solution"))
                   .catch(err => {
-                    console.err(
-                      "Unable to send lang input to new lang specific solution",
-                      err.message
-                    );
+                    console.err("Unable to send lang input to new lang specific solution", err.message);
                   });
               }
             })
@@ -686,23 +648,15 @@ function setupStore(callback) {
           store.state.dialog.push(newUserInput);
 
           if (USE_LOCAL_STORAGE) {
-            Vue.localStorage.set(
-              TENEO_CHAT_HISTORY,
-              JSON.stringify(store.state.dialog)
-            );
+            localStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.state.dialog));
           }
-          store.state.dialogHistory = JSON.parse(
-            sessionStorage.getItem(TENEO_CHAT_HISTORY)
-          );
+          store.state.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
           if (store.state.dialogHistory === null) {
             store.state.dialogHistory = store.state.dialog;
           } else {
             store.state.dialogHistory.push(newUserInput);
           }
-          sessionStorage.setItem(
-            TENEO_CHAT_HISTORY,
-            JSON.stringify(store.state.dialogHistory)
-          );
+          sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.state.dialogHistory));
           doLiveChatRequest(store.state.userInput);
           console.log("Sent a message to agent: " + store.state.userInput);
           store.commit("hideProgressBar");
@@ -712,9 +666,10 @@ function setupStore(callback) {
       captureAudio() {
         if (UserDictation != null) {
           if (artyom.isSpeaking()) {
-            console.log("Artyom is speaking something. Let's shut it up");
+            // console.log("Artyom is speaking something. Let's shut it up");
             artyom.shutUp();
           }
+          store.state.stopAudioCapture = false;
           UserDictation.start();
         }
         // webview asr for android and iOS
@@ -732,29 +687,75 @@ function setupStore(callback) {
   Vue.i18n.add("nl", translationsNl);
   Vue.i18n.add("es", translationsEs);
 
-
   Vue.i18n.set(LOCALE);
 
   let UserDictation = null;
   if (artyom != null) {
     UserDictation = artyom.newDictation({
+      soundex: true,
       continuous: false, // Enable continuous if HTTPS connection
       onResult: function(text) {
         clearTimeout(timeoutVar);
         // Do something with the text
         if (text) {
-          store.state.userInput = text.replace(/^\w/, c => c.toUpperCase());
-          // console.log('You said: ' + text)
+          text = text.replace(/^\w/, c => c.toUpperCase());
+          text = text.replace(/what's/gi, "what");
+          store.state.userInput = text;
         }
         timeoutVar = setTimeout(function() {
-          console.log("timeout - aborting recognition");
+          // console.log("timeout - aborting recognition");
           UserDictation.stop();
-        }, 500);
+          if (text) {
+            store.state.userInput = text; // final transcript from ASR
+          }
+        }, 800);
       },
       onStart: function() {},
       onEnd: function() {
-        store.state.userInputReadyForSending = true;
         store.state.listening = false;
+
+        if (store.state.stopAudioCapture) {
+          store.state.userInput = "";
+          store.state.stopAudioCapture = false;
+          return;
+        }
+        // let's fix sany ASR transcription erros
+
+        if (store.state.userInput) {
+          let fixedUserInput = store.state.userInput;
+          console.log("Final Transcription from ASR: " + store.state.userInput);
+          ASR_CORRECTIONS.forEach(replacement => {
+            let startingText = fixedUserInput;
+
+            if (replacement[0].indexOf(".") > -1) {
+              fixedUserInput = replaceString(
+                fixedUserInput.toLowerCase(),
+                replacement[0].toLowerCase(),
+                replacement[1].toLowerCase()
+              );
+            } else {
+              let search = replacement[0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"); // escase any special characters
+              var re = new RegExp("\\b" + search + "\\b", "gi");
+              // fixedUserInput = fixedUserInput.toLowerCase().replace(re, replacement[1].toLowerCase());
+              fixedUserInput = fixedUserInput.replace(re, replacement[1]);
+            }
+
+            // console.log(`Starting: ${startingText} | Ending: ${fixedUserInput}`);
+
+            if (startingText.toLowerCase() !== fixedUserInput.toLowerCase()) {
+              console.log("Made a change to ASR response: " + replacement[0] + " >> " + replacement[1]);
+            }
+          });
+
+          if (store.state.userInput.toLowerCase() !== fixedUserInput.toLowerCase()) {
+            store.state.userInput = fixedUserInput;
+            console.log(`Final Transcription: ${fixedUserInput}`);
+          }
+
+          setTimeout(function() {
+            store.state.userInputReadyForSending = true;
+          }, 100);
+        }
       }
     });
   }
@@ -787,10 +788,7 @@ function setupStore(callback) {
 
     visitorSDK.on("visitor_queued", queueData => {
       console.log(queueData);
-      let message =
-        "Chat request sent to agent. You are number " +
-        queueData.numberInQueue +
-        " in the queue.";
+      let message = "Chat request sent to agent. You are number " + queueData.numberInQueue + " in the queue.";
       // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
       if (store.state.isLiveChat) {
         let liveChatStatus = {
@@ -877,33 +875,22 @@ function setupStore(callback) {
           };
           store.state.dialog.push(liveChatResponse); // push the getting message onto the dialog
           this.webviewSay(stripHtml(newMessage.text));
-          if (
-            window.hasOwnProperty("webkitSpeechRecognition") &&
-            window.hasOwnProperty("speechSynthesis")
-          ) {
+          if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
             if (artyom && store.state.speakBackResponses) {
               artyom.say(stripHtml(newMessage.text));
             }
           }
 
           if (USE_LOCAL_STORAGE) {
-            Vue.localStorage.set(
-              TENEO_CHAT_HISTORY,
-              JSON.stringify(store.state.dialog)
-            );
+            localStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.state.dialog));
           }
-          store.state.dialogHistory = JSON.parse(
-            sessionStorage.getItem(TENEO_CHAT_HISTORY)
-          );
+          store.state.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
           if (store.state.dialogHistory === null) {
             store.state.dialogHistory = store.state.dialog;
           } else {
             store.state.dialogHistory.push(liveChatResponse);
           }
-          sessionStorage.setItem(
-            TENEO_CHAT_HISTORY,
-            JSON.stringify(store.state.dialogHistory)
-          );
+          sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.state.dialogHistory));
           store.state.userInput = "";
         }
       }

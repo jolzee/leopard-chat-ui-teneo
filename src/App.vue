@@ -10,14 +10,23 @@
     </div>
     <div id="teneo" :class="getChatState" v-if="!hideChat">
       <transition name="menu-transition" enter-active-class="animated slideInRight" leave-active-class="animated slideOutRight">
-        <v-navigation-drawer light app :clipped="clipped" v-if="drawer" v-model="drawer" enable-resize-watcher temporary right width="200">
-          <v-list light>
+        <v-navigation-drawer :dark="dark" app :clipped="clipped" v-if="drawer" v-model="drawer" enable-resize-watcher temporary right width="250">
+          <v-img src="./static/images/bg/bg.jpg">
+            <v-layout pa-4 column fill-height class="lightbox white--text">
+              <v-spacer></v-spacer>
+              <v-flex shrink>
+                <div class="headline font-weight-medium">Artificial Solutions</div>
+                <div class="body-2"><strong>Teneo</strong> allows your customers to speak to applications, devices and web services in a natural, humanlike and intelligent way</div>
+              </v-flex>
+            </v-layout>
+          </v-img>
+          <v-list :dark="dark" class="px-2">
             <v-list-tile ripple value="true" v-for="(menuItem, i) in menuItems" :key="i" :to="menuItem.route">
               <v-list-tile-action>
-                <v-icon :color="menuItem.color">{{menuItem.icon}}</v-icon>
+                <v-icon medium :dark="dark" :class="menuClass">{{menuItem.icon}}</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title>{{ $t(menuItem.titleKey) }}</v-list-tile-title>
+                <v-list-tile-title class="subheading" :dark="dark" :class="menuClass">{{ $t(menuItem.titleKey) }}</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list>
@@ -33,7 +42,7 @@
       </v-toolbar>
       <v-content app class="content-area">
         <transition name="page-transition" enter-active-class="animation fadeIn">
-          <router-view/>
+          <router-view />
         </transition>
         <teneo-modal></teneo-modal>
       </v-content>
@@ -169,32 +178,27 @@ export default {
         {
           icon: "chat",
           titleKey: "menu.chat",
-          route: "/",
-          color: "success"
+          route: "/"
         },
         {
           icon: "help_outline",
           titleKey: "menu.help",
-          route: "help",
-          color: "info"
+          route: "help"
         },
         {
           icon: "history",
           titleKey: "menu.history",
-          route: "history",
-          color: "warning"
+          route: "history"
         },
         {
-          icon: "info",
+          icon: "memory",
           titleKey: "menu.about",
-          route: "about",
-          color: "primary"
+          route: "about"
         },
         {
-          icon: "settings",
+          icon: "tune",
           titleKey: "menu.config",
-          route: "config",
-          color: "secondary"
+          route: "config"
         }
       ],
       miniVariant: true,
@@ -208,6 +212,12 @@ export default {
     }
   },
   computed: {
+    menuClass() {
+      if (!this.dark) {
+        return "grey--text text--darken-1";
+      }
+      return "grey--text text--lighten-2";
+    },
     toolbarTitle() {
       if (this.$route.name === "history") {
         return this.$t("menu.history");
@@ -274,10 +284,7 @@ export default {
       this.$store.commit("changeTheme");
     },
     toggleChat() {
-      if (
-        !this.$store.state.chatConfig ||
-        !this.$store.state.chatConfig.activeSolution
-      ) {
+      if (!this.$store.state.chatConfig || !this.$store.state.chatConfig.activeSolution) {
         this.hideChat = !this.hideChat;
         this.$router.push({ name: "config" });
         return;

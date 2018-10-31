@@ -1,6 +1,7 @@
 <template>
   <v-card class="teneo-about-card">
-    <v-card-media :src="teneoImage" height="200px"></v-card-media>
+    <v-img :src="teneoImage"></v-img>
+    <!-- <v-card-media :src="teneoImage" height="200px"></v-card-media> -->
     <v-card-title primary-title>
       <div>
         <h3 class="headline mb-3">{{ $t('about.page.title') }}</h3>

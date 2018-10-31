@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App";
 import router from "./router";
 import { storeInit } from "./store.js";
+import { STORAGE_KEY } from "./constants/constants";
 import Modal from "./components/Modal.vue";
 import Listening from "./components/Listening.vue";
 import VueSession from "vue-session";
@@ -9,11 +10,7 @@ import "vue-loaders/dist/vue-loaders.css";
 import longpress from "vue-long-press-directive";
 import Dayjs from "vue-dayjs";
 
-import {
-  BallScaleRippleMultipleLoader,
-  LineScalePulseOutRapidLoader,
-  BallPulseSyncLoader
-} from "vue-loaders";
+import { BallScaleRippleMultipleLoader, LineScalePulseOutRapidLoader, BallPulseSyncLoader } from "vue-loaders";
 import vueSmoothScroll from "vue-smoothscroll";
 import "babel-polyfill";
 import parseBool from "parseboolean";
@@ -51,18 +48,19 @@ import {
   VBadge,
   VTextarea,
   VProgressCircular,
-  VDataTable
+  VDataTable,
+  VImg
 } from "vuetify";
 import "../node_modules/vuetify/src/stylus/app.styl";
 
-if (parseBool(localStorage.getItem("darkTheme")) === null) {
-  localStorage.setItem("darkTheme", "false");
+if (parseBool(localStorage.getItem(STORAGE_KEY + "darkTheme")) === null) {
+  localStorage.setItem(STORAGE_KEY + "darkTheme", "false");
 }
 
 /* eslint-disable no-new */
 
 storeInit(function(store) {
-  store.state.dark = parseBool(localStorage.getItem("darkTheme")) !== false;
+  store.state.dark = parseBool(localStorage.getItem(STORAGE_KEY + "darkTheme")) !== false;
 
   Vue.use(Dayjs, {
     lang: "en"
@@ -102,7 +100,8 @@ storeInit(function(store) {
       VBadge,
       VTextarea,
       VProgressCircular,
-      VDataTable
+      VDataTable,
+      VImg
     }
   });
 
@@ -111,15 +110,9 @@ storeInit(function(store) {
   Vue.use(VueSession);
   Vue.use(require("vue-shortkey"));
   Vue.use(vueSmoothScroll);
-  Vue.component(
-    LineScalePulseOutRapidLoader.name,
-    LineScalePulseOutRapidLoader
-  );
+  Vue.component(LineScalePulseOutRapidLoader.name, LineScalePulseOutRapidLoader);
   Vue.component(BallPulseSyncLoader.name, BallPulseSyncLoader);
-  Vue.component(
-    BallScaleRippleMultipleLoader.name,
-    BallScaleRippleMultipleLoader
-  );
+  Vue.component(BallScaleRippleMultipleLoader.name, BallScaleRippleMultipleLoader);
 
   Vue.config.productionTip = false;
 

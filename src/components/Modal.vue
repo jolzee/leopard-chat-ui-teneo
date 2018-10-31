@@ -18,17 +18,18 @@
           <plyr v-if="audioUrl">
             <audio>
               <source :src="audioUrl" :type="audioType" />
-              </audio>
+            </audio>
           </plyr>
           <plyr v-if="videoUrl">
             <video>
               <source :src="videoUrl" :type="videoType" />
-              </video>
+            </video>
           </plyr>
           <v-container class="modal-container">
 
             <transition name="modal-image-transition" enter-active-class="animated zoomIn">
-              <v-card-media v-if="imageUrl" :src="imageUrl" height="226px"></v-card-media>
+              <v-img :src="imageUrl"></v-img>
+              <!-- <v-card-media v-if="imageUrl" :src="imageUrl" height="226px"></v-card-media> -->
             </transition>
 
             <v-layout align-start justify-start column>
@@ -281,13 +282,9 @@ export default {
         // console.log(teneoResponse);
         let outputLink = decodeURIComponent(teneoResponse.link.href);
         let actionRAW = decodeURIComponent(teneoResponse.extraData.extensions);
-        let modalPosition = decodeURIComponent(
-          teneoResponse.extraData.modalPosition
-        );
+        let modalPosition = decodeURIComponent(teneoResponse.extraData.modalPosition);
         let modalSize = decodeURIComponent(teneoResponse.extraData.modalSize);
-        let transcript = decodeURIComponent(
-          response.teneoResponse.extraData.liveChat
-        );
+        let transcript = decodeURIComponent(response.teneoResponse.extraData.liveChat);
         let displayModal = false;
 
         // check if user wants to talk to a live agent
@@ -317,7 +314,6 @@ export default {
         }
 
         if (actionRAW !== "undefined") {
-
           this.transactionItems = [];
 
           let action = JSON.parse(actionRAW);
@@ -477,9 +473,7 @@ export default {
         }
         if (this.modalSize !== "") {
           for (var i = 0; i < modalElements.length; i++) {
-            modalElements[i].className += ` teneo-modal-${
-              this.modalSize
-            }-width`;
+            modalElements[i].className += ` teneo-modal-${this.modalSize}-width`;
           }
         } else {
           // it's going to be full screen

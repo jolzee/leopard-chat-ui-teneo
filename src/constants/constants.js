@@ -33,6 +33,8 @@ export const SOLUTION_DEFAULT = {
   knowledgeData: ["What's your name?", "Who created you?"]
 };
 
+export const ASR_CORRECTIONS = [["replacethat", "with this"], ["apparantly", "apparently"]];
+
 export const COLOR_NAMES = [
   "AliceBlue",
   "AntiqueWhite",
@@ -182,3 +184,5 @@ export const COLOR_NAMES = [
   "Yellow",
   "YellowGreen"
 ];
+
+export const STORAGE_KEY = window.location.hostname + window.location.pathname + ":";
