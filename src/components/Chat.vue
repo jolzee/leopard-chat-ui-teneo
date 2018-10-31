@@ -167,6 +167,7 @@
         </div>
 
       </v-expansion-panel>
+
     </v-layout>
     <!-- end -->
     <!-- Date picker dialog -->
@@ -180,7 +181,9 @@
       </v-dialog>
     </v-flex>
     <!-- text & audio input area -->
+
     <v-footer fixed app height="65" class="teneo-footer" inset>
+
       <v-container fluid grid-list-sm>
         <v-layout row>
           <v-flex xs12 pl-3>
@@ -535,6 +538,8 @@ span.teneo-reply ul {
 
 .teneo-footer {
   padding-top: 8px;
+  -webkit-box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.1);
 }
 
 .teneo-dialog {
