@@ -121,6 +121,7 @@
               </v-btn>
               <span>Help</span>
             </v-tooltip>
+
             <prism language="json">{{ prettyPrintFullConfig }}</prism>
             <!-- <pre class="language-json">
 
@@ -479,6 +480,18 @@
   font-size: 10px !important;
   line-height: 1;
 }
+
+code {
+  display: unset;
+  border-radius: unset;
+  white-space: unset;
+  font-size: unset;
+  font-weight: unset;
+}
+
+pre[class*="language-"] {
+  background-size: 1.2em 1.2em;
+}
 </style>
 
 <script>
@@ -486,9 +499,12 @@ import { Compact } from "vue-color";
 import urlRegex from "url-regex";
 import { STORAGE_KEY, SOLUTION_DEFAULT, COLOR_NAMES } from "./../constants/constants.js";
 import HelpDialog from "./config/HelpDialog";
-import "@/assets/prism.css";
+import "prismjs/prism";
+import "prismjs/themes/prism-funky.css";
+import "prismjs/components/prism-json.min.js";
 import Prism from "vue-prism-component";
-import prism from "@/assets/prism.js";
+
+
 
 export default {
   components: {

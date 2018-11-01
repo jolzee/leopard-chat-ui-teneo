@@ -26,7 +26,7 @@
                 <v-icon medium :dark="dark" :class="menuClass">{{menuItem.icon}}</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title class="subheading" :dark="dark" :class="menuClass">{{ $t(menuItem.titleKey) }}</v-list-tile-title>
+                <v-list-tile-title class="subheading" :dark="dark" :class="menuClassText">{{ $t(menuItem.titleKey) }}</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list>
@@ -215,6 +215,12 @@ export default {
     menuClass() {
       if (!this.dark) {
         return "grey--text text--darken-1";
+      }
+      return "grey--text text--lighten-2";
+    },
+    menuClassText() {
+      if (!this.dark) {
+        return "grey--text text--darken-4 font-weight-bold";
       }
       return "grey--text text--lighten-2";
     },

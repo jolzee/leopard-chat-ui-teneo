@@ -18,7 +18,7 @@ cd chat-teneo-vue
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:8080
+# serve with hot reload at localhost:8080/leopard/
 npm run dev
 
 # build for production with minification - copy and deploy files in dist. Clear dist before new builds
@@ -31,7 +31,7 @@ npm run build --report
 ---
 
 :heavy_check_mark: Responsive<br/>
-:heavy_check_mark: ASR and TTS on Google Chrome - long press on send icon to toggle<br/>
+:heavy_check_mark: ASR and TTS on Google Chrome - CTL+ALT+DOWNARROW to toggle<br/>
 :heavy_check_mark: Localized for English, French, German, Spanish and Dutch<br/>
 :heavy_check_mark: Configurable to serve multiple solutions<br/>
 :heavy_check_mark: Media Players for YouTube, Vimeo, mp4, mp3<br/>
@@ -44,7 +44,3 @@ npm run build --report
 For details on the Material Design component framework used, check out https://vuetifyjs.com/en/
 
 If you want to get the live chat integration working then sign up for an account at https://www.livechatinc.com/ Remember to update the licence key in \_store.js\*
-
-```javascript
-const liveChatIncLicense = <license>;
-```

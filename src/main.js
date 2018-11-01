@@ -16,6 +16,7 @@ import vueSmoothScroll from "vue-smoothscroll";
 import "babel-polyfill";
 import parseBool from "parseboolean";
 import "vue2-animate/dist/vue2-animate.min.css";
+import Prism from "prismjs";
 
 import {
   Vuetify,
@@ -68,6 +69,7 @@ storeInit(function(store) {
   });
 
   Vue.use(VuePlyr);
+  Vue.use(Prism);
   Vue.use(longpress, { duration: 2000 });
   Vue.use(Vuetify, {
     theme: store.state.theme,

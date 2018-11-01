@@ -3,7 +3,7 @@
     <v-flex xs12>
 
       <v-dialog v-model="showModal" leave-absolute scrollable persistent content-class="teneo-modal" hide-overlay fullscreen>
-        <v-toolbar dark color="primary" fixed height="64px">
+        <v-toolbar dark color="primary" fixed height="64px" :class="toolbarWidth">
           <v-btn fab small @click="hideModal" color="secondary">
             <v-icon dark medium>close</v-icon>
           </v-btn>
@@ -215,10 +215,6 @@
   max-width: 900px !important;
 }
 
-/* .plyr__menu {
-  display: none !important;
-} */
-
 @media only screen and (max-width: 480px) {
   .modal-fly-out {
     width: 100vw !important;
@@ -226,8 +222,6 @@
 }
 </style>
 <script>
-// import { PlyrVideo, PlyrYoutube, PlyrAudio, PlyrVimeo, Plyr } from "vue-plyr";
-// import "vue-plyr/dist/vue-plyr.css";
 import FlightItinerary from "./FlightItinerary";
 
 export default {
@@ -282,6 +276,14 @@ export default {
     };
   },
   computed: {
+    toolbarWidth() {
+      // console.log("Seeing if we need to adjust toolbar style");
+       if (this.modalSize !== "") {
+          // console.log("Yep adjusted toolbar style");
+          return `teneo-modal-${this.modalSize}-width`;
+        }
+        return "";
+    },
     showModal() {
       let response = this.$store.getters.getModalItem;
       if (this.$store.getters.getShowModal) {
@@ -316,7 +318,7 @@ export default {
               currentIframeUrl.substring(0, currentIframeUrl.lastIndexOf("/")) +
               "/" +
               outputLink.substring(2, outputLink.length);
-            console.log(currentIframeUrl);
+            // console.log(currentIframeUrl);
             document.getElementById("site-frame").src = currentIframeUrl;
           } else {
             document.getElementById("site-frame").src = outputLink;
@@ -413,7 +415,7 @@ export default {
             let videoId = this.getYoutubeId(url);
             if (!videoId) {
               videoId = this.getVimeoId(url);
-              console.log("vimeoid: " + videoId);
+              // console.log("vimeoid: " + videoId);
               if (videoId) {
                 this.vimeoVideoId = videoId;
               } else {
@@ -458,22 +460,8 @@ export default {
     }
   },
   methods: {
-    removeCustomStylesFromModal() {
-      var modalElements = document.getElementsByClassName("teneo-modal");
-      if (modalElements !== "undefined") {
-        for (var i = 0; i < modalElements.length; i++) {
-          // console.log("Removing existing modal styles - reset");
-          modalElements[i].classList.remove("teneo-modal-center");
-          modalElements[i].classList.remove("teneo-modal-right");
-          modalElements[i].classList.remove("teneo-modal-left");
-          modalElements[i].classList.remove("teneo-modal-small-width");
-          modalElements[i].classList.remove("teneo-modal-medium-width");
-          modalElements[i].classList.remove("teneo-modal-large-width");
-          modalElements[i].classList.remove("teneo-modal-x-large-width");
-        }
-      }
-    },
     modalClass() {
+      // console.log("Adding sizing and position styles to modal");
       var modalElements = document.getElementsByClassName("teneo-modal");
       if (modalElements !== "undefined") {
         for (var i = 0; i < modalElements.length; i++) {
@@ -487,6 +475,22 @@ export default {
           }
         } else {
           // it's going to be full screen
+        }
+      }
+    },
+    removeCustomStylesFromModal() {
+      // console.log("removing custom styles from modal");
+      var modalElements = document.getElementsByClassName("teneo-modal");
+      if (modalElements !== "undefined") {
+        for (var i = 0; i < modalElements.length; i++) {
+          // console.log("Removing existing modal styles - reset");
+          modalElements[i].classList.remove("teneo-modal-center");
+          modalElements[i].classList.remove("teneo-modal-right");
+          modalElements[i].classList.remove("teneo-modal-left");
+          modalElements[i].classList.remove("teneo-modal-small-width");
+          modalElements[i].classList.remove("teneo-modal-medium-width");
+          modalElements[i].classList.remove("teneo-modal-large-width");
+          modalElements[i].classList.remove("teneo-modal-x-large-width");
         }
       }
     },
@@ -552,7 +556,9 @@ export default {
     },
     hideModal() {
       this.$store.commit("hideModal");
-      this.resetModal();
+      let that = this;
+      setTimeout(function(){ that.resetModal(); }, 1000); // needed to stop weird animations on the close
+
       // this.$refs.userInput.focus();
       // TODO: Find a way to make the user input box have focus
     },
@@ -591,7 +597,6 @@ export default {
       this.tableFooter = "",
       this.search = "",
       this.transactionItems = []
-
     }
   }
 };

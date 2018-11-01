@@ -9,7 +9,7 @@
                 <v-layout row>
                     <v-flex xs12>
                         <p>
-                            To show any bells and whistles in the chat client interface. You will first need to add the contents of the following file to Solution loaded or upload the file to Resources and save it in /script_lib</p>
+                            To show any bells and whistles in the chat client interface. You will first need to add the contents of the following file to Solution loaded or upload the file to Resources and save it in <strong>/script_lib</strong></p>
                         <p>
                             <a href="https://www.dropbox.com/s/zp3oyudt1jv640m/ExtensionHelper.groovy?dl=0" target="_blank">https://www.dropbox.com/s/zp3oyudt1jv640m/ExtensionHelper.groovy?dl=0</a>
                             <!-- <a href="https://www.dropbox.com/s/mqaovq0q52wb0ww/ExtensionHelper.groovy?dl=0" target="_blank">https://www.dropbox.com/s/mqaovq0q52wb0ww/ExtensionHelper.groovy?dl=0</a> -->
@@ -41,33 +41,33 @@
                         Where myItems is an array formatted as follows:
 
                         <prism language="groovy">def myItems = [ "title":"Please confirm", "items":[ ["name":"Yes", "params": "jolzee=washere&peter=joles"], ["name":"No"], ["name":"Maybe"] ] ]</prism>
-                        Example media files that can be used with "displayVideo":<br/><br/>
+                        Example media files that can be used with "displayVideo":<br /><br />
                         <p>
-                            <a href="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</a><br/>
-                            <a href="https://www.mfiles.co.uk/mp3-downloads/chopin-nocturne-op9-no2.mp3">https://www.mfiles.co.uk/mp3-downloads/chopin-nocturne-op9-no2.mp3</a><br/>
-                            <a href="https://www.youtube.com/watch?v=-NnuefHCNdU">https://www.youtube.com/watch?v=-NnuefHCNdU</a><br/>
-                            <a href="https://vimeo.com/114532272">https://vimeo.com/114532272</a><br/>
+                            <a href="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</a><br />
+                            <a href="https://www.mfiles.co.uk/mp3-downloads/chopin-nocturne-op9-no2.mp3">https://www.mfiles.co.uk/mp3-downloads/chopin-nocturne-op9-no2.mp3</a><br />
+                            <a href="https://www.youtube.com/watch?v=-NnuefHCNdU">https://www.youtube.com/watch?v=-NnuefHCNdU</a><br />
+                            <a href="https://vimeo.com/114532272">https://vimeo.com/114532272</a><br />
                         </p>
                         You can also show a date picker just add an output parameter:
-                        <prism language="groovy">datePicker = true</prism>
+                        <prism language="properties">datePicker = true</prism>
 
                         <h3>Modal Size and Positioning</h3>
 
                         <p>To control the size of the respective dialog/modal that displays on the screen you can add either or both of these output parameters.</p>
-                        <prism>modalPosition = left/center/right/fullscreen</prism>
+                        <prism language="properties">modalPosition = left/center/right/fullscreen</prism>
                         <strong>"right"</strong> is the default if you don't specify a
                         <strong>"modalPosition"</strong> output parameter.
-                        <prism>modalSize = small/medium/large/x-large</prism>
+                        <prism language="properties">modalSize = small/medium/large/x-large</prism>
                         <strong>"small"</strong> is the default if you don't specify a
-                        <strong>"modalSize"</strong> output parameter.<br/>
+                        <strong>"modalSize"</strong> output parameter.<br />
 
                         <br>
                         <h3>Switching Solution URL based off NER Language Detection</h3>
                         <p>
                             You can switch the Teneo Endpoint URL midway through a conversation. This is useful if you determine that a user is talking another language or is asking about a topic that might be better handled by another Teneo Solution. To accomplish this you would need to add two output parameters:
                         </p>
-                        <prism>langinput = User input text you want to send to the new Teneo Runtime URL</prism>
-                        <prism>langengineurl = URL to the new Teneo Solution</prism>
+                        <prism language="properties">langinput = User input text you want to send to the new Teneo Runtime URL</prism>
+                        <prism language="properties">langengineurl = URL to the new Teneo Solution</prism>
 
                         <br>
                         <h3>Showing a Table in a Modal</h3>
@@ -110,6 +110,52 @@ rows = [
 ]
 </prism></pre>
 
+                        <h3>ASR and TTS</h3>
+                        <p>
+                            You can enable ASR and TTS on a Chrome browser.
+
+                            <strong>toggle ASR and TTS</strong>:
+                        </p>
+                        <pre><prism language="groovy">
+Long click in input box
+Long click on any Teneo response icon
+Long click on the >> chevron or micphrone icon
+CTL+ALT+/ or CTL+ALT+DOWNARROW</prism></pre>
+
+                        <p>
+                            <strong>Capture audio through ASR</strong> can be done by clicking on the micrphone button or through shortcuts:
+                        </p>
+                        <prism language="groovy">CTL+ALT+UPARROW or CTL+ALT+.</prism>
+
+                        <p>
+                            <strong>Audion Capture or TTS can be cancelled</strong> using:
+                        </p>
+                        <prism language="groovy">ESC</prism>
+
+                        <p>
+                            You can <strong>close the modal window</strong> with:
+                        </p>
+                        <prism language="groovy">CTL+ALT+LEFTARROW</prism>
+
+                        <h3>Get the code</h3>
+                        <pre><prism language="bash">
+# clone
+git clone https://github.com/jolzee/chat-teneo-vue.git
+
+# move into cloned project
+cd chat-teneo-vue
+
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080/leopard/
+npm run dev
+
+# build for production with minification - copy and deploy files in dist. Clear dist before new builds
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report</prism></pre>
                     </v-flex>
                 </v-layout>
             </v-card-text>
@@ -124,9 +170,17 @@ rows = [
 <style scoped>
 </style>
 <script>
+import "prismjs/prism";
+import "prismjs/themes/prism-funky.css";
+import "prismjs/plugins/command-line/prism-command-line.css";
+import "prismjs/components/prism-json.min.js";
+import "prismjs/components/prism-javascript.min.js";
+import "prismjs/components/prism-properties.min.js";
+import "prismjs/components/prism-bash.min.js";
+import "prismjs/components/prism-groovy.min.js";
+import "prismjs/plugins/command-line/prism-command-line.min.js";
+
 import Prism from "vue-prism-component";
-import "@/assets/prism.css";
-import prism from "@/assets/prism.js";
 
 export default {
   props: {
