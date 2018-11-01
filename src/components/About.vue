@@ -1,6 +1,13 @@
 <template>
   <v-card class="teneo-about-card">
-    <v-img :src="teneoImage" class="elevation-4"></v-img>
+    <vue-plyr v-if="vimeoVideoId" class="elevation-4">
+      <div class="plyr__video-embed">
+        <iframe :src="`https://player.vimeo.com/video/${vimeoVideoId}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media`" allowfullscreen allowtransparency allow="autoplay">
+        </iframe>
+      </div>
+    </vue-plyr>
+
+    <!-- <v-img :src="teneoImage" class="elevation-4"></v-img> -->
     <!-- <v-card-media :src="teneoImage" height="200px"></v-card-media> -->
     <v-card-title primary-title>
       <div>
@@ -33,6 +40,7 @@
 export default {
   data() {
     return {
+      vimeoVideoId: 214813354,
       loading: false
     };
   },

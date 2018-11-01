@@ -9,6 +9,7 @@ import VueSession from "vue-session";
 import "vue-loaders/dist/vue-loaders.css";
 import longpress from "vue-long-press-directive";
 import Dayjs from "vue-dayjs";
+import VuePlyr from "vue-plyr";
 
 import { BallScaleRippleMultipleLoader, LineScalePulseOutRapidLoader, BallPulseSyncLoader } from "vue-loaders";
 import vueSmoothScroll from "vue-smoothscroll";
@@ -66,6 +67,7 @@ storeInit(function(store) {
     lang: "en"
   });
 
+  Vue.use(VuePlyr);
   Vue.use(longpress, { duration: 2000 });
   Vue.use(Vuetify, {
     theme: store.state.theme,

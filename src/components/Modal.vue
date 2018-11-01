@@ -13,20 +13,35 @@
         <v-card class="mb-1 pt-5 modal-height" tile>
 
           <!-- video and audio -->
-          <plyr-youtube v-if="youTubeVideoId" :id="youTubeVideoId" allowtransparency allow="autoplay" />
-          <plyr-vimeo v-if="vimeoVideoId" :id="vimeoVideoId" allowtransparency allow="autoplay" />
-          <plyr v-if="audioUrl">
+          <!-- YouTube -->
+          <vue-plyr v-if="youTubeVideoId">
+            <div class="plyr__video-embed">
+              <iframe :src="`https://www.youtube.com/embed/${youTubeVideoId}?iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1`" allowfullscreen allowtransparency allow="autoplay">
+              </iframe>
+            </div>
+          </vue-plyr>
+          <!-- Vimeo -->
+          <vue-plyr v-if="vimeoVideoId">
+            <div class="plyr__video-embed">
+              <iframe :src="`https://player.vimeo.com/video/${vimeoVideoId}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media`" allowfullscreen allowtransparency allow="autoplay">
+              </iframe>
+            </div>
+          </vue-plyr>
+          <!-- Audio -->
+          <vue-plyr v-if="audioUrl">
             <audio>
               <source :src="audioUrl" :type="audioType" />
             </audio>
-          </plyr>
-          <plyr v-if="videoUrl">
-            <video>
+          </vue-plyr>
+
+          <!-- Misc Video -->
+          <vue-plyr v-if="videoUrl">
+            <video poster="poster.png" src="video.mp4">
               <source :src="videoUrl" :type="videoType" />
             </video>
-          </plyr>
-          <v-container class="modal-container">
+          </vue-plyr>
 
+          <v-container class="modal-container">
             <transition name="modal-image-transition" enter-active-class="animated zoomIn">
               <v-img :src="imageUrl"></v-img>
               <!-- <v-card-media v-if="imageUrl" :src="imageUrl" height="226px"></v-card-media> -->
@@ -200,9 +215,9 @@
   max-width: 900px !important;
 }
 
-.plyr__menu {
+/* .plyr__menu {
   display: none !important;
-}
+} */
 
 @media only screen and (max-width: 480px) {
   .modal-fly-out {
@@ -211,17 +226,12 @@
 }
 </style>
 <script>
-import { PlyrVideo, PlyrYoutube, PlyrAudio, PlyrVimeo, Plyr } from "vue-plyr";
-import "vue-plyr/dist/vue-plyr.css";
+// import { PlyrVideo, PlyrYoutube, PlyrAudio, PlyrVimeo, Plyr } from "vue-plyr";
+// import "vue-plyr/dist/vue-plyr.css";
 import FlightItinerary from "./FlightItinerary";
 
 export default {
   components: {
-    PlyrVideo,
-    PlyrYoutube,
-    PlyrAudio,
-    PlyrVimeo,
-    Plyr,
     "flight-itinerary": FlightItinerary,
     props: ["itinerary"]
   },
@@ -542,6 +552,7 @@ export default {
     },
     hideModal() {
       this.$store.commit("hideModal");
+      this.resetModal();
       // this.$refs.userInput.focus();
       // TODO: Find a way to make the user input box have focus
     },
@@ -567,6 +578,20 @@ export default {
       this.tableHeaders = [];
       this.tableRows = [];
       this.tableFooter = "";
+      this.youTubeVideoId = "",
+      this.vimeoVideoId = "",
+      this.itinerary = "",
+      this.audioType = "",
+      this.audioUrl = "",
+      this.videoType = "",
+      this.videoUrl = "",
+      this.tableTitle = "",
+      this.tableHeaders = [],
+      this.tableRows = [],
+      this.tableFooter = "",
+      this.search = "",
+      this.transactionItems = []
+
     }
   }
 };

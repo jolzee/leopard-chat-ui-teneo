@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import VueJsonp from "vue-jsonp";
-// import VueLocalStorage from "vue-localstorage";
 import Artyom from "artyom.js";
 import vuexI18n from "vuex-i18n";
 import parseBool from "parseboolean";
@@ -491,7 +490,7 @@ function setupStore(callback) {
         state.showModal = true;
       },
       hideModal(state) {
-        console.log("hiding modal");
+        // console.log("hiding modal");
         state.showModal = false;
         state.modalItem = null;
         // console.log("modal item should be empty");
@@ -500,13 +499,13 @@ function setupStore(callback) {
     actions: {
       stopAudioCapture() {
         if (artyom.isSpeaking()) {
-          console.log("muted TTS!");
+          // console.log("muted TTS!");
           artyom.shutUp();
         }
         if (artyom.isObeying()) {
           UserDictation.stop();
           store.state.stopAudioCapture = true;
-          console.log("stopped audio capture!");
+          // console.log("stopped audio capture!");
         }
       },
       endSession() {
@@ -625,7 +624,7 @@ function setupStore(callback) {
 
               if (langEngineUrl !== "undefined" && langInput !== "undefined") {
                 store.state.teneoUrl = langEngineUrl + "?viewname=STANDARDJSONP";
-                console.log(store.state.teneoUrl);
+                // console.log(store.state.teneoUrl);
                 store.state.userInput = langInput;
                 store.commit("showProgressBar");
                 store
@@ -660,7 +659,7 @@ function setupStore(callback) {
           }
           sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.state.dialogHistory));
           doLiveChatRequest(store.state.userInput);
-          console.log("Sent a message to agent: " + store.state.userInput);
+          // console.log("Sent a message to agent: " + store.state.userInput);
           store.commit("hideProgressBar");
           store.state.userInput = "";
         }
@@ -725,7 +724,7 @@ function setupStore(callback) {
 
         if (store.state.userInput) {
           let fixedUserInput = store.state.userInput;
-          console.log("Final Transcription from ASR: " + store.state.userInput);
+          // console.log("Final Transcription from ASR: " + store.state.userInput);
           ASR_CORRECTIONS.forEach(replacement => {
             let startingText = fixedUserInput;
 
@@ -772,15 +771,15 @@ function setupStore(callback) {
     });
 
     visitorSDK.on("chat_started", chatData => {
-      console.log("chat_started");
-      console.log(chatData);
+      // console.log("chat_started");
+      // console.log(chatData);
 
       // when a user reloads the page while a chat is going on, the message history is loaded. We need to stop that from happening by closing the chat
       if (!store.state.isLiveChat) {
         visitorSDK
           .closeChat()
           .then(() => {
-            console.log("Live chat has closed");
+            // console.log("Live chat has closed");
           })
           .catch(error => {
             console.log(error);
@@ -789,7 +788,7 @@ function setupStore(callback) {
     });
 
     visitorSDK.on("visitor_queued", queueData => {
-      console.log(queueData);
+      // console.log(queueData);
       let message = "Chat request sent to agent. You are number " + queueData.numberInQueue + " in the queue.";
       // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
       if (store.state.isLiveChat) {
@@ -804,7 +803,7 @@ function setupStore(callback) {
         visitorSDK
           .closeChat()
           .then(() => {
-            console.log("Live chat has closed");
+            // console.log("Live chat has closed");
           })
           .catch(error => {
             console.log(error);
@@ -813,7 +812,7 @@ function setupStore(callback) {
     });
 
     visitorSDK.on("agent_changed", newAgent => {
-      console.log(newAgent);
+      // console.log(newAgent);
       store.state.agentName = newAgent.name;
       store.state.agentID = newAgent.id;
       store.state.agentAvatar = newAgent.avatarUrl;
@@ -834,7 +833,7 @@ function setupStore(callback) {
         visitorSDK
           .closeChat()
           .then(() => {
-            console.log("Chat is closed");
+            // console.log("Chat is closed");
           })
           .catch(error => {
             console.log(error);
@@ -843,7 +842,7 @@ function setupStore(callback) {
     });
 
     visitorSDK.on("chat_ended", () => {
-      console.log("chat ended");
+      // console.log("chat ended");
       let message = "Chat with live agent ended.";
       // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
       if (store.getters.isLiveChat) {
@@ -863,7 +862,7 @@ function setupStore(callback) {
     });
 
     visitorSDK.on("new_message", newMessage => {
-      console.log(newMessage);
+      // console.log(newMessage);
       // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
       if (store.state.isLiveChat) {
         if (newMessage.authorId === store.state.agentID) {
@@ -905,7 +904,7 @@ function setupStore(callback) {
    * @param {*} message
    */
   function doLiveChatRequest(message) {
-    console.log("Sending message to Live Agent:" + message);
+    // console.log("Sending message to Live Agent:" + message);
     visitorSDK
       .sendMessage({
         text: message,
@@ -922,7 +921,7 @@ function setupStore(callback) {
   // android and ios webview ASR and TTS
 
   window.sendVoiceInput = function(userInput) {
-    console.log(`In SendVoiceInput: ${userInput}`);
+    // console.log(`In SendVoiceInput: ${userInput}`);
     store.state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
     store.state.userInputReadyForSending = true;
     store.state.listening = false;
@@ -947,7 +946,7 @@ function setupStore(callback) {
   window.webviewSay = function(message) {
     // Android
     try {
-      console.log("TTS Message: " + message);
+      // console.log("TTS Message: " + message);
       Android.speak("<speak>" + stripHtml(message) + "</speak>");
     } catch (Exception) {
       // ignore
@@ -962,7 +961,7 @@ function setupStore(callback) {
   };
 
   window.startASRAfterTTS = function() {
-    console.log("startASRAfterTTS");
+    // console.log("startASRAfterTTS");
     // Android
     try {
       Android.startASRAfterTTS("sendVoiceInput");

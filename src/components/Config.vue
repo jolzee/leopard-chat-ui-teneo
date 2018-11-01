@@ -9,7 +9,7 @@
               <v-icon>refresh</v-icon>
             </v-btn>
           </v-flex>
-          <v-toolbar-title>Chat Client Configuration</v-toolbar-title>
+          <v-toolbar-title>Configuration</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-badge left overlap color="blue" class="mr-2">
             <span slot="badge">{{config.solutions.length}}</span>
