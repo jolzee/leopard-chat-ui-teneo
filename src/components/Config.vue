@@ -482,15 +482,17 @@
 }
 
 code {
-  display: unset;
-  border-radius: unset;
-  white-space: unset;
-  font-size: unset;
-  font-weight: unset;
+  display: unset !important;
+  border-radius: 2px !important;
+  white-space: unset !important;
+  font-size: unset !important;
+  font-weight: unset !important;
 }
 
 pre[class*="language-"] {
-  background-size: 1.2em 1.2em;
+  background-size: 1.2em 1.2em !important;
+  background-color: rgba(76, 43, 112, 1) !important;
+  border-radius: 5px;
 }
 </style>
 

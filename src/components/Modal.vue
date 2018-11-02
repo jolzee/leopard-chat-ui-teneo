@@ -62,7 +62,6 @@
             <div class=" mt-3" v-if="itinerary || bodyText || transactionItems.length || tableRows.length">
               <flight-itinerary v-if="itinerary" :itinerary="itinerary"></flight-itinerary>
               <v-card-text class="cardText" id="chat-modal-html" v-if="bodyText" v-html="bodyText" scrollable></v-card-text>
-
               <!-- data table tranactions -->
               <v-layout v-if="transactionItems.length > 0 || tableRows.length > 0" align-end justify-start fill-height>
                 <v-layout v-if="tableTitle">
@@ -221,6 +220,7 @@
   }
 }
 </style>
+
 <script>
 import FlightItinerary from "./FlightItinerary";
 

@@ -11,7 +11,10 @@
                         <p>
                             To show any bells and whistles in the chat client interface. You will first need to add the contents of the following file to Solution loaded or upload the file to Resources and save it in <strong>/script_lib</strong></p>
                         <p>
-                            <a href="https://www.dropbox.com/s/zp3oyudt1jv640m/ExtensionHelper.groovy?dl=0" target="_blank">https://www.dropbox.com/s/zp3oyudt1jv640m/ExtensionHelper.groovy?dl=0</a>
+                            <ul>
+                                <li><a href="https://www.dropbox.com/s/zp3oyudt1jv640m/ExtensionHelper.groovy?dl=0" target="_blank">https://www.dropbox.com/s/zp3oyudt1jv640m/ExtensionHelper.groovy?dl=0</a></li>
+                            </ul>
+
                             <!-- <a href="https://www.dropbox.com/s/mqaovq0q52wb0ww/ExtensionHelper.groovy?dl=0" target="_blank">https://www.dropbox.com/s/mqaovq0q52wb0ww/ExtensionHelper.groovy?dl=0</a> -->
                         </p>
                         <p>
@@ -38,15 +41,21 @@
 
                         <prism language="groovy">${ExtensionHelper.displayClickableList(myItems,channel)}</prism>
 
-                        Where myItems is an array formatted as follows:
+                        Where myItems is a Map formatted as follows:
 
-                        <prism language="groovy">def myItems = [ "title":"Please confirm", "items":[ ["name":"Yes", "params": "jolzee=washere&peter=joles"], ["name":"No"], ["name":"Maybe"] ] ]</prism>
-                        Example media files that can be used with "displayVideo":<br /><br />
+                        <pre><prism language="groovy">def myItems = ["title": "Please confirm", "items": [
+ ["name": "Yes", "params": "jolzee=washere&peter=joles"],
+ ["name": "No"],
+ ["name": "Maybe"]
+]]</prism></pre>
+                        Example media files that can be used with <strong>"displayVideo"</strong>:<br /><br />
                         <p>
-                            <a href="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</a><br />
-                            <a href="https://www.mfiles.co.uk/mp3-downloads/chopin-nocturne-op9-no2.mp3">https://www.mfiles.co.uk/mp3-downloads/chopin-nocturne-op9-no2.mp3</a><br />
-                            <a href="https://www.youtube.com/watch?v=-NnuefHCNdU">https://www.youtube.com/watch?v=-NnuefHCNdU</a><br />
-                            <a href="https://vimeo.com/114532272">https://vimeo.com/114532272</a><br />
+                            <ul>
+                                <li><a href="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</a></li>
+                                <li><a href="https://www.mfiles.co.uk/mp3-downloads/chopin-nocturne-op9-no2.mp3">https://www.mfiles.co.uk/mp3-downloads/chopin-nocturne-op9-no2.mp3</a></li>
+                                <li><a href="https://www.youtube.com/watch?v=-NnuefHCNdU">https://www.youtube.com/watch?v=-NnuefHCNdU</a></li>
+                                <li><a href="https://vimeo.com/114532272">https://vimeo.com/114532272</a></li>
+                            </ul>
                         </p>
                         You can also show a date picker just add an output parameter:
                         <prism language="properties">datePicker = true</prism>
@@ -85,8 +94,7 @@
                         <prism language="groovy">public static Map createTableHeader(text, value, sortable = false, align = "center", width = "") {}</prism>
 
                         Here's a script that will build a basic table. Note you can position table headers left, right or center:
-                        <pre><prism language="groovy">
-def dateHeader = ExtensionHelper.createTableHeader("Date", "date", true, "left", "20%");
+                        <pre><prism language="groovy">def dateHeader = ExtensionHelper.createTableHeader("Date", "date", true, "left", "20%");
 def descriptionHeader = ExtensionHelper.createTableHeader("Description", "desc", false, "left");
 def costHeader = ExtensionHelper.createTableHeader("Cost", "cost", true, "left", "20%");
 
@@ -107,9 +115,13 @@ rows = [
 		"desc": "Description 3",
 		"cost" : "\$300"
 	],
-]
-</prism></pre>
+]</prism></pre>
 
+                        <h3>Handover to Live Agent</h3>
+                        <p>To hand off to the live chat integration you will need to send an output parameter to the chat client</p>
+                        <prism language="groovy">liveChat = ${theDialogThatWillBePassedToTheLiveChatSystem}</prism>
+                        <p>If you want to be able to check if a live agent is available in Studio you can use the following integration</p>
+                        <v-img src="static/images/misc/livechat.png" class="elevation-4"></v-img><br />
                         <h3>ASR and TTS</h3>
                         <p>
                             You can enable ASR and TTS on a Chrome browser.
@@ -138,8 +150,7 @@ CTL+ALT+/ or CTL+ALT+DOWNARROW</prism></pre>
                         <prism language="groovy">CTL+ALT+LEFTARROW</prism>
 
                         <h3>Get the code</h3>
-                        <pre><prism language="bash">
-# clone
+                        <pre><prism language="bash"># clone
 git clone https://github.com/jolzee/chat-teneo-vue.git
 
 # move into cloned project
@@ -179,6 +190,8 @@ import "prismjs/components/prism-properties.min.js";
 import "prismjs/components/prism-bash.min.js";
 import "prismjs/components/prism-groovy.min.js";
 import "prismjs/plugins/command-line/prism-command-line.min.js";
+import "prismjs/plugins/remove-initial-line-feed/prism-remove-initial-line-feed.min.js";
+import "prismjs/plugins/normalize-whitespace/prism-normalize-whitespace.min.js";
 
 import Prism from "vue-prism-component";
 
