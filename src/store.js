@@ -576,7 +576,7 @@ function setupStore(callback) {
       },
       sendUserInput(context, params = "") {
         // send user input to Teneo when a live chat has not begun
-        if (artyom.isSpeaking()) {
+        if (artyom && artyom.isSpeaking()) {
           // console.log("Artyom is speaking something. Let's shut it up");
           artyom.shutUp();
         }

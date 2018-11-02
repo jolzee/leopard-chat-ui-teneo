@@ -412,7 +412,7 @@ export default {
           .dispatch("sendUserInput")
           .then(this.$refs.userInput.focus())
           .catch(err => {
-            // TODO: add some logic
+            this.inUserInput = err;
           });
       } else {
         this.snackbar = true;
