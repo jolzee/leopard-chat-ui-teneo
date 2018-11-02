@@ -11,7 +11,12 @@ import longpress from "vue-long-press-directive";
 import Dayjs from "vue-dayjs";
 import VuePlyr from "vue-plyr";
 
-import { BallScaleRippleMultipleLoader, LineScalePulseOutRapidLoader, BallPulseSyncLoader } from "vue-loaders";
+import {
+  LineScaleLoader,
+  BallScaleRippleMultipleLoader,
+  LineScalePulseOutRapidLoader,
+  BallPulseSyncLoader
+} from "vue-loaders";
 import vueSmoothScroll from "vue-smoothscroll";
 import "babel-polyfill";
 import parseBool from "parseboolean";
@@ -114,6 +119,8 @@ storeInit(function(store) {
   Vue.use(VueSession);
   Vue.use(require("vue-shortkey"));
   Vue.use(vueSmoothScroll);
+
+  Vue.component(LineScaleLoader.name, LineScaleLoader);
   Vue.component(LineScalePulseOutRapidLoader.name, LineScalePulseOutRapidLoader);
   Vue.component(BallPulseSyncLoader.name, BallPulseSyncLoader);
   Vue.component(BallScaleRippleMultipleLoader.name, BallScaleRippleMultipleLoader);
