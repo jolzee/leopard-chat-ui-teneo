@@ -69,6 +69,11 @@
                         <prism language="properties">modalSize = small/medium/large/x-large</prism>
                         <strong>"small"</strong> is the default if you don't specify a
                         <strong>"modalSize"</strong> output parameter.<br />
+                        <br />
+                        <h3>Handling Anchor Links</h3>
+                        <p>You can output links in html or answer text that are then fed back into Teneo as user input.</p>
+                        <prism language="markup">&lt;a href=&quot;#&quot; class=&quot;sendInput&quot;&gt;This will be sent to Teneo&lt;/a&gt;</prism>
+                        <prism language="markup">&lt;a href=&quot;#&quot; onclick=&quot;sendUserInput('How do I fix a paper jam?')&quot;&gt;How do I fix a paper jam?&lt;/a&gt;</prism>
 
                         <br>
                         <h3>Switching Solution URL based off NER Language Detection</h3>
