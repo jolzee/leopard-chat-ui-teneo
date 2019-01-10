@@ -37,7 +37,7 @@
               <v-container fluid>
                 <v-layout row wrap>
                   <v-flex xs12 sm3 md4 lg6 v-if="hasSolutions">
-                    <v-select color="light-blue darken-1" item-avatar="userIcon" dense ref="selectedSolution" item-text="name" item-value="name" v-model="selectedSolution" :menu-props="{contentClass:'select-options'}" solo :items="sortedSolutions" return-object no-data-text="No Solutions" label="Select Teneo Solution" append-icon="fa-arrow-circle-down"></v-select>
+                    <v-select style="min-width: 452px;" color="light-blue darken-1" item-avatar="userIcon" dense ref="selectedSolution" item-text="name" item-value="name" v-model="selectedSolution" :menu-props="{contentClass:'select-options'}" solo :items="sortedSolutions" return-object no-data-text="No Solutions" label="Select Teneo Solution" append-icon="fa-arrow-circle-down"></v-select>
                   </v-flex>
                   <v-flex xs12 sm9 md8 lg6>
                     <v-tooltip open-delay="600" bottom>

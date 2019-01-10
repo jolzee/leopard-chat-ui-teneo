@@ -1,9 +1,18 @@
 <template>
-  <v-container fluid grid-list-s id="chat-area" ref="chatContainer" v-bind:class="{ 'dark-scroll': dark, 'light-scroll': !dark,  'chat-container': true}">
+  <v-container
+    fluid
+    grid-list-s
+    id="chat-area"
+    ref="chatContainer"
+    v-bind:class="{ 'dark-scroll': dark, 'light-scroll': !dark,  'chat-container': true}"
+  >
     <v-layout v-if="noHistory && isHistoryPage">
       <v-flex xs12>
         <v-card>
-          <v-img :src="noHistoryImage" class="elevation-4"></v-img>
+          <v-img
+            :src="noHistoryImage"
+            class="elevation-4"
+          ></v-img>
           <v-card-title primary-title>
             <v-card-text>
               <div class="text-xs-center">
@@ -12,11 +21,26 @@
               </div>
             </v-card-text>
           </v-card-title>
-          <v-layout justify-center class="pb-3">
+          <v-layout
+            justify-center
+            class="pb-3"
+          >
             <v-card-actions>
-              <v-btn dark color="primary" :to="{name: 'chat'}">{{ $t('menu.chat') }}</v-btn>
-              <v-btn dark color="primary" :to="{name: 'help'}">{{ $t('menu.help') }}</v-btn>
-              <v-btn dark color="primary" :to="{name: 'about'}">{{ $t('menu.about') }}</v-btn>
+              <v-btn
+                dark
+                color="primary"
+                :to="{name: 'chat'}"
+              >{{ $t('menu.chat') }}</v-btn>
+              <v-btn
+                dark
+                color="primary"
+                :to="{name: 'help'}"
+              >{{ $t('menu.help') }}</v-btn>
+              <v-btn
+                dark
+                color="primary"
+                :to="{name: 'about'}"
+              >{{ $t('menu.about') }}</v-btn>
             </v-card-actions>
           </v-layout>
         </v-card>
@@ -24,55 +48,109 @@
     </v-layout>
     <!-- show the listening modal when recognizing audio input -->
     <!-- start -->
-    <teneo-listening v-bind:value="listening" :message="$t('listening')"></teneo-listening>
+    <teneo-listening
+      v-bind:value="listening"
+      :message="$t('listening')"
+    ></teneo-listening>
 
     <!-- show the initial loding ball animation when first loading the chat window -->
 
-    <v-layout row wrap justify-center align-center class="loading-ball text-xs-center mt-3" v-if="showChatLoading">
+    <v-layout
+      row
+      wrap
+      justify-center
+      align-center
+      class="loading-ball text-xs-center mt-3"
+      v-if="showChatLoading"
+    >
       <v-flex xs12>
-        <line-scale-loader color="#C2C2C2" size="60px"></line-scale-loader>
+        <line-scale-loader
+          color="#C2C2C2"
+          size="60px"
+        ></line-scale-loader>
       </v-flex>
     </v-layout>
 
     <v-layout column>
       <v-expansion-panel :value="getOpenedItem">
-        <transition-group name="chat-line-transition" enter-active-class="animated zoomIn">
+        <transition-group
+          name="chat-line-transition"
+          enter-active-class="animated zoomIn"
+        >
           <!-- item && hasCollection(item) -->
-          <v-expansion-panel-content class="teneo-dialog" v-for="(item,i) in dialog" :key="i" :hide-actions="true">
+          <v-expansion-panel-content
+            class="teneo-dialog"
+            v-for="(item,i) in dialog"
+            :key="i"
+            :hide-actions="true"
+          >
 
             <div slot="header">
-              <v-container grid-list-xs fluid>
+              <v-container
+                grid-list-xs
+                fluid
+              >
                 <!-- Live Chat Queue -->
                 <div v-if="item.type === 'liveChatQueue'">
-                  <v-alert :value="true" color="info" icon="fa-clock">
+                  <v-alert
+                    :value="true"
+                    color="info"
+                    icon="fa-clock"
+                  >
                     {{item.text}}
                   </v-alert>
                 </div>
                 <!-- Live Chat Status -->
                 <div v-if="item.type === 'liveChatStatus'">
-                  <v-alert :value="true" color="info" icon="fa-thumbs-up">
+                  <v-alert
+                    :value="true"
+                    color="info"
+                    icon="fa-thumbs-up"
+                  >
                     {{item.text}}
                   </v-alert>
                 </div>
                 <div v-if="item.type === 'liveChatEnded'">
-                  <v-alert :value="true" color="info" icon="fa-hand-paper">
+                  <v-alert
+                    :value="true"
+                    color="info"
+                    icon="fa-hand-paper"
+                  >
                     {{item.text}}
                   </v-alert>
                 </div>
                 <!-- Live Chat Response -->
-                <v-layout row v-if="item.type === 'liveChatResponse'">
-                  <v-flex xs2 class="text-xs-left mr-2">
-                    <v-avatar size="40px" color="grey lighten-4 elevation-6 mx-2">
-                      <img :src="item.agentAvatar" :alt="item.agentName">
+                <v-layout
+                  row
+                  v-if="item.type === 'liveChatResponse'"
+                >
+                  <v-flex
+                    xs2
+                    class="text-xs-left mr-2"
+                  >
+                    <v-avatar
+                      size="40px"
+                      color="grey lighten-4 elevation-6 mx-2"
+                    >
+                      <img
+                        :src="item.agentAvatar"
+                        :alt="item.agentName"
+                      >
                     </v-avatar>
                   </v-flex>
                   <v-flex>
-                    <v-card class="chat-card text-xs-left px-2" :dark="dark">
+                    <v-card
+                      class="chat-card text-xs-left px-2"
+                      :dark="dark"
+                    >
                       <v-container grid-list-s>
                         <v-layout row>
                           <v-flex>
                             <div>
-                              <span v-html="item.text" class="teneo-reply"></span>
+                              <span
+                                v-html="item.text"
+                                class="teneo-reply"
+                              ></span>
                             </div>
                           </v-flex>
                         </v-layout>
@@ -83,33 +161,76 @@
                 <!-- Reply -->
                 <div v-if="item.type === 'reply'">
                   <v-layout row>
-                    <v-flex xs2 class="text-xs-left mr-2">
-                      <v-btn v-long-press="swapInputButton" color="secondary" fab small>
+                    <v-flex
+                      xs2
+                      class="text-xs-left mr-2"
+                    >
+                      <v-btn
+                        v-long-press="swapInputButton"
+                        color="secondary"
+                        fab
+                        small
+                      >
                         <v-icon class="white--text">{{responseIcon}}</v-icon>
                       </v-btn>
                     </v-flex>
                     <v-flex>
-                      <v-card class="chat-card text-xs-left px-2" :dark="dark">
-                        <span v-html="item.text" class="teneo-reply"></span>
+                      <v-card
+                        class="chat-card text-xs-left px-2"
+                        :dark="dark"
+                      >
+                        <span
+                          v-html="itemText(item)"
+                          class="teneo-reply"
+                        ></span>
                       </v-card>
                     </v-flex>
                   </v-layout>
                   <!-- show any options in the response: for example Yes, No Maybe -->
-                  <v-card flat v-if="hasCollection(item) && (i === dialog.length - 1)" class="text-xs-center" width="320px">
+                  <v-card
+                    flat
+                    v-if="hasCollection(item) && ((i === dialog.length - 1) || hasPermanentOptions(item))"
+                    class="text-xs-center"
+                    width="320px"
+                  >
                     <v-card-text v-if="!hasLongOptions(item)">
                       <h2 v-text="getOptions(item).title"></h2>
-                      <div v-if="getOptions(item).html" class="elevation-5 mt-2" v-html="getOptions(item).items">
+                      <div
+                        v-if="getOptions(item).html"
+                        class="elevation-5 mt-2"
+                        v-html="getOptions(item).items"
+                      >
                       </div>
-                      <span v-else v-for="(option,i) in getOptions(item).items" :key="i">
-                        <v-btn class="option-btn" small color="success" @click="optionClicked(option)">{{option.name}}
+                      <span
+                        v-else
+                        v-for="(option,i) in getOptions(item).items"
+                        :key="i"
+                      >
+                        <v-btn
+                          class="option-btn"
+                          small
+                          color="success"
+                          @click="optionClicked(option)"
+                        >{{option.name}}
                         </v-btn>
                       </span>
                     </v-card-text>
 
-                    <v-list three-line dense subheader v-else class="pt-1">
+                    <v-list
+                      three-line
+                      dense
+                      subheader
+                      v-else
+                      class="pt-1"
+                    >
                       <template v-for="(option,i) in getOptions(item).items">
                         <v-divider :key="i"></v-divider>
-                        <v-list-tile :key="i" ripple @click="optionClicked(option)" class="options-list">
+                        <v-list-tile
+                          :key="i"
+                          ripple
+                          @click="optionClicked(option)"
+                          class="options-list"
+                        >
                           <v-list-tile-content>
                             <v-list-tile-sub-title class="options-list-subtile">{{option.name}}</v-list-tile-sub-title>
                           </v-list-tile-content>
@@ -119,24 +240,88 @@
                   </v-card>
                   <!-- more info & calendar picker -->
                   <v-layout row>
-                    <v-flex xs12 class="text-xs-right" v-if="item.hasExtraData && !hasCollection(item) && notLiveChatTranscript(item)">
-                      <v-btn class="mr-0" color="success" @click="showModal(item)">{{ $t('more.button') }}
-                        <v-icon right small color="white">fa-angle-double-up</v-icon>
+                    <v-flex
+                      xs12
+                      class="text-xs-right"
+                      v-if="item.hasExtraData && !hasCollection(item) && notLiveChatTranscript(item)"
+                    >
+                      <v-btn
+                        class="mr-0"
+                        color="success"
+                        @click="showModal(item)"
+                      >{{ modalButtonText(item) }}
+                        <v-icon
+                          right
+                          small
+                          color="white"
+                        >{{ modalButtonIcon(item) }}</v-icon>
                       </v-btn>
                     </v-flex>
-                    <v-flex class="text-xs-right" xs12 v-if="mustShowDate(item) && (i === dialog.length - 1)">
-                      <v-btn small fab="" color="info" @click="showDate = !showDate">
+                    <v-flex
+                      class="text-xs-right"
+                      xs12
+                      v-if="mustShowDate(item) && (i === dialog.length - 1)"
+                    >
+                      <v-btn
+                        small
+                        fab=""
+                        color="info"
+                        @click="showDate = !showDate"
+                      >
                         <v-icon>fa-calendar-alt</v-icon>
                       </v-btn>
                     </v-flex>
                   </v-layout>
                 </div>
+                <!-- Additional Response Chunks -->
+                <div v-if="responseHasChunks(item)">
+
+                  <v-layout
+                    row
+                    v-for="(chunkText, index) in getChunks(item)"
+                    :key="index"
+                  >
+                    <v-flex
+                      xs2
+                      class="text-xs-left mr-2"
+                    >
+                      <v-btn
+                        v-long-press="swapInputButton"
+                        color="secondary"
+                        fab
+                        small
+                      >
+                        <v-icon class="white--text">{{responseIcon}}</v-icon>
+                      </v-btn>
+                    </v-flex>
+                    <v-flex>
+                      <v-card
+                        class="chat-card text-xs-left px-2"
+                        :dark="dark"
+                      >
+                        <span
+                          v-html="chunkText"
+                          class="teneo-reply"
+                        ></span>
+                      </v-card>
+                    </v-flex>
+                  </v-layout>
+                </div>
 
                 <!-- user question -->
-                <v-layout row v-if="item.type === 'userInput'">
+                <v-layout
+                  row
+                  v-if="item.type === 'userInput'"
+                >
                   <v-flex xs11>
-                    <v-card color="primary white--text" class="chat-card text-xs-right">
-                      <v-container fluid grid-list-s>
+                    <v-card
+                      color="primary white--text"
+                      class="chat-card text-xs-right"
+                    >
+                      <v-container
+                        fluid
+                        grid-list-s
+                      >
                         <v-layout row>
                           <v-flex>
                             <div class="pr-2">{{item.text}}
@@ -147,7 +332,13 @@
                     </v-card>
                   </v-flex>
                   <v-flex class="text-xs-right">
-                    <v-btn v-long-press="swapInputButton" fab small color="primary white--text" @click="updateInputBox(item.text)">
+                    <v-btn
+                      v-long-press="swapInputButton"
+                      fab
+                      small
+                      color="primary white--text"
+                      @click="updateInputBox(item.text)"
+                    >
                       <v-icon color="white">{{userIcon}}</v-icon>
                     </v-btn>
                   </v-flex>
@@ -162,8 +353,14 @@
         </transition-group>
 
         <!--<div class="text-xs-center mt-3" v-if="liveChatMessage">{{ liveChatMessage }}</div>-->
-        <div class="text-xs-center my-3" v-if="showLiveChatProcessing">
-          <ball-pulse-sync-loader color="#C2C2C2" size="10px"></ball-pulse-sync-loader>
+        <div
+          class="text-xs-center my-3"
+          v-if="showLiveChatProcessing"
+        >
+          <ball-pulse-sync-loader
+            color="#C2C2C2"
+            size="10px"
+          ></ball-pulse-sync-loader>
         </div>
 
       </v-expansion-panel>
@@ -171,39 +368,114 @@
     </v-layout>
     <!-- end -->
     <!-- Date picker dialog -->
-    <v-flex xs12 key="datePicker">
-      <v-dialog ref="dialogDate" v-model="showDate" :return-value.sync="date" lazy width="290px">
-        <v-date-picker v-model="date" scrollable :min="this.$dayjs().format('YYYY-MM-DD')">
+    <v-flex
+      xs12
+      key="datePicker"
+    >
+      <v-dialog
+        ref="dialogDate"
+        v-model="showDate"
+        :return-value.sync="date"
+        lazy
+        width="290px"
+      >
+        <v-date-picker
+          v-model="date"
+          scrollable
+          :min="this.$dayjs().format('YYYY-MM-DD')"
+        >
           <v-spacer></v-spacer>
-          <v-btn flat color="primary" @click="showDate = false">Cancel</v-btn>
-          <v-btn flat color="primary" @click="sendUserInput">OK</v-btn>
+          <v-btn
+            flat
+            color="primary"
+            @click="showDate = false"
+          >Cancel</v-btn>
+          <v-btn
+            flat
+            color="primary"
+            @click="sendUserInput"
+          >OK</v-btn>
         </v-date-picker>
       </v-dialog>
     </v-flex>
     <!-- text & audio input area -->
 
-    <v-footer fixed app height="65" class="teneo-footer" inset>
+    <v-footer
+      fixed
+      app
+      height="65"
+      class="teneo-footer"
+      inset
+    >
 
-      <v-container fluid grid-list-sm>
+      <v-container
+        fluid
+        grid-list-sm
+      >
         <v-layout row>
-          <v-flex xs12 pl-3>
+          <v-flex
+            xs12
+            pl-3
+          >
             <v-divider></v-divider>
-            <v-text-field v-long-press="swapInputButton" v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}" @shortkey.native="swapInputButton" clearable auto-grow solo name="userInput" ref="userInput" @keyup.enter.native="sendUserInput" v-model.trim="userInput" :label="$t('input.box.label')" single-line></v-text-field>
+            <v-text-field
+              v-long-press="swapInputButton"
+              v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
+              @shortkey.native="swapInputButton"
+              clearable
+              auto-grow
+              solo
+              name="userInput"
+              ref="userInput"
+              @keyup.enter.native="sendUserInput"
+              v-model.trim="userInput"
+              :label="$t('input.box.label')"
+              single-line
+            ></v-text-field>
           </v-flex>
           <v-flex>
-            <v-btn fab v-long-press="swapInputButton" v-if="!showAudioInput" small color="primary" class="white--text" @click.native="sendUserInput">
+            <v-btn
+              fab
+              v-long-press="swapInputButton"
+              v-if="!showAudioInput"
+              small
+              color="primary"
+              class="white--text"
+              @click.native="sendUserInput"
+            >
               <v-icon>fa-angle-double-right</v-icon>
             </v-btn>
-            <span v-shortkey="['esc']" @shortkey="stopAudioCapture"></span>
-            <v-btn fab v-long-press="swapInputButton" small v-if="showAudioInput" v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}" @shortkey.native="captureAudio" :color="audioButtonColor" :class="audioButtonClasses" @click.native="captureAudio">
+            <span
+              v-shortkey="['esc']"
+              @shortkey="stopAudioCapture"
+            ></span>
+            <v-btn
+              fab
+              v-long-press="swapInputButton"
+              small
+              v-if="showAudioInput"
+              v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}"
+              @shortkey.native="captureAudio"
+              :color="audioButtonColor"
+              :class="audioButtonClasses"
+              @click.native="captureAudio"
+            >
               <v-icon medium>fa-microphone-alt</v-icon>
             </v-btn>
           </v-flex>
         </v-layout>
       </v-container>
     </v-footer>
-    <div id="scroll-end" ref="pageBottom"></div>
-    <v-snackbar v-model="snackbar" bottom :timeout="snackbarTimeout" auto-height>
+    <div
+      id="scroll-end"
+      ref="pageBottom"
+    ></div>
+    <v-snackbar
+      v-model="snackbar"
+      bottom
+      :timeout="snackbarTimeout"
+      auto-height
+    >
       {{ $t('empty.user.input') }} 😉
     </v-snackbar>
   </v-container>
@@ -299,7 +571,12 @@ export default {
   },
   updated: function() {
     try {
-      this.$SmoothScroll(this.$refs.pageBottom, 2000, null, this.$refs.chatContainer);
+      this.$SmoothScroll(
+        this.$refs.pageBottom,
+        2000,
+        null,
+        this.$refs.chatContainer
+      );
       this.$refs.userInput.focus();
     } catch (e) {
       // do nothing
@@ -323,6 +600,21 @@ export default {
     // }
   },
   methods: {
+    responseHasChunks(item) {
+      return item.type === "reply" && item.text.includes("||");
+    },
+    getChunks(item) {
+      let chunks = item.text.split("||");
+      chunks.shift();
+      return chunks;
+    },
+    itemText(item) {
+      let itemText = item.text;
+      if (itemText.includes("||")) {
+        return itemText.split("||")[0];
+      }
+      return itemText;
+    },
     stopAudioCapture() {
       this.$store.commit("hideListening");
       this.$store.dispatch("stopAudioCapture");
@@ -351,14 +643,19 @@ export default {
       this.$store.commit("hideProgressBar");
     },
     mustShowDate(item) {
-      if (decodeURIComponent(item.teneoResponse.extraData.datePicker) !== "undefined") {
+      if (
+        decodeURIComponent(item.teneoResponse.extraData.datePicker) !==
+        "undefined"
+      ) {
         return true;
       }
       return false;
     },
     hasCollection(item) {
       if (item.hasExtraData && item.type === "reply") {
-        let extensionsRAW = decodeURIComponent(item.teneoResponse.extraData.extensions);
+        let extensionsRAW = decodeURIComponent(
+          item.teneoResponse.extraData.extensions
+        );
         if (extensionsRAW !== "undefined") {
           let action = JSON.parse(extensionsRAW);
           if (action.name.startsWith("displayCollection")) {
@@ -369,12 +666,32 @@ export default {
       return false;
     },
     notLiveChatTranscript(item) {
-      let transcript = decodeURIComponent(item.teneoResponse.extraData.liveChat);
+      let transcript = decodeURIComponent(
+        item.teneoResponse.extraData.liveChat
+      );
       return transcript === "undefined";
+    },
+    hasPermanentOptions(item) {
+      if (item.hasExtraData) {
+        let extensionsRAW = decodeURIComponent(
+          item.teneoResponse.extraData.extensions
+        );
+        if (extensionsRAW !== "undefined") {
+          let action = JSON.parse(extensionsRAW);
+          if (action.name.startsWith("displayCollection")) {
+            if (action.permanent !== "undefined") {
+              return action.permanent;
+            }
+          }
+        }
+      }
+      return false;
     },
     hasLongOptions(item) {
       if (item.hasExtraData) {
-        let extensionsRAW = decodeURIComponent(item.teneoResponse.extraData.extensions);
+        let extensionsRAW = decodeURIComponent(
+          item.teneoResponse.extraData.extensions
+        );
         if (extensionsRAW !== "undefined") {
           let action = JSON.parse(extensionsRAW);
           if (action.name.startsWith("displayCollection")) {
@@ -388,7 +705,9 @@ export default {
     },
     getOptions(item) {
       if (item.hasExtraData) {
-        let extensionsRAW = decodeURIComponent(item.teneoResponse.extraData.extensions);
+        let extensionsRAW = decodeURIComponent(
+          item.teneoResponse.extraData.extensions
+        );
         if (extensionsRAW !== "undefined") {
           let action = JSON.parse(extensionsRAW);
           if (action.name === "displayCollection") {
@@ -396,7 +715,10 @@ export default {
           } else if (action.name.startsWith("displayCollectionBasic")) {
             // console.log(action);
             action.parameters.html = true;
-            action.parameters.items = action.parameters.items.replace(/left/g, "");
+            action.parameters.items = action.parameters.items.replace(
+              /left/g,
+              ""
+            );
             return action.parameters;
           }
         }
@@ -431,13 +753,57 @@ export default {
           // TODO: add some logic
         });
     },
+    modalButtonText(item) {
+      if (item.hasExtraData && item.type === "reply") {
+        let extensionsRAW = decodeURIComponent(
+          item.teneoResponse.extraData.extensions
+        );
+        if (extensionsRAW !== "undefined") {
+          let action = JSON.parse(extensionsRAW);
+          if (action.name.startsWith("displayVideo")) {
+            return "Video";
+          } else if (action.name.startsWith("displayImage")) {
+            return "Image";
+          } else if (action.name.startsWith("displayTable")) {
+            return "Results Table";
+          }
+        }
+      }
+      if (item.teneoResponse.link.href !== "") {
+        return "Page";
+      }
+
+      return "More";
+    },
+    modalButtonIcon(item) {
+      if (item.hasExtraData && item.type === "reply") {
+        let extensionsRAW = decodeURIComponent(
+          item.teneoResponse.extraData.extensions
+        );
+        if (extensionsRAW !== "undefined") {
+          let action = JSON.parse(extensionsRAW);
+          if (action.name.startsWith("displayVideo")) {
+            return "fa-film";
+          } else if (action.name.startsWith("displayImage")) {
+            return "fa-image";
+          } else if (action.name.startsWith("displayTable")) {
+            return "fa-table";
+          }
+        }
+      }
+      if (item.teneoResponse.link.href !== "") {
+        return "fa-link";
+      }
+      return "fa-angle-double-up";
+    },
     showModal(item) {
       this.$store.commit("hideModal"); // hide all modals first
       this.$store.commit("showModal", item);
     },
     captureAudio() {
       if (
-        (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) ||
+        (window.hasOwnProperty("webkitSpeechRecognition") &&
+          window.hasOwnProperty("speechSynthesis")) ||
         Android ||
         webkit
       ) {

@@ -9,7 +9,10 @@ import URL from "url-parse";
 import toHex from "colornames";
 import request from "simple-json-request";
 import stripHtml from "string-strip-html";
-import { STORAGE_KEY, ASR_CORRECTIONS } from "./constants/constants";
+import {
+  STORAGE_KEY,
+  ASR_CORRECTIONS
+} from "./constants/constants";
 
 const translationsEn = {
   "input.box.label": "Say something...",
@@ -27,8 +30,7 @@ const translationsEn = {
   "no.chat.history.body": "Ask me a few questions to get things rolling..",
   "about.page.button": "Learn more",
   "about.page.title": "Teneo by Artificial Solutions",
-  "about.page.content":
-    "Teneo allows your customers to speak to applications, devices and web services in a natural, human-like and intelligent way",
+  "about.page.content": "Teneo allows your customers to speak to applications, devices and web services in a natural, human-like and intelligent way",
   "about.page.url": "https://www.artificial-solutions.com/",
   "help.page.title": "Here are some things that you can ask me"
 };
@@ -49,8 +51,7 @@ const translationsFr = {
   "no.chat.history.body": "Posez-moi quelques questions pour faire avancer les choses..",
   "about.page.button": "Apprendre encore plus",
   "about.page.title": "Teneo par des Artificial Solutions",
-  "about.page.content":
-    "Teneo permet à vos clients de parler des applications, des appareils et des services Web de manière naturelle, humaine et intelligente",
+  "about.page.content": "Teneo permet à vos clients de parler des applications, des appareils et des services Web de manière naturelle, humaine et intelligente",
   "about.page.url": "https://www.artificial-solutions.com/",
   "help.page.title": "Voici quelques choses que vous pouvez me demander"
 };
@@ -71,8 +72,7 @@ const translationsDe = {
   "no.chat.history.body": "Stellen Sie mir ein paar Fragen, um die Dinge ins Rollen zu bringen",
   "about.page.button": "Erfahren Sie mehr",
   "about.page.title": "Teneo von Artificial Solutions",
-  "about.page.content":
-    "Mit Teneo können Ihre Kunden auf natürliche, menschenähnliche und intelligente Weise mit Anwendungen, Geräten und Webdiensten sprechen",
+  "about.page.content": "Mit Teneo können Ihre Kunden auf natürliche, menschenähnliche und intelligente Weise mit Anwendungen, Geräten und Webdiensten sprechen",
   "about.page.url": "https://www.artificial-solutions.com/de/",
   "help.page.title": "Hier sind einige Dinge, die Sie mich fragen können"
 };
@@ -93,8 +93,7 @@ const translationsNl = {
   "no.chat.history.body": "Stel me een paar vragen om dingen aan het rollen te krijgen",
   "about.page.button": "Meer informatie",
   "about.page.title": "Teneo van Artificial Solutions",
-  "about.page.content":
-    "Met Teneo kunnen uw klanten op een natuurlijke, mensachtige en intelligente manier met applicaties, apparaten en webservices spreken",
+  "about.page.content": "Met Teneo kunnen uw klanten op een natuurlijke, mensachtige en intelligente manier met applicaties, apparaten en webservices spreken",
   "about.page.url": "https://www.artificial-solutions.com/nl/",
   "help.page.title": "Hier zijn enkele dingen die u mij kunt vragen"
 };
@@ -115,8 +114,7 @@ const translationsEs = {
   "no.chat.history.body": "Hazme algunas preguntas para que las cosas funcionen",
   "about.page.button": "Aprende más",
   "about.page.title": "Teneo por Artificial Solutions",
-  "about.page.content":
-    "Teneo les permite a sus clientes hablar con aplicaciones, dispositivos y servicios web de forma natural, humana e inteligente",
+  "about.page.content": "Teneo les permite a sus clientes hablar con aplicaciones, dispositivos y servicios web de forma natural, humana e inteligente",
   "about.page.url": "https://www.artificial-solutions.com/es/",
   "help.page.title": "Aquí hay algunas cosas que puedes preguntarme"
 };
@@ -168,7 +166,7 @@ function getParameterByName(name, url) {
 export function storeInit(callback) {
   if (!chatConfig || (chatConfig && chatConfig.solutions.length === 0)) {
     console.log("No config: Looking for default.json");
-    loadDefaultConfig(function() {
+    loadDefaultConfig(function () {
       setupStore(callback);
     });
   } else {
@@ -237,9 +235,9 @@ function setupStore(callback) {
     document.title = activeSolution.name;
 
     // find active CTX parameters and build the parameters part of the URL
-    activeSolution.contextParams.forEach(function(contextParam) {
+    activeSolution.contextParams.forEach(function (contextParam) {
       if (contextParam) {
-        contextParam.values.forEach(function(value) {
+        contextParam.values.forEach(function (value) {
           if (value.active) {
             REQUEST_PARAMETERS = REQUEST_PARAMETERS + "&" + contextParam.name + "=" + encodeURIComponent(value.text);
           }
@@ -259,16 +257,11 @@ function setupStore(callback) {
       soundex: true,
       continuous: false,
       listen: false, // Start recognizing
-      lang:
-        LOCALE === "fr"
-          ? "fr-FR"
-          : LOCALE === "de"
-            ? "de-DE"
-            : LOCALE === "nl"
-              ? "nl-NL"
-              : LOCALE === "es"
-                ? "es-ES"
-                : "en-GB",
+      lang: LOCALE === "fr" ?
+        "fr-FR" : LOCALE === "de" ?
+        "de-DE" : LOCALE === "nl" ?
+        "nl-NL" : LOCALE === "es" ?
+        "es-ES" : "en-GB",
       debug: false
     });
   }
@@ -411,7 +404,8 @@ function setupStore(callback) {
       },
       setUserInput(state, userInput) {
         if (userInput) {
-          state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
+          //state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
+          state.userInput = userInput;
         }
       },
       speakBackResponses(state, useTTS) {
@@ -517,11 +511,11 @@ function setupStore(callback) {
             fullUrl.host +
             fullUrl.pathname +
             "endsession" +
-            (SEND_CTX_PARAMS === "all"
-              ? REQUEST_PARAMETERS.length > 0
-                ? "?" + REQUEST_PARAMETERS.substring(1, REQUEST_PARAMETERS.length)
-                : ""
-              : "");
+            (SEND_CTX_PARAMS === "all" ?
+              REQUEST_PARAMETERS.length > 0 ?
+              "?" + REQUEST_PARAMETERS.substring(1, REQUEST_PARAMETERS.length) :
+              "" :
+              "");
 
           Vue.jsonp(endSessionUrl, {})
             .then(() => {
@@ -543,9 +537,9 @@ function setupStore(callback) {
         // get the greeting message if we haven't done so for this session
         return new Promise((resolve, reject) => {
           Vue.jsonp(TENEO_URL + REQUEST_PARAMETERS, {
-            command: "login"
-            // userInput: ""
-          })
+              command: "login"
+              // userInput: ""
+            })
             .then(json => {
               store.commit("hideChatLoading"); // about to show the greeting - hide the chat loading spinner
               // console.log(decodeURIComponent(json.responseData.answer))
@@ -582,8 +576,8 @@ function setupStore(callback) {
         }
         if (!store.getters.isLiveChat) {
           Vue.jsonp(store.state.teneoUrl + (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params), {
-            userinput: store.state.userInput
-          })
+              userinput: store.state.userInput
+            })
             .then(json => {
               if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
                 console.log("Session is stale");
@@ -695,15 +689,15 @@ function setupStore(callback) {
     UserDictation = artyom.newDictation({
       soundex: true,
       continuous: false, // Enable continuous if HTTPS connection
-      onResult: function(text) {
+      onResult: function (text) {
         clearTimeout(timeoutVar);
         // Do something with the text
         if (text) {
-          text = text.replace(/^\w/, c => c.toUpperCase());
+          //text = text.replace(/^\w/, c => c.toUpperCase());
           text = text.replace(/what's/gi, "what");
           store.state.userInput = text;
         }
-        timeoutVar = setTimeout(function() {
+        timeoutVar = setTimeout(function () {
           // console.log("timeout - aborting recognition");
           UserDictation.stop();
           if (text) {
@@ -711,8 +705,8 @@ function setupStore(callback) {
           }
         }, 800);
       },
-      onStart: function() {},
-      onEnd: function() {
+      onStart: function () {},
+      onEnd: function () {
         store.state.listening = false;
 
         if (store.state.stopAudioCapture) {
@@ -753,7 +747,7 @@ function setupStore(callback) {
             console.log(`Final Transcription: ${fixedUserInput}`);
           }
 
-          setTimeout(function() {
+          setTimeout(function () {
             store.state.userInputReadyForSending = true;
           }, 100);
         }
@@ -920,14 +914,15 @@ function setupStore(callback) {
 
   // android and ios webview ASR and TTS
 
-  window.sendVoiceInput = function(userInput) {
+  window.sendVoiceInput = function (userInput) {
     // console.log(`In SendVoiceInput: ${userInput}`);
-    store.state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
+    //store.state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
+    store.state.userInput = userInput;
     store.state.userInputReadyForSending = true;
     store.state.listening = false;
   };
 
-  window.webviewStartAsr = function() {
+  window.webviewStartAsr = function () {
     // Android
     try {
       Android.startASR("sendVoiceInput");
@@ -943,7 +938,7 @@ function setupStore(callback) {
     }
   };
 
-  window.webviewSay = function(message) {
+  window.webviewSay = function (message) {
     // Android
     try {
       // console.log("TTS Message: " + message);
@@ -960,7 +955,7 @@ function setupStore(callback) {
     }
   };
 
-  window.startASRAfterTTS = function() {
+  window.startASRAfterTTS = function () {
     // console.log("startASRAfterTTS");
     // Android
     try {
