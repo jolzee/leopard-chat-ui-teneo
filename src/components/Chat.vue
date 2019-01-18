@@ -81,7 +81,7 @@
           <v-expansion-panel-content
             class="teneo-dialog"
             v-for="(item,i) in dialog"
-            :key="i"
+            :key="i + 'itemsIter'"
             :hide-actions="true"
           >
 
