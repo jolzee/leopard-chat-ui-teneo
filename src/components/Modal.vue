@@ -1,247 +1,288 @@
 <template>
-  <v-layout>
-    <v-flex xs12>
+  <!-- Display Pusher Message -->
+  <span>
+    <v-layout
+      v-model="displayPusherMessage"
+      row
+      justify-center
+    >
 
       <v-dialog
-        v-model="showModal"
-        leave-absolute
-        scrollable
-        persistent
-        content-class="teneo-modal"
-        hide-overlay
-        fullscreen
+        v-model="showPusher"
+        max-width="290"
       >
-        <v-toolbar
-          dark
-          color="primary"
-          fixed
-          height="64px"
-          :class="toolbarWidth"
+        <v-card>
+          <v-card-title class="headline">Notification</v-card-title>
+
+          <v-card-text>
+            {{ pusherMessage }}<br />
+
+            <img
+              src="https://business.bell.ca/Web/Shop/resources/images/sb/badges/Bell-Hub-2000.jpg"
+              width="260"
+            />
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn
+              color="green darken-1"
+              flat="flat"
+              @click="displayPusherMessage = false"
+            >
+              Close
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-layout>
+
+    <!-- show normal message -->
+    <v-layout>
+      <v-flex xs12>
+
+        <v-dialog
+          v-model="showModal"
+          leave-absolute
+          scrollable
+          persistent
+          content-class="teneo-modal"
+          hide-overlay
+          fullscreen
         >
-          <v-btn
-            fab
-            small
-            @click="hideModal"
-            color="secondary"
+          <v-toolbar
+            dark
+            color="primary"
+            fixed
+            height="64px"
+            :class="toolbarWidth"
           >
-            <v-icon
-              dark
-              medium
-            >close</v-icon>
-          </v-btn>
-          <v-toolbar-title>{{ $t('more.info.title') }}</v-toolbar-title>
-          <v-spacer></v-spacer>
-        </v-toolbar>
-        <v-card
-          class="mb-1 pt-5 modal-height"
-          tile
-        >
+            <v-btn
+              fab
+              small
+              @click="hideModal"
+              color="secondary"
+            >
+              <v-icon
+                dark
+                medium
+              >close</v-icon>
+            </v-btn>
+            <v-toolbar-title>{{ $t('more.info.title') }}</v-toolbar-title>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+          <v-card
+            class="mb-1 pt-5 modal-height"
+            tile
+          >
 
-          <!-- video and audio -->
-          <!-- YouTube -->
-          <vue-plyr v-if="youTubeVideoId">
-            <div class="plyr__video-embed">
-              <iframe
-                :src="`https://www.youtube.com/embed/${youTubeVideoId}?iv_load_policy=1&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1`"
-                allowfullscreen
-                allowtransparency
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            <!-- video and audio -->
+            <!-- YouTube -->
+            <vue-plyr v-if="youTubeVideoId">
+              <div class="plyr__video-embed">
+                <iframe
+                  :src="`https://www.youtube.com/embed/${youTubeVideoId}?iv_load_policy=1&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1`"
+                  allowfullscreen
+                  allowtransparency
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                >
+                </iframe>
+              </div>
+            </vue-plyr>
+            <!-- Vimeo -->
+            <vue-plyr v-if="vimeoVideoId">
+              <div class="plyr__video-embed">
+                <iframe
+                  :src="`https://player.vimeo.com/video/${vimeoVideoId}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media`"
+                  allowfullscreen
+                  allowtransparency
+                  allow="autoplay"
+                >
+                </iframe>
+              </div>
+            </vue-plyr>
+            <!-- Audio -->
+            <vue-plyr v-if="audioUrl">
+              <audio>
+                <source
+                  :src="audioUrl"
+                  :type="audioType"
+                />
+              </audio>
+            </vue-plyr>
+
+            <!-- Misc Video -->
+            <vue-plyr v-if="videoUrl">
+              <video
+                poster="poster.png"
+                src="video.mp4"
               >
-              </iframe>
-            </div>
-          </vue-plyr>
-          <!-- Vimeo -->
-          <vue-plyr v-if="vimeoVideoId">
-            <div class="plyr__video-embed">
-              <iframe
-                :src="`https://player.vimeo.com/video/${vimeoVideoId}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media`"
-                allowfullscreen
-                allowtransparency
-                allow="autoplay"
+                <source
+                  :src="videoUrl"
+                  :type="videoType"
+                />
+              </video>
+            </vue-plyr>
+
+            <v-container class="modal-container">
+              <transition
+                name="modal-image-transition"
+                enter-active-class="animated zoomIn"
               >
-              </iframe>
-            </div>
-          </vue-plyr>
-          <!-- Audio -->
-          <vue-plyr v-if="audioUrl">
-            <audio>
-              <source
-                :src="audioUrl"
-                :type="audioType"
-              />
-            </audio>
-          </vue-plyr>
+                <v-img :src="imageUrl"></v-img>
+                <!-- <v-card-media v-if="imageUrl" :src="imageUrl" height="226px"></v-card-media> -->
+              </transition>
 
-          <!-- Misc Video -->
-          <vue-plyr v-if="videoUrl">
-            <video
-              poster="poster.png"
-              src="video.mp4"
-            >
-              <source
-                :src="videoUrl"
-                :type="videoType"
-              />
-            </video>
-          </vue-plyr>
-
-          <v-container class="modal-container">
-            <transition
-              name="modal-image-transition"
-              enter-active-class="animated zoomIn"
-            >
-              <v-img :src="imageUrl"></v-img>
-              <!-- <v-card-media v-if="imageUrl" :src="imageUrl" height="226px"></v-card-media> -->
-            </transition>
-
-            <v-layout
-              align-start
-              justify-start
-              column
-            >
-              <v-card-title primary-title>
-                <div
-                  class="modal-headline"
-                  v-if="title"
-                  v-html="title"
-                ></div>
-                <span
-                  class="grey--text"
-                  v-if="subTitle"
-                  v-html="subTitle"
-                ></span>
-              </v-card-title>
-            </v-layout>
-            <v-layout
-              align-start
-              justify-center
-              row
-            >
-              <v-card-actions>
-                <v-btn
-                  color="primary"
-                  v-shortkey="['ctrl', 'alt', 'arrowleft']"
-                  @shortkey.native="hideModal"
-                  @click.native="hideModal"
-                >{{ $t('back.to.chat.button') }}
-                </v-btn>
-              </v-card-actions>
-            </v-layout>
-            <div
-              class=" mt-3"
-              v-if="itinerary || bodyText || transactionItems.length || tableRows.length"
-            >
-              <flight-itinerary
-                v-if="itinerary"
-                :itinerary="itinerary"
-              ></flight-itinerary>
-              <v-card-text
-                class="cardText"
-                id="chat-modal-html"
-                v-if="bodyText"
-                v-html="bodyText"
-                scrollable
-              ></v-card-text>
-              <!-- data table tranactions -->
               <v-layout
-                v-if="transactionItems.length > 0 || tableRows.length > 0"
-                align-end
+                align-start
                 justify-start
-                fill-height
+                column
               >
-                <v-layout v-if="tableTitle">
+                <v-card-title primary-title>
+                  <div
+                    class="modal-headline"
+                    v-if="title"
+                    v-html="title"
+                  ></div>
+                  <span
+                    class="grey--text"
+                    v-if="subTitle"
+                    v-html="subTitle"
+                  ></span>
+                </v-card-title>
+              </v-layout>
+              <v-layout
+                align-start
+                justify-center
+                row
+              >
+                <v-card-actions>
+                  <v-btn
+                    color="primary"
+                    v-shortkey="['ctrl', 'alt', 'arrowleft']"
+                    @shortkey.native="hideModal"
+                    @click.native="hideModal"
+                  >{{ $t('back.to.chat.button') }}
+                  </v-btn>
+                </v-card-actions>
+              </v-layout>
+              <div
+                class=" mt-3"
+                v-if="itinerary || bodyText || transactionItems.length || tableRows.length"
+              >
+                <flight-itinerary
+                  v-if="itinerary"
+                  :itinerary="itinerary"
+                ></flight-itinerary>
+                <v-card-text
+                  class="cardText"
+                  id="chat-modal-html"
+                  v-if="bodyText"
+                  v-html="bodyText"
+                  scrollable
+                ></v-card-text>
+                <!-- data table tranactions -->
+                <v-layout
+                  v-if="transactionItems.length > 0 || tableRows.length > 0"
+                  align-end
+                  justify-start
+                  fill-height
+                >
+                  <v-layout v-if="tableTitle">
+                    <v-flex
+                      xs8
+                      ml-4
+                      class=""
+                    >
+                      <h3>{{tableTitle}}</h3>
+                    </v-flex>
+                  </v-layout>
+                  <v-spacer v-else></v-spacer>
                   <v-flex
-                    xs8
-                    ml-4
-                    class=""
+                    xs4
+                    class="mr-2"
                   >
-                    <h3>{{tableTitle}}</h3>
+                    <v-text-field
+                      v-model="search"
+                      append-icon="search"
+                      label="Search"
+                      single-line
+                      hide-details
+                    ></v-text-field>
                   </v-flex>
                 </v-layout>
-                <v-spacer v-else></v-spacer>
-                <v-flex
-                  xs4
-                  class="mr-2"
-                >
-                  <v-text-field
-                    v-model="search"
-                    append-icon="search"
-                    label="Search"
-                    single-line
-                    hide-details
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
 
-              <v-data-table
-                v-if="transactionItems.length > 0"
-                :headers="transactionHeaders"
-                :items="transactionItems"
-                :search="search"
-              >
-                <template
-                  slot="items"
-                  slot-scope="props"
+                <v-data-table
+                  v-if="transactionItems.length > 0"
+                  :headers="transactionHeaders"
+                  :items="transactionItems"
+                  :search="search"
                 >
-                  <td class="text-xs-left">{{ props.item.date }}</td>
-                  <td class="text-xs-left">{{ props.item.description }}</td>
-                  <td class="text-xs-left">{{ props.item.amount }}</td>
-                </template>
-                <v-alert
-                  slot="no-results"
-                  :value="true"
-                  color="error"
-                  icon="warning"
-                >
-                  Your search for "{{ search }}" found no results.
-                </v-alert>
-              </v-data-table>
-
-              <v-data-table
-                v-if="tableRows.length > 0"
-                :headers="tableHeaders"
-                :items="tableRows"
-                :search="search"
-              >
-                <template
-                  slot="items"
-                  slot-scope="props"
-                >
-                  <td
-                    v-for="(header, key) in tableHeaders"
-                    :key='key'
-                    class="text-xs-left"
+                  <template
+                    slot="items"
+                    slot-scope="props"
                   >
-                    {{ props.item[header.value] }}
-                  </td>
-                </template>
-                <v-alert
-                  slot="no-results"
-                  :value="true"
-                  color="error"
-                  icon="warning"
+                    <td class="text-xs-left">{{ props.item.date }}</td>
+                    <td class="text-xs-left">{{ props.item.description }}</td>
+                    <td class="text-xs-left">{{ props.item.amount }}</td>
+                  </template>
+                  <v-alert
+                    slot="no-results"
+                    :value="true"
+                    color="error"
+                    icon="warning"
+                  >
+                    Your search for "{{ search }}" found no results.
+                  </v-alert>
+                </v-data-table>
+
+                <v-data-table
+                  v-if="tableRows.length > 0"
+                  :headers="tableHeaders"
+                  :items="tableRows"
+                  :search="search"
                 >
-                  Your search for "{{ search }}" found no results.
-                </v-alert>
-                <template
-                  v-if="tableFooter"
-                  slot="footer"
-                >
-                  <td colspan="100%">
-                    <strong>{{ tableFooter }}</strong>
-                  </td>
-                </template>
-              </v-data-table>
-            </div>
-            <v-spacer></v-spacer>
-          </v-container>
+                  <template
+                    slot="items"
+                    slot-scope="props"
+                  >
+                    <td
+                      v-for="(header, key) in tableHeaders"
+                      :key='key'
+                      class="text-xs-left"
+                    >
+                      {{ props.item[header.value] }}
+                    </td>
+                  </template>
+                  <v-alert
+                    slot="no-results"
+                    :value="true"
+                    color="error"
+                    icon="warning"
+                  >
+                    Your search for "{{ search }}" found no results.
+                  </v-alert>
+                  <template
+                    v-if="tableFooter"
+                    slot="footer"
+                  >
+                    <td colspan="100%">
+                      <strong>{{ tableFooter }}</strong>
+                    </td>
+                  </template>
+                </v-data-table>
+              </div>
+              <v-spacer></v-spacer>
+            </v-container>
 
-        </v-card>
+          </v-card>
 
-      </v-dialog>
+        </v-dialog>
 
-    </v-flex>
-  </v-layout>
+      </v-flex>
+    </v-layout>
+  </span>
 </template>
 <style scoped>
 .v-toolbar--fixed {
@@ -362,6 +403,8 @@ export default {
   },
   data() {
     return {
+      displayPusherMessage: false,
+      pusherMessage: "",
       title: "",
       subTitle: "",
       imageUrl: "",
@@ -406,7 +449,29 @@ export default {
       transactionItems: []
     };
   },
+  mounted() {
+    console.log("Setting up pusher");
+    var channel = this.$pusher.subscribe("web-channel");
+    console.log("Subscribed to 'web-channel'");
+    let that = this;
+    this.$pusher.bind(
+      "reboot-complete-event-12345",
+      data => {
+        console.log("Message from Teneo: " + data.message);
+        that.pusherMessage = data.message;
+        that.displayPusherMessage = true;
+      },
+      null
+    );
+    console.log("Bound to reboot-complete-event-12345");
+  },
   computed: {
+    showPusher() {
+      if (this.displayPusherMessage) {
+        return true;
+      }
+      return false;
+    },
     toolbarWidth() {
       // console.log("Seeing if we need to adjust toolbar style");
       if (this.modalSize !== "") {

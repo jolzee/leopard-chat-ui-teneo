@@ -586,6 +586,8 @@ export default {
   mounted() {
     this.$el.addEventListener("click", this.onHtmlClick);
     this.$refs.userInput.focus();
+    console.log("In mounted");
+
     // if being shown in webview then show the microphone button by default
 
     // if (

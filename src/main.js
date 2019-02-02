@@ -22,6 +22,9 @@ import "babel-polyfill";
 import parseBool from "parseboolean";
 import "vue2-animate/dist/vue2-animate.min.css";
 import Prism from "prismjs";
+// import pusher from "vue-pusher";
+
+// pusher.logToConsole = true;
 
 import {
   Vuetify,
@@ -71,6 +74,15 @@ storeInit(function(store) {
 
   Vue.use(Dayjs, {
     lang: "en"
+  });
+
+  Vue.use(require("vue-pusher"), {
+    api_key: "45c36b5d20295269c6e5",
+    options: {
+      cluster: "us2",
+      encrypted: true,
+      forceTLS: true
+    }
   });
 
   Vue.use(VuePlyr);
