@@ -1,37 +1,11 @@
 <template>
-  <!-- Display Pusher Message -->
   <span>
-    <v-layout
-      v-model="displayPusherMessage"
-      row
-      justify-center
-    >
 
-      <v-dialog
-        v-model="showPusher"
-        max-width="290"
-      >
-        <v-card>
-          <v-card-title class="headline">Notification</v-card-title>
-
-          <v-card-text>
-            {{ pusherMessage }}<br />
-          </v-card-text>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-
-            <v-btn
-              color="green darken-1"
-              flat="flat"
-              @click="displayPusherMessage = false"
-            >
-              Close
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-layout>
+    <!-- Display Pusher Message -->
+    <Pusher
+      :displayPusherMessage="displayPusherMessage"
+      :pusherMessage="pusherMessage"
+    ></Pusher>
 
     <!-- show normal message -->
     <v-layout>
@@ -72,74 +46,43 @@
             tile
           >
 
-            <!-- video and audio -->
             <!-- YouTube -->
-            <vue-plyr v-if="youTubeVideoId">
-              <div class="plyr__video-embed">
-                <iframe
-                  :src="`https://www.youtube.com/embed/${youTubeVideoId}?iv_load_policy=1&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1`"
-                  allowfullscreen
-                  allowtransparency
-                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                >
-                </iframe>
-              </div>
-            </vue-plyr>
+            <YouTube :videoId="youTubeVideoId"></YouTube>
+
             <!-- Vimeo -->
-            <vue-plyr v-if="vimeoVideoId">
-              <div class="plyr__video-embed">
-                <iframe
-                  :src="`https://player.vimeo.com/video/${vimeoVideoId}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media`"
-                  allowfullscreen
-                  allowtransparency
-                  allow="autoplay"
-                >
-                </iframe>
-              </div>
-            </vue-plyr>
+            <Vimeo :videoId="vimeoVideoId"></Vimeo>
+
             <!-- Audio -->
-            <vue-plyr v-if="audioUrl">
-              <audio>
-                <source
-                  :src="audioUrl"
-                  :type="audioType"
-                />
-              </audio>
-            </vue-plyr>
+            <Audio :url="audioUrl"></Audio>
 
             <!-- Misc Video -->
-            <vue-plyr v-if="videoUrl">
-              <video
-                poster="poster.png"
-                src="video.mp4"
-              >
-                <source
-                  :src="videoUrl"
-                  :type="videoType"
-                />
-              </video>
-            </vue-plyr>
+            <Video
+              :url="videoUrl"
+              :type="videoType"
+            ></Video>
 
             <v-container class="modal-container">
-              <transition
-                name="modal-image-transition"
-                enter-active-class="animated zoomIn"
-              >
-                <v-img :src="imageUrl"></v-img>
-                <!-- <v-card-media v-if="imageUrl" :src="imageUrl" height="226px"></v-card-media> -->
-              </transition>
 
+              <!-- show an image if available -->
+              <ImageAnimation :url="imageUrl"></ImageAnimation>
+
+              <!-- show a carousel of images if available -->
+              <Carousel :imageItems="images"></Carousel>
+
+              <!-- display the modal title and sub-title -->
               <v-layout
                 align-start
                 justify-start
                 column
               >
                 <v-card-title primary-title>
+                  <!-- Main Title -->
                   <div
                     class="modal-headline"
                     v-if="title"
                     v-html="title"
                   ></div>
+                  <!-- Sub-Title -->
                   <span
                     class="grey--text"
                     v-if="subTitle"
@@ -147,12 +90,15 @@
                   ></span>
                 </v-card-title>
               </v-layout>
+
               <v-layout
                 align-start
                 justify-center
                 row
               >
+                <!-- show the close modal button -->
                 <v-card-actions>
+                  <!-- Yes there are keyboard shortcuts to close the modal window -->
                   <v-btn
                     color="primary"
                     v-shortkey="['ctrl', 'alt', 'arrowleft']"
@@ -162,14 +108,16 @@
                   </v-btn>
                 </v-card-actions>
               </v-layout>
+
+              <!-- Show the body text, flight itineary, and any tables if available -->
               <div
                 class=" mt-3"
                 v-if="itinerary || bodyText || transactionItems.length || tableRows.length"
               >
-                <flight-itinerary
-                  v-if="itinerary"
-                  :itinerary="itinerary"
-                ></flight-itinerary>
+                <!-- Show the flight itinerary -->
+                <FlightItinerary :itinerary="itinerary"></FlightItinerary>
+
+                <!-- show the body text -->
                 <v-card-text
                   class="cardText"
                   id="chat-modal-html"
@@ -177,13 +125,15 @@
                   v-html="bodyText"
                   scrollable
                 ></v-card-text>
-                <!-- data table tranactions -->
+
+                <!-- data tables -->
                 <v-layout
                   v-if="transactionItems.length > 0 || tableRows.length > 0"
                   align-end
                   justify-start
                   fill-height
                 >
+                  <!-- table title -->
                   <v-layout v-if="tableTitle">
                     <v-flex
                       xs8
@@ -194,6 +144,7 @@
                     </v-flex>
                   </v-layout>
                   <v-spacer v-else></v-spacer>
+                  <!-- show a search input box for the table -->
                   <v-flex
                     xs4
                     class="mr-2"
@@ -208,65 +159,21 @@
                   </v-flex>
                 </v-layout>
 
-                <v-data-table
-                  v-if="transactionItems.length > 0"
+                <!-- Show the MyBank Transactions as a Table -->
+                <MyBankTransactions
                   :headers="transactionHeaders"
                   :items="transactionItems"
                   :search="search"
-                >
-                  <template
-                    slot="items"
-                    slot-scope="props"
-                  >
-                    <td class="text-xs-left">{{ props.item.date }}</td>
-                    <td class="text-xs-left">{{ props.item.description }}</td>
-                    <td class="text-xs-left">{{ props.item.amount }}</td>
-                  </template>
-                  <v-alert
-                    slot="no-results"
-                    :value="true"
-                    color="error"
-                    icon="warning"
-                  >
-                    Your search for "{{ search }}" found no results.
-                  </v-alert>
-                </v-data-table>
+                ></MyBankTransactions>
 
-                <v-data-table
-                  v-if="tableRows.length > 0"
+                <!-- Show a Generic Data Table -->
+                <Table
                   :headers="tableHeaders"
                   :items="tableRows"
                   :search="search"
-                >
-                  <template
-                    slot="items"
-                    slot-scope="props"
-                  >
-                    <td
-                      v-for="(header, key) in tableHeaders"
-                      :key='key'
-                      class="text-xs-left"
-                    >
-                      {{ props.item[header.value] }}
-                    </td>
-                  </template>
-                  <v-alert
-                    slot="no-results"
-                    :value="true"
-                    color="error"
-                    icon="warning"
-                  >
-                    Your search for "{{ search }}" found no results.
-                  </v-alert>
-                  <template
-                    v-if="tableFooter"
-                    slot="footer"
-                  >
-                    <td colspan="100%">
-                      <strong>{{ tableFooter }}</strong>
-                    </td>
-                  </template>
-                </v-data-table>
+                  :footer="tableFooter"
+                ></Table>
+
               </div>
               <v-spacer></v-spacer>
             </v-container>
@@ -281,16 +188,35 @@
 </template>
 
 <script>
-import FlightItinerary from "./FlightItinerary";
+import FlightItinerary from "./modal/FlightItinerary";
+import Carousel from "./modal/Carousel";
+import YouTube from "./modal/YouTube";
+import Vimeo from "./modal/Vimeo";
+import Video from "./modal/Video";
+import Audio from "./modal/Audio";
+import Pusher from "./modal/Pusher";
+import ImageAnimation from "./modal/ImageAnimation";
+import MyBankTransactions from "./modal/MyBankTransactions";
+import Table from "./modal/Table";
 import { mapGetters } from "vuex";
 
 export default {
   components: {
-    "flight-itinerary": FlightItinerary
+    FlightItinerary,
+    Carousel,
+    YouTube,
+    Vimeo,
+    Video,
+    Audio,
+    Pusher,
+    ImageAnimation,
+    MyBankTransactions,
+    Table
   },
   data() {
     return {
       displayPusherMessage: false,
+      pusherEnabled: false,
       pusherMessage: "",
       showModal: false,
       title: "",
@@ -308,6 +234,7 @@ export default {
       tableTitle: "",
       tableHeaders: [],
       tableRows: [],
+      images: [],
       tableFooter: "",
       search: "",
       modalSize: "small", // small / medium / large / x-large / "" = full screen
@@ -338,20 +265,21 @@ export default {
     };
   },
   mounted() {
-    // console.log("Setting up pusher");
-    // // var channel = this.$pusher.subscribe("web-channel");
-    // this.$pusher.subscribe("web-channel");
-    // console.log("Subscribed to 'web-channel'");
-    // let that = this;
-    // this.$pusher.bind(
-    //   "reboot-complete-event-12345",
-    //   data => {
-    //     console.log("Message from Teneo: " + data.message);
-    //     that.pusherMessage = data.message;
-    //     that.displayPusherMessage = true;
-    //   },
-    //   null
-    // );
+    if (this.pusherEnabled) {
+      console.log("Setting up pusher");
+      this.$pusher.subscribe("web-channel");
+      console.log("Subscribed to 'web-channel'");
+      let that = this;
+      this.$pusher.bind(
+        "some-event-and-possibly-some-unique-id-for-user",
+        data => {
+          console.log("Message from Teneo: " + data.message);
+          that.pusherMessage = data.message;
+          that.displayPusherMessage = true;
+        },
+        null
+      );
+    }
   },
   watch: {
     getModalItem() {
@@ -361,21 +289,14 @@ export default {
         this.$store.getters.getModalItem &&
         this.$store.getters.getShowModal
       ) {
-        // if (this.$store.getters.getShowModal) {
-        //   this.resetModal();
-        // }
         let response = this.$store.getters.getModalItem;
         let teneoResponse = response.teneoResponse;
-        // console.log(teneoResponse);
         let outputLink = decodeURIComponent(teneoResponse.link.href);
         let actionRAW = decodeURIComponent(teneoResponse.extraData.extensions);
         let modalPosition = decodeURIComponent(
           teneoResponse.extraData.modalPosition
         );
         let modalSize = decodeURIComponent(teneoResponse.extraData.modalSize);
-        console.log(
-          "Modal Size:" + modalSize + " Modal Position: " + modalPosition
-        );
         let transcript = decodeURIComponent(teneoResponse.extraData.liveChat);
         let displayModal = false;
 
@@ -614,10 +535,6 @@ export default {
       if (this.$store.getters.getUserInput) {
         this.$store.commit("showProgressBar");
         this.$store.dispatch("sendUserInput");
-        // .then(console.log("Sent user input"))
-        // .catch(err => {
-        //   // TODO: add some logic
-        // });
       }
     },
     updateInputBox(userInput) {
@@ -659,9 +576,6 @@ export default {
       setTimeout(function() {
         that.resetModal();
       }, 1000); // needed to stop weird animations on the close
-
-      // this.$refs.userInput.focus();
-      // TODO: Find a way to make the user input box have focus
     },
     resetModal() {
       console.log("reseting modal values");
@@ -682,6 +596,7 @@ export default {
       this.modalPosition = "right";
       this.removeCustomStylesFromModal();
       this.search = "";
+      this.images = [];
       this.tableTitle = "";
       this.tableHeaders = [];
       this.tableRows = [];

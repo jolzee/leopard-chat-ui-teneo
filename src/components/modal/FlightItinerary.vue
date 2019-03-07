@@ -1,5 +1,6 @@
-<template>
+<template >
   <v-card-text
+    v-if="itinerary"
     scrollable
     class="px-3 text-xs-center"
   >
