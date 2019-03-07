@@ -257,6 +257,7 @@
                         >{{ modalButtonIcon(item) }}</v-icon>
                       </v-btn>
                     </v-flex>
+                    <!-- Date Picker -->
                     <v-flex
                       class="text-xs-right"
                       xs12
@@ -269,6 +270,21 @@
                         @click="showDate = !showDate"
                       >
                         <v-icon>fa-calendar-alt</v-icon>
+                      </v-btn>
+                    </v-flex>
+                    <!-- Time Picker -->
+                    <v-flex
+                      class="text-xs-right"
+                      xs12
+                      v-if="mustShowTime(item) && (i === dialog.length - 1)"
+                    >
+                      <v-btn
+                        small
+                        fab=""
+                        color="info"
+                        @click="showTime = !showTime"
+                      >
+                        <v-icon>fa-clock</v-icon>
                       </v-btn>
                     </v-flex>
                   </v-layout>
@@ -398,6 +414,38 @@
         </v-date-picker>
       </v-dialog>
     </v-flex>
+
+    <!-- Time picker dialog -->
+    <v-flex
+      xs12
+      key="timePicker"
+    >
+      <v-dialog
+        ref="dialogTime"
+        v-model="showTime"
+        :return-value.sync="date"
+        lazy
+        width="290px"
+      >
+
+        <v-time-picker
+          v-model="time"
+          format="24hr"
+        >
+          <v-spacer></v-spacer>
+          <v-btn
+            flat
+            color="primary"
+            @click="showTime = false"
+          >Cancel</v-btn>
+          <v-btn
+            flat
+            color="primary"
+            @click="sendUserInput"
+          >OK</v-btn>
+        </v-time-picker>
+      </v-dialog>
+    </v-flex>
     <!-- text & audio input area -->
 
     <v-footer
@@ -507,7 +555,9 @@ export default {
       snackbar: false,
       snackbarTimeout: 1500,
       showDate: false,
-      date: ""
+      showTime: false,
+      date: "",
+      time: ""
     };
   },
   computed: {
@@ -515,6 +565,9 @@ export default {
       get: function() {
         if (this.date !== "") {
           this.updateInputBox(this.$dayjs(this.date).format("D MMMM YYYY"));
+        }
+        if (this.time !== "") {
+          this.updateInputBox(this.time);
         }
         if (this.$store.state.userInputReadyForSending) {
           this.$store.commit("hideModal"); // hide all modals
@@ -653,6 +706,15 @@ export default {
       }
       return false;
     },
+    mustShowTime(item) {
+      if (
+        decodeURIComponent(item.teneoResponse.extraData.timePicker) !==
+        "undefined"
+      ) {
+        return true;
+      }
+      return false;
+    },
     hasCollection(item) {
       if (item.hasExtraData && item.type === "reply") {
         let extensionsRAW = decodeURIComponent(
@@ -732,7 +794,9 @@ export default {
       if (this.$store.getters.getUserInput) {
         this.$store.commit("showProgressBar");
         this.showDate = false;
+        this.showTime = false;
         this.date = "";
+        this.time = "";
         this.$store
           .dispatch("sendUserInput")
           .then(this.$refs.userInput.focus())
@@ -747,14 +811,9 @@ export default {
     optionClicked(option) {
       this.$store.commit("showProgressBar");
       this.$store.commit("setUserInput", option.name);
-      // if (option.params) {
-      // }
       this.$store
         .dispatch("sendUserInput", option.params ? "&" + option.params : "")
         .then(this.$refs.userInput.focus());
-      // .catch(err => {
-      //   // TODO: add some logic
-      // });
     },
     modalButtonText(item) {
       if (item.hasExtraData && item.type === "reply") {

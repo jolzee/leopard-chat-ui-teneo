@@ -72,6 +72,9 @@
             You can also show a date picker just add an output parameter:
             <prism language="properties">datePicker = true</prism>
 
+            Show a time picker by adding an output parameter:
+            <prism language="properties">timePicker = true</prism>
+
             <h3>Modal Size and Positioning</h3>
 
             <p>To control the size of the respective dialog/modal that displays on the screen you can add either or both of these output parameters.</p>
