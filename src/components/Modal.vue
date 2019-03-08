@@ -1,6 +1,9 @@
 <template>
   <span>
-
+    <CustomModal
+      :items="customModalItems"
+      :toolbarWidth="toolbarWidth"
+    ></CustomModal>
     <!-- Display Pusher Message -->
     <Pusher
       :displayPusherMessage="displayPusherMessage"
@@ -198,6 +201,7 @@ import Pusher from "./modal/Pusher";
 import ImageAnimation from "./modal/ImageAnimation";
 import MyBankTransactions from "./modal/MyBankTransactions";
 import Table from "./modal/Table";
+import CustomModal from "./modal/CustomModal";
 import { mapGetters } from "vuex";
 
 export default {
@@ -211,7 +215,8 @@ export default {
     Pusher,
     ImageAnimation,
     MyBankTransactions,
-    Table
+    Table,
+    CustomModal
   },
   data() {
     return {
@@ -219,6 +224,8 @@ export default {
       pusherEnabled: false,
       pusherMessage: "",
       showModal: false,
+      showCustomModal: false,
+      customModalItems: [],
       title: "",
       subTitle: "",
       imageUrl: "",
@@ -400,6 +407,13 @@ export default {
           if (action.name === "displayPanelCard") {
             this.title = this.getFirstChunk(response.text);
             this.bodyText = action.parameters.content;
+          }
+
+          // Check for a custom modal layout
+          if (action.name.startsWith("displayModal")) {
+            displayModal = false;
+            this.showCustomModal = true;
+            this.customModalItems = action.items;
           }
 
           // check for collection action
@@ -599,6 +613,8 @@ export default {
       this.videoUrl = "";
       this.modalSize = "small";
       this.showModal = false;
+      this.showCustomModal = false;
+      this.customModalItems = [];
       this.modalPosition = "right";
       this.removeCustomStylesFromModal();
       this.search = "";
