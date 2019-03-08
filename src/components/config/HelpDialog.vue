@@ -32,11 +32,15 @@
             <p>And the value differs depending on what you want to achieve.</p>
 
             If you wanted to show an image in a modal, the value should be:
-            <prism language="groovy">${ExtensionHelper.displayImage(url,channel)}</prism>
+            <prism language="groovy">${ExtensionHelper.displayImage(imageUrl,channel)}</prism>
             Where url is a variable containing the url of the image and channel is a variable specifying either
             <strong>webview</strong>,
             <strong>facebook </strong>or
             <strong>slack</strong>
+            <br /><br />
+            <p>If you wanted to show an images in a carousel, the value should be:</p>
+
+            <prism language="groovy">${ExtensionHelper.displayImageCarousel(imageUrlArray,channel)}</prism>
 
             If you want to display a media file (Vimeo, YouTube, mp4, mp3), the value should be:
             <prism language="groovy">${ExtensionHelper.displayVideo(url,channel)}</prism>
@@ -55,17 +59,18 @@
 
             Where myItems is a Map formatted as follows:
 
-            <pre><prism language="groovy">def myItems = ["title": "Please confirm", "items": [
- ["name": "Yes", "params": "jolzee=washere&peter=joles"],
- ["name": "No"],
- ["name": "Maybe"]
-]]</prism></pre>
+            <pre><prism language="groovy">def myItems = ["title": "Please confirm",
+                "items": [
+                  ["name": "Yes"],
+                  ["name": "No"],
+                  ["name": "Maybe", "params": "paramname=this-will-be-sent-back-in-url-when-maybe-option-clicked-optional"]
+                ]]</prism></pre>
             Example media files that can be used with <strong>"displayVideo"</strong>:<br /><br />
             <p>
               <ul>
                 <li><a href="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</a></li>
                 <li><a href="https://www.mfiles.co.uk/mp3-downloads/chopin-nocturne-op9-no2.mp3">https://www.mfiles.co.uk/mp3-downloads/chopin-nocturne-op9-no2.mp3</a></li>
-                <li><a href="https://www.youtube.com/watch?v=-NnuefHCNdU">https://www.youtube.com/watch?v=-NnuefHCNdU</a></li>
+                <li><a href="https://www.youtube.com/watch?v=rayiRwxUGdk">https://www.youtube.com/watch?v=rayiRwxUGdk</a></li>
                 <li><a href="https://vimeo.com/114532272">https://vimeo.com/114532272</a></li>
               </ul>
             </p>

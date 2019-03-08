@@ -377,6 +377,12 @@ export default {
             this.imageUrl = action.parameters.image_url;
           }
 
+          // check for display image action
+          if (action.name === "displayImageCarousel") {
+            this.title = this.getFirstChunk(response.text);
+            this.images = action.parameters.images;
+          }
+
           // check for basic card action
           if (action.name === "displayBasicCard") {
             this.title = action.parameters.title;
