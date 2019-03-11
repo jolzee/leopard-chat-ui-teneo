@@ -355,7 +355,9 @@ export default {
           function() {
             // wait just a bit before animating things - need the chat button to hide first
             chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
-            siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+            if (!this.$store.getters.embed) {
+              siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+            }
           }.bind(this),
           400
         );
@@ -384,9 +386,12 @@ export default {
         return;
       }
       this.hideChatButton = !this.hideChatButton; // toggle the chat button visibility
-
+      let siteFrame;
       //animate the IFrame
-      let siteFrame = document.getElementById("site-frame");
+      if (!this.$store.getters.embed) {
+        siteFrame = document.getElementById("site-frame");
+      }
+
       let chatButton = document.getElementById("chat-open-close-button");
 
       // show chat window - button clicked - login
@@ -398,7 +403,9 @@ export default {
             // wait just a bit before animating things - need the chat button to hide first
             this.hideChat = !this.hideChat; // show the chat window
             chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
-            siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+            if (!this.$store.getters.embed) {
+              siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+            }
           }.bind(this),
           400
         );
@@ -415,7 +422,10 @@ export default {
       } else {
         // hide chat window - button clicked - logout
         this.$store.commit("hideModal");
-        siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
+        if (!this.$store.getters.embed) {
+          siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
+        }
+
         setTimeout(
           function() {
             this.hideChat = !this.hideChat; // close the chat window - i want the iframe to resize first and then the chat window to close

@@ -134,6 +134,7 @@ let store;
 let timeoutVar;
 let TENEO_URL = "";
 let IFRAME_URL = "";
+let EMBED = false;
 let LOCALE = "en";
 let CHAT_TITLE = "Configure Me";
 let RESPONSE_ICON = "";
@@ -251,7 +252,11 @@ function setupStore(callback) {
   }
 
   // update the IFRAME URL
-  document.getElementById("site-frame").src = IFRAME_URL;
+  if (document.getElementById("site-frame")) {
+    document.getElementById("site-frame").src = IFRAME_URL;
+  } else {
+    EMBED = true;
+  }
 
   if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
     artyom = new Artyom();
@@ -279,6 +284,7 @@ function setupStore(callback) {
     state: {
       theme: THEME,
       iframeUrl: IFRAME_URL,
+      embed: EMBED,
       requestParameters: REQUEST_PARAMETERS,
       chatConfig: chatConfig,
       chatTitle: CHAT_TITLE,
@@ -352,6 +358,9 @@ function setupStore(callback) {
       },
       getUserInput() {
         return store.state.userInput;
+      },
+      embed() {
+        return store.state.embed;
       },
       progressBar() {
         return store.state.progressBar;
