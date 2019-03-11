@@ -475,6 +475,7 @@
               solo
               name="userInput"
               ref="userInput"
+              browser-autocomplete="off"
               @keyup.enter.native="sendUserInput"
               v-model.trim="userInput"
               :label="$t('input.box.label')"
