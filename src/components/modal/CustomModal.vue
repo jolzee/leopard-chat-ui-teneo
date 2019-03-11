@@ -46,11 +46,11 @@
                 v-if="item.type === 'title'"
                 v-html="item.value"
               ></div>
-              <span
+              <div
                 class="grey--text add-padding"
                 v-if="item.type === 'subtitle'"
                 v-html="item.value"
-              ></span>
+              ></div>
               <div
                 class="add-padding"
                 v-if="item.type === 'html'"
