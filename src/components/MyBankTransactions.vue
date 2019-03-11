@@ -23,6 +23,7 @@
     </v-alert>
   </v-data-table>
 </template>
+
 <script>
 export default {
   props: ["headers", "items", "search"]

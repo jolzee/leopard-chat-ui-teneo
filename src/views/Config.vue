@@ -211,9 +211,10 @@
                       >
                         <v-btn
                           slot="activator"
-                          fab
                           dark
+                          round
                           small
+                          outline
                           color="indigo"
                           :href="getActiveSolutionDeepLink"
                           target="_blank"
@@ -222,6 +223,7 @@
                         </v-btn>
                         <span>Deep Link</span>
                       </v-tooltip>
+
                     </span>
                   </v-flex>
                 </v-layout>
@@ -1093,66 +1095,6 @@
     ></textarea>
   </v-layout>
 </template>
-<style>
-.select-options {
-  position: fixed !important;
-  /* margin-left: 15px; */
-}
-
-.upload-btn {
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
-.upload-btn input[type="file"] {
-  position: absolute;
-  height: 0.1px;
-  width: 0.1px;
-  overflow: hidden;
-  opacity: 0;
-  z-index: -1;
-}
-
-.upload-btn-hover {
-  cursor: pointer;
-}
-
-.v-tooltip__content {
-  position: fixed !important;
-}
-
-.code-styling {
-  /* margin: 0 !important; */
-  background-color: inherit;
-  /* margin-bottom: -20px !important; */
-}
-
-.coding-font {
-  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
-  font-size: 1em;
-}
-
-.mono-font {
-  font-family: "Courier New", Courier, monospace;
-  font-weight: 500;
-  font-size: 10px !important;
-  line-height: 1;
-}
-
-code {
-  display: unset !important;
-  border-radius: 2px !important;
-  white-space: unset !important;
-  font-size: unset !important;
-  font-weight: unset !important;
-}
-
-pre[class*="language-"] {
-  background-size: 1.2em 1.2em !important;
-  background-color: rgba(76, 43, 112, 1) !important;
-  border-radius: 5px;
-}
-</style>
 
 <script>
 import { Compact } from "vue-color";
@@ -1161,8 +1103,8 @@ import {
   STORAGE_KEY,
   SOLUTION_DEFAULT,
   COLOR_NAMES
-} from "./../constants/constants.js";
-import HelpDialog from "./config/HelpDialog";
+} from "../constants/constants.js";
+import HelpDialog from "../components/HelpDialog";
 import "prismjs/prism";
 import "prismjs/themes/prism-funky.css";
 import "prismjs/components/prism-json.min.js";
@@ -1676,3 +1618,64 @@ export default {
   }
 };
 </script>
+
+<style>
+.select-options {
+  position: fixed !important;
+  /* margin-left: 15px; */
+}
+
+.upload-btn {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.upload-btn input[type="file"] {
+  position: absolute;
+  height: 0.1px;
+  width: 0.1px;
+  overflow: hidden;
+  opacity: 0;
+  z-index: -1;
+}
+
+.upload-btn-hover {
+  cursor: pointer;
+}
+
+.v-tooltip__content {
+  position: fixed !important;
+}
+
+.code-styling {
+  /* margin: 0 !important; */
+  background-color: inherit;
+  /* margin-bottom: -20px !important; */
+}
+
+.coding-font {
+  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  font-size: 1em;
+}
+
+.mono-font {
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 500;
+  font-size: 10px !important;
+  line-height: 1;
+}
+
+code {
+  display: unset !important;
+  border-radius: 2px !important;
+  white-space: unset !important;
+  font-size: unset !important;
+  font-weight: unset !important;
+}
+
+pre[class*="language-"] {
+  background-size: 1.2em 1.2em !important;
+  background-color: rgba(76, 43, 112, 1) !important;
+  border-radius: 5px;
+}
+</style>

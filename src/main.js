@@ -12,8 +12,8 @@ import longpress from "vue-long-press-directive";
 import Dayjs from "vue-dayjs";
 import VuePlyr from "vue-plyr";
 import "vue-plyr/dist/vue-plyr.css";
-import "../public/static/google-fonts/fonts.css";
-import "../public/static/fontawesome-free/css/all.min.css";
+import "./assets/google-fonts/fonts.css";
+import "./assets/fontawesome-free/css/all.min.css";
 
 import {
   LineScaleLoader,

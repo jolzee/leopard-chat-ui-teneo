@@ -42,7 +42,7 @@
           right
           width="250"
         >
-          <v-img src="./static/images/bg/bg.jpg">
+          <v-img :src='backgroundImage()'>
             <v-layout
               pa-4
               column
@@ -106,17 +106,21 @@
           fab
           @click="toggleBrightness"
           style="flex: 0 0 auto;"
-          :color="dark ? 'primary' : 'secondary'"
+          :color="dark ? 'primary': 'secondary'"
         >
           <v-icon
             dark
-            v-text="dark ? 'fa-moon' : 'fa-sun'"
+            v-text="
+            dark
+            ? 'fa-moon'
+            : 'fa-sun'"
           ></v-icon>
         </v-btn>
       </v-toolbar>
       <v-content
         app
-        class="content-area"
+        class="
+            content-area"
       >
         <transition
           name="page-transition"
@@ -135,6 +139,208 @@
     </div>
   </v-app>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      hideChatButton: false,
+      hideChat: true,
+      clipped: false,
+      drawer: false,
+      menuItems: [
+        {
+          icon: "chat",
+          titleKey: "menu.chat",
+          route: "/"
+        },
+        {
+          icon: "help_outline",
+          titleKey: "menu.help",
+          route: "help"
+        },
+        {
+          icon: "history",
+          titleKey: "menu.history",
+          route: "history"
+        },
+        {
+          icon: "memory",
+          titleKey: "menu.about",
+          route: "about"
+        },
+        {
+          icon: "tune",
+          titleKey: "menu.config",
+          route: "config"
+        }
+      ],
+      miniVariant: true,
+      rightDrawer: false
+    };
+  },
+  mounted() {
+    window.addEventListener("resize", this.onResize);
+    if (window.innerWidth <= 480) {
+      this.onResize();
+    }
+  },
+  computed: {
+    menuClass() {
+      if (!this.dark) {
+        return "grey--text text--darken-1";
+      }
+      return "grey--text text--lighten-2";
+    },
+    menuClassText() {
+      if (!this.dark) {
+        return "grey--text text--darken-4 font-weight-bold";
+      }
+      return "grey--text text--lighten-2";
+    },
+    toolbarTitle() {
+      if (this.$route.name === "history") {
+        return this.$t("menu.history");
+      } else if (this.$route.name === "help") {
+        return this.$t("menu.help");
+      } else if (this.$route.name === "about") {
+        return this.$t("menu.about");
+      } else {
+        return this.$store.getters.chatTitle;
+      }
+    },
+    toolbarColor() {
+      return !this.$store.getters.dark ? "primary white--text" : "";
+    },
+    dark() {
+      return this.$store.getters.dark;
+    },
+    progressBar() {
+      return this.$store.getters.progressBar;
+    },
+    getChatState() {
+      if (!this.hideChat) {
+        return "show-the-chat";
+      }
+      return "";
+    }
+  },
+  methods: {
+    backgroundImage() {
+      return require("./assets/bg.jpg");
+    },
+    onResize() {
+      // on mobile devices open the chat window automatically
+      if (window.innerWidth <= 480 && this.hideChat) {
+        this.hideChatButton = true;
+        this.hideChat = false; // show the chat window
+        //animate the IFrame
+        let siteFrame = document.getElementById("site-frame");
+        let chatButton = document.getElementById("chat-open-close-button");
+
+        console.log("ok smaller than 480px");
+        // open the chat automatially and hide the open and close chat button
+        this.$router.push({ name: "chat" }); // make sure we show the main chat window
+        this.$store.commit("showChatLoading"); // display the loading spinner
+
+        setTimeout(
+          function() {
+            // wait just a bit before animating things - need the chat button to hide first
+            chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+            if (!this.$store.getters.embed) {
+              siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+            }
+          }.bind(this),
+          400
+        );
+        this.$store
+          .dispatch("login")
+          .then(() => {
+            console.log("Successfully logged into chat");
+          })
+          .catch(err => {
+            console.log("ERROR LOGGING IN TO CHAT: ", err.message);
+          });
+      } else if (window.innerWidth > 480 && !this.hideChat) {
+        this.hideChatButton = false;
+      }
+    },
+    toggleBrightness() {
+      this.$store.commit("changeTheme");
+    },
+    toggleChat() {
+      if (
+        !this.$store.state.chatConfig ||
+        !this.$store.state.chatConfig.activeSolution
+      ) {
+        this.hideChat = !this.hideChat;
+        this.$router.push({ name: "config" });
+        return;
+      }
+      this.hideChatButton = !this.hideChatButton; // toggle the chat button visibility
+      let siteFrame;
+      //animate the IFrame
+      if (!this.$store.getters.embed) {
+        siteFrame = document.getElementById("site-frame");
+      }
+
+      let chatButton = document.getElementById("chat-open-close-button");
+
+      // show chat window - button clicked - login
+      if (this.hideChat) {
+        this.$router.push({ name: "chat" }); // make sure we show the main chat window
+        this.$store.commit("showChatLoading"); // display the loading spinner
+        setTimeout(
+          function() {
+            // wait just a bit before animating things - need the chat button to hide first
+            this.hideChat = !this.hideChat; // show the chat window
+            chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+            if (!this.$store.getters.embed) {
+              siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+            }
+          }.bind(this),
+          400
+        );
+
+        this.$store
+          .dispatch("login")
+          .then(() => {
+            console.log("Successfully logged into chat");
+            this.hideChatButton = !this.hideChatButton; // only show the chat button after a successful login
+          })
+          .catch(err => {
+            console.log("ERROR LOGGING IN TO CHAT: ", err.message);
+          });
+      } else {
+        // hide chat window - button clicked - logout
+        this.$store.commit("hideModal");
+        if (!this.$store.getters.embed) {
+          siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
+        }
+
+        setTimeout(
+          function() {
+            this.hideChat = !this.hideChat; // close the chat window - i want the iframe to resize first and then the chat window to close
+            chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
+          }.bind(this),
+          1000
+        );
+
+        this.$store.dispatch("endSession").then(() => {
+          this.$store.commit("clearChatHistory"); // clear the dialogs once we have successfully ended the session
+          setTimeout(
+            function() {
+              this.hideChatButton = !this.hideChatButton; // only show the open chat button once the session has ended
+            }.bind(this),
+            800
+          );
+        });
+      }
+    }
+  }
+};
+</script>
+
 <style scoped>
 .v-toolbar {
   width: 360px;
@@ -251,200 +457,3 @@ iframe#site-frame {
   }
 }
 </style>
-<script>
-export default {
-  data() {
-    return {
-      hideChatButton: false,
-      hideChat: true,
-      clipped: false,
-      drawer: false,
-      menuItems: [
-        {
-          icon: "chat",
-          titleKey: "menu.chat",
-          route: "/"
-        },
-        {
-          icon: "help_outline",
-          titleKey: "menu.help",
-          route: "help"
-        },
-        {
-          icon: "history",
-          titleKey: "menu.history",
-          route: "history"
-        },
-        {
-          icon: "memory",
-          titleKey: "menu.about",
-          route: "about"
-        },
-        {
-          icon: "tune",
-          titleKey: "menu.config",
-          route: "config"
-        }
-      ],
-      miniVariant: true,
-      rightDrawer: false
-    };
-  },
-  mounted() {
-    window.addEventListener("resize", this.onResize);
-    if (window.innerWidth <= 480) {
-      this.onResize();
-    }
-  },
-  computed: {
-    menuClass() {
-      if (!this.dark) {
-        return "grey--text text--darken-1";
-      }
-      return "grey--text text--lighten-2";
-    },
-    menuClassText() {
-      if (!this.dark) {
-        return "grey--text text--darken-4 font-weight-bold";
-      }
-      return "grey--text text--lighten-2";
-    },
-    toolbarTitle() {
-      if (this.$route.name === "history") {
-        return this.$t("menu.history");
-      } else if (this.$route.name === "help") {
-        return this.$t("menu.help");
-      } else if (this.$route.name === "about") {
-        return this.$t("menu.about");
-      } else {
-        return this.$store.getters.chatTitle;
-      }
-    },
-    toolbarColor() {
-      return !this.$store.getters.dark ? "primary white--text" : "";
-    },
-    dark() {
-      return this.$store.getters.dark;
-    },
-    progressBar() {
-      return this.$store.getters.progressBar;
-    },
-    getChatState() {
-      if (!this.hideChat) {
-        return "show-the-chat";
-      }
-      return "";
-    }
-  },
-  methods: {
-    onResize() {
-      // on mobile devices open the chat window automatically
-      if (window.innerWidth <= 480 && this.hideChat) {
-        this.hideChatButton = true;
-        this.hideChat = false; // show the chat window
-        //animate the IFrame
-        let siteFrame = document.getElementById("site-frame");
-        let chatButton = document.getElementById("chat-open-close-button");
-
-        console.log("ok smaller than 480px");
-        // open the chat automatially and hide the open and close chat button
-        this.$router.push({ name: "chat" }); // make sure we show the main chat window
-        this.$store.commit("showChatLoading"); // display the loading spinner
-
-        setTimeout(
-          function() {
-            // wait just a bit before animating things - need the chat button to hide first
-            chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
-            if (!this.$store.getters.embed) {
-              siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
-            }
-          }.bind(this),
-          400
-        );
-        this.$store
-          .dispatch("login")
-          .then(() => {
-            console.log("Successfully logged into chat");
-          })
-          .catch(err => {
-            console.log("ERROR LOGGING IN TO CHAT: ", err.message);
-          });
-      } else if (window.innerWidth > 480 && !this.hideChat) {
-        this.hideChatButton = false;
-      }
-    },
-    toggleBrightness() {
-      this.$store.commit("changeTheme");
-    },
-    toggleChat() {
-      if (
-        !this.$store.state.chatConfig ||
-        !this.$store.state.chatConfig.activeSolution
-      ) {
-        this.hideChat = !this.hideChat;
-        this.$router.push({ name: "config" });
-        return;
-      }
-      this.hideChatButton = !this.hideChatButton; // toggle the chat button visibility
-      let siteFrame;
-      //animate the IFrame
-      if (!this.$store.getters.embed) {
-        siteFrame = document.getElementById("site-frame");
-      }
-
-      let chatButton = document.getElementById("chat-open-close-button");
-
-      // show chat window - button clicked - login
-      if (this.hideChat) {
-        this.$router.push({ name: "chat" }); // make sure we show the main chat window
-        this.$store.commit("showChatLoading"); // display the loading spinner
-        setTimeout(
-          function() {
-            // wait just a bit before animating things - need the chat button to hide first
-            this.hideChat = !this.hideChat; // show the chat window
-            chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
-            if (!this.$store.getters.embed) {
-              siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
-            }
-          }.bind(this),
-          400
-        );
-
-        this.$store
-          .dispatch("login")
-          .then(() => {
-            console.log("Successfully logged into chat");
-            this.hideChatButton = !this.hideChatButton; // only show the chat button after a successful login
-          })
-          .catch(err => {
-            console.log("ERROR LOGGING IN TO CHAT: ", err.message);
-          });
-      } else {
-        // hide chat window - button clicked - logout
-        this.$store.commit("hideModal");
-        if (!this.$store.getters.embed) {
-          siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
-        }
-
-        setTimeout(
-          function() {
-            this.hideChat = !this.hideChat; // close the chat window - i want the iframe to resize first and then the chat window to close
-            chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
-          }.bind(this),
-          1000
-        );
-
-        this.$store.dispatch("endSession").then(() => {
-          this.$store.commit("clearChatHistory"); // clear the dialogs once we have successfully ended the session
-          setTimeout(
-            function() {
-              this.hideChatButton = !this.hideChatButton; // only show the open chat button once the session has ended
-            }.bind(this),
-            800
-          );
-        });
-      }
-    }
-  }
-};
-</script>

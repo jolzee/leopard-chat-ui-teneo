@@ -147,7 +147,7 @@ rows = [
             <prism language="groovy">liveChat = ${theDialogThatWillBePassedToTheLiveChatSystem}</prism>
             <p>If you want to be able to check if a live agent is available in Studio you can use the following integration</p>
             <v-img
-              src="static/images/misc/livechat.png"
+              :src="liveChatImage()"
               class="elevation-4"
             ></v-img><br />
             <h3>ASR and TTS</h3>
@@ -243,6 +243,11 @@ export default {
   },
   data() {
     return {};
+  },
+  methods: {
+    liveChatImage() {
+      return require("../assets/images/misc/livechat.png");
+    }
   }
 };
 </script>

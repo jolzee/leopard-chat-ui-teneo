@@ -191,17 +191,17 @@
 </template>
 
 <script>
-import FlightItinerary from "./modal/FlightItinerary";
-import Carousel from "./modal/Carousel";
-import YouTube from "./modal/YouTube";
-import Vimeo from "./modal/Vimeo";
-import Video from "./modal/Video";
-import Audio from "./modal/Audio";
-import Pusher from "./modal/Pusher";
-import ImageAnimation from "./modal/ImageAnimation";
-import MyBankTransactions from "./modal/MyBankTransactions";
-import Table from "./modal/Table";
-import CustomModal from "./modal/CustomModal";
+import FlightItinerary from "./FlightItinerary";
+import Carousel from "./Carousel";
+import YouTube from "./YouTube";
+import Vimeo from "./Vimeo";
+import Video from "./Video";
+import Audio from "./Audio";
+import Pusher from "./Pusher";
+import ImageAnimation from "./ImageAnimation";
+import MyBankTransactions from "./MyBankTransactions";
+import Table from "./Table";
+import CustomModal from "./CustomModal";
 import { mapGetters } from "vuex";
 
 export default {
