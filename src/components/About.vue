@@ -1,19 +1,6 @@
 <template>
   <v-card class="teneo-about-card">
-    <vue-plyr
-      v-if="vimeoVideoId"
-      class="elevation-4"
-    >
-      <div class="plyr__video-embed">
-        <iframe
-          :src="`https://player.vimeo.com/video/${vimeoVideoId}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media`"
-          allowfullscreen
-          allowtransparency
-          allow="autoplay"
-        >
-        </iframe>
-      </div>
-    </vue-plyr>
+    <youTube :videoId="youTubeVideoId"></youTube>
 
     <v-card-title primary-title>
       <div>
@@ -51,10 +38,14 @@
 }
 </style>
 <script>
+import YouTube from "./modal/YouTube";
 export default {
+  components: {
+    YouTube
+  },
   data() {
     return {
-      vimeoVideoId: 214813354,
+      youTubeVideoId: "a4LZFqz-lSg",
       loading: false
     };
   },
