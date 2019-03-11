@@ -18,7 +18,7 @@
         <v-icon class="secondary--text">fa-plane</v-icon>
         <div
           class="info--text mt-1"
-          v-html="itinerary.airlinecode"
+          v-html="itinerary.outbound_flight_number"
         ></div>
       </v-flex>
       <v-flex xs4>
@@ -39,7 +39,7 @@
         <v-icon class="secondary--text">fa-plane</v-icon>
         <div
           class="info--text mt-1"
-          v-html="itinerary.airlinecode"
+          v-html="itinerary.inbound_flight_number"
         ></div>
       </v-flex>
       <v-flex xs4>
