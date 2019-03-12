@@ -29,6 +29,7 @@
             <v-btn
               slot="activator"
               dark
+              fab
               round
               small
               outline
@@ -46,6 +47,7 @@
           >
             <v-btn
               slot="activator"
+              fab
               dark
               round
               small
@@ -114,16 +116,16 @@
                 >
                   <v-flex
                     xs12
-                    sm3
-                    md4
+                    sm12
+                    md6
                     lg6
                     v-if="hasSolutions"
                   >
                     <v-select
-                      style="min-width: 452px;"
+                      style="max-width: 452px;"
                       color="light-blue darken-1"
                       item-avatar="userIcon"
-                      dense
+                      autofocus
                       ref="selectedSolution"
                       item-text="name"
                       item-value="name"
@@ -332,10 +334,6 @@
             </v-tooltip>
 
             <prism language="json">{{ prettyPrintFullConfig }}</prism>
-            <!-- <pre class="language-json">
-
-                <code class="language-json code-styling" v-html="syntaxHighlighted"></code>
-            </pre> -->
 
             <!-- upload new configuration -->
             <v-dialog

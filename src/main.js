@@ -1,3 +1,5 @@
+import "material-design-icons-iconfont/dist/material-design-icons.css";
+import "@fortawesome/fontawesome-free/css/all.css";
 import Vue from "vue";
 import "./plugins/vuetify";
 import App from "./App";
@@ -12,8 +14,6 @@ import longpress from "vue-long-press-directive";
 import Dayjs from "vue-dayjs";
 import VuePlyr from "vue-plyr";
 import "vue-plyr/dist/vue-plyr.css";
-import "./assets/google-fonts/fonts.css";
-import "./assets/fontawesome-free/css/all.min.css";
 
 import {
   LineScaleLoader,
