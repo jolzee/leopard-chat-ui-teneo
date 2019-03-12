@@ -1,31 +1,29 @@
-import "material-design-icons-iconfont/dist/material-design-icons.css";
 import "@fortawesome/fontawesome-free/css/all.css";
+import "material-design-icons-iconfont/dist/material-design-icons.css";
+import parseBool from "parseboolean";
+import Prism from "prismjs";
 import Vue from "vue";
-import "./plugins/vuetify";
-import App from "./App";
-import router from "./router";
-import { storeInit } from "./store";
-import { STORAGE_KEY } from "./constants/constants";
-import Modal from "./components/Modal.vue";
-import Listening from "./components/Listening.vue";
-import VueSession from "vue-session";
+import Dayjs from "vue-dayjs";
+import {
+  BallPulseSyncLoader,
+  BallScaleRippleMultipleLoader,
+  LineScaleLoader,
+  LineScalePulseOutRapidLoader
+} from "vue-loaders";
 import "vue-loaders/dist/vue-loaders.css";
 import longpress from "vue-long-press-directive";
-import Dayjs from "vue-dayjs";
 import VuePlyr from "vue-plyr";
 import "vue-plyr/dist/vue-plyr.css";
-
-import {
-  LineScaleLoader,
-  BallScaleRippleMultipleLoader,
-  LineScalePulseOutRapidLoader,
-  BallPulseSyncLoader
-} from "vue-loaders";
+import VueSession from "vue-session";
 import vueSmoothScroll from "vue-smoothscroll";
-import "babel-polyfill";
-import parseBool from "parseboolean";
 import "vue2-animate/dist/vue2-animate.min.css";
-import Prism from "prismjs";
+import App from "./App";
+import Listening from "./components/Listening.vue"; // component dialog that shows then capturing audio
+import Modal from "./components/Modal.vue";
+import { STORAGE_KEY } from "./constants/solution-config-default";
+import "./plugins/vuetify";
+import router from "./router";
+import { storeInit } from "./store";
 
 if (parseBool(localStorage.getItem(STORAGE_KEY + "darkTheme")) === null) {
   localStorage.setItem(STORAGE_KEY + "darkTheme", "false");
@@ -40,25 +38,16 @@ storeInit(function(store) {
     lang: "en"
   });
 
-  // Vue.use(require("vue-pusher"), {
-  //   api_key: "45c36b5d20295269c6e5",
-  //   options: {
-  //     cluster: "us2",
-  //     encrypted: true,
-  //     forceTLS: true
-  //   }
-  // });
-
   Vue.use(VuePlyr);
   Vue.use(Prism);
-  Vue.use(longpress, { duration: 2000 });
+  Vue.use(longpress, { duration: process.env.VUE_APP_LONG_PRESS_LENGTH });
 
-  Vue.component("teneo-modal", Modal);
-  Vue.component("teneo-listening", Listening);
   Vue.use(VueSession);
   Vue.use(require("vue-shortkey"));
   Vue.use(vueSmoothScroll);
 
+  Vue.component("teneo-modal", Modal);
+  Vue.component("teneo-listening", Listening);
   Vue.component(LineScaleLoader.name, LineScaleLoader);
   Vue.component(LineScalePulseOutRapidLoader.name, LineScalePulseOutRapidLoader);
   Vue.component(BallPulseSyncLoader.name, BallPulseSyncLoader);

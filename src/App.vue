@@ -42,7 +42,10 @@
           right
           width="250"
         >
-          <v-img :src='backgroundImage()'>
+          <v-img
+            :src='backgroundImage()'
+            height="160"
+          >
             <v-layout
               pa-4
               column
@@ -227,7 +230,7 @@ export default {
   },
   methods: {
     backgroundImage() {
-      return require("./assets/bg.jpg");
+      return require("./assets/purple.jpg");
     },
     onResize() {
       // on mobile devices open the chat window automatically
@@ -278,6 +281,7 @@ export default {
         return;
       }
       this.hideChatButton = !this.hideChatButton; // toggle the chat button visibility
+      this.$store.commit("speakBackResponses", false); // always reset audio to not speak when chat button is clicked
       let siteFrame;
       //animate the IFrame
       if (!this.$store.getters.embed) {

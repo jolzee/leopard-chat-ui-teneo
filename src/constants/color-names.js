@@ -1,40 +1,3 @@
-export const SOLUTION_DEFAULT = {
-  name: "",
-  url: "",
-  deepLink: "",
-  iframeUrl: "",
-  sendContextParams: "login",
-  contextParams: [
-    {
-      name: "channel",
-      values: [
-        {
-          text: "webview",
-          active: true
-        }
-      ]
-    }
-  ],
-  locale: "en",
-  chatTitle: "Teneo Chat Client",
-  responseIcon: "fa-robot",
-  userIcon: "fa-comment-alt",
-  useLocalStorage: "false",
-  enableLiveChat: "false",
-  theme: {
-    primary: "#D60270",
-    secondary: "#5B017B",
-    accent: "#4CAF50",
-    error: "#FF5252",
-    info: "#2196F3",
-    success: "#4CAF50",
-    warning: "#FFC107"
-  },
-  knowledgeData: ["What's your name?", "Who created you?"]
-};
-
-export const ASR_CORRECTIONS = [["replacethat", "with this"], ["apparantly", "apparently"]];
-
 export const COLOR_NAMES = [
   "AliceBlue",
   "AntiqueWhite",
@@ -184,5 +147,3 @@ export const COLOR_NAMES = [
   "Yellow",
   "YellowGreen"
 ];
-
-export const STORAGE_KEY = window.location.hostname + window.location.pathname + ":";

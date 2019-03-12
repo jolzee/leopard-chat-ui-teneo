@@ -1,127 +1,20 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import VueJsonp from "vue-jsonp";
-import Artyom from "artyom.js";
-import vuexI18n from "vuex-i18n";
+import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk"; // live chat
+import Artyom from "artyom.js"; // for speech recognition and tts
+import toHex from "colornames"; // can convert html color names to hex equivalent
 import parseBool from "parseboolean";
-import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk";
-import URL from "url-parse";
-import toHex from "colornames";
+import replaceString from "replace-string";
 import request from "simple-json-request";
 import stripHtml from "string-strip-html";
-import { STORAGE_KEY, ASR_CORRECTIONS } from "./constants/constants";
-import replaceString from "replace-string";
+import URL from "url-parse";
+import Vue from "vue";
+import VueJsonp from "vue-jsonp";
+import Vuex from "vuex";
+import vuexI18n from "vuex-i18n"; // i18n the leopard interface
+import { ASR_CORRECTIONS } from "./constants/asr-corrections"; // fix ASR issues before they get to Teneo
+import { STORAGE_KEY } from "./constants/solution-config-default"; // application storage key
+import { TRANSLATIONS } from "./constants/translations"; // add UI translations for different language here
+
 // import request from "request";
-
-const translationsEn = {
-  "input.box.label": "Say something...",
-  "empty.user.input": "Looks like you didn't say anything to me",
-  listening: "Listening...",
-  "more.button": "more",
-  "more.info.title": "More Information",
-  "back.to.chat.button": "back to chat",
-  "menu.chat": "Chat",
-  "menu.about": "About",
-  "menu.help": "Help",
-  "menu.history": "History",
-  "menu.config": "Config",
-  "no.chat.history.title": "No Chat History",
-  "no.chat.history.body": "Ask me a few questions to get things rolling..",
-  "about.page.button": "Learn more",
-  "about.page.title": "Teneo by Artificial Solutions",
-  "about.page.content":
-    "Teneo allows your customers to speak to applications, devices and web services in a natural, human-like and intelligent way",
-  "about.page.url": "https://www.artificial-solutions.com/",
-  "help.page.title": "Here are some things that you can ask me"
-};
-
-const translationsFr = {
-  "input.box.label": "Dis quelquechose...",
-  "empty.user.input": "Tu ne m'as rien dit",
-  listening: "j'écoute",
-  "more.button": "plus",
-  "more.info.title": "Plus d'information",
-  "back.to.chat.button": "retour au chat",
-  "menu.chat": "Parler",
-  "menu.about": "À propos de nous",
-  "menu.help": "Aidez-moi",
-  "menu.history": "Histoire",
-  "menu.config": "Config",
-  "no.chat.history.title": "Aucun historique de discussion",
-  "no.chat.history.body": "Posez-moi quelques questions pour faire avancer les choses..",
-  "about.page.button": "Apprendre encore plus",
-  "about.page.title": "Teneo par des Artificial Solutions",
-  "about.page.content":
-    "Teneo permet à vos clients de parler des applications, des appareils et des services Web de manière naturelle, humaine et intelligente",
-  "about.page.url": "https://www.artificial-solutions.com/",
-  "help.page.title": "Voici quelques choses que vous pouvez me demander"
-};
-
-const translationsDe = {
-  "input.box.label": "Sag etwas...",
-  "empty.user.input": "Sieht aus, als hättest du mir nichts gesagt",
-  listening: "Zuhören...",
-  "more.button": "mehr",
-  "more.info.title": "Weitere Informationen",
-  "back.to.chat.button": "zurück zum Chat",
-  "menu.chat": "Chat",
-  "menu.about": "Ungefähr",
-  "menu.help": "Hilfe",
-  "menu.history": "Geschichte",
-  "menu.config": "Config",
-  "no.chat.history.title": "Kein Chatverlauf",
-  "no.chat.history.body": "Stellen Sie mir ein paar Fragen, um die Dinge ins Rollen zu bringen",
-  "about.page.button": "Erfahren Sie mehr",
-  "about.page.title": "Teneo von Artificial Solutions",
-  "about.page.content":
-    "Mit Teneo können Ihre Kunden auf natürliche, menschenähnliche und intelligente Weise mit Anwendungen, Geräten und Webdiensten sprechen",
-  "about.page.url": "https://www.artificial-solutions.com/de/",
-  "help.page.title": "Hier sind einige Dinge, die Sie mich fragen können"
-};
-
-const translationsNl = {
-  "input.box.label": "Zeg iets...",
-  "empty.user.input": "Het lijkt erop dat je niets tegen me zei",
-  listening: "het luisteren...",
-  "more.button": "meer",
-  "more.info.title": "Meer informatie",
-  "back.to.chat.button": "terug naar chat",
-  "menu.chat": "Babbelen",
-  "menu.about": "Over",
-  "menu.help": "Help",
-  "menu.history": "Geschiedenis",
-  "menu.config": "Config",
-  "no.chat.history.title": "Geen chatgeschiedenis",
-  "no.chat.history.body": "Stel me een paar vragen om dingen aan het rollen te krijgen",
-  "about.page.button": "Meer informatie",
-  "about.page.title": "Teneo van Artificial Solutions",
-  "about.page.content":
-    "Met Teneo kunnen uw klanten op een natuurlijke, mensachtige en intelligente manier met applicaties, apparaten en webservices spreken",
-  "about.page.url": "https://www.artificial-solutions.com/nl/",
-  "help.page.title": "Hier zijn enkele dingen die u mij kunt vragen"
-};
-
-const translationsEs = {
-  "input.box.label": "Di algo...",
-  "empty.user.input": "Parece que no me dijiste nada",
-  listening: "Escuchando...",
-  "more.button": "Más",
-  "more.info.title": "Más información",
-  "back.to.chat.button": "volver al chat",
-  "menu.chat": "Charla",
-  "menu.about": "Acerca de",
-  "menu.help": "Ayuda",
-  "menu.history": "Historia",
-  "menu.config": "Config",
-  "no.chat.history.title": "Sin historial de chat",
-  "no.chat.history.body": "Hazme algunas preguntas para que las cosas funcionen",
-  "about.page.button": "Aprende más",
-  "about.page.title": "Teneo por Artificial Solutions",
-  "about.page.content":
-    "Teneo les permite a sus clientes hablar con aplicaciones, dispositivos y servicios web de forma natural, humana e inteligente",
-  "about.page.url": "https://www.artificial-solutions.com/es/",
-  "help.page.title": "Aquí hay algunas cosas que puedes preguntarme"
-};
 
 // Vue.use(VueLocalStorage);
 Vue.use(VueJsonp, 10000);
@@ -131,20 +24,23 @@ const TENEO_CHAT_HISTORY = "teneo-chat-history";
 const TENEO_CHAT_DARK_THEME = "darkTheme";
 let store;
 
-let timeoutVar;
-let TENEO_URL = "";
-let IFRAME_URL = "";
-let EMBED = false;
-let LOCALE = "en";
-let CHAT_TITLE = "Configure Me";
-let RESPONSE_ICON = "";
-let USER_ICON = "";
-let KNOWLEDGE_DATA = [];
-let SEND_CTX_PARAMS = "login";
 // const USE_LOCAL_STORAGE = parseBool(activeSolution.useLocalStorage);
-let USE_LOCAL_STORAGE = false;
+let artyom = null;
+let CHAT_TITLE = "Configure Me";
+let EMBED = false; // will eventually be used to build standard Web Component
 let ENABLE_LIVE_CHAT = false;
+let IFRAME_URL = "";
+let KNOWLEDGE_DATA = [];
+let LOCALE = "en";
 let REQUEST_PARAMETERS = "";
+let RESPONSE_ICON = "";
+let SEND_CTX_PARAMS = "login";
+let TENEO_URL = "";
+let timeoutVar;
+let USE_LOCAL_STORAGE = false;
+let USE_PUSHER = false;
+let USER_ICON = "";
+
 let THEME = {
   primary: "#D60270",
   secondary: "#5B017B",
@@ -154,9 +50,20 @@ let THEME = {
   success: "#4CAF50",
   warning: "#FFC107"
 }; // default theme
-let artyom = null;
+
 let chatConfig = JSON.parse(localStorage.getItem(STORAGE_KEY + "config"));
 let activeSolution = null;
+
+if (USE_PUSHER) {
+  Vue.use(require("vue-pusher"), {
+    api_key: process.env.VUE_APP_PUSHER_KEY,
+    options: {
+      cluster: "us2",
+      encrypted: true,
+      forceTLS: true
+    }
+  });
+}
 
 function getParameterByName(name, url) {
   if (!url) url = window.location.href;
@@ -220,14 +127,15 @@ function setupStore(callback) {
       }
     }
 
-    TENEO_URL = activeSolution.url + "?viewname=STANDARDJSONP";
-    IFRAME_URL = activeSolution.iframeUrl;
-    LOCALE = activeSolution.locale;
     CHAT_TITLE = activeSolution.chatTitle;
-    RESPONSE_ICON = activeSolution.responseIcon;
-    USER_ICON = activeSolution.userIcon;
+    IFRAME_URL = activeSolution.iframeUrl;
     KNOWLEDGE_DATA = activeSolution.knowledgeData;
+    LOCALE = activeSolution.locale;
+    RESPONSE_ICON = activeSolution.responseIcon;
     SEND_CTX_PARAMS = activeSolution.sendContextParams ? activeSolution.sendContextParams : "login";
+    TENEO_URL = activeSolution.url + "?viewname=STANDARDJSONP";
+    USER_ICON = activeSolution.userIcon;
+
     // const USE_LOCAL_STORAGE = parseBool(activeSolution.useLocalStorage);
     USE_LOCAL_STORAGE = false;
     let theme = activeSolution.theme;
@@ -282,37 +190,37 @@ function setupStore(callback) {
 
   store = new Vuex.Store({
     state: {
-      theme: THEME,
-      iframeUrl: IFRAME_URL,
-      embed: EMBED,
-      requestParameters: REQUEST_PARAMETERS,
+      agentAvatar: null,
+      agentID: null,
+      agentName: null,
       chatConfig: chatConfig,
       chatTitle: CHAT_TITLE,
-      responseIcon: RESPONSE_ICON,
-      userIcon: USER_ICON,
-      knowledgeData: KNOWLEDGE_DATA,
       dark: false,
-      listening: false,
-      speakBackResponses: false,
-      userInputReadyForSending: false,
-      userInput: "",
-      progressBar: false,
-      showModal: false,
-      teneoUrl: TENEO_URL,
       dialog: [],
       dialogHistory: [],
-      modalItem: null,
+      embed: EMBED,
+      enableLiveChat: ENABLE_LIVE_CHAT,
+      iframeUrl: IFRAME_URL,
       isLiveChat: false,
       isWebSite: true,
-      enableLiveChat: ENABLE_LIVE_CHAT,
-      agentName: null,
-      agentID: null,
-      agentAvatar: null,
+      knowledgeData: KNOWLEDGE_DATA,
+      listening: false,
       liveChatMessage: null,
-      showLiveChatProcessing: false,
+      modalItem: null,
+      progressBar: false,
+      requestParameters: REQUEST_PARAMETERS,
+      responseIcon: RESPONSE_ICON,
       showChatLoading: false,
       showConfigModal: true,
-      stopAudioCapture: false
+      showLiveChatProcessing: false,
+      showModal: false,
+      speakBackResponses: false,
+      stopAudioCapture: false,
+      teneoUrl: TENEO_URL,
+      theme: THEME,
+      userIcon: USER_ICON,
+      userInput: "",
+      userInputReadyForSending: false
     },
     getters: {
       chatConfig() {
@@ -580,7 +488,7 @@ function setupStore(callback) {
       sendUserInput(context, params = "") {
         // send user input to Teneo when a live chat has not begun
         if (artyom && artyom.isSpeaking()) {
-          // console.log("Artyom is speaking something. Let's shut it up");
+          // Artyom is speaking something. Let's shut it up
           artyom.shutUp();
         }
         if (!store.getters.isLiveChat) {
@@ -589,10 +497,10 @@ function setupStore(callback) {
           })
             .then(json => {
               if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
-                console.log("Session is stale");
-                store.commit("hideProgressBar");
-                store.dispatch("endSession");
-                return true;
+                console.log("Session is stale.. keep chat open and continue with the new session");
+                // store.commit("hideProgressBar");
+                // store.dispatch("endSession");
+                // return true;
               }
               // console.log(decodeURIComponent(json.responseData.answer))
               const response = {
@@ -679,17 +587,14 @@ function setupStore(callback) {
     }
   });
 
+  // setup i18n for Leopard UI
   Vue.use(vuexI18n.plugin, store);
-
-  Vue.i18n.add("en", translationsEn);
-  Vue.i18n.add("fr", translationsFr);
-  Vue.i18n.add("de", translationsDe);
-  Vue.i18n.add("nl", translationsNl);
-  Vue.i18n.add("nl", translationsNl);
-  Vue.i18n.add("es", translationsEs);
-
+  Object.keys(TRANSLATIONS).forEach(function(key) {
+    Vue.i18n.add(key, TRANSLATIONS[key]);
+  });
   Vue.i18n.set(LOCALE);
 
+  // Artyom Speech Recognition and TTS
   let UserDictation = null;
   if (artyom != null) {
     UserDictation = artyom.newDictation({
@@ -699,7 +604,7 @@ function setupStore(callback) {
         clearTimeout(timeoutVar);
         // Do something with the text
         if (text) {
-          //text = text.replace(/^\w/, c => c.toUpperCase());
+          //text = text.replace(/^\w/, c => c.toUpperCase()); // upercases first letter of user input -- use cautiously
           text = text.replace(/what's/gi, "what");
           store.state.userInput = text;
         }
@@ -765,7 +670,7 @@ function setupStore(callback) {
   let visitorSDK = null;
 
   if (store.state.enableLiveChat) {
-    const liveChatIncLicense = 9243615; // change me https://www.livechatinc.com/
+    const liveChatIncLicense = process.env.VUE_APP_LIVE_CHAT_INC_KEY; // change me https://www.livechatinc.com/
     visitorSDK = LivechatVisitorSDK.init({
       license: liveChatIncLicense
     });

@@ -1116,11 +1116,11 @@
 <script>
 import { Compact } from "vue-color";
 import urlRegex from "url-regex";
+import { COLOR_NAMES } from "../constants/color-names.js";
 import {
   STORAGE_KEY,
-  SOLUTION_DEFAULT,
-  COLOR_NAMES
-} from "../constants/constants.js";
+  SOLUTION_DEFAULT
+} from "../constants/solution-config-default.js";
 import HelpDialog from "../components/HelpDialog";
 import "prismjs/prism";
 import "prismjs/themes/prism-funky.css";

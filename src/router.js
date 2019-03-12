@@ -1,9 +1,9 @@
+import About from "@/views/About";
+import Chat from "@/views/Chat";
+import Config from "@/views/Config";
+import Help from "@/views/Help";
 import Vue from "vue";
 import Router from "vue-router";
-import Chat from "@/views/Chat";
-import About from "@/views/About";
-import Help from "@/views/Help";
-import Config from "@/views/Config";
 
 Vue.use(Router);
 

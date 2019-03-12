@@ -39,11 +39,7 @@ export default {
       loading: false
     };
   },
-  computed: {
-    teneoImage() {
-      return require("../assets/teneo.png");
-    }
-  }
+  computed: {}
 };
 </script>
 

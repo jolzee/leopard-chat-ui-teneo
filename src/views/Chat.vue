@@ -644,16 +644,16 @@ export default {
 
     // if being shown in webview then show the microphone button by default
 
-    // if (
-    //   "Android" in window ||
-    //   "webkit" in window
-    //   // "webkitSpeechRecognition" in window ||
-    //   // "SpeechRecognition" in window
-    // ) {
-    //   // this.swapInputButton();
-    //   this.showAudioInput = true;
-    //   this.$store.commit("speakBackResponses", this.showAudioInput);
-    // }
+    if (
+      "Android" in window ||
+      "webkit" in window
+      // "webkitSpeechRecognition" in window ||
+      // "SpeechRecognition" in window
+    ) {
+      // this.swapInputButton();
+      this.showAudioInput = true;
+      this.$store.commit("speakBackResponses", this.showAudioInput);
+    }
   },
   methods: {
     responseHasChunks(item) {
