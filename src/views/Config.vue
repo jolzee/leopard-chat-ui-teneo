@@ -22,6 +22,43 @@
           </v-flex>
           <v-toolbar-title>Configuration</v-toolbar-title>
           <v-spacer></v-spacer>
+          <v-tooltip
+            open-delay="600"
+            bottom
+          >
+            <v-btn
+              slot="activator"
+              dark
+              round
+              small
+              outline
+              color="indigo"
+              :href="getActiveSolutionDeepLinkMobile"
+              target="_blank"
+            >
+              <v-icon dark>fa-mobile-alt</v-icon>
+            </v-btn>
+            <span>Deep Link Mobile</span>
+          </v-tooltip>
+          <v-tooltip
+            open-delay="600"
+            bottom
+          >
+            <v-btn
+              slot="activator"
+              dark
+              round
+              small
+              outline
+              color="indigo"
+              :href="getActiveSolutionDeepLink"
+              target="_blank"
+            >
+              <v-icon dark>fa-link</v-icon>
+            </v-btn>
+            <span>Deep Link Desktop</span>
+          </v-tooltip>
+          <v-spacer></v-spacer>
           <v-badge
             left
             overlap
@@ -204,24 +241,6 @@
                           <v-icon dark>fa-download</v-icon>
                         </v-btn>
                         <span>Download selected solution's config as a file</span>
-                      </v-tooltip>
-                      <v-tooltip
-                        open-delay="600"
-                        bottom
-                      >
-                        <v-btn
-                          slot="activator"
-                          dark
-                          round
-                          small
-                          outline
-                          color="indigo"
-                          :href="getActiveSolutionDeepLink"
-                          target="_blank"
-                        >
-                          <v-icon dark>fa-link</v-icon>
-                        </v-btn>
-                        <span>Deep Link</span>
                       </v-tooltip>
 
                     </span>
@@ -1173,6 +1192,12 @@ export default {
       return `${location.protocol}//${location.host}${location.pathname}?dl=${
         this.selectedSolution.deepLink
       }`;
+    },
+    getActiveSolutionDeepLinkMobile() {
+      sessionStorage.removeItem(STORAGE_KEY + "teneo-chat-history");
+      return `${location.protocol}//${location.host}${
+        location.pathname
+      }mobile.html?dl=${this.selectedSolution.deepLink}`;
     },
     getCurrentSelectedSolutionConfig() {
       const result = JSON.stringify(this.selectedSolution, null, 2);

@@ -181,7 +181,7 @@ export function storeInit(callback) {
 
 async function loadDefaultConfig(callback) {
   // look for default config on the server
-  const defaultConfigUrl = `${location.protocol}//${location.host}${location.pathname}static/default.json`;
+  const defaultConfigUrl = `${location.protocol}//${location.host}${location.pathname}/../static/default.json`;
 
   request
     .request({
