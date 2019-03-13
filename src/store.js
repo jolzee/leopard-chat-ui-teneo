@@ -207,6 +207,7 @@ function setupStore(callback) {
       listening: false,
       liveChatMessage: null,
       modalItem: null,
+      overlayChat: process.env.VUE_APP_OVERLAY_CHAT,
       progressBar: false,
       requestParameters: REQUEST_PARAMETERS,
       responseIcon: RESPONSE_ICON,
@@ -269,6 +270,9 @@ function setupStore(callback) {
       },
       embed() {
         return store.state.embed;
+      },
+      overlayChat() {
+        return store.state.overlayChat;
       },
       progressBar() {
         return store.state.progressBar;

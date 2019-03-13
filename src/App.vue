@@ -6,6 +6,20 @@
     class="elevation-4"
   >
     <div id="chat-open-close-button">
+      <!-- <v-hover>
+        <v-avatar
+          slot-scope="{ hover }"
+          size="66"
+          :class="`elevation-${hover ? 6 : 2}`"
+          @click="toggleChat"
+          v-show="!hideChatButton"
+        >
+          <img
+            src="https://avatars0.githubusercontent.com/u/36912049?s=460&v=4"
+            alt="Peter"
+          >
+        </v-avatar>
+      </v-hover> -->
       <v-fab-transition>
         <v-btn
           fab
@@ -239,7 +253,10 @@ export default {
         this.hideChatButton = true;
         this.hideChat = false; // show the chat window
         //animate the IFrame
-        let siteFrame = document.getElementById("site-frame");
+        let siteFrame;
+        if (this.$store.getters.embed) {
+          siteFrame = document.getElementById("site-frame");
+        }
         let chatButton = document.getElementById("chat-open-close-button");
 
         console.log("ok smaller than 480px");
@@ -251,7 +268,10 @@ export default {
           function() {
             // wait just a bit before animating things - need the chat button to hide first
             chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
-            if (!this.$store.getters.embed) {
+            if (
+              !this.$store.getters.embed &&
+              !this.$store.getters.overlayChat
+            ) {
               siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
             }
           }.bind(this),
@@ -285,7 +305,7 @@ export default {
       this.$store.commit("speakBackResponses", false); // always reset audio to not speak when chat button is clicked
       let siteFrame;
       //animate the IFrame
-      if (!this.$store.getters.embed) {
+      if (!this.$store.getters.embed && !this.$store.getters.overlayChat) {
         siteFrame = document.getElementById("site-frame");
       }
 
@@ -300,7 +320,10 @@ export default {
             // wait just a bit before animating things - need the chat button to hide first
             this.hideChat = !this.hideChat; // show the chat window
             chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
-            if (!this.$store.getters.embed) {
+            if (
+              !this.$store.getters.embed &&
+              !this.$store.getters.overlayChat
+            ) {
               siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
             }
           }.bind(this),
@@ -319,7 +342,7 @@ export default {
       } else {
         // hide chat window - button clicked - logout
         this.$store.commit("hideModal");
-        if (!this.$store.getters.embed) {
+        if (!this.$store.getters.embed && !this.$store.getters.overlayChat) {
           siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
         }
 
@@ -372,15 +395,6 @@ export default {
 </style>
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
-
-html {
-  overflow: hidden !important;
-}
-
-html,
-body {
-  overscroll-behavior-y: contain !important;
-}
 
 .headline {
   font-size: 1.4em !important;
