@@ -5,17 +5,21 @@
     class="px-3 text-xs-center"
   >
     <h1 class="mb-2">Flight details</h1>
-    <div class="info title elevation-4 py-1">OUTBOUND</div>
+    <div class="info title elevation-4 py-1">
+      OUTBOUND
+    </div>
     <v-layout class="text-xs-center my-2">
       <v-flex xs4>
         <h1>{{ itinerary.outbound_departure_airport }}</h1>
-        <div>{{ itinerary.outbound_departure_date }}</div>
+        <div>{{ itinerary.outbound_departure_date }}
+        </div>
+
       </v-flex>
       <v-flex
         xs4
         pt-2
       >
-        <v-icon class="secondary--text">fa-plane</v-icon>
+        <v-icon class="orange--text">fa-plane</v-icon>
         <div
           class="info--text mt-1"
           v-html="itinerary.outbound_flight_number"
@@ -36,7 +40,7 @@
         xs4
         pt-2
       >
-        <v-icon class="secondary--text">fa-plane</v-icon>
+        <v-icon class="orange--text">fa-plane</v-icon>
         <div
           class="info--text mt-1"
           v-html="itinerary.inbound_flight_number"
