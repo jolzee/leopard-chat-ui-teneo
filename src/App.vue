@@ -139,6 +139,7 @@
         class="loading"
         height="3"
       ></v-progress-linear>
+
     </div>
   </v-app>
 </template>
@@ -330,13 +331,23 @@ export default {
           1000
         );
 
+        // now end the Teneo Session - user clicked the close button - intention is clear
         this.$store.dispatch("endSession").then(() => {
           this.$store.commit("clearChatHistory"); // clear the dialogs once we have successfully ended the session
+
+          // show the loading gif as the window is closing. Although delay a bit
+          setTimeout(
+            function() {
+              this.$store.commit("showChatLoading");
+            }.bind(this),
+            400
+          );
+
           setTimeout(
             function() {
               this.hideChatButton = !this.hideChatButton; // only show the open chat button once the session has ended
             }.bind(this),
-            800
+            1500
           );
         });
       }
