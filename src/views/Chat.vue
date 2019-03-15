@@ -3,8 +3,7 @@
     fluid
     grid-list-s
     id="chat-area"
-    ref="chatContainer"
-    v-bind:class="{ 'dark-scroll': dark, 'light-scroll': !dark,  'chat-container': true}"
+    v-bind:class="{ 'dark-scroll': dark, 'light-scroll': !dark, 'chat-container': true}"
   >
     <v-layout v-if="noHistory && isHistoryPage">
       <v-flex xs12>
@@ -53,333 +52,444 @@
       :message="$t('listening')"
     ></teneo-listening>
 
-    <!-- show the initial loding ball animation when first loading the chat window -->
-
     <v-layout
-      row
-      wrap
-      justify-center
-      align-center
-      class="loading-ball text-xs-center mt-3"
-      v-if="showChatLoading"
+      align-space-between
+      justify-space-between
+      column
+      fill-height
     >
-      <v-flex xs12>
-        <line-scale-loader
-          color="#C2C2C2"
-          size="60px"
-        ></line-scale-loader>
-      </v-flex>
-    </v-layout>
+      <v-flex
+        xs12
+        :class="{'chat-responses-float': this.$store.getters.float, 'chat-responses': !this.$store.getters.float}"
+        ref="chatContainer"
+      >
+        <!-- show the initial loding ball animation when first loading the chat window -->
 
-    <v-layout column>
-      <v-expansion-panel :value="getOpenedItem">
-        <transition-group
-          name="chat-line-transition"
-          enter-active-class="animated zoomIn"
+        <v-layout
+          row
+          wrap
+          justify-center
+          align-center
+          class="loading-ball text-xs-center mt-3"
+          v-if="showChatLoading"
         >
-          <!-- item && hasCollection(item) -->
-          <v-expansion-panel-content
-            class="teneo-dialog"
-            v-for="(item,i) in dialog"
-            :key="i + 'itemsIter'"
-            :hide-actions="true"
+          <v-flex xs12>
+            <line-scale-loader
+              color="#C2C2C2"
+              size="60px"
+            ></line-scale-loader>
+          </v-flex>
+        </v-layout>
+        <v-expansion-panel
+          :value="getOpenedItem"
+          class="chat-container-inner"
+        >
+          <transition-group
+            name="chat-line-transition"
+            enter-active-class="animated zoomIn"
           >
+            <!-- item && hasCollection(item) -->
+            <v-expansion-panel-content
+              class="teneo-dialog"
+              v-for="(item,i) in dialog"
+              :key="i + 'itemsIter'"
+              :hide-actions="true"
+            >
 
-            <div slot="header">
-              <v-container
-                grid-list-xs
-                fluid
-              >
-                <!-- Live Chat Queue -->
-                <div v-if="item.type === 'liveChatQueue'">
-                  <v-alert
-                    :value="true"
-                    color="info"
-                    icon="fa-clock"
-                  >
-                    {{item.text}}
-                  </v-alert>
-                </div>
-                <!-- Live Chat Status -->
-                <div v-if="item.type === 'liveChatStatus'">
-                  <v-alert
-                    :value="true"
-                    color="info"
-                    icon="fa-thumbs-up"
-                  >
-                    {{item.text}}
-                  </v-alert>
-                </div>
-                <div v-if="item.type === 'liveChatEnded'">
-                  <v-alert
-                    :value="true"
-                    color="info"
-                    icon="fa-hand-paper"
-                  >
-                    {{item.text}}
-                  </v-alert>
-                </div>
-                <!-- Live Chat Response -->
-                <v-layout
-                  row
-                  v-if="item.type === 'liveChatResponse'"
+              <div slot="header">
+                <v-container
+                  grid-list-xs
+                  fluid
                 >
-                  <v-flex
-                    xs2
-                    class="text-xs-left mr-2"
-                  >
-                    <v-avatar
-                      size="40px"
-                      color="grey lighten-4 elevation-6 mx-2"
+                  <!-- Live Chat Queue -->
+                  <div v-if="item.type === 'liveChatQueue'">
+                    <v-alert
+                      :value="true"
+                      color="info"
+                      icon="fa-clock"
                     >
-                      <img
-                        :src="item.agentAvatar"
-                        :alt="item.agentName"
-                      >
-                    </v-avatar>
-                  </v-flex>
-                  <v-flex>
-                    <v-card
-                      class="chat-card text-xs-left px-2"
-                      :dark="dark"
+                      {{item.text}}
+                    </v-alert>
+                  </div>
+                  <!-- Live Chat Status -->
+                  <div v-if="item.type === 'liveChatStatus'">
+                    <v-alert
+                      :value="true"
+                      color="info"
+                      icon="fa-thumbs-up"
                     >
-                      <v-container grid-list-s>
-                        <v-layout row>
-                          <v-flex>
-                            <div>
-                              <span
-                                v-html="item.text"
-                                class="teneo-reply"
-                              ></span>
-                            </div>
-                          </v-flex>
-                        </v-layout>
-                      </v-container>
-                    </v-card>
-                  </v-flex>
-                </v-layout>
-                <!-- Reply -->
-                <div v-if="item.type === 'reply'">
-                  <v-layout row>
-                    <v-flex
-                      xs2
-                      class="text-xs-left mr-2"
+                      {{item.text}}
+                    </v-alert>
+                  </div>
+                  <div v-if="item.type === 'liveChatEnded'">
+                    <v-alert
+                      :value="true"
+                      color="info"
+                      icon="fa-hand-paper"
                     >
-                      <v-btn
-                        v-long-press="swapInputButton"
-                        color="secondary"
-                        fab
-                        small
-                      >
-                        <v-icon class="white--text">{{responseIcon}}</v-icon>
-                      </v-btn>
-                    </v-flex>
-                    <v-flex>
-                      <v-card
-                        class="chat-card text-xs-left px-2"
-                        :dark="dark"
-                      >
-                        <span
-                          v-html="itemText(item)"
-                          class="teneo-reply"
-                        ></span>
-                      </v-card>
-                    </v-flex>
-                  </v-layout>
-                  <!-- show any options in the response: for example Yes, No Maybe -->
-                  <v-card
-                    flat
-                    v-if="hasCollection(item) && ((i === dialog.length - 1) || hasPermanentOptions(item))"
-                    class="text-xs-center"
-                    width="320px"
-                  >
-                    <v-card-text v-if="!hasLongOptions(item)">
-                      <h2 v-text="getOptions(item).title"></h2>
-                      <div
-                        v-if="getOptions(item).html"
-                        class="elevation-5 mt-2"
-                        v-html="getOptions(item).items"
-                      >
-                      </div>
-                      <span
-                        v-else
-                        v-for="(option,i) in getOptions(item).items"
-                        :key="i"
-                      >
-                        <v-btn
-                          class="option-btn"
-                          small
-                          color="success"
-                          @click="optionClicked(option)"
-                        >{{option.name}}
-                        </v-btn>
-                      </span>
-                    </v-card-text>
-
-                    <v-list
-                      three-line
-                      dense
-                      subheader
-                      v-else
-                      class="pt-1"
-                    >
-                      <template v-for="(option,i) in getOptions(item).items">
-                        <v-divider :key="i"></v-divider>
-                        <v-list-tile
-                          :key="i"
-                          ripple
-                          @click="optionClicked(option)"
-                          class="options-list"
-                        >
-                          <v-list-tile-content>
-                            <v-list-tile-sub-title class="options-list-subtile">{{option.name}}</v-list-tile-sub-title>
-                          </v-list-tile-content>
-                        </v-list-tile>
-                      </template>
-                    </v-list>
-                  </v-card>
-                  <!-- more info & calendar picker -->
-                  <v-layout row>
-                    <v-flex
-                      xs12
-                      class="text-xs-right"
-                      v-if="item.hasExtraData && !hasCollection(item) && notLiveChatTranscript(item)"
-                    >
-                      <v-btn
-                        class="mr-0"
-                        color="success"
-                        @click="showModal(item)"
-                      >{{ modalButtonText(item) }}
-                        <v-icon
-                          right
-                          small
-                          color="white"
-                        >{{ modalButtonIcon(item) }}</v-icon>
-                      </v-btn>
-                    </v-flex>
-                    <!-- Date Picker -->
-                    <v-flex
-                      class="text-xs-right"
-                      xs12
-                      v-if="mustShowDate(item) && (i === dialog.length - 1)"
-                    >
-                      <v-btn
-                        small
-                        fab=""
-                        color="info"
-                        @click="showDate = !showDate"
-                      >
-                        <v-icon>fa-calendar-alt</v-icon>
-                      </v-btn>
-                    </v-flex>
-                    <!-- Time Picker -->
-                    <v-flex
-                      class="text-xs-right"
-                      xs12
-                      v-if="mustShowTime(item) && (i === dialog.length - 1)"
-                    >
-                      <v-btn
-                        small
-                        fab=""
-                        color="info"
-                        @click="showTime = !showTime"
-                      >
-                        <v-icon>fa-clock</v-icon>
-                      </v-btn>
-                    </v-flex>
-                  </v-layout>
-                </div>
-                <!-- Additional Response Chunks -->
-                <div v-if="responseHasChunks(item)">
-
+                      {{item.text}}
+                    </v-alert>
+                  </div>
+                  <!-- Live Chat Response -->
                   <v-layout
                     row
-                    v-for="(chunkText, index) in getChunks(item)"
-                    :key="index"
+                    v-if="item.type === 'liveChatResponse'"
                   >
                     <v-flex
                       xs2
                       class="text-xs-left mr-2"
                     >
-                      <v-btn
-                        v-long-press="swapInputButton"
-                        color="secondary"
-                        fab
-                        small
+                      <v-avatar
+                        size="40px"
+                        color="grey lighten-4 elevation-6 mx-2"
                       >
-                        <v-icon class="white--text">{{responseIcon}}</v-icon>
-                      </v-btn>
+                        <img
+                          :src="item.agentAvatar"
+                          :alt="item.agentName"
+                        >
+                      </v-avatar>
                     </v-flex>
                     <v-flex>
                       <v-card
                         class="chat-card text-xs-left px-2"
                         :dark="dark"
                       >
-                        <span
-                          v-html="chunkText"
-                          class="teneo-reply"
-                        ></span>
+                        <v-container grid-list-s>
+                          <v-layout row>
+                            <v-flex>
+                              <div>
+                                <span
+                                  v-html="item.text"
+                                  class="teneo-reply"
+                                ></span>
+                              </div>
+                            </v-flex>
+                          </v-layout>
+                        </v-container>
                       </v-card>
                     </v-flex>
                   </v-layout>
-                </div>
-
-                <!-- user question -->
-                <v-layout
-                  row
-                  v-if="item.type === 'userInput'"
-                >
-                  <v-flex xs11>
-                    <v-card
-                      color="primary white--text"
-                      class="chat-card text-xs-right"
+                  <!-- end live chat reply -->
+                  <!-- Reply -->
+                  <template v-if="item.type === 'reply'">
+                    <v-layout
+                      align-start
+                      justify-start
+                      row
+                      fill-height
                     >
-                      <v-container
-                        fluid
-                        grid-list-s
+                      <v-flex
+                        xs2
+                        class="text-xs-left mr-2"
                       >
-                        <v-layout row>
-                          <v-flex>
-                            <div class="pr-2">{{item.text}}
-                            </div>
-                          </v-flex>
-                        </v-layout>
-                      </v-container>
-                    </v-card>
-                  </v-flex>
-                  <v-flex class="text-xs-right">
-                    <v-btn
-                      v-long-press="swapInputButton"
-                      fab
-                      small
-                      color="primary white--text"
-                      @click="updateInputBox(item.text)"
+                        <v-btn
+                          v-long-press="swapInputButton"
+                          color="secondary"
+                          fab
+                          small
+                        >
+                          <v-icon class="white--text">{{responseIcon}}</v-icon>
+                        </v-btn>
+                      </v-flex>
+                      <v-flex shrink>
+                        <v-card
+                          class="chat-card text-xs-left px-2"
+                          :dark="dark"
+                        >
+                          <span
+                            v-html="itemText(item)"
+                            class="teneo-reply"
+                          ></span>
+                        </v-card>
+                      </v-flex>
+                    </v-layout>
+                    <!-- show any options in the response: for example Yes, No Maybe -->
+                    <v-card
+                      flat
+                      v-if="hasCollection(item) && ((i === dialog.length - 1) || hasPermanentOptions(item))"
+                      class="text-xs-center"
+                      width="320px"
                     >
-                      <v-icon color="white">{{userIcon}}</v-icon>
-                    </v-btn>
-                  </v-flex>
-                </v-layout>
+                      <v-card-text v-if="!hasLongOptions(item)">
+                        <h2 v-text="getOptions(item).title"></h2>
+                        <div
+                          v-if="getOptions(item).html"
+                          class="elevation-5 mt-2"
+                          v-html="getOptions(item).items"
+                        >
+                        </div>
+                        <span
+                          v-else
+                          v-for="(option,i) in getOptions(item).items"
+                          :key="i"
+                        >
+                          <v-btn
+                            class="option-btn"
+                            small
+                            color="success"
+                            @click="optionClicked(option)"
+                          >{{option.name}}
+                          </v-btn>
+                        </span>
+                      </v-card-text>
 
-              </v-container>
-              <!-- live chat typing -->
-            </div>
+                      <v-list
+                        three-line
+                        dense
+                        subheader
+                        v-else
+                        class="pt-1"
+                      >
+                        <template v-for="(option,i) in getOptions(item).items">
+                          <v-divider :key="i"></v-divider>
+                          <v-list-tile
+                            :key="i"
+                            ripple
+                            @click="optionClicked(option)"
+                            class="options-list"
+                          >
+                            <v-list-tile-content>
+                              <v-list-tile-sub-title class="options-list-subtile">{{option.name}}</v-list-tile-sub-title>
+                            </v-list-tile-content>
+                          </v-list-tile>
+                        </template>
+                      </v-list>
+                    </v-card>
+                    <!-- more info & calendar picker -->
+                    <v-layout row>
+                      <v-flex
+                        xs12
+                        class="text-xs-right"
+                        v-if="item.hasExtraData && !hasCollection(item) && notLiveChatTranscript(item)"
+                      >
+                        <v-btn
+                          class="mr-0"
+                          color="success"
+                          @click="showModal(item)"
+                        >{{ modalButtonText(item) }}
+                          <v-icon
+                            right
+                            small
+                            color="white"
+                          >{{ modalButtonIcon(item) }}</v-icon>
+                        </v-btn>
+                      </v-flex>
+                      <!-- Date Picker -->
+                      <v-flex
+                        class="text-xs-right"
+                        xs12
+                        v-if="mustShowDate(item) && (i === dialog.length - 1)"
+                      >
+                        <v-btn
+                          small
+                          fab=""
+                          color="info"
+                          @click="showDate = !showDate"
+                        >
+                          <v-icon>fa-calendar-alt</v-icon>
+                        </v-btn>
+                      </v-flex>
+                      <!-- Time Picker -->
+                      <v-flex
+                        class="text-xs-right"
+                        xs12
+                        v-if="mustShowTime(item) && (i === dialog.length - 1)"
+                      >
+                        <v-btn
+                          small
+                          fab=""
+                          color="info"
+                          @click="showTime = !showTime"
+                        >
+                          <v-icon>fa-clock</v-icon>
+                        </v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </template>
+                  <!-- Additional Response Chunks -->
+                  <div v-if="responseHasChunks(item)">
 
-          </v-expansion-panel-content>
+                    <v-layout
+                      row
+                      v-for="(chunkText, index) in getChunks(item)"
+                      :key="index"
+                    >
+                      <v-flex
+                        xs2
+                        class="text-xs-left mr-2"
+                      >
+                        <v-btn
+                          v-long-press="swapInputButton"
+                          color="secondary"
+                          fab
+                          small
+                        >
+                          <v-icon class="white--text">{{responseIcon}}</v-icon>
+                        </v-btn>
+                      </v-flex>
+                      <v-flex>
+                        <v-card
+                          class="chat-card text-xs-left px-2"
+                          :dark="dark"
+                        >
+                          <span
+                            v-html="chunkText"
+                            class="teneo-reply"
+                          ></span>
+                        </v-card>
+                      </v-flex>
+                    </v-layout>
+                  </div>
 
-        </transition-group>
+                  <!-- user question -->
+                  <v-layout
+                    align-start
+                    justify-end
+                    row
+                    fill-height
+                    v-if="item.type === 'userInput'"
+                  >
 
-        <!--<div class="text-xs-center mt-3" v-if="liveChatMessage">{{ liveChatMessage }}</div>-->
-        <div
-          class="text-xs-center my-3"
-          v-if="showLiveChatProcessing"
+                    <v-flex shrink>
+                      <v-card
+                        color="primary white--text"
+                        class="chat-card text-xs-right"
+                      >
+                        <v-container
+                          fluid
+                          grid-list-s
+                        >
+                          <v-layout row>
+                            <v-flex shrink>
+                              <div class="pr-2">{{item.text}}
+                              </div>
+                            </v-flex>
+                          </v-layout>
+                        </v-container>
+                      </v-card>
+                    </v-flex>
+                    <v-flex
+                      shrink
+                      class="text-xs-right"
+                    >
+                      <v-btn
+                        v-long-press="swapInputButton"
+                        fab
+                        small
+                        color="primary white--text"
+                        @click="updateInputBox(item.text)"
+                      >
+                        <v-icon color="white">{{userIcon}}</v-icon>
+                      </v-btn>
+                    </v-flex>
+                  </v-layout>
+
+                </v-container>
+                <!-- live chat typing -->
+              </div>
+
+            </v-expansion-panel-content>
+
+          </transition-group>
+
+          <!--<div class="text-xs-center mt-3" v-if="liveChatMessage">{{ liveChatMessage }}</div>-->
+          <div
+            class="text-xs-center my-3"
+            v-if="showLiveChatProcessing"
+          >
+            <ball-pulse-sync-loader
+              color="#C2C2C2"
+              size="10px"
+            ></ball-pulse-sync-loader>
+          </div>
+          <span
+            id="scroll-end"
+            ref="pageBottom"
+          ></span>
+        </v-expansion-panel>
+
+      </v-flex>
+      <v-flex
+        xs12
+        class="teneo-footer"
+      >
+        <v-progress-linear
+          :indeterminate="true"
+          :active="progressBar"
+          class="loading"
+          height="3"
+        ></v-progress-linear>
+
+        <v-container
+          fluid
+          grid-list-sm
         >
-          <ball-pulse-sync-loader
-            color="#C2C2C2"
-            size="10px"
-          ></ball-pulse-sync-loader>
-        </div>
+          <v-layout row>
+            <v-flex
+              xs12
+              pl-3
+            >
+              <v-divider></v-divider>
+              <v-text-field
+                v-long-press="swapInputButton"
+                v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
+                @shortkey.native="swapInputButton"
+                clearable
+                auto-grow
+                solo
+                name="userInput"
+                ref="userInput"
+                browser-autocomplete="off"
+                @keyup.enter.native="sendUserInput"
+                v-model.trim="userInput"
+                :label="$t('input.box.label')"
+                single-line
+              ></v-text-field>
+            </v-flex>
+            <v-flex>
+              <v-btn
+                fab
+                v-long-press="swapInputButton"
+                v-if="!showAudioInput"
+                small
+                color="primary"
+                class="white--text"
+                @click.native="sendUserInput"
+              >
+                <v-icon>fa-angle-double-right</v-icon>
+              </v-btn>
+              <span
+                v-shortkey="['esc']"
+                @shortkey="stopAudioCapture"
+              ></span>
+              <v-btn
+                fab
+                v-long-press="swapInputButton"
+                small
+                v-if="showAudioInput"
+                v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}"
+                @shortkey.native="captureAudio"
+                :color="audioButtonColor"
+                :class="audioButtonClasses"
+                @click.native="captureAudio"
+              >
+                <v-icon medium>fa-microphone-alt</v-icon>
+              </v-btn>
+              <!-- text & audio input area -->
 
-      </v-expansion-panel>
+              <v-snackbar
+                v-model="snackbar"
+                bottom
+                :timeout="snackbarTimeout"
+                auto-height
+              >
+                {{ $t('empty.user.input') }} 😉
+              </v-snackbar>
+            </v-flex>
+          </v-layout>
+        </v-container>
+
+      </v-flex>
 
     </v-layout>
     <!-- end -->
@@ -446,87 +556,7 @@
         </v-time-picker>
       </v-dialog>
     </v-flex>
-    <!-- text & audio input area -->
 
-    <v-footer
-      fixed
-      app
-      height="65"
-      class="teneo-footer"
-      inset
-    >
-
-      <v-container
-        fluid
-        grid-list-sm
-      >
-        <v-layout row>
-          <v-flex
-            xs12
-            pl-3
-          >
-            <v-divider></v-divider>
-            <v-text-field
-              v-long-press="swapInputButton"
-              v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
-              @shortkey.native="swapInputButton"
-              clearable
-              auto-grow
-              solo
-              name="userInput"
-              ref="userInput"
-              browser-autocomplete="off"
-              @keyup.enter.native="sendUserInput"
-              v-model.trim="userInput"
-              :label="$t('input.box.label')"
-              single-line
-            ></v-text-field>
-          </v-flex>
-          <v-flex>
-            <v-btn
-              fab
-              v-long-press="swapInputButton"
-              v-if="!showAudioInput"
-              small
-              color="primary"
-              class="white--text"
-              @click.native="sendUserInput"
-            >
-              <v-icon>fa-angle-double-right</v-icon>
-            </v-btn>
-            <span
-              v-shortkey="['esc']"
-              @shortkey="stopAudioCapture"
-            ></span>
-            <v-btn
-              fab
-              v-long-press="swapInputButton"
-              small
-              v-if="showAudioInput"
-              v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}"
-              @shortkey.native="captureAudio"
-              :color="audioButtonColor"
-              :class="audioButtonClasses"
-              @click.native="captureAudio"
-            >
-              <v-icon medium>fa-microphone-alt</v-icon>
-            </v-btn>
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-footer>
-    <div
-      id="scroll-end"
-      ref="pageBottom"
-    ></div>
-    <v-snackbar
-      v-model="snackbar"
-      bottom
-      :timeout="snackbarTimeout"
-      auto-height
-    >
-      {{ $t('empty.user.input') }} 😉
-    </v-snackbar>
   </v-container>
 
 </template>
@@ -562,6 +592,9 @@ export default {
     };
   },
   computed: {
+    progressBar() {
+      return this.$store.getters.progressBar;
+    },
     userInput: {
       get: function() {
         if (this.date !== "") {
@@ -633,6 +666,7 @@ export default {
       );
       this.$refs.userInput.focus();
     } catch (e) {
+      console.log(e);
       // do nothing
     }
     // setTimeout(this.hideProgressBar, 2700);
@@ -889,21 +923,18 @@ export default {
 
 .container {
   padding: 0 !important;
-  display: block;
 }
 
-.v-footer {
-  width: 360px;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-  left: auto !important;
+.loading {
+  position: relative;
+  bottom: 8px;
+  margin: 0 !important;
+  margin-bottom: -3px !important;
 }
 
 .v-snack {
-  width: 360px;
-  text-align: center;
-  left: auto !important;
+  position: absolute;
+  bottom: 0px;
 }
 
 .option-btn {
@@ -913,7 +944,6 @@ export default {
 }
 
 .options-list {
-  /* height: 50px !important; */
   height: 50px !important;
 }
 
@@ -922,6 +952,13 @@ export default {
 }
 </style>
 <style>
+.v-expansion-panel__header {
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+  padding-top: 0px !important;
+  padding-bottom: 10px !important;
+}
+
 .v-toolbar__title:not(:first-child) {
   margin-left: 12px !important;
 }
@@ -940,7 +977,8 @@ export default {
   font-size: 16px !important;
   font-weight: 500;
   padding: 5px;
-  margin-top: 6px;
+  padding-left: 10px;
+  margin-top: 10px;
 }
 
 div.options-list a.v-list__tile--link {
@@ -948,15 +986,27 @@ div.options-list a.v-list__tile--link {
   height: inherit !important;
 }
 
-.chat-container {
-  overflow-y: auto !important;
+.chat-responses-float {
+  min-height: calc(80vh - 130px);
+  height: calc(80vh - 130px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.chat-responses {
+  min-height: calc(100vh - 130px);
   height: calc(100vh - 130px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.chat-container {
+  overflow-x: hide !important;
   width: 360px;
 }
 
-#chat-area {
-  overflow-x: hidden !important;
-  overflow-y: overlay;
+.chat-container-inner {
+  overflow-x: hide !important;
 }
 
 span.teneo-reply ul {
@@ -967,11 +1017,10 @@ span.teneo-reply ul {
   padding-top: 8px;
   -webkit-box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.1);
   box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.1);
-}
-
-.teneo-dialog {
-  width: 360px;
-  padding: 0px;
+  position: inherit;
+  bottom: 0px;
+  width: 100%;
+  height: 60px;
 }
 
 .light-scroll::-webkit-scrollbar {
@@ -1005,6 +1054,11 @@ span.teneo-reply ul {
   .teneo-dialog,
   .loading-ball {
     width: 100vw !important;
+  }
+
+  .chat-responses,
+  .chat-responses-float {
+    min-height: calc(100vh - 125px);
   }
 }
 </style>

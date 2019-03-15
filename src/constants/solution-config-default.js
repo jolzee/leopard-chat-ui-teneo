@@ -13,6 +13,7 @@ export const SOLUTION_DEFAULT = {
   ],
   deepLink: "",
   enableLiveChat: "false",
+  float: "false",
   iframeUrl: "",
   knowledgeData: ["What's your name?", "Who created you?"],
   locale: "en",

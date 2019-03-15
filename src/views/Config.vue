@@ -659,6 +659,32 @@
                         <v-flex
                           xs12
                           sm4
+                          class="hidden-xs-only"
+                        >
+                          <v-subheader>Float Chat Window</v-subheader>
+                        </v-flex>
+                        <v-flex
+                          xs12
+                          sm8
+                        >
+                          <v-select
+                            :items="trueFalseOptions"
+                            validate-on-blur
+                            color="light-blue darken-1"
+                            outline
+                            hint="Float Chat Window"
+                            label="Float Chat Window"
+                            :menu-props="{contentClass:'select-options'}"
+                            :tabindex="getTabIndex"
+                            v-model="solution.float"
+                            append-icon="important_devices"
+                          ></v-select>
+                        </v-flex>
+
+                        <v-divider></v-divider>
+                        <v-flex
+                          xs12
+                          sm4
                         >
                           <v-subheader class="mb-2">Theme
                             <v-tooltip

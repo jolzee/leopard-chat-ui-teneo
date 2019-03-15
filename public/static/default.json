@@ -18,6 +18,7 @@
           ]
         }
       ],
+      "float": "true",
       "locale": "fr",
       "chatTitle": "Parlez avec Carrie",
       "responseIcon": "person",
@@ -181,10 +182,7 @@
         "success": "#4CAF50",
         "warning": "#FFC107"
       },
-      "knowledgeData": [
-        "What's your name?",
-        "Who created you?"
-      ]
+      "knowledgeData": ["What's your name?", "Who created you?"]
     },
     {
       "name": "IT Helpdesk - T4",
@@ -253,10 +251,7 @@
         "success": "#4CAF50",
         "warning": "#FFC107"
       },
-      "knowledgeData": [
-        "What's your name?",
-        "Who created you?"
-      ]
+      "knowledgeData": ["What's your name?", "Who created you?"]
     },
     {
       "name": "IT Helpdesk - T5",
@@ -325,10 +320,7 @@
         "success": "#4CAF50",
         "warning": "#FFC107"
       },
-      "knowledgeData": [
-        "What's your name?",
-        "Who created you?"
-      ]
+      "knowledgeData": ["What's your name?", "Who created you?"]
     },
     {
       "name": "MyBank - Mortgage - T4",
@@ -389,10 +381,7 @@
         "success": "#4CAF50",
         "warning": "#CCCCCC"
       },
-      "knowledgeData": [
-        "What's your name?",
-        "Who created you?"
-      ]
+      "knowledgeData": ["What's your name?", "Who created you?"]
     },
     {
       "name": "MyBank - T4",
@@ -453,10 +442,7 @@
         "success": "#4CAF50",
         "warning": "#FFC107"
       },
-      "knowledgeData": [
-        "What's your name?",
-        "Who created you?"
-      ]
+      "knowledgeData": ["What's your name?", "Who created you?"]
     },
     {
       "name": "MyBank - T5",
@@ -517,10 +503,7 @@
         "success": "#4CAF50",
         "warning": "#FFC107"
       },
-      "knowledgeData": [
-        "What's your name?",
-        "Who created you?"
-      ]
+      "knowledgeData": ["What's your name?", "Who created you?"]
     },
     {
       "name": "MyTelecom - T4",
@@ -563,10 +546,7 @@
         "success": "#4CAF50",
         "warning": "#FFC107"
       },
-      "knowledgeData": [
-        "What's your name?",
-        "Who created you?"
-      ]
+      "knowledgeData": ["What's your name?", "Who created you?"]
     },
     {
       "name": "MyTelecom - T5",
@@ -609,10 +589,7 @@
         "success": "#4CAF50",
         "warning": "#FFC107"
       },
-      "knowledgeData": [
-        "What's your name?",
-        "Who created you?"
-      ]
+      "knowledgeData": ["What's your name?", "Who created you?"]
     },
     {
       "name": "myATT",

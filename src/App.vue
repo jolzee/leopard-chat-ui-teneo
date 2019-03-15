@@ -3,7 +3,8 @@
   <v-app
     toolbar
     :dark="dark"
-    class="elevation-4"
+    class="elevation-4 "
+    :class="{'application-float': this.$store.getters.float}"
   >
     <div id="chat-open-close-button">
       <!-- <v-hover>
@@ -102,12 +103,14 @@
           </v-list>
         </v-navigation-drawer>
       </transition>
+
       <v-toolbar
-        app
         :clipped-left="clipped"
-        height="65px"
         :color="toolbarColor"
         :dark="dark"
+        :flat="false"
+        style="z-index: 3;"
+        :class="{'teneo-toolbar-float' : this.$store.getters.float}"
       >
         <v-toolbar-side-icon
           @click.stop="drawer = !drawer"
@@ -147,12 +150,6 @@
         </transition>
         <teneo-modal></teneo-modal>
       </v-content>
-      <v-progress-linear
-        :indeterminate="true"
-        :active="progressBar"
-        class="loading"
-        height="3"
-      ></v-progress-linear>
 
     </div>
   </v-app>
@@ -263,11 +260,17 @@ export default {
         // open the chat automatially and hide the open and close chat button
         this.$router.push({ name: "chat" }); // make sure we show the main chat window
         this.$store.commit("showChatLoading"); // display the loading spinner
-
+        let isChatUiFloating = this.$store.getters.float;
         setTimeout(
           function() {
+            console.log(`In move button left: ${isChatUiFloating}`);
             // wait just a bit before animating things - need the chat button to hide first
-            chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+            if (isChatUiFloating) {
+              chatButton.setAttribute("class", "move-button-left-float"); // reposition the chat button
+            } else {
+              chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+            }
+
             if (
               !this.$store.getters.embed &&
               !this.$store.getters.overlayChat
@@ -315,11 +318,18 @@ export default {
       if (this.hideChat) {
         this.$router.push({ name: "chat" }); // make sure we show the main chat window
         this.$store.commit("showChatLoading"); // display the loading spinner
+        let isChatUiFloating = this.$store.getters.float;
         setTimeout(
           function() {
             // wait just a bit before animating things - need the chat button to hide first
             this.hideChat = !this.hideChat; // show the chat window
-            chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+            console.log(`In move button left: ${isChatUiFloating}`);
+            // wait just a bit before animating things - need the chat button to hide first
+            if (isChatUiFloating) {
+              chatButton.setAttribute("class", "move-button-left-float"); // reposition the chat button
+            } else {
+              chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+            }
             if (
               !this.$store.getters.embed &&
               !this.$store.getters.overlayChat
@@ -379,20 +389,6 @@ export default {
 };
 </script>
 
-<style scoped>
-.v-toolbar {
-  width: 360px;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-  left: auto !important;
-}
-.v-overlay {
-  width: 360px;
-  left: auto !important;
-  right: auto !important;
-}
-</style>
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
@@ -402,42 +398,58 @@ export default {
 
 #chat-open-close-button {
   position: fixed;
-  bottom: 60px;
-  right: 50px;
+  bottom: 10vh;
+  right: 3vw;
+}
+
+.move-button-left-float {
+  right: calc(390px + 5%) !important;
 }
 
 .move-button-left {
-  right: 410px !important;
+  right: 390px !important;
 }
 
 #teneo {
   width: 360px;
+  position: initial !important;
+}
+
+.teneo-toolbar-float {
+  border-radius: 13px 13px 0px 0px;
+  -moz-border-radius: 13px 13px 0px 0px;
+  -webkit-border-radius: 13px 13px 0px 0px;
+  border: 0px solid #000000;
 }
 
 .show-the-chat {
   right: 0 !important;
 }
 
+.application-float {
+  max-height: 80vh !important;
+  height: 80vh !important;
+  right: 5% !important;
+  border-radius: 13px;
+  -moz-border-radius: 13px;
+  -webkit-border-radius: 13px;
+}
+
 .application {
   max-width: 360px;
-  height: 100vh;
+  max-height: 100vh;
+  height: 100vh !important;
+  overflow: inherit;
+  margin: auto;
   position: fixed;
-  right: 0;
   top: 0;
-  overflow: hidden;
+  bottom: 0;
+  right: 0;
 }
 
 .content-area {
-  overflow-y: auto !important;
   height: auto;
-  position: fixed;
-  top: 65px;
-  padding-top: 0 !important;
-}
-
-.loading {
-  position: fixed;
-  bottom: 50px;
+  padding: unset;
 }
 
 .v-navigation-drawer {
@@ -453,7 +465,6 @@ iframe#site-frame {
   left: 0;
   right: 0;
   bottom: 0;
-  /* transition: width 0.2s ease-in-out; */
 }
 
 .contract-iframe {
@@ -474,6 +485,16 @@ iframe#site-frame {
   }
   .application {
     max-width: 100vw !important;
+    max-height: 100vh !important;
+    height: 100vh !important;
+    margin: auto;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0 !important;
+    border-radius: unset;
+    -moz-border-radius: unset;
+    -webkit-border-radius: unset;
   }
 
   iframe#site-frame {
@@ -483,6 +504,12 @@ iframe#site-frame {
 
   #chat-open-close-button {
     display: none;
+  }
+
+  .teneo-toolbar-float {
+    border-radius: unset;
+    -moz-border-radius: unset;
+    -webkit-border-radius: unset;
   }
 }
 </style>

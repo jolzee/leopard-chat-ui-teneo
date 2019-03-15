@@ -245,7 +245,7 @@ export default {
       tableFooter: "",
       search: "",
       modalSize: "small", // small / medium / large / x-large / "" = full screen
-      modalPosition: "right", // left / right / center
+      modalPosition: "center", // left / right / center
       transactionHeaders: [
         {
           text: "Date",
@@ -615,7 +615,7 @@ export default {
       this.showModal = false;
       this.showCustomModal = false;
       this.customModalItems = [];
-      this.modalPosition = "right";
+      this.modalPosition = "center";
       this.removeCustomStylesFromModal();
       this.search = "";
       this.images = [];

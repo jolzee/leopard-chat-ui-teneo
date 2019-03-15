@@ -29,6 +29,7 @@ let artyom = null;
 let CHAT_TITLE = "Configure Me";
 let EMBED = false; // will eventually be used to build standard Web Component
 let ENABLE_LIVE_CHAT = false;
+let FLOAT = false;
 let IFRAME_URL = "";
 let KNOWLEDGE_DATA = [];
 let LOCALE = "en";
@@ -131,6 +132,7 @@ function setupStore(callback) {
     IFRAME_URL = activeSolution.iframeUrl;
     KNOWLEDGE_DATA = activeSolution.knowledgeData;
     LOCALE = activeSolution.locale;
+    FLOAT = activeSolution.float ? activeSolution.float == "true" : false;
     RESPONSE_ICON = activeSolution.responseIcon;
     SEND_CTX_PARAMS = activeSolution.sendContextParams ? activeSolution.sendContextParams : "login";
     TENEO_URL = activeSolution.url + "?viewname=STANDARDJSONP";
@@ -207,7 +209,7 @@ function setupStore(callback) {
       listening: false,
       liveChatMessage: null,
       modalItem: null,
-      overlayChat: process.env.VUE_APP_OVERLAY_CHAT,
+      overlayChat: FLOAT,
       progressBar: false,
       requestParameters: REQUEST_PARAMETERS,
       responseIcon: RESPONSE_ICON,
@@ -272,6 +274,9 @@ function setupStore(callback) {
         return store.state.embed;
       },
       overlayChat() {
+        return store.state.overlayChat;
+      },
+      float() {
         return store.state.overlayChat;
       },
       progressBar() {
