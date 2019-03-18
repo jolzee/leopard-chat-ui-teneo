@@ -203,6 +203,7 @@ function setupStore(callback) {
       embed: EMBED,
       enableLiveChat: ENABLE_LIVE_CHAT,
       iframeUrl: IFRAME_URL,
+      iframeUrlBase: IFRAME_URL ? IFRAME_URL.substring(0, IFRAME_URL.lastIndexOf("/")) + "/" : IFRAME_URL,
       isLiveChat: false,
       isWebSite: true,
       knowledgeData: KNOWLEDGE_DATA,
@@ -228,6 +229,9 @@ function setupStore(callback) {
     getters: {
       chatConfig() {
         return store.chatConfig;
+      },
+      iFrameUrlBase() {
+        return store.state.iframeUrlBase;
       },
       isLiveChat() {
         return store.state.isLiveChat;

@@ -321,12 +321,10 @@ export default {
         // send URL's to the I-FRAME
         if (outputLink !== "") {
           if (outputLink.startsWith("./")) {
-            let currentIframeUrl = document.getElementById("site-frame").src;
-            currentIframeUrl =
-              currentIframeUrl.substring(0, currentIframeUrl.lastIndexOf("/")) +
-              "/" +
+            let currentIframeUrl =
+              this.$store.getters.iFrameUrlBase +
               outputLink.substring(2, outputLink.length);
-            // console.log(currentIframeUrl);
+            console.log(currentIframeUrl);
             document.getElementById("site-frame").src = currentIframeUrl;
           } else {
             document.getElementById("site-frame").src = outputLink;
