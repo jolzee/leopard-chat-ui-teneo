@@ -17,7 +17,7 @@ import { TRANSLATIONS } from "./constants/translations"; // add UI translations 
 // import request from "request";
 
 // Vue.use(VueLocalStorage);
-Vue.use(VueJsonp, 10000);
+Vue.use(VueJsonp, 20000);
 Vue.use(Vuex);
 
 const TENEO_CHAT_HISTORY = "teneo-chat-history";
@@ -355,13 +355,14 @@ function setupStore(callback) {
         store.commit("hideProgressBar");
         let hasExtraData = false;
         if (
-          response.teneoResponse.extraData.extensions ||
-          response.teneoResponse.extraData.liveChat ||
-          response.teneoResponse.link.href
+          response.teneoResponse &&
+          (response.teneoResponse.extraData.extensions ||
+            response.teneoResponse.extraData.liveChat ||
+            response.teneoResponse.link.href)
         ) {
           hasExtraData = true;
         }
-        if (response.teneoResponse.extraData.liveChat) {
+        if (response.teneoResponse && response.teneoResponse.extraData.liveChat) {
           store.commit("liveChatStarted");
         }
 
@@ -560,6 +561,15 @@ function setupStore(callback) {
             })
             .catch(err => {
               console.log(err);
+              if (err.status && err.status === 408) {
+                console.log("Oh dear - Request Timed Out");
+              }
+              // const errorResponse = {
+              //   userInput: store.state.userInput,
+              //   teneoAnswer: "I'm sorry but I'm having a some connectivity issues at the moment. Please try again."
+              // };
+              // context.commit("updateChatWindowAndStorage", errorResponse);
+              store.commit("hideProgressBar");
             });
         } else {
           // send the input to live chat agent and save user input to history

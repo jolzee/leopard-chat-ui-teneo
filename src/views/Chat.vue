@@ -431,6 +431,8 @@
             >
               <v-divider></v-divider>
               <v-text-field
+                :disabled="progressBar"
+                hide-details
                 v-long-press="swapInputButton"
                 v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
                 @shortkey.native="swapInputButton"
