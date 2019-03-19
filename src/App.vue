@@ -483,10 +483,13 @@ iframe#site-frame {
   .v-overlay {
     width: 100vw !important;
   }
+
   .application {
+    min-height: -webkit-fill-available;
     max-width: 100vw !important;
-    max-height: 100vh !important;
-    height: 100vh !important;
+    max-height: 100% !important;
+    /* height: 100vh !important; */
+    height: 100% !important;
     margin: auto;
     position: fixed;
     top: 0;
@@ -495,6 +498,15 @@ iframe#site-frame {
     border-radius: unset;
     -moz-border-radius: unset;
     -webkit-border-radius: unset;
+  }
+
+  /* .chat-responses-float {
+    height: 80vh !important;
+  } */
+
+  .teneo-footer {
+    position: fixed !important;
+    bottom: 10px !important;
   }
 
   iframe#site-frame {
