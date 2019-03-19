@@ -256,6 +256,11 @@ export default {
         }
         let chatButton = document.getElementById("chat-open-close-button");
 
+        // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+        let vh = window.innerHeight * 0.01;
+        // Then we set the value in the --vh custom property to the root of the document
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+
         console.log("ok smaller than 480px");
         // open the chat automatially and hide the open and close chat button
         this.$router.push({ name: "chat" }); // make sure we show the main chat window
@@ -499,10 +504,6 @@ iframe#site-frame {
     -moz-border-radius: unset;
     -webkit-border-radius: unset;
   }
-
-  /* .chat-responses-float {
-    height: 80vh !important;
-  } */
 
   .teneo-footer {
     position: fixed !important;
