@@ -1063,8 +1063,8 @@ span.teneo-reply ul {
 
   .chat-responses,
   .chat-responses-float {
-    max-height: calc(100vh - 125px);
-    max-height: calc(var(--vh, 1vh) * 100 - 125px);
+    min-height: calc(100vh - 125px);
+    min-height: calc(var(--vh, 1vh) * 100 - 125px);
   }
 }
 </style>
