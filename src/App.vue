@@ -490,7 +490,6 @@ iframe#site-frame {
   }
 
   .application {
-    min-height: -webkit-fill-available;
     max-width: 100vw !important;
     max-height: 100% !important;
     /* height: 100vh !important; */
