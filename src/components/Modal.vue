@@ -191,84 +191,84 @@
 </template>
 
 <script>
-import FlightItinerary from "./FlightItinerary";
-import Carousel from "./Carousel";
-import YouTube from "./YouTube";
-import Vimeo from "./Vimeo";
-import Video from "./Video";
 import Audio from "./Audio";
-import Pusher from "./Pusher";
+import Carousel from "./Carousel";
+import CustomModal from "./CustomModal";
+import FlightItinerary from "./FlightItinerary";
 import ImageAnimation from "./ImageAnimation";
 import MyBankTransactions from "./MyBankTransactions";
+import Pusher from "./Pusher";
 import Table from "./Table";
-import CustomModal from "./CustomModal";
+import Video from "./Video";
+import Vimeo from "./Vimeo";
+import YouTube from "./YouTube";
 import { mapGetters } from "vuex";
 
 export default {
   components: {
-    FlightItinerary,
-    Carousel,
-    YouTube,
-    Vimeo,
-    Video,
     Audio,
-    Pusher,
+    Carousel,
+    CustomModal,
+    FlightItinerary,
     ImageAnimation,
     MyBankTransactions,
+    Pusher,
     Table,
-    CustomModal
+    Video,
+    Vimeo,
+    YouTube
   },
   data() {
     return {
-      displayPusherMessage: false,
-      pusherEnabled: false,
-      pusherMessage: "",
-      showModal: false,
-      showCustomModal: false,
-      customModalItems: [],
-      title: "",
-      subTitle: "",
-      imageUrl: "",
       actions: "",
-      bodyText: "",
-      youTubeVideoId: "",
-      vimeoVideoId: "",
-      itinerary: "",
       audioType: "",
       audioUrl: "",
-      videoType: "",
-      videoUrl: "",
-      tableTitle: "",
+      bodyText: "",
+      customModalItems: [],
+      displayPusherMessage: false,
+      images: [],
+      imageUrl: "",
+      itinerary: "",
+      modalPosition: "center", // left / right / center
+      modalSize: "small", // small / medium / large / x-large / "" = full screen
+      pusherEnabled: false,
+      pusherMessage: "",
+      search: "",
+      showCustomModal: false,
+      showModal: false,
+      subTitle: "",
+      tableFooter: "",
       tableHeaders: [],
       tableRows: [],
-      images: [],
-      tableFooter: "",
-      search: "",
-      modalSize: "small", // small / medium / large / x-large / "" = full screen
-      modalPosition: "center", // left / right / center
+      tableTitle: "",
+      title: "",
       transactionHeaders: [
         {
-          text: "Date",
+          align: "left",
           sortable: false,
+          text: "Date",
           value: "date",
-          width: "20%",
-          align: "left"
+          width: "20%"
         },
         {
+          align: "left",
           text: "Description",
           value: "description",
-          width: "70%",
-          align: "left"
+          width: "70%"
         },
         {
+          align: "left",
+          sortable: true,
           text: "Amount",
           value: "amount",
-          sortable: true,
-          width: "10%",
-          align: "left"
+          width: "10%"
         }
       ],
-      transactionItems: []
+      transactionItems: [],
+      videoType: "",
+      videoUrl: "",
+      vimeoVideoId: "",
+      youTubeVideoId: ""
     };
   },
   mounted() {
@@ -296,6 +296,7 @@ export default {
         this.$store.getters.getModalItem &&
         this.$store.getters.getShowModal
       ) {
+        this.resetModal();
         let response = this.$store.getters.getModalItem;
         let teneoResponse = response.teneoResponse;
         let outputLink = decodeURIComponent(teneoResponse.link.href);
@@ -597,31 +598,31 @@ export default {
     },
     resetModal() {
       console.log("reseting modal values");
-      this.title = "";
-      this.subTitle = "";
-      this.imageUrl = "";
       this.actions = "";
-      this.bodyText = "";
-      this.itinerary = "";
-      this.youTubeVideoId = "";
-      this.vimeoVideoId = "";
       this.audioType = "";
       this.audioUrl = "";
-      this.videoType = "";
-      this.videoUrl = "";
-      this.modalSize = "small";
-      this.showModal = false;
-      this.showCustomModal = false;
+      this.bodyText = "";
       this.customModalItems = [];
+      this.imageUrl = "";
+      this.images = [];
+      this.itinerary = "";
       this.modalPosition = "center";
+      this.modalSize = "small";
       this.removeCustomStylesFromModal();
       this.search = "";
-      this.images = [];
-      this.tableTitle = "";
+      this.showCustomModal = false;
+      this.showModal = false;
+      this.subTitle = "";
+      this.tableFooter = "";
       this.tableHeaders = [];
       this.tableRows = [];
-      this.tableFooter = "";
+      this.tableTitle = "";
+      this.title = "";
       this.transactionItems = [];
+      this.videoType = "";
+      this.videoUrl = "";
+      this.vimeoVideoId = "";
+      this.youTubeVideoId = "";
     }
   }
 };
@@ -640,8 +641,7 @@ export default {
   min-height: calc(100vh - 48px) !important;
   height: fit-content;
 }
-</style>
-<style>
+
 .v-menu__content {
   position: inherit !important;
 }
