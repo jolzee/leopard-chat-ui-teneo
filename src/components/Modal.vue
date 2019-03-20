@@ -27,7 +27,7 @@
             dark
             color="primary"
             fixed
-            height="64px"
+            height="48"
             :class="toolbarWidth"
           >
             <v-btn
@@ -45,7 +45,7 @@
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card
-            class="mb-1 pt-5 modal-height"
+            class="mb-1 pt-5 modal-height teneo-modal-card"
             tile
           >
 
@@ -637,7 +637,7 @@ export default {
 }
 
 .modal-height {
-  min-height: calc(100vh - 64px) !important;
+  min-height: calc(100vh - 48px) !important;
   height: fit-content;
 }
 </style>
@@ -693,7 +693,13 @@ export default {
   position: absolute !important;
   right: 0 !important;
   margin: 0 !important;
-  padding-top: 64px !important;
+  padding-top: 48px !important;
+  overflow-y: hidden;
+}
+
+.teneo-modal-card {
+  overflow-y: auto;
+  height: auto;
 }
 
 .teneo-modal-center {
