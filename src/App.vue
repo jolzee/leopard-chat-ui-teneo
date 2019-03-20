@@ -278,7 +278,8 @@ export default {
 
             if (
               !this.$store.getters.embed &&
-              !this.$store.getters.overlayChat
+              !this.$store.getters.overlayChat &&
+              siteFrame
             ) {
               siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
             }
@@ -337,7 +338,8 @@ export default {
             }
             if (
               !this.$store.getters.embed &&
-              !this.$store.getters.overlayChat
+              !this.$store.getters.overlayChat &&
+              siteFrame
             ) {
               siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
             }
@@ -357,7 +359,11 @@ export default {
       } else {
         // hide chat window - button clicked - logout
         this.$store.commit("hideModal");
-        if (!this.$store.getters.embed && !this.$store.getters.overlayChat) {
+        if (
+          !this.$store.getters.embed &&
+          !this.$store.getters.overlayChat &&
+          siteFrame
+        ) {
           siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
         }
 
