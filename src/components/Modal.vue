@@ -46,6 +46,7 @@
           </v-toolbar>
           <v-card
             class="mb-1 pt-5 modal-height teneo-modal-card"
+            :class="{'dark-scroll': dark, 'light-scroll': !dark}"
             tile
           >
 
@@ -488,6 +489,9 @@ export default {
         return `teneo-modal-${this.modalSize}-width`;
       }
       return "";
+    },
+    dark() {
+      return this.$store.getters.dark;
     }
   },
   updated() {

@@ -3,7 +3,7 @@
     fluid
     grid-list-s
     id="chat-area"
-    v-bind:class="{ 'dark-scroll': dark, 'light-scroll': !dark, 'chat-container': true}"
+    class="chat-container"
   >
     <v-layout v-if="noHistory && isHistoryPage">
       <v-flex xs12>
@@ -60,7 +60,7 @@
     >
       <v-flex
         xs12
-        :class="{'chat-responses-float': this.$store.getters.float, 'chat-responses': !this.$store.getters.float}"
+        :class="{'dark-scroll': dark, 'light-scroll': !dark, 'chat-responses-float': this.$store.getters.float, 'chat-responses': !this.$store.getters.float}"
         ref="chatContainer"
       >
         <!-- show the initial loding ball animation when first loading the chat window -->
@@ -433,7 +433,6 @@
               <v-text-field
                 :disabled="progressBar"
                 hide-details
-                v-long-press="swapInputButton"
                 v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
                 @shortkey.native="swapInputButton"
                 clearable
@@ -580,6 +579,7 @@ if (window.Element && !Element.prototype.closest) {
 }
 
 export default {
+  components: {},
   data() {
     return {
       showAudioInput: false,
@@ -594,6 +594,9 @@ export default {
     };
   },
   computed: {
+    dark() {
+      return this.$store.getters.dark;
+    },
     progressBar() {
       return this.$store.getters.progressBar;
     },
@@ -642,9 +645,6 @@ export default {
     },
     userIcon() {
       return this.$store.state.userIcon;
-    },
-    dark() {
-      return this.$store.getters.dark;
     },
     dialog() {
       if (this.$route.name === "chat") {
@@ -1026,30 +1026,6 @@ span.teneo-reply ul {
   bottom: 0px;
   width: 100%;
   height: 60px;
-}
-
-.light-scroll::-webkit-scrollbar {
-  height: 14px;
-  width: 14px;
-  background: #ffffff;
-}
-
-.dark-scroll::-webkit-scrollbar {
-  height: 14px;
-  width: 14px;
-  background: #424242;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #2196f3;
-  -webkit-border-radius: 2ex;
-  border-radius: 2ex;
-  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
-}
-
-::-webkit-scrollbar-corner {
-  background: black;
 }
 
 @media only screen and (max-width: 480px) {

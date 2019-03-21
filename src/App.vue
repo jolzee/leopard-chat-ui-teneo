@@ -403,6 +403,30 @@ export default {
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
+.light-scroll::-webkit-scrollbar {
+  height: 14px;
+  width: 10px;
+  background: #ffffff;
+}
+
+.dark-scroll::-webkit-scrollbar {
+  height: 14px;
+  width: 10px;
+  background: #424242;
+}
+
+.dark-scroll::-webkit-scrollbar-thumb {
+  background: #262626;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d8d8d8;
+}
+
+::-webkit-scrollbar-corner {
+  background: black;
+}
+
 .headline {
   font-size: 1.4em !important;
 }
