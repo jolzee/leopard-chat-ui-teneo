@@ -1,10 +1,9 @@
 <template>
-  <v-layout v-if="items && items.length > 0">
+  <v-layout v-if="showCustomModal">
     <v-flex xs12>
 
       <v-dialog
         v-model="items"
-        leave-absolute
         scrollable
         persistent
         content-class="teneo-modal"
@@ -14,14 +13,14 @@
         <v-toolbar
           dark
           color="primary"
+          height="48"
           fixed
-          height="64px"
           :class="toolbarWidth"
         >
           <v-btn
             fab
             small
-            @click="items = []"
+            @click="closeModal"
             color="secondary"
           >
             <v-icon
@@ -33,7 +32,8 @@
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-card
-          class="mb-1 pt-5 modal-height"
+          class="mb-1 pt-5 modal-height teneo-modal-card"
+          :class="{'dark-scroll': dark, 'light-scroll': !dark}"
           tile
         >
           <v-container class="modal-container">
@@ -90,8 +90,8 @@
               <v-btn
                 color="primary"
                 v-shortkey="['ctrl', 'alt', 'arrowleft']"
-                @shortkey.native="items = []"
-                @click.native="items = []"
+                @shortkey.native="closeModal"
+                @click.native="closeModal"
               >{{ $t('back.to.chat.button') }}
               </v-btn>
             </v-card-actions>
@@ -121,6 +121,26 @@ export default {
   },
   data() {
     return {};
+  },
+  computed: {
+    dark() {
+      return this.$store.getters.dark;
+    },
+    showCustomModal() {
+      if (
+        this.$store.getters.showCustomModal &&
+        this.items &&
+        this.items.length > 0
+      ) {
+        return true;
+      }
+      return false;
+    }
+  },
+  methods: {
+    closeModal() {
+      this.$store.commit("HIDE_CUSTOM_MODAL");
+    }
   }
 };
 </script>

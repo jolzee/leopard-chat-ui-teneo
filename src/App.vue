@@ -264,11 +264,11 @@ export default {
         console.log("ok smaller than 480px");
         // open the chat automatially and hide the open and close chat button
         this.$router.push({ name: "chat" }); // make sure we show the main chat window
-        this.$store.commit("showChatLoading"); // display the loading spinner
+        this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
         let isChatUiFloating = this.$store.getters.float;
         setTimeout(
           function() {
-            console.log(`In move button left: ${isChatUiFloating}`);
+            // console.log(`In move button left: ${isChatUiFloating}`);
             // wait just a bit before animating things - need the chat button to hide first
             if (isChatUiFloating) {
               chatButton.setAttribute("class", "move-button-left-float"); // reposition the chat button
@@ -299,7 +299,7 @@ export default {
       }
     },
     toggleBrightness() {
-      this.$store.commit("changeTheme");
+      this.$store.commit("CHANGE_THEME");
     },
     toggleChat() {
       if (
@@ -311,7 +311,7 @@ export default {
         return;
       }
       this.hideChatButton = !this.hideChatButton; // toggle the chat button visibility
-      this.$store.commit("speakBackResponses", false); // always reset audio to not speak when chat button is clicked
+      this.$store.commit("STOP_TTS"); // always reset audio to not speak when chat button is clicked
       let siteFrame;
       //animate the IFrame
       if (!this.$store.getters.embed && !this.$store.getters.overlayChat) {
@@ -323,13 +323,13 @@ export default {
       // show chat window - button clicked - login
       if (this.hideChat) {
         this.$router.push({ name: "chat" }); // make sure we show the main chat window
-        this.$store.commit("showChatLoading"); // display the loading spinner
+        this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
         let isChatUiFloating = this.$store.getters.float;
         setTimeout(
           function() {
             // wait just a bit before animating things - need the chat button to hide first
             this.hideChat = !this.hideChat; // show the chat window
-            console.log(`In move button left: ${isChatUiFloating}`);
+            // console.log(`In move button left: ${isChatUiFloating}`);
             // wait just a bit before animating things - need the chat button to hide first
             if (isChatUiFloating) {
               chatButton.setAttribute("class", "move-button-left-float"); // reposition the chat button
@@ -358,7 +358,7 @@ export default {
           });
       } else {
         // hide chat window - button clicked - logout
-        this.$store.commit("hideModal");
+        this.$store.commit("HIDE_CHAT_MODAL");
         if (
           !this.$store.getters.embed &&
           !this.$store.getters.overlayChat &&
@@ -377,12 +377,12 @@ export default {
 
         // now end the Teneo Session - user clicked the close button - intention is clear
         this.$store.dispatch("endSession").then(() => {
-          this.$store.commit("clearChatHistory"); // clear the dialogs once we have successfully ended the session
+          this.$store.commit("CLEAR_CHAT_HISTORY"); // clear the dialogs once we have successfully ended the session
 
           // show the loading gif as the window is closing. Although delay a bit
           setTimeout(
             function() {
-              this.$store.commit("showChatLoading");
+              this.$store.commit("SHOW_CHAT_LOADING");
             }.bind(this),
             400
           );

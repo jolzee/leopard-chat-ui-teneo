@@ -141,7 +141,7 @@
                     >
                       <v-avatar
                         size="40px"
-                        color="grey lighten-4 elevation-6 mx-2"
+                        color="grey lighten-4 elevation-6 mx-2 mt-2"
                       >
                         <img
                           :src="item.agentAvatar"
@@ -609,13 +609,13 @@ export default {
           this.updateInputBox(this.time);
         }
         if (this.$store.state.userInputReadyForSending) {
-          this.$store.commit("hideModal"); // hide all modals
+          this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals
           this.sendUserInput();
         }
-        return this.$store.getters.getUserInput;
+        return this.$store.getters.userInput;
       },
       set: function(userInput) {
-        this.$store.commit("setUserInput", userInput);
+        this.$store.commit("SET_USER_INPUT", userInput);
       }
     },
     getOpenedItem() {
@@ -625,7 +625,7 @@ export default {
       return this.$route.name === "history";
     },
     noHistory() {
-      let history = this.$store.getters.getChatHistorySessionStorage;
+      let history = this.$store.getters.chatHistorySessionStorage;
       return history.length === 0;
     },
     noHistoryImage() {
@@ -648,10 +648,10 @@ export default {
     },
     dialog() {
       if (this.$route.name === "chat") {
-        return this.$store.getters.getChatHistory;
+        return this.$store.getters.chatHistory;
       } else {
         // history in session storage
-        return this.$store.getters.getChatHistorySessionStorage;
+        return this.$store.getters.chatHistorySessionStorage;
       }
     },
     listening() {
@@ -676,7 +676,7 @@ export default {
   mounted() {
     this.$el.addEventListener("click", this.onHtmlClick);
     this.$refs.userInput.focus();
-    console.log("In mounted");
+    // console.log("In mounted");
 
     // if being shown in webview then show the microphone button by default
 
@@ -708,7 +708,7 @@ export default {
       return itemText;
     },
     stopAudioCapture() {
-      this.$store.commit("hideListening");
+      this.$store.commit("HIDE_LISTENING_OVERLAY");
       this.$store.dispatch("stopAudioCapture");
       this.audioButtonColor = "success";
     },
@@ -728,11 +728,11 @@ export default {
       this.sendUserInput();
     },
     updateInputBox(userInput) {
-      this.$store.commit("setUserInput", userInput);
+      this.$store.commit("SET_USER_INPUT", userInput);
       this.$refs.userInput.focus();
     },
     hideProgressBar() {
-      this.$store.commit("hideProgressBar");
+      this.$store.commit("HIDE_PROGRESS_BAR");
     },
     mustShowDate(item) {
       if (
@@ -828,8 +828,8 @@ export default {
     },
     sendUserInput() {
       this.audioButtonColor = "success";
-      if (this.$store.getters.getUserInput) {
-        this.$store.commit("showProgressBar");
+      if (this.$store.getters.userInput) {
+        this.$store.commit("SHOW_PROGRESS_BAR");
         this.showDate = false;
         this.showTime = false;
         this.date = "";
@@ -846,8 +846,8 @@ export default {
       this.$refs.userInput.focus();
     },
     optionClicked(option) {
-      this.$store.commit("showProgressBar");
-      this.$store.commit("setUserInput", option.name);
+      this.$store.commit("SHOW_PROGRESS_BAR");
+      this.$store.commit("SET_USER_INPUT", option.name);
       this.$store
         .dispatch("sendUserInput", option.params ? "&" + option.params : "")
         .then(this.$refs.userInput.focus());
@@ -896,24 +896,24 @@ export default {
       return "fa-angle-double-up";
     },
     showModal(item) {
-      this.$store.commit("hideModal"); // hide all modals first
-      this.$store.commit("showModal", item);
+      this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals first
+      this.$store.commit("SHOW_CHAT_MODAL", item);
     },
     captureAudio() {
       if (
         window.hasOwnProperty("webkitSpeechRecognition") &&
         window.hasOwnProperty("speechSynthesis")
       ) {
-        this.$store.commit("hideModal");
+        this.$store.commit("HIDE_CHAT_MODAL");
         this.audioButtonColor = "error";
         this.audioButtonClasses = "white--text";
-        this.$store.commit("showListening");
+        this.$store.commit("SHOW_LISTING_OVERLAY");
         this.$store.dispatch("captureAudio");
       }
     },
     swapInputButton() {
       this.showAudioInput = !this.showAudioInput;
-      this.$store.commit("speakBackResponses", this.showAudioInput);
+      this.$store.commit("TTS_ENABLE", this.showAudioInput);
     }
   }
 };

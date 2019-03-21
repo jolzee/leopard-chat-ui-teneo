@@ -216,6 +216,7 @@ function setupStore(callback) {
       responseIcon: RESPONSE_ICON,
       showChatLoading: false,
       showConfigModal: true,
+      showCustomModal: false,
       showLiveChatProcessing: false,
       showModal: false,
       speakBackResponses: false,
@@ -227,132 +228,200 @@ function setupStore(callback) {
       userInputReadyForSending: false
     },
     getters: {
-      chatConfig() {
-        return store.chatConfig;
+      agentAvatar(state) {
+        return state.agentAvatar;
       },
-      iFrameUrlBase() {
-        return store.state.iframeUrlBase;
+      agentId(state) {
+        return state.agentID;
       },
-      isLiveChat() {
-        return store.state.isLiveChat;
+      agentName(state) {
+        return state.agentName;
       },
-      knowledgeData() {
-        return store.state.knowledgeData;
+      enableLiveChat(state) {
+        return state.enableLiveChat;
       },
-      liveChatMessage() {
-        return store.state.liveChatMessage;
+      chatConfig(state) {
+        return state.chatConfig;
       },
-      showChatLoading() {
-        return store.state.showChatLoading;
+      iFrameUrlBase(state) {
+        return state.iframeUrlBase;
       },
-      showLiveChatProcessing() {
-        return store.state.showLiveChatProcessing;
+      isLiveChat(state) {
+        return state.isLiveChat;
       },
-      getChatHistory() {
+      knowledgeData(state) {
+        return state.knowledgeData;
+      },
+      showCustomModal(state) {
+        return state.showCustomModal;
+      },
+      speakBackResponses(state) {
+        return state.speakBackResponses;
+      },
+      liveChatMessage(state) {
+        return state.liveChatMessage;
+      },
+      showChatLoading(state) {
+        return state.showChatLoading;
+      },
+      teneoUrl(state) {
+        return state.teneoUrl;
+      },
+      showLiveChatProcessing(state) {
+        return state.showLiveChatProcessing;
+      },
+      chatHistory(state) {
         if (USE_LOCAL_STORAGE) {
-          if (store.state.dialog.length !== 0) {
+          if (state.dialog.length !== 0) {
             let chatHistory = JSON.parse(localStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY, "[]"));
             if (chatHistory.length !== 0) {
-              store.state.dialog.concat(chatHistory);
+              state.dialog.concat(chatHistory);
             }
           } else {
-            store.state.dialog = JSON.parse(localStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY, "[]"));
+            state.dialog = JSON.parse(localStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY, "[]"));
           }
         }
-        return store.state.dialog;
+        return state.dialog;
       },
-      getChatHistorySessionStorage() {
+      chatHistorySessionStorage(state) {
         // TODO: Try and make the chat history in session storage unique to the deeplink
-        if (store.state.dialogHistory.length === 0) {
-          store.state.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
-          if (store.state.dialogHistory === null) {
-            store.state.dialogHistory = [];
+        if (state.dialogHistory.length === 0) {
+          state.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
+          if (state.dialogHistory === null) {
+            state.dialogHistory = [];
           }
         }
-        return store.state.dialogHistory;
+        return state.dialogHistory;
       },
-      getUserInput() {
-        return store.state.userInput;
+      userInput(state) {
+        return state.userInput;
       },
-      embed() {
-        return store.state.embed;
+      embed(state) {
+        return state.embed;
       },
-      overlayChat() {
-        return store.state.overlayChat;
+      overlayChat(state) {
+        return state.overlayChat;
       },
-      float() {
-        return store.state.overlayChat;
+      float(state) {
+        return state.overlayChat;
       },
-      progressBar() {
-        return store.state.progressBar;
+      dialog(state) {
+        return state.dialog;
       },
-      getShowModal() {
-        console.log("request for show modal");
-        return store.state.showModal;
+      dialogHistory(state) {
+        return state.dialogHistory;
       },
-      getShowConfigModal() {
-        return store.state.showConfigModal;
+      progressBar(state) {
+        return state.progressBar;
       },
-      getModalItem() {
-        return store.state.modalItem;
+      stopAudioCapture(state) {
+        return state.stopAudioCapture;
       },
-      dark() {
-        return store.state.dark;
+      showModal(state) {
+        // console.log("request for show modal");
+        return state.showModal;
       },
-      chatTitle() {
-        return store.state.chatTitle;
+      showConfigModal(state) {
+        return state.showConfigModal;
+      },
+      modalItem(state) {
+        return state.modalItem;
+      },
+      dark(state) {
+        return state.dark;
+      },
+      chatTitle(state) {
+        return state.chatTitle;
       }
     },
     mutations: {
-      showChatLoading() {
+      HIDE_CUSTOM_MODAL(state) {
+        state.showCustomModal = false;
+      },
+      SHOW_CUSTOM_MODAL(state) {
+        state.showCustomModal = true;
+      },
+      PUSH_RESPONSE_TO_DIALOG(state, response) {
+        state.dialog.push(response);
+      },
+      PUSH_RESPONSE_TO_DIALOG_HISTORY(state, response) {
+        state.dialogHistory.push(response);
+      },
+      PUSH_USER_INPUT_TO_DIALOG_HISTORY(state, userInput) {
+        state.dialogHistory.push(userInput);
+      },
+      SET_DIALOG_HISTORY(state, newHistory) {
+        state.dialogHistory = newHistory;
+      },
+      PUSH_USER_INPUT_TO_DIALOG(state, userInput) {
+        state.dialog.push(userInput);
+      },
+      PUSH_LIVE_CHAT_STATUS_TO_DIALOG(state, liveChatStatus) {
+        state.dialog.push(liveChatStatus);
+      },
+      PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG(state, liveChatResponse) {
+        state.dialog.push(liveChatResponse);
+      },
+      CLEAR_USER_INPUT(state) {
+        state.userInput = "";
+      },
+      SHOW_CHAT_LOADING(state) {
         if (!USE_LOCAL_STORAGE) {
-          store.state.showChatLoading = true;
+          state.showChatLoading = true;
         }
       },
-      hideChatLoading() {
+      HIDE_CHAT_LOADING(state) {
         if (!USE_LOCAL_STORAGE) {
-          store.state.showChatLoading = false;
+          state.showChatLoading = false;
         }
       },
-      showLiveChatLoading() {
-        store.state.showLiveChatProcessing = true;
+      LIVE_CHAT_LOADING(state, mustShow) {
+        state.showLiveChatProcessing = mustShow;
       },
-      hideLiveChatLoading() {
-        store.state.showLiveChatProcessing = false;
+      SHOW_LIVE_CHAT_LOADING(state) {
+        state.showLiveChatProcessing = true;
       },
-      clearChatHistory() {
-        store.state.dialog = [];
+      HIDE_LIVE_CHAT_LOADING(state) {
+        state.showLiveChatProcessing = false;
       },
-      liveChat(state, transcript) {
+      CLEAR_CHAT_HISTORY(state) {
+        state.dialog = [];
+      },
+      LIVE_CHAT(state, transcript) {
         doLiveChatRequest(transcript);
       },
-      liveChatStarted() {
-        store.state.isLiveChat = true;
+      START_LIVE_CHAT(state) {
+        state.isLiveChat = true;
       },
-      liveChatEnded() {
-        store.state.isLiveChat = false;
+      STOP_LIVE_CHAT(state) {
+        state.isLiveChat = false;
       },
-      changeTheme() {
-        store.state.dark = !store.state.dark;
-        localStorage.setItem(STORAGE_KEY + TENEO_CHAT_DARK_THEME, JSON.stringify(store.state.dark));
+      CHANGE_THEME(state) {
+        state.dark = !state.dark;
+        localStorage.setItem(STORAGE_KEY + TENEO_CHAT_DARK_THEME, JSON.stringify(state.dark));
       },
-      showListening() {
-        store.state.listening = true;
+      SHOW_LISTING_OVERLAY(state) {
+        state.listening = true;
       },
-      hideListening() {
-        store.state.listening = false;
+      HIDE_LISTENING_OVERLAY(state) {
+        state.listening = false;
       },
-      setUserInput(state, userInput) {
+      SET_USER_INPUT(state, userInput) {
         if (userInput) {
           //state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
           state.userInput = userInput;
         }
       },
-      speakBackResponses(state, useTTS) {
+      START_TTS(state) {
+        state.speakBackResponses = true;
+      },
+      STOP_TTS(state) {
+        state.speakBackResponses = false;
+      },
+      TTS_ENABLE(state, useTTS) {
         state.speakBackResponses = useTTS;
       },
-      updateChatWindowAndStorage(state, response) {
-        store.commit("hideProgressBar");
+      UPDATE_CHAT_WINDOW_AND_STORAGE(state, response) {
         let hasExtraData = false;
         if (
           response.teneoResponse &&
@@ -361,9 +430,6 @@ function setupStore(callback) {
             response.teneoResponse.link.href)
         ) {
           hasExtraData = true;
-        }
-        if (response.teneoResponse && response.teneoResponse.extraData.liveChat) {
-          store.commit("liveChatStarted");
         }
 
         let newUserInput = {
@@ -408,48 +474,79 @@ function setupStore(callback) {
         // save the dislaog history in session storage
         sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(state.dialogHistory));
       },
-      showProgressBar() {
-        store.state.progressBar = true;
+      SHOW_PROGRESS_BAR(state) {
+        state.progressBar = true;
       },
-      hideProgressBar() {
-        store.state.progressBar = false;
+      HIDE_PROGRESS_BAR(state) {
+        state.progressBar = false;
       },
-      showConfigModal(state) {
+      SHOW_CONFIG_MODAL(state) {
         state.showConfigModal = true;
       },
-      hideConfigModal(state) {
+      HIDE_CONFIG_MODAL(state) {
         state.showConfigModal = false;
       },
-      showModal(state, item) {
+      UPDATE_TENEO_URL(state, newUrl) {
+        state.teneoUrl = newUrl;
+      },
+      SHOW_CHAT_MODAL(state, item) {
         state.modalItem = item;
         state.showModal = true;
       },
-      hideModal(state) {
+      STOP_AUDIO_CAPTURE(state) {
+        state.stopAudioCapture = true;
+      },
+      START_AUDIO_CAPTURE(state) {
+        state.stopAudioCapture = false;
+      },
+      HIDE_CHAT_MODAL(state) {
         // console.log("hiding modal");
         state.userInputReadyForSending = false;
         state.showModal = false;
         state.modalItem = null;
         // console.log("modal item should be empty");
+      },
+      CLEAR_DIALOGS(state) {
+        state.dialog = [];
+      },
+      FLAG_SESSION_RESTART(state) {
+        state.resetSession = true;
+      },
+      USER_INPUT_READY_FOR_SENDING(state) {
+        state.userInputReadyForSending = true;
+      },
+      USER_INPUT_NOT_READY_FOR_SENDING(state) {
+        state.userInputReadyForSending = false;
+      },
+      REMOVE_MODAL_ITEM(state) {
+        state.modalItem = null;
+      },
+      AGENT_NAME(state, agentName) {
+        state.agentName = agentName;
+      },
+      AGENT_ID(state, agentId) {
+        state.agentID = agentId;
+      },
+      AGENT_AVATAR(state, imageUrl) {
+        state.agentAvatar = imageUrl;
       }
     },
     actions: {
-      stopAudioCapture() {
+      stopAudioCapture(context) {
         if (artyom.isSpeaking()) {
           // console.log("muted TTS!");
           artyom.shutUp();
         }
         if (artyom.isObeying()) {
           UserDictation.stop();
-          store.state.stopAudioCapture = true;
-          // console.log("stopped audio capture!");
+          context.commit("STOP_AUDIO_CAPTURE");
         }
       },
-      endSession() {
-        store.state.dialog = [];
-        store.state.resetSession = true;
-        store.state.modalItem = null;
-
-        let fullUrl = new URL(store.state.teneoUrl);
+      endSession(context) {
+        context.commit("CLEAR_DIALOGS");
+        context.commit("FLAG_SESSION_RESTART");
+        context.commit("REMOVE_MODAL_ITEM");
+        let fullUrl = new URL(context.getters.teneoUrl);
         let endSessionUrl =
           fullUrl.protocol +
           "//" +
@@ -464,7 +561,7 @@ function setupStore(callback) {
 
         Vue.jsonp(endSessionUrl, {}).then(console.log("Session Ended"));
       },
-      login() {
+      login(context) {
         // get the greeting message if we haven't done so for this session
         return new Promise((resolve, reject) => {
           Vue.jsonp(TENEO_URL + REQUEST_PARAMETERS, {
@@ -472,7 +569,7 @@ function setupStore(callback) {
             // userInput: ""
           })
             .then(json => {
-              store.commit("hideChatLoading"); // about to show the greeting - hide the chat loading spinner
+              context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
               // console.log(decodeURIComponent(json.responseData.answer))
               let hasExtraData = false;
               if (json.responseData.extraData.extensions || json.responseData.extraData.liveChat) {
@@ -486,10 +583,9 @@ function setupStore(callback) {
                 hasExtraData: hasExtraData
               };
               // sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(response))
-              store.state.dialog.push(response); // push the getting message onto the dialog
+              context.commit("PUSH_RESPONSE_TO_DIALOG", response); // push the getting message onto the dialog
               if (hasExtraData) {
-                store.state.modalItem = response;
-                store.state.showModal = true;
+                context.commit("SHOW_CHAT_MODAL", response);
               }
               resolve();
             })
@@ -505,28 +601,23 @@ function setupStore(callback) {
           // Artyom is speaking something. Let's shut it up
           artyom.shutUp();
         }
-        if (!store.getters.isLiveChat) {
-          Vue.jsonp(store.state.teneoUrl + (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params), {
-            userinput: store.state.userInput
+        if (!context.getters.isLiveChat) {
+          Vue.jsonp(context.getters.teneoUrl + (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params), {
+            userinput: context.getters.userInput
           })
             .then(json => {
               if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
                 console.log("Session is stale.. keep chat open and continue with the new session");
-                // store.commit("hideProgressBar");
-                // store.dispatch("endSession");
-                // return true;
               }
               // console.log(decodeURIComponent(json.responseData.answer))
               const response = {
-                userInput: store.state.userInput,
+                userInput: context.getters.userInput,
                 teneoAnswer: decodeURIComponent(json.responseData.answer).replace(
                   /onclick="[^"]+"/g,
                   'class="sendInput"'
                 ),
                 teneoResponse: json.responseData
               };
-
-              // const ttsText = store.getters.getTTSInput(json.responseData);
 
               let ttsText = stripHtml(response.teneoAnswer);
               if (response.teneoResponse.extraData.tts) {
@@ -535,23 +626,26 @@ function setupStore(callback) {
 
               // check if this browser supports the Web Speech API
               if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
-                if (artyom && store.state.speakBackResponses) {
+                if (artyom && context.getters.speakBackResponses) {
                   artyom.say(ttsText);
                 }
               }
 
-              context.commit("updateChatWindowAndStorage", response);
+              context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", response);
+              context.commit("HIDE_PROGRESS_BAR");
+              if (response.teneoResponse && response.teneoResponse.extraData.liveChat) {
+                context.commit("START_LIVE_CHAT");
+              }
 
               // added on request from Mark J - switch languages based on NER language detection
               let langInput = decodeURIComponent(response.teneoResponse.extraData.langinput);
               let langEngineUrl = decodeURIComponent(response.teneoResponse.extraData.langengineurl);
 
               if (langEngineUrl !== "undefined" && langInput !== "undefined") {
-                store.state.teneoUrl = langEngineUrl + "?viewname=STANDARDJSONP";
-                // console.log(store.state.teneoUrl);
-                store.state.userInput = langInput;
-                store.commit("showProgressBar");
-                store
+                context.commit("UPDATE_TENEO_URL", langEngineUrl + "?viewname=STANDARDJSONP");
+                context.commit("SET_USER_INPUT", langInput);
+                context.commit("SHOW_PROGRESS_BAR");
+                context
                   .dispatch("sendUserInput")
                   .then(console.log("Sent original lang input to new lang specific solution"))
                   .catch(err => {
@@ -564,46 +658,40 @@ function setupStore(callback) {
               if (err.status && err.status === 408) {
                 console.log("Oh dear - Request Timed Out");
               }
-              // const errorResponse = {
-              //   userInput: store.state.userInput,
-              //   teneoAnswer: "I'm sorry but I'm having a some connectivity issues at the moment. Please try again."
-              // };
-              // context.commit("updateChatWindowAndStorage", errorResponse);
-              store.commit("hideProgressBar");
+              context.commit("HIDE_PROGRESS_BAR");
             });
         } else {
           // send the input to live chat agent and save user input to history
           let newUserInput = {
             type: "userInput",
-            text: store.state.userInput,
+            text: context.getters.userInput,
             bodyText: "",
             hasExtraData: false
           };
-          store.state.dialog.push(newUserInput);
+          context.commit("PUSH_USER_INPUT_TO_DIALOG", newUserInput);
 
           if (USE_LOCAL_STORAGE) {
-            localStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.state.dialog));
+            localStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(context.getters.dialog));
           }
-          store.state.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
-          if (store.state.dialogHistory === null) {
-            store.state.dialogHistory = store.state.dialog;
+          context.commit("SET_DIALOG_HISTORY", JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY)));
+          if (context.getters.dialogHistory === null) {
+            context.commit("SET_DIALOG_HISTORY", context.getters.dialog);
           } else {
-            store.state.dialogHistory.push(newUserInput);
+            context.commit("PUSH_USER_INPUT_TO_DIALOG_HISTORY", newUserInput);
           }
-          sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.state.dialogHistory));
-          doLiveChatRequest(store.state.userInput);
-          // console.log("Sent a message to agent: " + store.state.userInput);
-          store.commit("hideProgressBar");
-          store.state.userInput = "";
+          sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(context.getters.dialogHistory));
+          doLiveChatRequest(context.getters.userInput);
+          context.commit("HIDE_PROGRESS_BAR");
+          context.commit("SET_USER_INPUT", "");
         }
       },
-      captureAudio() {
+      captureAudio(context) {
         if (UserDictation != null) {
           if (artyom.isSpeaking()) {
             // console.log("Artyom is speaking something. Let's shut it up");
             artyom.shutUp();
           }
-          store.state.stopAudioCapture = false;
+          context.commit("START_AUDIO_CAPTURE");
           UserDictation.start();
         }
       }
@@ -629,29 +717,30 @@ function setupStore(callback) {
         if (text) {
           //text = text.replace(/^\w/, c => c.toUpperCase()); // upercases first letter of user input -- use cautiously
           text = text.replace(/what's/gi, "what");
-          store.state.userInput = text;
+          store.commit("SET_USER_INPUT", text);
         }
         timeoutVar = setTimeout(function() {
           // console.log("timeout - aborting recognition");
           UserDictation.stop();
           if (text) {
-            store.state.userInput = text; // final transcript from ASR
+            store.commit("SET_USER_INPUT", text); // final transcript from ASR
           }
         }, 800);
       },
       onStart: function() {},
       onEnd: function() {
-        store.state.listening = false;
+        store.commit("HIDE_LISTENING_OVERLAY");
 
-        if (store.state.stopAudioCapture) {
-          store.state.userInput = "";
-          store.state.stopAudioCapture = false;
+        if (store.getters.stopAudioCapture) {
+          store.commit("CLEAR_USER_INPUT");
+          store.commit("STOP_AUDIO_CAPTURE");
+          // store.state.stopAudioCapture = false;
           return;
         }
         // let's fix sany ASR transcription erros
 
-        if (store.state.userInput) {
-          let fixedUserInput = store.state.userInput;
+        if (store.getters.userInput) {
+          let fixedUserInput = store.getters.userInput;
           // console.log("Final Transcription from ASR: " + store.state.userInput);
           ASR_CORRECTIONS.forEach(replacement => {
             let startingText = fixedUserInput;
@@ -676,13 +765,13 @@ function setupStore(callback) {
             }
           });
 
-          if (store.state.userInput.toLowerCase() !== fixedUserInput.toLowerCase()) {
-            store.state.userInput = fixedUserInput;
+          if (store.getters.userInput.toLowerCase() !== fixedUserInput.toLowerCase()) {
+            store.getters.userInput = fixedUserInput;
             console.log(`Final Transcription: ${fixedUserInput}`);
           }
 
           setTimeout(function() {
-            store.state.userInputReadyForSending = true;
+            store.commit("USER_INPUT_READY_FOR_SENDING");
           }, 100);
         }
       }
@@ -692,7 +781,7 @@ function setupStore(callback) {
   // Live Chat
   let visitorSDK = null;
 
-  if (store.state.enableLiveChat) {
+  if (store.getters.enableLiveChat) {
     const liveChatIncLicense = process.env.VUE_APP_LIVE_CHAT_INC_KEY; // change me https://www.livechatinc.com/
     visitorSDK = LivechatVisitorSDK.init({
       license: liveChatIncLicense
@@ -703,7 +792,7 @@ function setupStore(callback) {
       // console.log(chatData);
 
       // when a user reloads the page while a chat is going on, the message history is loaded. We need to stop that from happening by closing the chat
-      if (!store.state.isLiveChat) {
+      if (!store.getters.isLiveChat) {
         visitorSDK
           .closeChat()
           .then(() => {
@@ -719,14 +808,14 @@ function setupStore(callback) {
       // console.log(queueData);
       let message = "Chat request sent to agent. You are number " + queueData.numberInQueue + " in the queue.";
       // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
-      if (store.state.isLiveChat) {
+      if (store.getters.isLiveChat) {
         let liveChatStatus = {
           type: "liveChatQueue",
           text: message,
           bodyText: "",
           hasExtraData: false
         };
-        store.state.dialog.push(liveChatStatus); // push the getting message onto the dialog
+        store.commit("PUSH_LIVE_CHAT_STATUS_TO_DIALOG", liveChatStatus); // push the getting message onto the dialog
       } else {
         visitorSDK
           .closeChat()
@@ -741,22 +830,22 @@ function setupStore(callback) {
 
     visitorSDK.on("agent_changed", newAgent => {
       // console.log(newAgent);
-      store.state.agentName = newAgent.name;
-      store.state.agentID = newAgent.id;
-      store.state.agentAvatar = newAgent.avatarUrl;
+      store.commit("AGENT_NAME", newAgent.name);
+      store.commit("AGENT_ID", newAgent.id);
+      store.commit("AGENT_AVATAR", newAgent.avatarUrl);
       // show typing output agentName + ' is typing...'
 
       let message = "You are talking to " + newAgent.name + ".";
 
       // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
-      if (store.state.isLiveChat) {
+      if (store.getters.isLiveChat) {
         let liveChatStatus = {
           type: "liveChatStatus",
           text: message,
           bodyText: "",
           hasExtraData: false
         };
-        store.state.dialog.push(liveChatStatus); // push the getting message onto the dialog
+        store.commit("PUSH_LIVE_CHAT_STATUS_TO_DIALOG", liveChatStatus); // push the getting message onto the dialog
       } else {
         visitorSDK
           .closeChat()
@@ -780,46 +869,46 @@ function setupStore(callback) {
           bodyText: "",
           hasExtraData: false
         };
-        store.state.dialog.push(liveChatStatus); // push the getting message onto the dialog
+        store.commit("PUSH_LIVE_CHAT_STATUS_TO_DIALOG", liveChatStatus); // push the getting message onto the dialog
       }
-      store.commit("liveChatEnded");
+      store.commit("STOP_LIVE_CHAT");
     });
 
     visitorSDK.on("typing_indicator", data => {
-      store.state.showLiveChatProcessing = !!data.isTyping;
+      store.commit("LIVE_CHAT_LOADING", !!data.isTyping);
     });
 
     visitorSDK.on("new_message", newMessage => {
       // console.log(newMessage);
       // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
-      if (store.state.isLiveChat) {
-        if (newMessage.authorId === store.state.agentID) {
+      if (store.getters.isLiveChat) {
+        if (newMessage.authorId === store.getters.agentId) {
           let liveChatResponse = {
             type: "liveChatResponse",
             text: newMessage.text,
-            agentAvatar: store.state.agentAvatar,
-            agentName: store.state.agentName,
+            agentAvatar: store.getters.agentAvatar,
+            agentName: store.getters.agentName,
             bodyText: "",
             hasExtraData: false
           };
-          store.state.dialog.push(liveChatResponse); // push the getting message onto the dialog
+          store.commit("PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG", liveChatResponse); // push the getting message onto the dialog
           if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
-            if (artyom && store.state.speakBackResponses) {
+            if (artyom && store.getters.speakBackResponses) {
               artyom.say(stripHtml(newMessage.text));
             }
           }
 
           if (USE_LOCAL_STORAGE) {
-            localStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.state.dialog));
+            localStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.getters.dialog));
           }
-          store.state.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
-          if (store.state.dialogHistory === null) {
-            store.state.dialogHistory = store.state.dialog;
+          store.commit("SET_DIALOG_HISTORY", JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY)));
+          if (store.getters.dialogHistory === null) {
+            store.commit("SET_DIALOG_HISTORY", store.getters.dialog);
           } else {
-            store.state.dialogHistory.push(liveChatResponse);
+            store.commit("PUSH_RESPONSE_TO_DIALOG_HISTORY", liveChatResponse);
           }
-          sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.state.dialogHistory));
-          store.state.userInput = "";
+          sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.getters.dialogHistory));
+          store.commit("CLEAR_USER_INPUT");
         }
       }
     });
@@ -850,9 +939,9 @@ function setupStore(callback) {
   window.sendVoiceInput = function(userInput) {
     // console.log(`In SendVoiceInput: ${userInput}`);
     //store.state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
-    store.state.userInput = userInput;
-    store.state.userInputReadyForSending = true;
-    store.state.listening = false;
+    store.commit("SET_USER_INPUT", userInput);
+    store.commit("USER_INPUT_READY_FOR_SENDING");
+    store.commit("HIDE_LISTENING_OVERLAY");
   };
 
   callback(store);

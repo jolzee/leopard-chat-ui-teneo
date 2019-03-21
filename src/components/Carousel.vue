@@ -1,6 +1,7 @@
 <template>
   <v-carousel
     :height="height"
+    hide-delimiters
     v-if="imageItems && imageItems.length"
   >
     <v-carousel-item
@@ -18,6 +19,7 @@ export default {
     return {
       height: 200
     };
-  }
+  },
+  computed: {}
 };
 </script>

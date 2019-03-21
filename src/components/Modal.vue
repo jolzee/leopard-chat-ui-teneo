@@ -290,15 +290,10 @@ export default {
     }
   },
   watch: {
-    getModalItem() {
-      console.log(this.$store.getters.getModalItem);
-      console.log(this.$store.getters.getShowModal);
-      if (
-        this.$store.getters.getModalItem &&
-        this.$store.getters.getShowModal
-      ) {
+    modalItem() {
+      if (this.$store.getters.modalItem && this.$store.getters.showModal) {
         this.resetModal();
-        let response = this.$store.getters.getModalItem;
+        let response = this.$store.getters.modalItem;
         let teneoResponse = response.teneoResponse;
         let outputLink = decodeURIComponent(teneoResponse.link.href);
         let actionRAW = decodeURIComponent(teneoResponse.extraData.extensions);
@@ -313,12 +308,12 @@ export default {
         // console.log("Live Chat? :" + this.$store.getters.isLiveChat);
         if (transcript !== "undefined" && this.$store.getters.isLiveChat) {
           this.$store.commit(
-            "liveChat",
+            "LIVE_CHAT",
             "======= VIRTUAL ASSISTANT CONVERSATION HISTORY =======\n" +
               transcript +
               "====================================================\n"
           );
-          this.$store.commit("hideModal"); // stops the transcript from being sent back constantly during a live chat
+          this.$store.commit("HIDE_CHAT_MODAL"); // stops the transcript from being sent back constantly during a live chat
         }
         // send URL's to the I-FRAME
         if (outputLink !== "") {
@@ -326,7 +321,6 @@ export default {
             let currentIframeUrl =
               this.$store.getters.iFrameUrlBase +
               outputLink.substring(2, outputLink.length);
-            console.log(currentIframeUrl);
             document.getElementById("site-frame").src = currentIframeUrl;
           } else {
             document.getElementById("site-frame").src = outputLink;
@@ -414,6 +408,7 @@ export default {
             displayModal = false;
             this.showCustomModal = true;
             this.customModalItems = action.items;
+            this.$store.commit("SHOW_CUSTOM_MODAL");
           }
 
           // check for collection action
@@ -466,16 +461,14 @@ export default {
             'data-callback="$1" class="sendInput"'
           );
         }
-        console.log("A: Display Modal: " + displayModal);
         this.showModal = displayModal;
       } else {
-        console.log("B: Display Modal: false");
         this.showModal = false;
       }
     }
   },
   computed: {
-    ...mapGetters(["getModalItem"]),
+    ...mapGetters(["modalItem"]),
     showPusher() {
       if (this.displayPusherMessage) {
         return true;
@@ -511,7 +504,7 @@ export default {
       return text;
     },
     modalClass() {
-      console.log("Applying custom modal size and position");
+      // console.log("Applying custom modal size and position");
       // console.log("Adding sizing and position styles to modal");
       var modalElements = document.getElementsByClassName("teneo-modal");
       if (modalElements !== "undefined" && this.modalSize !== "undefined") {
@@ -555,13 +548,13 @@ export default {
       this.sendUserInput();
     },
     sendUserInput() {
-      if (this.$store.getters.getUserInput) {
-        this.$store.commit("showProgressBar");
+      if (this.$store.getters.userInput) {
+        this.$store.commit("SHOW_PROGRESS_BAR");
         this.$store.dispatch("sendUserInput");
       }
     },
     updateInputBox(userInput) {
-      this.$store.commit("setUserInput", userInput);
+      this.$store.commit("SET_USER_INPUT", userInput);
     },
     isVideoFile(url) {
       // console.log("IsVideo:" + url);
@@ -594,14 +587,14 @@ export default {
       return match ? match[2] || match[1] : false;
     },
     hideModal() {
-      this.$store.commit("hideModal");
+      this.$store.commit("HIDE_CHAT_MODAL");
       let that = this;
       setTimeout(function() {
         that.resetModal();
       }, 1000); // needed to stop weird animations on the close
     },
     resetModal() {
-      console.log("reseting modal values");
+      // console.log("reseting modal values");
       this.actions = "";
       this.audioType = "";
       this.audioUrl = "";

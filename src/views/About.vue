@@ -1,5 +1,5 @@
 <template>
-  <v-card class="teneo-about-card">
+  <v-card class="teneo-about-card elevation-0">
     <youTube :videoId="youTubeVideoId"></youTube>
 
     <v-card-title primary-title>
