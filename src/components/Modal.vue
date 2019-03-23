@@ -291,9 +291,9 @@ export default {
   },
   watch: {
     modalItem() {
-      if (this.$store.getters.modalItem && this.$store.getters.showModal) {
+      if (this.modalItem && this.$store.getters.showModal) {
         this.resetModal();
-        let response = this.$store.getters.modalItem;
+        let response = this.modalItem;
         let teneoResponse = response.teneoResponse;
         let outputLink = decodeURIComponent(teneoResponse.link.href);
         let actionRAW = decodeURIComponent(teneoResponse.extraData.extensions);
@@ -305,8 +305,8 @@ export default {
         let displayModal = false;
 
         // check if user wants to talk to a live agent
-        // console.log("Live Chat? :" + this.$store.getters.isLiveChat);
-        if (transcript !== "undefined" && this.$store.getters.isLiveChat) {
+        // console.log("Live Chat? :" + this.isLiveChat);
+        if (transcript !== "undefined" && this.isLiveChat) {
           this.$store.commit(
             "LIVE_CHAT",
             "======= VIRTUAL ASSISTANT CONVERSATION HISTORY =======\n" +
@@ -319,8 +319,7 @@ export default {
         if (outputLink !== "") {
           if (outputLink.startsWith("./")) {
             let currentIframeUrl =
-              this.$store.getters.iFrameUrlBase +
-              outputLink.substring(2, outputLink.length);
+              this.iFrameUrlBase + outputLink.substring(2, outputLink.length);
             document.getElementById("site-frame").src = currentIframeUrl;
           } else {
             document.getElementById("site-frame").src = outputLink;
@@ -468,7 +467,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["modalItem"]),
+    ...mapGetters([
+      "modalItem",
+      "isLiveChat",
+      "iFrameUrlBase",
+      "dark",
+      "userInput"
+    ]),
     showPusher() {
       if (this.displayPusherMessage) {
         return true;
@@ -482,9 +487,6 @@ export default {
         return `teneo-modal-${this.modalSize}-width`;
       }
       return "";
-    },
-    dark() {
-      return this.$store.getters.dark;
     }
   },
   updated() {
@@ -548,7 +550,7 @@ export default {
       this.sendUserInput();
     },
     sendUserInput() {
-      if (this.$store.getters.userInput) {
+      if (this.userInput) {
         this.$store.commit("SHOW_PROGRESS_BAR");
         this.$store.dispatch("sendUserInput");
       }

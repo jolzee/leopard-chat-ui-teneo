@@ -60,7 +60,7 @@
     >
       <v-flex
         xs12
-        :class="{'dark-scroll': dark, 'light-scroll': !dark, 'chat-responses-float': this.$store.getters.float, 'chat-responses': !this.$store.getters.float}"
+        :class="{'dark-scroll': dark, 'light-scroll': !dark, 'chat-responses-float': float, 'chat-responses': !float}"
         ref="chatContainer"
       >
         <!-- show the initial loding ball animation when first loading the chat window -->
@@ -563,6 +563,8 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from "vuex";
+
 if (window.Element && !Element.prototype.closest) {
   Element.prototype.closest = function(s) {
     let matches = (this.document || this.ownerDocument).querySelectorAll(s),
@@ -594,12 +596,22 @@ export default {
     };
   },
   computed: {
-    dark() {
-      return this.$store.getters.dark;
-    },
-    progressBar() {
-      return this.$store.getters.progressBar;
-    },
+    ...mapGetters([
+      "chatHistory",
+      "chatHistorySessionStorage",
+      "dark",
+      "float",
+      "liveChatMessage",
+      "progressBar",
+      "showChatLoading",
+      "showLiveChatProcessing"
+    ]),
+    ...mapState([
+      "userInputReadyForSending",
+      "responseIcon",
+      "userIcon",
+      "listening"
+    ]),
     userInput: {
       get: function() {
         if (this.date !== "") {
@@ -608,7 +620,7 @@ export default {
         if (this.time !== "") {
           this.updateInputBox(this.time);
         }
-        if (this.$store.state.userInputReadyForSending) {
+        if (this.userInputReadyForSending) {
           this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals
           this.sendUserInput();
         }
@@ -625,37 +637,19 @@ export default {
       return this.$route.name === "history";
     },
     noHistory() {
-      let history = this.$store.getters.chatHistorySessionStorage;
+      let history = this.chatHistorySessionStorage;
       return history.length === 0;
     },
     noHistoryImage() {
       return require("../assets/history.png");
     },
-    showChatLoading() {
-      return this.$store.getters.showChatLoading;
-    },
-    showLiveChatProcessing() {
-      return this.$store.getters.showLiveChatProcessing;
-    },
-    liveChatMessage() {
-      return this.$store.getters.liveChatMessage;
-    },
-    responseIcon() {
-      return this.$store.state.responseIcon;
-    },
-    userIcon() {
-      return this.$store.state.userIcon;
-    },
     dialog() {
       if (this.$route.name === "chat") {
-        return this.$store.getters.chatHistory;
+        return this.chatHistory;
       } else {
         // history in session storage
-        return this.$store.getters.chatHistorySessionStorage;
+        return this.chatHistorySessionStorage;
       }
-    },
-    listening() {
-      return this.$store.state.listening;
     }
   },
   updated: function() {
@@ -671,7 +665,6 @@ export default {
       console.log(e);
       // do nothing
     }
-    // setTimeout(this.hideProgressBar, 2700);
   },
   mounted() {
     this.$el.addEventListener("click", this.onHtmlClick);
@@ -828,7 +821,7 @@ export default {
     },
     sendUserInput() {
       this.audioButtonColor = "success";
-      if (this.$store.getters.userInput) {
+      if (this.userInput) {
         this.$store.commit("SHOW_PROGRESS_BAR");
         this.showDate = false;
         this.showTime = false;
@@ -955,10 +948,10 @@ export default {
 </style>
 <style>
 .v-expansion-panel__header {
-  padding-left: 15px !important;
+  padding-left: 10px !important;
   padding-right: 15px !important;
   padding-top: 0px !important;
-  padding-bottom: 10px !important;
+  padding-bottom: 5px !important;
 }
 
 .v-toolbar__title:not(:first-child) {
@@ -986,6 +979,10 @@ export default {
 div.options-list a.v-list__tile--link {
   cursor: pointer;
   height: inherit !important;
+}
+
+.teneo-dialog {
+  border-top: unset !important;
 }
 
 .chat-responses-float {

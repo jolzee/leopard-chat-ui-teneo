@@ -4,7 +4,7 @@
     toolbar
     :dark="dark"
     class="elevation-4 "
-    :class="{'application-float': this.$store.getters.float}"
+    :class="{'application-float': float}"
   >
     <div id="chat-open-close-button">
       <!-- <v-hover>
@@ -110,7 +110,7 @@
         :dark="dark"
         :flat="false"
         style="z-index: 3;"
-        :class="{'teneo-toolbar-float' : this.$store.getters.float}"
+        :class="{'teneo-toolbar-float' : float}"
       >
         <v-toolbar-side-icon
           @click.stop="drawer = !drawer"
@@ -156,6 +156,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
@@ -201,6 +203,14 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      "chatTitle",
+      "dark",
+      "embed",
+      "float",
+      "overlayChat",
+      "progressBar"
+    ]),
     menuClass() {
       if (!this.dark) {
         return "grey--text text--darken-1";
@@ -221,17 +231,11 @@ export default {
       } else if (this.$route.name === "about") {
         return this.$t("menu.about");
       } else {
-        return this.$store.getters.chatTitle;
+        return this.chatTitle;
       }
     },
     toolbarColor() {
-      return !this.$store.getters.dark ? "primary white--text" : "";
-    },
-    dark() {
-      return this.$store.getters.dark;
-    },
-    progressBar() {
-      return this.$store.getters.progressBar;
+      return !this.dark ? "primary white--text" : "";
     },
     getChatState() {
       if (!this.hideChat) {
@@ -251,7 +255,7 @@ export default {
         this.hideChat = false; // show the chat window
         //animate the IFrame
         let siteFrame;
-        if (this.$store.getters.embed) {
+        if (this.embed) {
           siteFrame = document.getElementById("site-frame");
         }
         let chatButton = document.getElementById("chat-open-close-button");
@@ -265,7 +269,7 @@ export default {
         // open the chat automatially and hide the open and close chat button
         this.$router.push({ name: "chat" }); // make sure we show the main chat window
         this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
-        let isChatUiFloating = this.$store.getters.float;
+        let isChatUiFloating = this.float;
         setTimeout(
           function() {
             // console.log(`In move button left: ${isChatUiFloating}`);
@@ -276,11 +280,7 @@ export default {
               chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
             }
 
-            if (
-              !this.$store.getters.embed &&
-              !this.$store.getters.overlayChat &&
-              siteFrame
-            ) {
+            if (!this.embed && !this.overlayChat && siteFrame) {
               siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
             }
           }.bind(this),
@@ -314,7 +314,7 @@ export default {
       this.$store.commit("STOP_TTS"); // always reset audio to not speak when chat button is clicked
       let siteFrame;
       //animate the IFrame
-      if (!this.$store.getters.embed && !this.$store.getters.overlayChat) {
+      if (!this.embed && !this.overlayChat) {
         siteFrame = document.getElementById("site-frame");
       }
 
@@ -324,7 +324,7 @@ export default {
       if (this.hideChat) {
         this.$router.push({ name: "chat" }); // make sure we show the main chat window
         this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
-        let isChatUiFloating = this.$store.getters.float;
+        let isChatUiFloating = this.float;
         setTimeout(
           function() {
             // wait just a bit before animating things - need the chat button to hide first
@@ -336,11 +336,7 @@ export default {
             } else {
               chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
             }
-            if (
-              !this.$store.getters.embed &&
-              !this.$store.getters.overlayChat &&
-              siteFrame
-            ) {
+            if (!this.embed && !this.overlayChat && siteFrame) {
               siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
             }
           }.bind(this),
@@ -359,11 +355,7 @@ export default {
       } else {
         // hide chat window - button clicked - logout
         this.$store.commit("HIDE_CHAT_MODAL");
-        if (
-          !this.$store.getters.embed &&
-          !this.$store.getters.overlayChat &&
-          siteFrame
-        ) {
+        if (!this.embed && !this.overlayChat && siteFrame) {
           siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
         }
 
