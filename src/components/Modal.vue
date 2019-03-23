@@ -294,6 +294,11 @@ export default {
       if (this.modalItem && this.$store.getters.showModal) {
         this.resetModal();
         let response = this.modalItem;
+
+        if (this.isInline(response)) {
+          return false;
+        }
+
         let teneoResponse = response.teneoResponse;
         let outputLink = decodeURIComponent(teneoResponse.link.href);
         let actionRAW = decodeURIComponent(teneoResponse.extraData.extensions);
@@ -470,6 +475,7 @@ export default {
     ...mapGetters([
       "modalItem",
       "isLiveChat",
+      "isInline",
       "iFrameUrlBase",
       "dark",
       "userInput"

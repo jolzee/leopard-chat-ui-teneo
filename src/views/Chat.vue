@@ -111,6 +111,16 @@
                       {{item.text}}
                     </v-alert>
                   </div>
+                  <!-- Misc Message -->
+                  <div v-if="item.type === 'miscMessage'">
+                    <v-alert
+                      :value="true"
+                      color="info"
+                      icon="fa-broadcast-tower"
+                    >
+                      {{item.text}}
+                    </v-alert>
+                  </div>
                   <!-- Live Chat Status -->
                   <div v-if="item.type === 'liveChatStatus'">
                     <v-alert
@@ -151,7 +161,7 @@
                     </v-flex>
                     <v-flex>
                       <v-card
-                        class="chat-card text-xs-left px-2"
+                        class="chat-card chat-card-left text-xs-left px-2"
                         :dark="dark"
                       >
                         <v-container grid-list-s>
@@ -193,7 +203,7 @@
                       </v-flex>
                       <v-flex shrink>
                         <v-card
-                          class="chat-card text-xs-left px-2"
+                          class="chat-card chat-card-left text-xs-left px-2"
                           :dark="dark"
                         >
                           <span
@@ -201,6 +211,41 @@
                             class="teneo-reply"
                           ></span>
                         </v-card>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout row>
+                      <v-flex xs12>
+                        <YouTube
+                          v-if="isInlineType(item,'youTube')"
+                          :videoId="youTubeVideoId(item)"
+                          class="mt-2"
+                        ></YouTube>
+                        <Audio
+                          v-if="isInlineType(item,'audio')"
+                          :url="audioInfo(item).audioUrl"
+                          class="mt-2"
+                        ></Audio>
+                        <Vimeo
+                          v-if="isInlineType(item,'vimeo')"
+                          :videoId="vimeoId(item)"
+                          class="mt-2"
+                        ></Vimeo>
+                        <Video
+                          v-if="isInlineType(item,'video')"
+                          :url="videoInfo(item).videoUrl"
+                          :type="videoInfo(item).videoType"
+                          class="mt-2"
+                        ></Video>
+                        <ImageAnimation
+                          v-if="isInlineType(item,'image')"
+                          :url="imageUrl(item)"
+                          class="mt-2"
+                        ></ImageAnimation>
+                        <Carousel
+                          v-if="isInlineType(item,'carousel')"
+                          :imageItems="carouselImageArray(item)"
+                          class="mt-2"
+                        ></Carousel>
                       </v-flex>
                     </v-layout>
                     <!-- show any options in the response: for example Yes, No Maybe -->
@@ -260,7 +305,7 @@
                       <v-flex
                         xs12
                         class="text-xs-right"
-                        v-if="item.hasExtraData && !hasCollection(item) && notLiveChatTranscript(item)"
+                        v-if="item.hasExtraData && !isInline(item) && !hasCollection(item) && notLiveChatTranscript(item)"
                       >
                         <v-btn
                           class="mr-0"
@@ -329,7 +374,7 @@
                       </v-flex>
                       <v-flex>
                         <v-card
-                          class="chat-card text-xs-left px-2"
+                          class="chat-card chat-card-left text-xs-left px-2"
                           :dark="dark"
                         >
                           <span
@@ -353,7 +398,7 @@
                     <v-flex shrink>
                       <v-card
                         color="primary white--text"
-                        class="chat-card text-xs-right"
+                        class="chat-card chat-card-right text-xs-right"
                       >
                         <v-container
                           fluid
@@ -564,6 +609,12 @@
 
 <script>
 import { mapGetters, mapState } from "vuex";
+import Audio from "../components/Audio";
+import Carousel from "../components/Carousel";
+import ImageAnimation from "../components/ImageAnimation";
+import Video from "../components/Video";
+import Vimeo from "../components/Vimeo";
+import YouTube from "../components/YouTube";
 
 if (window.Element && !Element.prototype.closest) {
   Element.prototype.closest = function(s) {
@@ -581,7 +632,14 @@ if (window.Element && !Element.prototype.closest) {
 }
 
 export default {
-  components: {},
+  components: {
+    Audio,
+    Carousel,
+    ImageAnimation,
+    Video,
+    Vimeo,
+    YouTube
+  },
   data() {
     return {
       showAudioInput: false,
@@ -597,14 +655,23 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "audioUrl",
+      "carouselImageArray",
       "chatHistory",
       "chatHistorySessionStorage",
       "dark",
       "float",
+      "imageUrl",
+      "isInline",
+      "isInlineType",
       "liveChatMessage",
       "progressBar",
       "showChatLoading",
-      "showLiveChatProcessing"
+      "showLiveChatProcessing",
+      "videoUrl",
+      "vimeoId",
+      "audioInfo",
+      "youTubeVideoId"
     ]),
     ...mapState([
       "userInputReadyForSending",
@@ -974,6 +1041,18 @@ export default {
   padding: 5px;
   padding-left: 10px;
   margin-top: 10px;
+}
+
+.chat-card-left {
+  border-radius: 3px 13px 13px 13px;
+  -moz-border-radius: 3px 13px 13px 13px;
+  -webkit-border-radius: 3px 13px 13px 13px;
+}
+
+.chat-card-right {
+  border-radius: 13px 3px 13px 13px;
+  -moz-border-radius: 13px 3px 13px 13px;
+  -webkit-border-radius: 13px 3px 13px 13px;
 }
 
 div.options-list a.v-list__tile--link {

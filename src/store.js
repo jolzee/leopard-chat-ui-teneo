@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk"; // live chat
 import Artyom from "artyom.js"; // for speech recognition and tts
 import toHex from "colornames"; // can convert html color names to hex equivalent
@@ -237,11 +238,169 @@ function setupStore(callback) {
       agentName(state) {
         return state.agentName;
       },
+      isVideoFile: state => url => {
+        // console.log("IsVideo:" + url);
+        const regExp = /\.(?:mp4|webm|ogg)$/i;
+        const match = url.match(regExp);
+        let result = match ? match[0].substring(1, match[0].length) : false;
+        // console.log(result);
+        return result;
+      },
+      isAudioFile: state => url => {
+        // console.log("ISAudio:" + url);
+        const regExp = /\.(?:wav|mp3|ogg)$/i;
+        const match = url.match(regExp);
+        let result = match ? match[0].substring(1, match[0].length) : false;
+        // console.log(result);
+        return result;
+      },
+      youTubeIdFromUrl: state => url => {
+        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#]*).*/;
+        const match = url.match(regExp);
+        if (match) {
+          return match && match[7].length == 11 ? match[7] : false;
+        } else {
+          return false;
+        }
+      },
+      vimeoIdFromUrl: state => url => {
+        const regExp = /^.+vimeo.com\/(.*\/)?([^#]*)/;
+        const match = url.match(regExp);
+        return match ? match[2] || match[1] : false;
+      },
       enableLiveChat(state) {
         return state.enableLiveChat;
       },
       chatConfig(state) {
         return state.chatConfig;
+      },
+      // eslint-disable-next-line no-unused-vars
+      itemAction: _state => item => {
+        if (item && item.teneoResponse) {
+          let actionRAW = decodeURIComponent(item.teneoResponse.extraData.extensions);
+          if (actionRAW !== "undefined") {
+            let action = JSON.parse(actionRAW);
+            return action;
+          }
+        }
+        return;
+      },
+      isInline: (state, getters) => item => {
+        let action = getters.itemAction(item);
+        if (action && action.inline) {
+          return true;
+        }
+        return false;
+      },
+      isInlineType: (_state, getters) => (item, type) => {
+        if (item && item.teneoResponse) {
+          let actionRAW = decodeURIComponent(item.teneoResponse.extraData.extensions);
+          if (actionRAW !== "undefined") {
+            let action = JSON.parse(actionRAW);
+            if (action.inline) {
+              switch (type) {
+                case "youTube":
+                  if (getters.youTubeVideoId(item)) {
+                    return true;
+                  }
+                  break;
+                case "audio":
+                  if (getters.audioInfo(item)) {
+                    return true;
+                  }
+                  break;
+                case "vimeo":
+                  if (getters.vimeoId(item)) {
+                    return true;
+                  }
+                  break;
+                case "video":
+                  if (getters.videoInfo(item)) {
+                    return true;
+                  }
+                  break;
+                case "image":
+                  if (getters.imageUrl(item)) {
+                    return true;
+                  }
+                  break;
+                case "carousel":
+                  if (getters.carouselImageArray(item)) {
+                    return true;
+                  }
+                  break;
+                default:
+                  return false;
+              }
+            }
+          }
+        }
+        return false;
+      },
+      youTubeVideoId: (_state, getters) => item => {
+        let action = getters.itemAction(item);
+        if (action && action.name === "displayVideo") {
+          let url = action.parameters.video_url;
+          let videoId = getters.youTubeIdFromUrl(url);
+          if (videoId) {
+            return videoId;
+          }
+        }
+        return ""; // Never going to give you up.
+      },
+      audioInfo: (state, getters) => item => {
+        let action = getters.itemAction(item);
+        if (action && action.name === "displayVideo") {
+          let url = action.parameters.video_url;
+          const audioFileExt = getters.isAudioFile(url);
+          if (audioFileExt) {
+            return {
+              audioType: `audio/${audioFileExt}`,
+              audioUrl: url
+            };
+          }
+        }
+        return {};
+      },
+      vimeoId: (_state, getters) => item => {
+        let action = getters.itemAction(item);
+        if (action && action.name === "displayVideo") {
+          let url = action.parameters.video_url;
+          const vimeoId = getters.vimeoIdFromUrl(url);
+          if (vimeoId) {
+            return vimeoId;
+          }
+        }
+        return;
+      },
+      videoInfo: (_state, getters) => item => {
+        let action = getters.itemAction(item);
+        if (action && action.name === "displayVideo") {
+          let url = action.parameters.video_url;
+          const videoFileExt = getters.isVideoFile(url);
+          if (videoFileExt) {
+            return {
+              videoType: `video/${videoFileExt}`,
+              videoUrl: url
+            };
+          }
+        }
+        return;
+      },
+      imageUrl: (_state, getters) => item => {
+        let action = getters.itemAction(item);
+        if (action && action.name === "displayImage") {
+          console.log(`image URL ${action.parameters.image_url}`);
+          return action.parameters.image_url;
+        }
+        return "";
+      },
+      carouselImageArray: (_state, getters) => item => {
+        let action = getters.itemAction(item);
+        if (action && action.name === "displayImageCarousel") {
+          return action.parameters.images;
+        }
+        return [];
       },
       iFrameUrlBase(state) {
         return state.iframeUrlBase;
@@ -359,6 +518,15 @@ function setupStore(callback) {
       PUSH_LIVE_CHAT_STATUS_TO_DIALOG(state, liveChatStatus) {
         state.dialog.push(liveChatStatus);
       },
+      SHOW_MESSAGE_IN_CHAT(state, message) {
+        let miscMessage = {
+          type: "miscMessage",
+          text: message,
+          bodyText: "",
+          hasExtraData: false
+        };
+        state.dialog.push(miscMessage);
+      },
       PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG(state, liveChatResponse) {
         state.dialog.push(liveChatResponse);
       },
@@ -387,7 +555,7 @@ function setupStore(callback) {
       CLEAR_CHAT_HISTORY(state) {
         state.dialog = [];
       },
-      LIVE_CHAT(state, transcript) {
+      LIVE_CHAT(_state, transcript) {
         doLiveChatRequest(transcript);
       },
       START_LIVE_CHAT(state) {
@@ -591,6 +759,7 @@ function setupStore(callback) {
             })
             .catch(err => {
               console.log(err);
+              context.commit("SHOW_MESSAGE_IN_CHAT", "Problems sending login command: " + err.message);
               reject(err);
             });
         });
@@ -650,6 +819,10 @@ function setupStore(callback) {
                   .then(console.log("Sent original lang input to new lang specific solution"))
                   .catch(err => {
                     console.err("Unable to send lang input to new lang specific solution", err.message);
+                    context.commit(
+                      "SHOW_MESSAGE_IN_CHAT",
+                      "Unable to send lang input to new lang specific solution: " + err.message
+                    );
                   });
               }
             })
@@ -657,6 +830,9 @@ function setupStore(callback) {
               console.log(err);
               if (err.status && err.status === 408) {
                 console.log("Oh dear - Request Timed Out");
+                context.commit("SHOW_MESSAGE_IN_CHAT", "I'm sorry but the request timed out - Please try again.");
+              } else {
+                context.commit("SHOW_MESSAGE_IN_CHAT", err.message);
               }
               context.commit("HIDE_PROGRESS_BAR");
             });
@@ -682,7 +858,7 @@ function setupStore(callback) {
           sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(context.getters.dialogHistory));
           doLiveChatRequest(context.getters.userInput);
           context.commit("HIDE_PROGRESS_BAR");
-          context.commit("SET_USER_INPUT", "");
+          context.commit("CLEAR_USER_INPUT");
         }
       },
       captureAudio(context) {

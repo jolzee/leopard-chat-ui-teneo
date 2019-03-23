@@ -68,6 +68,11 @@
                 v-if="item.type === 'vimeo'"
                 :videoId="item.value"
               ></Vimeo>
+              <Video
+                v-if="item.type === 'video'"
+                :url="item.value"
+                type="mp4"
+              ></Video>
               <ImageAnimation
                 v-if="item.type === 'image'"
                 :url="item.value"
@@ -106,18 +111,22 @@
 </template>
 
 <script>
-import Carousel from "./Carousel";
-import YouTube from "./YouTube";
-import ImageAnimation from "./ImageAnimation";
 import Audio from "./Audio";
+import Carousel from "./Carousel";
+import ImageAnimation from "./ImageAnimation";
+import Video from "./Video";
+import Vimeo from "./Vimeo";
+import YouTube from "./YouTube";
 
 export default {
   props: ["items", "toolbarWidth"],
   components: {
-    ImageAnimation,
+    Audio,
     Carousel,
-    YouTube,
-    Audio
+    ImageAnimation,
+    Video,
+    Vimeo,
+    YouTube
   },
   data() {
     return {};
