@@ -95,11 +95,6 @@
           >
 
             <v-layout class="mb-2">
-              <!-- help dialog -->
-              <help-dialog
-                :showDialog="helpDialog"
-                :closeAction="closeHelpDialog"
-              ></help-dialog>
 
               <!-- global snackbar -->
               <v-snackbar
@@ -321,16 +316,17 @@
               bottom
             >
               <v-btn
-                slot="activator"
                 fab
+                slot="activator"
                 dark
                 small
                 color="brown darken-3"
-                @click="helpDialog = true"
+                href="https://jolzee.gitbook.io/leopard/"
+                target="_blank"
               >
                 <v-icon dark>fa-question-circle</v-icon>
               </v-btn>
-              <span>Help</span>
+              <span>Help / Documentation</span>
             </v-tooltip>
 
             <prism language="json">{{ prettyPrintFullConfig }}</prism>
@@ -1147,7 +1143,6 @@ import {
   STORAGE_KEY,
   SOLUTION_DEFAULT
 } from "../constants/solution-config-default.js";
-import HelpDialog from "../components/HelpDialog";
 import "prismjs/prism";
 import "prismjs/themes/prism-funky.css";
 import "prismjs/components/prism-json.min.js";
@@ -1156,7 +1151,6 @@ import Prism from "vue-prism-component";
 export default {
   components: {
     "compact-picker": Compact,
-    "help-dialog": HelpDialog,
     Prism
   },
   data() {
@@ -1179,7 +1173,6 @@ export default {
       dialogTitle: "",
       showModal: true,
       saveLoading: false,
-      helpDialog: false,
       uploadDialog: false,
       uploadConfig: "",
       selectedSolution: null,
@@ -1266,9 +1259,6 @@ export default {
         self.showProgressUpload = false;
       };
       reader.readAsText(file);
-    },
-    closeHelpDialog() {
-      this.helpDialog = false;
     },
     compareSolutions(a, b) {
       if (a.name < b.name) return -1;
