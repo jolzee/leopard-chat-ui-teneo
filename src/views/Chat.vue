@@ -1016,7 +1016,7 @@ export default {
 <style>
 .v-expansion-panel__header {
   padding-left: 10px !important;
-  padding-right: 15px !important;
+  padding-right: 10px !important;
   padding-top: 0px !important;
   padding-bottom: 5px !important;
 }
