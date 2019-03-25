@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+
 import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk"; // live chat
 import Artyom from "artyom.js"; // for speech recognition and tts
 import toHex from "colornames"; // can convert html color names to hex equivalent
@@ -8,6 +9,8 @@ import request from "simple-json-request";
 import stripHtml from "string-strip-html";
 import URL from "url-parse";
 import Vue from "vue";
+import Vuetify from "vuetify/lib";
+import "vuetify/src/stylus/app.styl";
 import VueJsonp from "vue-jsonp";
 import Vuex from "vuex";
 import vuexI18n from "vuex-i18n"; // i18n the leopard interface
@@ -44,8 +47,8 @@ let USE_PUSHER = false;
 let USER_ICON = "";
 
 let THEME = {
-  primary: "#D60270",
-  secondary: "#5B017B",
+  primary: "#3277D5",
+  secondary: "#E78600",
   accent: "#4CAF50",
   error: "#FF5252",
   info: "#2196F3",
@@ -142,10 +145,16 @@ function setupStore(callback) {
     // const USE_LOCAL_STORAGE = parseBool(activeSolution.useLocalStorage);
     USE_LOCAL_STORAGE = false;
     let theme = activeSolution.theme;
+    // convert color names to their #hex equivalent
     for (const key in theme) {
       if (theme[key].charAt(0) !== "#") theme[key] = toHex(theme[key]);
     }
     THEME = theme;
+
+    Vue.use(Vuetify, {
+      iconfont: ["md", "fa"],
+      theme: THEME
+    });
     ENABLE_LIVE_CHAT = parseBool(activeSolution.enableLiveChat);
 
     document.title = activeSolution.name;

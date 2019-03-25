@@ -1,28 +1,28 @@
 import "@fortawesome/fontawesome-free/css/all.css";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
-import parseBool from "parseboolean";
+import "vue-loaders/dist/vue-loaders.css";
+import "vue-plyr/dist/vue-plyr.css";
+import "vue2-animate/dist/vue2-animate.min.css";
+import App from "./App";
+import Dayjs from "vue-dayjs";
+import Listening from "./components/Listening.vue"; // component dialog that shows then capturing audio
+import Modal from "./components/Modal.vue";
 import Prism from "prismjs";
 import Vue from "vue";
-import Dayjs from "vue-dayjs";
+import VuePlyr from "vue-plyr";
+import VueSession from "vue-session";
+import longpress from "vue-long-press-directive";
+import parseBool from "parseboolean";
+import router from "./router";
+import vueSmoothScroll from "vue-smoothscroll";
+// import "./plugins/vuetify";
 import {
   BallPulseSyncLoader,
   BallScaleRippleMultipleLoader,
   LineScaleLoader,
   LineScalePulseOutRapidLoader
 } from "vue-loaders";
-import "vue-loaders/dist/vue-loaders.css";
-import longpress from "vue-long-press-directive";
-import VuePlyr from "vue-plyr";
-import "vue-plyr/dist/vue-plyr.css";
-import VueSession from "vue-session";
-import vueSmoothScroll from "vue-smoothscroll";
-import "vue2-animate/dist/vue2-animate.min.css";
-import App from "./App";
-import Listening from "./components/Listening.vue"; // component dialog that shows then capturing audio
-import Modal from "./components/Modal.vue";
 import { STORAGE_KEY } from "./constants/solution-config-default";
-import "./plugins/vuetify";
-import router from "./router";
 import { storeInit } from "./store";
 
 if (parseBool(localStorage.getItem(STORAGE_KEY + "darkTheme")) === null) {
