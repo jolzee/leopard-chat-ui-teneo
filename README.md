@@ -1,4 +1,4 @@
-# chat-teneo-vue-new
+# chat-teneo-vue
 
 ## Full Documentation
 
