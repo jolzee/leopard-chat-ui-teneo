@@ -247,7 +247,27 @@ function setupStore(callback) {
       agentName(state) {
         return state.agentName;
       },
-      isVideoFile: state => url => {
+      modalPosition: _state => item => {
+        let modalPosition = decodeURIComponent(item.teneoResponse.extraData.modalPosition);
+        if (modalPosition !== "undefined") {
+          modalPosition = modalPosition.toLowerCase();
+        }
+        return modalPosition;
+      },
+      modalSize: _state => item => {
+        let modalSize = decodeURIComponent(item.teneoResponse.extraData.modalSize);
+        if (modalSize !== "undefined") {
+          modalSize = modalSize.toLowerCase();
+        }
+        return modalSize;
+      },
+      outputLink: _state => item => {
+        return decodeURIComponent(item.teneoResponse.link.href);
+      },
+      liveChatTranscript: _state => item => {
+        return decodeURIComponent(item.teneoResponse.extraData.liveChat);
+      },
+      isVideoFile: _state => url => {
         // console.log("IsVideo:" + url);
         const regExp = /\.(?:mp4|webm|ogg)$/i;
         const match = url.match(regExp);
@@ -255,7 +275,7 @@ function setupStore(callback) {
         // console.log(result);
         return result;
       },
-      isAudioFile: state => url => {
+      isAudioFile: _state => url => {
         // console.log("ISAudio:" + url);
         const regExp = /\.(?:wav|mp3|ogg)$/i;
         const match = url.match(regExp);
@@ -263,7 +283,7 @@ function setupStore(callback) {
         // console.log(result);
         return result;
       },
-      youTubeIdFromUrl: state => url => {
+      youTubeIdFromUrl: _state => url => {
         const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#]*).*/;
         const match = url.match(regExp);
         if (match) {
@@ -272,7 +292,7 @@ function setupStore(callback) {
           return false;
         }
       },
-      vimeoIdFromUrl: state => url => {
+      vimeoIdFromUrl: _state => url => {
         const regExp = /^.+vimeo.com\/(.*\/)?([^#]*)/;
         const match = url.match(regExp);
         return match ? match[2] || match[1] : false;
@@ -283,84 +303,122 @@ function setupStore(callback) {
       chatConfig(state) {
         return state.chatConfig;
       },
-      // eslint-disable-next-line no-unused-vars
-      itemAction: _state => item => {
-        if (item && item.teneoResponse) {
-          let actionRAW = decodeURIComponent(item.teneoResponse.extraData.extensions);
-          if (actionRAW !== "undefined") {
-            let action = JSON.parse(actionRAW);
-            return action;
+      extensionIsInline: _state => extension => {
+        if (extension && extension.inline) {
+          return extension.inline;
+        } else {
+          return false;
+        }
+      },
+      itemExtensionsModal: (_state, getters) => item => {
+        let extensions = getters.itemExtensions(item);
+        let modalExtensions = [];
+        extensions.forEach(extension => {
+          if (!getters.extensionIsInline(extension) && !extension.name.startsWith("displayCollection")) {
+            modalExtensions.push(extension);
           }
-        }
-        return;
+        });
+        return modalExtensions;
       },
-      isInline: (state, getters) => item => {
-        let action = getters.itemAction(item);
-        if (action && action.inline) {
-          return true;
-        }
-        return false;
-      },
-      isInlineType: (_state, getters) => (item, type) => {
+      itemExtensions: _state => item => {
+        let actions = [];
         if (item && item.teneoResponse) {
-          let actionRAW = decodeURIComponent(item.teneoResponse.extraData.extensions);
-          if (actionRAW !== "undefined") {
-            let action = JSON.parse(actionRAW);
-            if (action.inline) {
-              switch (type) {
-                case "youTube":
-                  if (getters.youTubeVideoId(item)) {
-                    return true;
-                  }
-                  break;
-                case "audio":
-                  if (getters.audioInfo(item)) {
-                    return true;
-                  }
-                  break;
-                case "vimeo":
-                  if (getters.vimeoId(item)) {
-                    return true;
-                  }
-                  break;
-                case "video":
-                  if (getters.videoInfo(item)) {
-                    return true;
-                  }
-                  break;
-                case "image":
-                  if (getters.imageUrl(item)) {
-                    return true;
-                  }
-                  break;
-                case "carousel":
-                  if (getters.carouselImageArray(item)) {
-                    return true;
-                  }
-                  break;
-                default:
-                  return false;
+          if (
+            Object.keys(item.teneoResponse.extraData).some(function(k) {
+              return ~k.indexOf("extensions");
+            })
+          ) {
+            // sort the keys for ordering of extensions
+            const ordered = {};
+            Object.keys(item.teneoResponse.extraData)
+              .sort()
+              .forEach(function(key) {
+                ordered[key] = item.teneoResponse.extraData[key];
+              });
+            for (var key in ordered) {
+              if (key.startsWith("extensions")) {
+                var value = decodeURIComponent(ordered[key]);
+                // console.log(`Key: ${key} Value: ${value}`);
+                actions.push(JSON.parse(value));
               }
             }
           }
         }
+        return actions;
+      },
+      hasModal: (_state, getters) => item => {
+        let extensions = getters.itemExtensions(item);
+        let hasModal = false;
+        extensions.forEach(extension => {
+          if (extension && !extension.inline && !extension.name.startsWith("displayCollection")) {
+            hasModal = true;
+          }
+        });
+
+        return hasModal;
+      },
+      hasInline: (_state, getters) => item => {
+        let extensions = getters.itemExtensions(item);
+        extensions.forEach(extension => {
+          if (extension && extension.inline) {
+            return true;
+          }
+        });
         return false;
       },
-      youTubeVideoId: (_state, getters) => item => {
-        let action = getters.itemAction(item);
-        if (action && action.name === "displayVideo") {
-          let url = action.parameters.video_url;
+      hasInlineType: (_state, getters) => (extension, type) => {
+        if (extension && extension.inline) {
+          switch (type) {
+            case "youTube":
+              if (getters.youTubeVideoId(extension)) {
+                return true;
+              }
+              break;
+            case "audio":
+              if (getters.audioInfo(extension)) {
+                return true;
+              }
+              break;
+            case "vimeo":
+              if (getters.vimeoId(extension)) {
+                return true;
+              }
+              break;
+            case "video":
+              if (getters.videoInfo(extension)) {
+                return true;
+              }
+              break;
+            case "image":
+              if (getters.imageUrl(extension)) {
+                return true;
+              }
+              break;
+            case "carousel":
+              if (getters.carouselImageArray(extension)) {
+                return true;
+              }
+              break;
+            default:
+              return false;
+          }
+        }
+        return false;
+      },
+      youTubeVideoId: (_state, getters) => extension => {
+        if (extension && extension.name === "displayVideo") {
+          let url = extension.parameters.video_url;
           let videoId = getters.youTubeIdFromUrl(url);
           if (videoId) {
             return videoId;
           }
         }
-        return ""; // Never going to give you up.
+
+        return "";
       },
-      audioInfo: (state, getters) => item => {
-        let action = getters.itemAction(item);
-        if (action && action.name === "displayVideo") {
-          let url = action.parameters.video_url;
+      audioInfo: (_state, getters) => extension => {
+        if (extension && extension.name === "displayVideo") {
+          let url = extension.parameters.video_url;
           const audioFileExt = getters.isAudioFile(url);
           if (audioFileExt) {
             return {
@@ -369,23 +427,23 @@ function setupStore(callback) {
             };
           }
         }
+
         return {};
       },
-      vimeoId: (_state, getters) => item => {
-        let action = getters.itemAction(item);
-        if (action && action.name === "displayVideo") {
-          let url = action.parameters.video_url;
+      vimeoId: (_state, getters) => extension => {
+        if (extension && extension.name === "displayVideo") {
+          let url = extension.parameters.video_url;
           const vimeoId = getters.vimeoIdFromUrl(url);
           if (vimeoId) {
             return vimeoId;
           }
         }
+
         return;
       },
-      videoInfo: (_state, getters) => item => {
-        let action = getters.itemAction(item);
-        if (action && action.name === "displayVideo") {
-          let url = action.parameters.video_url;
+      videoInfo: (_state, getters) => extension => {
+        if (extension && extension.name === "displayVideo") {
+          let url = extension.parameters.video_url;
           const videoFileExt = getters.isVideoFile(url);
           if (videoFileExt) {
             return {
@@ -394,20 +452,19 @@ function setupStore(callback) {
             };
           }
         }
+
         return;
       },
-      imageUrl: (_state, getters) => item => {
-        let action = getters.itemAction(item);
-        if (action && action.name === "displayImage") {
-          console.log(`image URL ${action.parameters.image_url}`);
-          return action.parameters.image_url;
+      imageUrl: (_state, _getters) => extension => {
+        if (extension && extension.name === "displayImage") {
+          // console.log(`image URL ${extension.parameters.image_url}`);
+          return extension.parameters.image_url;
         }
         return "";
       },
-      carouselImageArray: (_state, getters) => item => {
-        let action = getters.itemAction(item);
-        if (action && action.name === "displayImageCarousel") {
-          return action.parameters.images;
+      carouselImageArray: (_state, _getters) => extension => {
+        if (extension && extension.name === "displayImageCarousel") {
+          return extension.parameters.images;
         }
         return [];
       },
@@ -486,7 +543,6 @@ function setupStore(callback) {
         return state.stopAudioCapture;
       },
       showModal(state) {
-        // console.log("request for show modal");
         return state.showModal;
       },
       showConfigModal(state) {
@@ -600,9 +656,12 @@ function setupStore(callback) {
       },
       UPDATE_CHAT_WINDOW_AND_STORAGE(state, response) {
         let hasExtraData = false;
+
         if (
           response.teneoResponse &&
-          (response.teneoResponse.extraData.extensions ||
+          (Object.keys(response.teneoResponse.extraData).some(function(k) {
+            return ~k.indexOf("extensions");
+          }) ||
             response.teneoResponse.extraData.liveChat ||
             response.teneoResponse.link.href)
         ) {
@@ -749,7 +808,13 @@ function setupStore(callback) {
               context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
               // console.log(decodeURIComponent(json.responseData.answer))
               let hasExtraData = false;
-              if (json.responseData.extraData.extensions || json.responseData.extraData.liveChat) {
+
+              if (
+                Object.keys(json.responseData.extraData).some(function(k) {
+                  return ~k.indexOf("extensions");
+                }) ||
+                json.responseData.extraData.liveChat
+              ) {
                 hasExtraData = true;
               }
               const response = {

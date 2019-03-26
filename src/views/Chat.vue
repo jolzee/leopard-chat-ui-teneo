@@ -81,7 +81,7 @@
           </v-flex>
         </v-layout>
         <v-expansion-panel
-          :value="getOpenedItem"
+          :value="getCurrentItem"
           class="chat-container-inner"
         >
           <transition-group
@@ -213,37 +213,42 @@
                         </v-card>
                       </v-flex>
                     </v-layout>
-                    <v-layout row>
+                    <!-- Show Inline Components -->
+                    <v-layout
+                      v-for="(extension, index) in itemExtensions(item)"
+                      :key="index + 'inlines'"
+                      row
+                    >
                       <v-flex xs12>
                         <YouTube
-                          v-if="isInlineType(item,'youTube')"
-                          :videoId="youTubeVideoId(item)"
+                          v-if="hasInlineType(extension,'youTube')"
+                          :videoId="youTubeVideoId(extension)"
                           class="mt-2"
                         ></YouTube>
                         <Audio
-                          v-if="isInlineType(item,'audio')"
-                          :url="audioInfo(item).audioUrl"
+                          v-if="hasInlineType(extension,'audio')"
+                          :url="audioInfo(extension).audioUrl"
                           class="mt-2"
                         ></Audio>
                         <Vimeo
-                          v-if="isInlineType(item,'vimeo')"
-                          :videoId="vimeoId(item)"
+                          v-if="hasInlineType(extension,'vimeo')"
+                          :videoId="vimeoId(extension)"
                           class="mt-2"
                         ></Vimeo>
                         <Video
-                          v-if="isInlineType(item,'video')"
-                          :url="videoInfo(item).videoUrl"
-                          :type="videoInfo(item).videoType"
+                          v-if="hasInlineType(extension,'video')"
+                          :url="videoInfo(extension).videoUrl"
+                          :type="videoInfo(extension).videoType"
                           class="mt-2"
                         ></Video>
                         <ImageAnimation
-                          v-if="isInlineType(item,'image')"
-                          :url="imageUrl(item)"
+                          v-if="hasInlineType(extension,'image')"
+                          :url="imageUrl(extension)"
                           class="mt-2"
                         ></ImageAnimation>
                         <Carousel
-                          v-if="isInlineType(item,'carousel')"
-                          :imageItems="carouselImageArray(item)"
+                          v-if="hasInlineType(extension,'carousel')"
+                          :imageItems="carouselImageArray(extension)"
                           class="mt-2"
                         ></Carousel>
                       </v-flex>
@@ -255,6 +260,7 @@
                       class="text-xs-center"
                       width="320px"
                     >
+                      <!-- Button Options -->
                       <v-card-text v-if="!hasLongOptions(item)">
                         <h2 v-text="getOptions(item).title"></h2>
                         <div
@@ -277,7 +283,7 @@
                           </v-btn>
                         </span>
                       </v-card-text>
-
+                      <!-- Line based List Options -->
                       <v-list
                         three-line
                         dense
@@ -300,12 +306,18 @@
                         </template>
                       </v-list>
                     </v-card>
-                    <!-- more info & calendar picker -->
+                    <!-- more info for modals & calendar picker button -->
                     <v-layout row>
+                      <!-- <v-flex
+                        xs12
+                        class="text-xs-right"
+                        v-if="item.hasExtraData && hasModal(item) && !hasCollection(item) && notLiveChatTranscript(item)"
+                      > -->
+
                       <v-flex
                         xs12
                         class="text-xs-right"
-                        v-if="item.hasExtraData && !isInline(item) && !hasCollection(item) && notLiveChatTranscript(item)"
+                        v-if="item.hasExtraData && hasModal(item) && notLiveChatTranscript(item)"
                       >
                         <v-btn
                           class="mr-0"
@@ -655,20 +667,20 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "audioUrl",
       "carouselImageArray",
       "chatHistory",
       "chatHistorySessionStorage",
       "dark",
       "float",
       "imageUrl",
-      "isInline",
-      "isInlineType",
+      "itemExtensions",
+      "hasInline",
+      "hasInlineType",
+      "hasModal",
       "liveChatMessage",
       "progressBar",
       "showChatLoading",
       "showLiveChatProcessing",
-      "videoUrl",
       "vimeoId",
       "audioInfo",
       "youTubeVideoId"
@@ -697,7 +709,7 @@ export default {
         this.$store.commit("SET_USER_INPUT", userInput);
       }
     },
-    getOpenedItem() {
+    getCurrentItem() {
       return this.dialog.length - 1;
     },
     isHistoryPage() {
@@ -736,20 +748,6 @@ export default {
   mounted() {
     this.$el.addEventListener("click", this.onHtmlClick);
     this.$refs.userInput.focus();
-    // console.log("In mounted");
-
-    // if being shown in webview then show the microphone button by default
-
-    // if (
-    //   "Android" in window ||
-    //   "webkit" in window
-    //   // "webkitSpeechRecognition" in window ||
-    //   // "SpeechRecognition" in window
-    // ) {
-    //   // this.swapInputButton();
-    //   this.showAudioInput = true;
-    //   this.$store.commit("speakBackResponses", this.showAudioInput);
-    // }
   },
   methods: {
     responseHasChunks(item) {
@@ -813,18 +811,16 @@ export default {
       return false;
     },
     hasCollection(item) {
-      if (item.hasExtraData && item.type === "reply") {
-        let extensionsRAW = decodeURIComponent(
-          item.teneoResponse.extraData.extensions
-        );
-        if (extensionsRAW !== "undefined") {
-          let action = JSON.parse(extensionsRAW);
-          if (action.name.startsWith("displayCollection")) {
-            return true;
-          }
+      let extensions = this.itemExtensions(item);
+      let hasOptions = false;
+
+      extensions.forEach(extension => {
+        if (extension.name.startsWith("displayCollection")) {
+          hasOptions = true;
         }
-      }
-      return false;
+      });
+
+      return hasOptions;
     },
     notLiveChatTranscript(item) {
       let transcript = decodeURIComponent(
@@ -833,58 +829,46 @@ export default {
       return transcript === "undefined";
     },
     hasPermanentOptions(item) {
-      if (item.hasExtraData) {
-        let extensionsRAW = decodeURIComponent(
-          item.teneoResponse.extraData.extensions
-        );
-        if (extensionsRAW !== "undefined") {
-          let action = JSON.parse(extensionsRAW);
-          if (action.name.startsWith("displayCollection")) {
-            if (action.permanent !== "undefined") {
-              return action.permanent;
-            }
+      let extensions = this.itemExtensions(item);
+      let hasPermanentOptions = false;
+      extensions.forEach(extension => {
+        if (extension.name.startsWith("displayCollection")) {
+          if (extension.permanent !== "undefined") {
+            hasPermanentOptions = extension.permanent;
           }
         }
-      }
-      return false;
+      });
+      return hasPermanentOptions;
     },
     hasLongOptions(item) {
-      if (item.hasExtraData) {
-        let extensionsRAW = decodeURIComponent(
-          item.teneoResponse.extraData.extensions
-        );
-        if (extensionsRAW !== "undefined") {
-          let action = JSON.parse(extensionsRAW);
-          if (action.name.startsWith("displayCollection")) {
-            if (action.hasLongOptions !== "undefined") {
-              return action.hasLongOptions;
-            }
+      let extensions = this.itemExtensions(item);
+      let hasLongOptions = false;
+      extensions.forEach(extension => {
+        if (extension.name.startsWith("displayCollection")) {
+          if (extension.hasLongOptions !== "undefined") {
+            hasLongOptions = extension.hasLongOptions;
           }
         }
-      }
-      return false;
+      });
+      return hasLongOptions;
     },
     getOptions(item) {
-      if (item.hasExtraData) {
-        let extensionsRAW = decodeURIComponent(
-          item.teneoResponse.extraData.extensions
-        );
-        if (extensionsRAW !== "undefined") {
-          let action = JSON.parse(extensionsRAW);
-          if (action.name === "displayCollection") {
-            return action.parameters.content;
-          } else if (action.name.startsWith("displayCollectionBasic")) {
-            // console.log(action);
-            action.parameters.html = true;
-            action.parameters.items = action.parameters.items.replace(
-              /left/g,
-              ""
-            );
-            return action.parameters;
-          }
+      let extensions = this.itemExtensions(item);
+      // only get the first set of options.
+      let options = {};
+      extensions.forEach(extension => {
+        if (extension.name === "displayCollection") {
+          options = extension.parameters.content;
+        } else if (extension.name.startsWith("displayCollectionBasic")) {
+          extension.parameters.html = true;
+          extension.parameters.items = extension.parameters.items.replace(
+            /left/g,
+            ""
+          );
+          options = extension.parameters;
         }
-      }
-      return {};
+      });
+      return options;
     },
     sendUserInput() {
       this.audioButtonColor = "success";
@@ -898,7 +882,7 @@ export default {
           .dispatch("sendUserInput")
           .then(this.$refs.userInput.focus())
           .catch(err => {
-            this.inUserInput = err;
+            this.userInput = err;
           });
       } else {
         this.snackbar = true;
@@ -913,47 +897,56 @@ export default {
         .then(this.$refs.userInput.focus());
     },
     modalButtonText(item) {
-      if (item.hasExtraData && item.type === "reply") {
-        let extensionsRAW = decodeURIComponent(
-          item.teneoResponse.extraData.extensions
-        );
-        if (extensionsRAW !== "undefined") {
-          let action = JSON.parse(extensionsRAW);
-          if (action.name.startsWith("displayVideo")) {
-            return "Video";
-          } else if (action.name.startsWith("displayImage")) {
-            return "Image";
-          } else if (action.name.startsWith("displayTable")) {
-            return "Results Table";
-          }
+      let extensions = this.itemExtensions(item);
+      let countOfNonInlines = 0;
+      let buttonLabel = "More";
+      extensions.forEach(extension => {
+        if (!extension.inline || item.teneoResponse.link.href !== "") {
+          countOfNonInlines++;
         }
+        if (extension.name.startsWith("displayVideo")) {
+          buttonLabel = "Video";
+        } else if (extension.name.startsWith("displayImage")) {
+          buttonLabel = "Image";
+        } else if (extension.name.startsWith("displayTable")) {
+          buttonLabel = "Results Table";
+        }
+        if (item.teneoResponse.link.href !== "") {
+          buttonLabel = "Page";
+        }
+      });
+      if (countOfNonInlines > 1) {
+        return "More";
       }
-      if (item.teneoResponse.link.href !== "") {
-        return "Page";
-      }
-
-      return "More";
+      return buttonLabel;
     },
     modalButtonIcon(item) {
-      if (item.hasExtraData && item.type === "reply") {
-        let extensionsRAW = decodeURIComponent(
-          item.teneoResponse.extraData.extensions
-        );
-        if (extensionsRAW !== "undefined") {
-          let action = JSON.parse(extensionsRAW);
-          if (action.name.startsWith("displayVideo")) {
-            return "fa-film";
-          } else if (action.name.startsWith("displayImage")) {
-            return "fa-image";
-          } else if (action.name.startsWith("displayTable")) {
-            return "fa-table";
-          }
+      let extensions = this.itemExtensions(item);
+      let countOfNonInlines = 0;
+      let iconName = "fa-angle-double-up";
+      extensions.forEach(extension => {
+        if (!extension.inline || item.teneoResponse.link.href !== "") {
+          countOfNonInlines++;
         }
+
+        if (extension.name.startsWith("displayVideo")) {
+          iconName = "fa-film";
+        } else if (extension.name.startsWith("displayImage")) {
+          iconName = "fa-image";
+        } else if (extension.name.startsWith("displayTable")) {
+          iconName = "fa-table";
+        }
+
+        if (item.teneoResponse.link.href !== "") {
+          iconName = "fa-link";
+        }
+      });
+
+      if (countOfNonInlines > 1) {
+        return "fa-angle-double-up";
       }
-      if (item.teneoResponse.link.href !== "") {
-        return "fa-link";
-      }
-      return "fa-angle-double-up";
+
+      return iconName;
     },
     showModal(item) {
       this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals first

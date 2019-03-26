@@ -230,8 +230,8 @@ export default {
       images: [],
       imageUrl: "",
       itinerary: "",
-      modalPosition: "center", // left / right / center
-      modalSize: "small", // small / medium / large / x-large / "" = full screen
+      currentModalPosition: "center", // left / right / center
+      currentModalSize: "small", // small / medium / large / x-large / "" = full screen
       pusherEnabled: false,
       pusherMessage: "",
       search: "",
@@ -293,20 +293,8 @@ export default {
     modalItem() {
       if (this.modalItem && this.$store.getters.showModal) {
         this.resetModal();
-        let response = this.modalItem;
-
-        if (this.isInline(response)) {
-          return false;
-        }
-
-        let teneoResponse = response.teneoResponse;
-        let outputLink = decodeURIComponent(teneoResponse.link.href);
-        let actionRAW = decodeURIComponent(teneoResponse.extraData.extensions);
-        let modalPosition = decodeURIComponent(
-          teneoResponse.extraData.modalPosition
-        );
-        let modalSize = decodeURIComponent(teneoResponse.extraData.modalSize);
-        let transcript = decodeURIComponent(teneoResponse.extraData.liveChat);
+        let item = this.modalItem;
+        let transcript = this.liveChatTranscript(item);
         let displayModal = false;
 
         // check if user wants to talk to a live agent
@@ -320,145 +308,141 @@ export default {
           );
           this.$store.commit("HIDE_CHAT_MODAL"); // stops the transcript from being sent back constantly during a live chat
         }
+
         // send URL's to the I-FRAME
-        if (outputLink !== "") {
-          if (outputLink.startsWith("./")) {
+        let outputUrl = this.outputLink(item);
+        if (outputUrl !== "") {
+          if (outputUrl.startsWith("./")) {
             let currentIframeUrl =
-              this.iFrameUrlBase + outputLink.substring(2, outputLink.length);
+              this.iFrameUrlBase + outputUrl.substring(2, outputUrl.length);
             document.getElementById("site-frame").src = currentIframeUrl;
           } else {
-            document.getElementById("site-frame").src = outputLink;
+            document.getElementById("site-frame").src = outputUrl;
           }
         }
 
-        if (actionRAW !== "undefined") {
-          this.transactionItems = [];
-
-          let action = JSON.parse(actionRAW);
-          displayModal = true;
-
-          // check for modal sizes and positions
-          if (modalSize !== "undefined") {
-            this.modalSize = modalSize.toLowerCase();
-          }
-
-          if (modalPosition !== "undefined") {
-            this.modalPosition = modalPosition.toLowerCase();
-          }
-
-          // check for flight itinerary
-          if (action.name === "displayItinerary") {
-            this.title = this.getFirstChunk(response.text);
-            this.itinerary = action.parameters;
-          }
-
-          // check for displayTranactionTable - myBank
-          if (action.name === "displayTable") {
-            this.title = this.getFirstChunk(response.text);
-            this.tableTitle = action.parameters.title;
-            this.tableRows = action.parameters.rows;
-            this.tableHeaders = action.parameters.headers;
-          }
-
-          // check for displayTranactionTable - myBank
-          if (action.name === "displayTransactionsTable") {
-            // this.modalSize = "medium";
-            // this.modalPosition = "center";
-            this.title = this.getFirstChunk(response.text);
+        if (this.hasModal(this.modalItem)) {
+          let extensions = this.itemExtensionsModal(item);
+          extensions.forEach(extension => {
             this.transactionItems = [];
-            action.parameters.transactions.transactions.forEach(transaction => {
-              // console.log(transaction);
-              this.transactionItems.push({
-                date: transaction.Date,
-                description: transaction.Description,
-                amount: transaction.Amount
-              });
-            });
-          }
+            displayModal = true;
 
-          // check for display image action
-          if (action.name === "displayImage") {
-            this.title = this.getFirstChunk(response.text);
-            this.imageUrl = action.parameters.image_url;
-          }
-
-          // check for display image action
-          if (action.name === "displayImageCarousel") {
-            this.title = this.getFirstChunk(response.text);
-            this.images = action.parameters.images;
-          }
-
-          // check for basic card action
-          if (action.name === "displayBasicCard") {
-            this.title = action.parameters.title;
-            this.bodyText = action.parameters.content;
-          }
-
-          // check for image card action
-          if (action.name === "displayImageCard") {
-            this.title = action.parameters.title;
-            this.bodyText = action.parameters.content;
-            this.imageUrl = action.parameters.image_url;
-          }
-
-          // check for panel card action
-          if (action.name === "displayPanelCard") {
-            this.title = this.getFirstChunk(response.text);
-            this.bodyText = action.parameters.content;
-          }
-
-          // Check for a custom modal layout
-          if (action.name.startsWith("displayModal")) {
-            displayModal = false;
-            this.showCustomModal = true;
-            this.customModalItems = action.items;
-            this.$store.commit("SHOW_CUSTOM_MODAL");
-          }
-
-          // check for collection action
-          if (action.name.startsWith("displayCollection")) {
-            displayModal = false;
-            // this.title = action.parameters.title;
-            // items: action.parameters.item
-          }
-
-          // check for horizontal card action
-          if (action.name === "displayHorizontalCard") {
-            this.imageUrl = action.parameters.image;
-            this.title = action.parameters.title;
-            this.bodyText = action.parameters.content;
-            // this.actions: action.parameters.actions;
-          }
-
-          // check for display video action
-          if (action.name === "displayVideo") {
-            let url = action.parameters.video_url;
-            let videoId = this.getYoutubeId(url);
-            if (!videoId) {
-              videoId = this.getVimeoId(url);
-              // console.log("vimeoid: " + videoId);
-              if (videoId) {
-                this.vimeoVideoId = videoId;
-              } else {
-                const audioFileExt = this.isAudioFile(url);
-                if (audioFileExt) {
-                  this.audioType = `audio/${audioFileExt}`;
-                  this.audioUrl = url;
-                } else {
-                  const videoFileExt = this.isVideoFile(url);
-                  if (videoFileExt) {
-                    this.videoType = `video/${videoFileExt}`;
-                    this.videoUrl = url;
-                  }
-                }
-              }
-            } else {
-              this.youTubeVideoId = videoId;
+            // check for modal sizes and positions
+            if (this.modalSize(item) !== "undefined") {
+              this.currentModalSize = this.modalSize(item);
             }
 
-            this.title = this.getFirstChunk(response.text);
-          }
+            if (this.modalPosition(item) !== "undefined") {
+              this.currentModalPosition = this.modalPosition(item);
+            }
+
+            // check for flight itinerary
+            if (extension.name === "displayItinerary") {
+              this.title = this.getFirstChunk(item.text);
+              this.itinerary = extension.parameters;
+            }
+
+            // check for displayTranactionTable - myBank
+            if (extension.name === "displayTable") {
+              this.title = this.getFirstChunk(item.text);
+              this.tableTitle = extension.parameters.title;
+              this.tableRows = extension.parameters.rows;
+              this.tableHeaders = extension.parameters.headers;
+            }
+
+            // check for displayTranactionTable - myBank
+            if (extension.name === "displayTransactionsTable") {
+              this.title = this.getFirstChunk(item.text);
+              this.transactionItems = [];
+              extension.parameters.transactions.transactions.forEach(
+                transaction => {
+                  // console.log(transaction);
+                  this.transactionItems.push({
+                    date: transaction.Date,
+                    description: transaction.Description,
+                    amount: transaction.Amount
+                  });
+                }
+              );
+            }
+
+            // check for display image action
+            if (extension.name === "displayImage") {
+              this.title = this.getFirstChunk(item.text);
+              this.imageUrl = extension.parameters.image_url;
+            }
+
+            // check for display image action
+            if (extension.name === "displayImageCarousel") {
+              this.title = this.getFirstChunk(item.text);
+              this.images = extension.parameters.images;
+            }
+
+            // check for basic card action
+            if (extension.name === "displayBasicCard") {
+              this.title = extension.parameters.title;
+              this.bodyText = extension.parameters.content;
+            }
+
+            // check for image card action
+            if (extension.name === "displayImageCard") {
+              this.title = extension.parameters.title;
+              this.bodyText = extension.parameters.content;
+              this.imageUrl = extension.parameters.image_url;
+            }
+
+            // check for panel card action
+            if (extension.name === "displayPanelCard") {
+              this.title = this.getFirstChunk(item.text);
+              this.bodyText = extension.parameters.content;
+            }
+
+            // Check for a custom modal layout
+            if (extension.name.startsWith("displayModal")) {
+              displayModal = false;
+              this.showCustomModal = true;
+              this.customModalItems = extension.items;
+              this.$store.commit("SHOW_CUSTOM_MODAL");
+            }
+
+            // check for horizontal card action
+            if (extension.name === "displayHorizontalCard") {
+              this.imageUrl = extension.parameters.image;
+              this.title = extension.parameters.title;
+              this.bodyText = extension.parameters.content;
+            }
+
+            // check for display video action
+            if (extension.name === "displayVideo") {
+              let url = extension.parameters.video_url;
+              let videoId = this.youTubeIdFromUrl(url);
+              if (!videoId) {
+                videoId = this.vimeoIdFromUrl(url);
+                // console.log("vimeoid: " + videoId);
+                if (videoId) {
+                  this.vimeoVideoId = videoId;
+                } else {
+                  const audioFileExt = this.isAudioFile(url);
+                  if (audioFileExt) {
+                    this.audioType = `audio/${audioFileExt}`;
+                    this.audioUrl = url;
+                  } else {
+                    const videoFileExt = this.isVideoFile(url);
+                    if (videoFileExt) {
+                      this.videoType = `video/${videoFileExt}`;
+                      this.videoUrl = url;
+                    }
+                  }
+                }
+              } else {
+                this.youTubeVideoId = videoId;
+              }
+
+              this.title = this.getFirstChunk(item.text);
+            }
+          });
         }
+        // look for anchors with callbacks
         if (this.bodyText) {
           this.bodyText = this.bodyText.replace(
             /(?:onclick='DI\.VA\.hope\.sendInput\(")([^"]+)(?:"\)')/g,
@@ -473,12 +457,25 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "modalItem",
-      "isLiveChat",
-      "isInline",
-      "iFrameUrlBase",
       "dark",
-      "userInput"
+      "extensionIsInline",
+      "hasInline",
+      "hasModal",
+      "iFrameUrlBase",
+      "itemExtensions",
+      "itemExtensionsModal",
+      "isAudioFile",
+      "isLiveChat",
+      "isVideoFile",
+      "itemActions",
+      "liveChatTranscript",
+      "modalItem",
+      "modalSize",
+      "modalPosition",
+      "outputLink",
+      "userInput",
+      "vimeoIdFromUrl",
+      "youTubeIdFromUrl"
     ]),
     showPusher() {
       if (this.displayPusherMessage) {
@@ -488,9 +485,9 @@ export default {
     },
     toolbarWidth() {
       // console.log("Seeing if we need to adjust toolbar style");
-      if (this.modalSize !== "") {
+      if (this.currentModalSize !== "") {
         // console.log("Yep adjusted toolbar style");
-        return `teneo-modal-${this.modalSize}-width`;
+        return `teneo-modal-${this.currentModalSize}-width`;
       }
       return "";
     }
@@ -506,7 +503,7 @@ export default {
   },
   methods: {
     getFirstChunk(text) {
-      if (text.includes("||")) {
+      if (text && text.includes("||")) {
         return text.split("||")[0];
       }
       return text;
@@ -515,11 +512,14 @@ export default {
       // console.log("Applying custom modal size and position");
       // console.log("Adding sizing and position styles to modal");
       var modalElements = document.getElementsByClassName("teneo-modal");
-      if (modalElements !== "undefined" && this.modalSize !== "undefined") {
+      if (
+        modalElements !== "undefined" &&
+        this.currentModalSize !== "undefined"
+      ) {
         for (var i = 0; i < modalElements.length; i++) {
           modalElements[i].className += ` teneo-modal-${
-            this.modalPosition
-          } teneo-modal-${this.modalSize}-width`;
+            this.currentModalPosition
+          } teneo-modal-${this.currentModalSize}-width`;
         }
       }
     },
@@ -564,36 +564,6 @@ export default {
     updateInputBox(userInput) {
       this.$store.commit("SET_USER_INPUT", userInput);
     },
-    isVideoFile(url) {
-      // console.log("IsVideo:" + url);
-      const regExp = /\.(?:mp4|webm|ogg)$/i;
-      const match = url.match(regExp);
-      let result = match ? match[0].substring(1, match[0].length) : false;
-      // console.log(result);
-      return result;
-    },
-    isAudioFile(url) {
-      // console.log("ISAudio:" + url);
-      const regExp = /\.(?:wav|mp3|ogg)$/i;
-      const match = url.match(regExp);
-      let result = match ? match[0].substring(1, match[0].length) : false;
-      // console.log(result);
-      return result;
-    },
-    getYoutubeId(url) {
-      const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#]*).*/;
-      const match = url.match(regExp);
-      if (match) {
-        return match && match[7].length == 11 ? match[7] : false;
-      } else {
-        return false;
-      }
-    },
-    getVimeoId(url) {
-      const regExp = /^.+vimeo.com\/(.*\/)?([^#]*)/;
-      const match = url.match(regExp);
-      return match ? match[2] || match[1] : false;
-    },
     hideModal() {
       this.$store.commit("HIDE_CHAT_MODAL");
       let that = this;
@@ -602,7 +572,6 @@ export default {
       }, 1000); // needed to stop weird animations on the close
     },
     resetModal() {
-      // console.log("reseting modal values");
       this.actions = "";
       this.audioType = "";
       this.audioUrl = "";
@@ -611,8 +580,8 @@ export default {
       this.imageUrl = "";
       this.images = [];
       this.itinerary = "";
-      this.modalPosition = "center";
-      this.modalSize = "small";
+      this.currentModalPosition = "center";
+      this.currentModalSize = "small";
       this.removeCustomStylesFromModal();
       this.search = "";
       this.showCustomModal = false;
