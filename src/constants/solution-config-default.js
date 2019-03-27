@@ -1,4 +1,9 @@
 export const SOLUTION_DEFAULT = {
+  asrCorrections: `
+replacethis | with that
+replacethat | with this
+okkay | ok
+`,
   chatTitle: "Teneo Chat Client",
   contextParams: [
     {

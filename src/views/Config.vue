@@ -893,6 +893,27 @@
                           ></v-text-field>
                         </v-flex>
                         <v-divider></v-divider>
+                        <!-- ASR Corrections -->
+                        <v-flex
+                          xs12
+                          sm4
+                          class="hidden-xs-only"
+                        >
+                          <v-subheader>ASR Corrections</v-subheader>
+                        </v-flex>
+                        <v-flex
+                          xs12
+                          sm8
+                        >
+                          <v-textarea
+                            outline
+                            color="light-blue darken-1"
+                            name="input-7-4"
+                            :tabindex="getTabIndex"
+                            label="ASR Corrections"
+                            v-model.trim="solution.asrCorrections"
+                          ></v-textarea>
+                        </v-flex>
                         <!-- help -->
                         <v-flex
                           xs12

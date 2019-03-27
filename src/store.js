@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk"; // live chat
+import { mergeAsrCorrections, getParameterByName } from "./utils/utils";
 import Artyom from "artyom.js"; // for speech recognition and tts
 import toHex from "colornames"; // can convert html color names to hex equivalent
 import parseBool from "parseboolean";
@@ -30,6 +31,7 @@ let store;
 
 // const USE_LOCAL_STORAGE = parseBool(activeSolution.useLocalStorage);
 let artyom = null;
+let ASR_CORRECTIONS_MERGED;
 let CHAT_TITLE = "Configure Me";
 let EMBED = false; // will eventually be used to build standard Web Component
 let ENABLE_LIVE_CHAT = false;
@@ -68,16 +70,6 @@ if (USE_PUSHER) {
       forceTLS: true
     }
   });
-}
-
-function getParameterByName(name, url) {
-  if (!url) url = window.location.href;
-  name = name.replace(/[\]]/g, "\\$&");
-  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-    results = regex.exec(url);
-  if (!results) return null;
-  if (!results[2]) return "";
-  return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
 export function storeInit(callback) {
@@ -131,7 +123,7 @@ function setupStore(callback) {
         activeSolution = matchingSolutions[0];
       }
     }
-
+    ASR_CORRECTIONS_MERGED = mergeAsrCorrections(activeSolution, ASR_CORRECTIONS);
     CHAT_TITLE = activeSolution.chatTitle;
     IFRAME_URL = activeSolution.iframeUrl;
     KNOWLEDGE_DATA = activeSolution.knowledgeData;
@@ -992,7 +984,7 @@ function setupStore(callback) {
         if (store.getters.userInput) {
           let fixedUserInput = store.getters.userInput;
           // console.log("Final Transcription from ASR: " + store.state.userInput);
-          ASR_CORRECTIONS.forEach(replacement => {
+          ASR_CORRECTIONS_MERGED.forEach(replacement => {
             let startingText = fixedUserInput;
 
             if (replacement[0].indexOf(".") > -1) {
