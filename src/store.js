@@ -966,7 +966,7 @@ function setupStore(callback) {
         // Do something with the text
         if (text) {
           //text = text.replace(/^\w/, c => c.toUpperCase()); // upercases first letter of user input -- use cautiously
-          text = text.replace(/what's/gi, "what");
+          text = text.replace(/what's/gi, "what is");
           store.commit("SET_USER_INPUT", text);
         }
         timeoutVar = setTimeout(function() {
