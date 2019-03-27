@@ -1016,7 +1016,7 @@ function setupStore(callback) {
           });
 
           if (store.getters.userInput.toLowerCase() !== fixedUserInput.toLowerCase()) {
-            store.getters.userInput = fixedUserInput;
+            store.commit("SET_USER_INPUT", fixedUserInput);
             console.log(`Final Transcription: ${fixedUserInput}`);
           }
 
