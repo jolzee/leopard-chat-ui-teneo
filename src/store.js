@@ -1,25 +1,22 @@
 /* eslint-disable no-unused-vars */
 
-import { mergeAsrCorrections, getParameterByName } from "./utils/utils";
-import { LiveChat } from "./utils/live-chat";
-import { initializeTTS, initializeASR } from "./utils/asr-tts";
-
 import toHex from "colornames"; // can convert html color names to hex equivalent
 import parseBool from "parseboolean";
 import request from "simple-json-request";
 import stripHtml from "string-strip-html";
 import URL from "url-parse";
 import Vue from "vue";
+import VueJsonp from "vue-jsonp";
 import Vuetify from "vuetify/lib";
 import "vuetify/src/stylus/app.styl";
-import VueJsonp from "vue-jsonp";
 import Vuex from "vuex";
 import vuexI18n from "vuex-i18n"; // i18n the leopard interface
 import { ASR_CORRECTIONS } from "./constants/asr-corrections"; // fix ASR issues before they get to Teneo
 import { STORAGE_KEY } from "./constants/solution-config-default"; // application storage key
 import { TRANSLATIONS } from "./constants/translations"; // add UI translations for different language here
-
-// import request from "request";
+import { initializeASR, initializeTTS } from "./utils/asr-tts";
+import { LiveChat } from "./utils/live-chat";
+import { getParameterByName, mergeAsrCorrections } from "./utils/utils";
 
 // Vue.use(VueLocalStorage);
 Vue.use(VueJsonp, 20000);
@@ -177,50 +174,82 @@ function setupStore(callback) {
 
   store = new Vuex.Store({
     state: {
-      agentAvatar: null,
-      agentID: null,
-      agentName: null,
+      asr: {
+        stopAudioCapture: false
+      },
       chatConfig: chatConfig,
-      chatTitle: CHAT_TITLE,
-      dark: false,
-      dialog: [],
-      dialogHistory: [],
-      embed: EMBED,
-      enableLiveChat: ENABLE_LIVE_CHAT,
-      iframeUrl: IFRAME_URL,
-      iframeUrlBase: IFRAME_URL ? IFRAME_URL.substring(0, IFRAME_URL.lastIndexOf("/")) + "/" : IFRAME_URL,
-      isLiveChat: false,
-      isWebSite: true,
+      connection: {
+        requestParameters: REQUEST_PARAMETERS,
+        teneoUrl: TENEO_URL
+      },
+      conversation: {
+        dialog: [],
+        dialogHistory: []
+      },
+      iframe: {
+        iframeUrl: IFRAME_URL,
+        iframeUrlBase: IFRAME_URL ? IFRAME_URL.substring(0, IFRAME_URL.lastIndexOf("/")) + "/" : IFRAME_URL
+      },
       knowledgeData: KNOWLEDGE_DATA,
-      listening: false,
-      liveChatMessage: null,
-      modalItem: null,
-      overlayChat: FLOAT,
-      progressBar: false,
-      requestParameters: REQUEST_PARAMETERS,
-      responseIcon: RESPONSE_ICON,
-      showChatLoading: false,
-      showConfigModal: true,
-      showCustomModal: false,
-      showLiveChatProcessing: false,
-      showModal: false,
-      speakBackResponses: false,
-      stopAudioCapture: false,
-      teneoUrl: TENEO_URL,
-      theme: THEME,
-      userIcon: USER_ICON,
-      userInput: "",
-      userInputReadyForSending: false
+      liveAgent: {
+        agentAvatar: null,
+        agentID: null,
+        agentName: null,
+        enableLiveChat: ENABLE_LIVE_CHAT,
+        isLiveChat: false,
+        liveChatMessage: null,
+        showLiveChatProcessing: false
+      },
+      modals: {
+        modalItem: null,
+        showConfigModal: true,
+        showCustomModal: false,
+        showModal: false
+      },
+      progress: {
+        listening: false,
+        progressBar: false,
+        showChatLoading: false
+      },
+      tts: {
+        speakBackResponses: false
+      },
+      ui: {
+        chatTitle: CHAT_TITLE,
+        dark: false,
+        embed: EMBED,
+        isWebSite: true,
+        overlayChat: FLOAT,
+        responseIcon: RESPONSE_ICON,
+        theme: THEME,
+        userIcon: USER_ICON
+      },
+      userInput: {
+        userInput: "",
+        userInputReadyForSending: false
+      }
     },
     getters: {
+      listening(state) {
+        return state.progress.listening;
+      },
+      responseIcon(state) {
+        return state.ui.responseIcon;
+      },
+      userIcon(state) {
+        return state.ui.userIcon;
+      },
       agentAvatar(state) {
-        return state.agentAvatar;
+        return state.liveAgent.agentAvatar;
       },
       agentId(state) {
-        return state.agentID;
+        return state.liveAgent.agentID;
       },
       agentName(state) {
-        return state.agentName;
+        return state.liveAgent.agentName;
+      },
+      userInputReadyForSending(state) {
+        return state.userInput.userInputReadyForSending;
       },
       modalPosition: _state => item => {
         let modalPosition = decodeURIComponent(item.teneoResponse.extraData.modalPosition);
@@ -273,7 +302,7 @@ function setupStore(callback) {
         return match ? match[2] || match[1] : false;
       },
       enableLiveChat(state) {
-        return state.enableLiveChat;
+        return state.liveAgent.enableLiveChat;
       },
       chatConfig(state) {
         return state.chatConfig;
@@ -444,119 +473,119 @@ function setupStore(callback) {
         return [];
       },
       iFrameUrlBase(state) {
-        return state.iframeUrlBase;
+        return state.iframe.iframeUrlBase;
       },
       isLiveChat(state) {
-        return state.isLiveChat;
+        return state.liveAgent.isLiveChat;
       },
       knowledgeData(state) {
         return state.knowledgeData;
       },
       showCustomModal(state) {
-        return state.showCustomModal;
+        return state.modals.showCustomModal;
       },
       speakBackResponses(state) {
-        return state.speakBackResponses;
+        return state.tts.speakBackResponses;
       },
       liveChatMessage(state) {
-        return state.liveChatMessage;
+        return state.liveAgent.liveChatMessage;
       },
       showChatLoading(state) {
-        return state.showChatLoading;
+        return state.progress.showChatLoading;
       },
       teneoUrl(state) {
-        return state.teneoUrl;
+        return state.connection.teneoUrl;
       },
       showLiveChatProcessing(state) {
-        return state.showLiveChatProcessing;
+        return state.liveAgent.showLiveChatProcessing;
       },
       chatHistory(state) {
         if (USE_LOCAL_STORAGE) {
-          if (state.dialog.length !== 0) {
+          if (state.conversation.dialog.length !== 0) {
             let chatHistory = JSON.parse(localStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY, "[]"));
             if (chatHistory.length !== 0) {
-              state.dialog.concat(chatHistory);
+              state.conversation.dialog.concat(chatHistory);
             }
           } else {
-            state.dialog = JSON.parse(localStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY, "[]"));
+            state.conversation.dialog = JSON.parse(localStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY, "[]"));
           }
         }
-        return state.dialog;
+        return state.conversation.dialog;
       },
       chatHistorySessionStorage(state) {
         // TODO: Try and make the chat history in session storage unique to the deeplink
-        if (state.dialogHistory.length === 0) {
-          state.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
-          if (state.dialogHistory === null) {
-            state.dialogHistory = [];
+        if (state.conversation.dialogHistory.length === 0) {
+          state.conversation.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
+          if (state.conversation.dialogHistory === null) {
+            state.conversation.dialogHistory = [];
           }
         }
-        return state.dialogHistory;
+        return state.conversation.dialogHistory;
       },
       userInput(state) {
-        return state.userInput;
+        return state.userInput.userInput;
       },
       embed(state) {
-        return state.embed;
+        return state.ui.embed;
       },
       overlayChat(state) {
-        return state.overlayChat;
+        return state.ui.overlayChat;
       },
       float(state) {
-        return state.overlayChat;
+        return state.ui.overlayChat;
       },
       dialog(state) {
-        return state.dialog;
+        return state.conversation.dialog;
       },
       dialogHistory(state) {
-        return state.dialogHistory;
+        return state.conversation.dialogHistory;
       },
       progressBar(state) {
-        return state.progressBar;
+        return state.progress.progressBar;
       },
       stopAudioCapture(state) {
-        return state.stopAudioCapture;
+        return state.asr.stopAudioCapture;
       },
       showModal(state) {
-        return state.showModal;
+        return state.modals.showModal;
       },
       showConfigModal(state) {
-        return state.showConfigModal;
+        return state.modals.showConfigModal;
       },
       modalItem(state) {
-        return state.modalItem;
+        return state.modals.modalItem;
       },
       dark(state) {
-        return state.dark;
+        return state.ui.dark;
       },
       chatTitle(state) {
-        return state.chatTitle;
+        return state.ui.chatTitle;
       }
     },
     mutations: {
       HIDE_CUSTOM_MODAL(state) {
-        state.showCustomModal = false;
+        state.modals.showCustomModal = false;
       },
       SHOW_CUSTOM_MODAL(state) {
-        state.showCustomModal = true;
+        state.modals.showCustomModal = true;
       },
       PUSH_RESPONSE_TO_DIALOG(state, response) {
-        state.dialog.push(response);
+        state.conversation.dialog.push(response);
       },
       PUSH_RESPONSE_TO_DIALOG_HISTORY(state, response) {
-        state.dialogHistory.push(response);
+        state.conversation.dialogHistory.push(response);
       },
       PUSH_USER_INPUT_TO_DIALOG_HISTORY(state, userInput) {
-        state.dialogHistory.push(userInput);
+        state.conversation.dialogHistory.push(userInput);
       },
       SET_DIALOG_HISTORY(state, newHistory) {
-        state.dialogHistory = newHistory;
+        state.conversation.dialogHistory = newHistory;
       },
       PUSH_USER_INPUT_TO_DIALOG(state, userInput) {
-        state.dialog.push(userInput);
+        state.conversation.dialog.push(userInput);
       },
       PUSH_LIVE_CHAT_STATUS_TO_DIALOG(state, liveChatStatus) {
-        state.dialog.push(liveChatStatus);
+        state.conversation.dialog.push(liveChatStatus);
       },
       SHOW_MESSAGE_IN_CHAT(state, message) {
         let miscMessage = {
@@ -565,69 +594,69 @@ function setupStore(callback) {
           bodyText: "",
           hasExtraData: false
         };
-        state.dialog.push(miscMessage);
+        state.conversation.dialog.push(miscMessage);
       },
       PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG(state, liveChatResponse) {
-        state.dialog.push(liveChatResponse);
+        state.conversation.dialog.push(liveChatResponse);
       },
       CLEAR_USER_INPUT(state) {
-        state.userInput = "";
+        state.userInput.userInput = "";
       },
       SHOW_CHAT_LOADING(state) {
         if (!USE_LOCAL_STORAGE) {
-          state.showChatLoading = true;
+          state.progress.showChatLoading = true;
         }
       },
       HIDE_CHAT_LOADING(state) {
         if (!USE_LOCAL_STORAGE) {
-          state.showChatLoading = false;
+          state.progress.showChatLoading = false;
         }
       },
       LIVE_CHAT_LOADING(state, mustShow) {
-        state.showLiveChatProcessing = mustShow;
+        state.liveAgent.showLiveChatProcessing = mustShow;
       },
       SHOW_LIVE_CHAT_LOADING(state) {
-        state.showLiveChatProcessing = true;
+        state.liveAgent.showLiveChatProcessing = true;
       },
       HIDE_LIVE_CHAT_LOADING(state) {
-        state.showLiveChatProcessing = false;
+        state.liveAgent.showLiveChatProcessing = false;
       },
       CLEAR_CHAT_HISTORY(state) {
-        state.dialog = [];
+        state.conversation.dialog = [];
       },
       LIVE_CHAT(_state, transcript) {
         liveChat.sendMessage(transcript);
       },
       START_LIVE_CHAT(state) {
-        state.isLiveChat = true;
+        state.liveAgent.isLiveChat = true;
       },
       STOP_LIVE_CHAT(state) {
-        state.isLiveChat = false;
+        state.liveAgent.isLiveChat = false;
       },
       CHANGE_THEME(state) {
-        state.dark = !state.dark;
-        localStorage.setItem(STORAGE_KEY + TENEO_CHAT_DARK_THEME, JSON.stringify(state.dark));
+        state.ui.dark = !state.ui.dark;
+        localStorage.setItem(STORAGE_KEY + TENEO_CHAT_DARK_THEME, JSON.stringify(state.ui.dark));
       },
       SHOW_LISTING_OVERLAY(state) {
-        state.listening = true;
+        state.progress.listening = true;
       },
       HIDE_LISTENING_OVERLAY(state) {
-        state.listening = false;
+        state.progress.listening = false;
       },
       SET_USER_INPUT(state, userInput) {
         if (userInput) {
-          //state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
-          state.userInput = userInput;
+          //state.userInput.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
+          state.userInput.userInput = userInput;
         }
       },
       START_TTS(state) {
-        state.speakBackResponses = true;
+        state.tts.speakBackResponses = true;
       },
       STOP_TTS(state) {
-        state.speakBackResponses = false;
+        state.tts.speakBackResponses = false;
       },
       TTS_ENABLE(state, useTTS) {
-        state.speakBackResponses = useTTS;
+        state.tts.speakBackResponses = useTTS;
       },
       UPDATE_CHAT_WINDOW_AND_STORAGE(state, response) {
         let hasExtraData = false;
@@ -651,7 +680,7 @@ function setupStore(callback) {
         };
 
         // add the user input - display it on the chat dialog
-        state.dialog.push(newUserInput);
+        state.conversation.dialog.push(newUserInput);
 
         let newReply = {
           type: "reply",
@@ -662,84 +691,81 @@ function setupStore(callback) {
         };
 
         // add the teneo response - display it on the chat dialog
-        state.dialog.push(newReply);
+        state.conversation.dialog.push(newReply);
         if (hasExtraData) {
-          state.modalItem = newReply;
-          state.showModal = true;
+          state.modals.modalItem = newReply;
+          state.modals.showModal = true;
         }
 
-        state.userInput = ""; // reset the user input to nothing
+        state.userInput.userInput = ""; // reset the user input to nothing
 
         // deal with persiting the chat history
         if (USE_LOCAL_STORAGE) {
-          localStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(state.dialog));
+          localStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(state.conversation.dialog));
         }
-        state.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
-        if (state.dialogHistory === null) {
-          state.dialogHistory = state.dialog;
+        state.conversation.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
+        if (state.conversation.dialogHistory === null) {
+          state.conversation.dialogHistory = state.conversation.dialog;
         } else {
           // add current user input and teneo response to the dialog history
-          state.dialogHistory.push(newUserInput);
-          state.dialogHistory.push(newReply);
+          state.conversation.dialogHistory.push(newUserInput);
+          state.conversation.dialogHistory.push(newReply);
         }
         // save the dislaog history in session storage
-        sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(state.dialogHistory));
+        sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(state.conversation.dialogHistory));
       },
       SHOW_PROGRESS_BAR(state) {
-        state.progressBar = true;
+        state.progress.progressBar = true;
       },
       HIDE_PROGRESS_BAR(state) {
-        state.progressBar = false;
+        state.progress.progressBar = false;
       },
       SHOW_CONFIG_MODAL(state) {
-        state.showConfigModal = true;
+        state.modals.showConfigModal = true;
       },
       HIDE_CONFIG_MODAL(state) {
-        state.showConfigModal = false;
+        state.modals.showConfigModal = false;
       },
       UPDATE_TENEO_URL(state, newUrl) {
-        state.teneoUrl = newUrl;
+        state.connection.teneoUrl = newUrl;
       },
       SHOW_CHAT_MODAL(state, item) {
-        state.modalItem = item;
-        state.showModal = true;
+        state.modals.modalItem = item;
+        state.modals.showModal = true;
       },
       STOP_AUDIO_CAPTURE(state) {
-        state.stopAudioCapture = true;
+        state.asr.stopAudioCapture = true;
       },
       START_AUDIO_CAPTURE(state) {
-        state.stopAudioCapture = false;
+        state.asr.stopAudioCapture = false;
       },
       HIDE_CHAT_MODAL(state) {
         // console.log("hiding modal");
-        state.userInputReadyForSending = false;
-        state.showModal = false;
-        state.modalItem = null;
+        state.userInput.userInputReadyForSending = false;
+        state.modals.showModal = false;
+        state.modals.modalItem = null;
         // console.log("modal item should be empty");
       },
       CLEAR_DIALOGS(state) {
-        state.dialog = [];
-      },
-      FLAG_SESSION_RESTART(state) {
-        state.resetSession = true;
+        state.conversation.dialog = [];
       },
       USER_INPUT_READY_FOR_SENDING(state) {
-        state.userInputReadyForSending = true;
+        state.userInput.userInputReadyForSending = true;
       },
       USER_INPUT_NOT_READY_FOR_SENDING(state) {
-        state.userInputReadyForSending = false;
+        state.userInput.userInputReadyForSending = false;
       },
       REMOVE_MODAL_ITEM(state) {
-        state.modalItem = null;
+        state.modals.modalItem = null;
       },
       AGENT_NAME(state, agentName) {
-        state.agentName = agentName;
+        state.liveAgent.agentName = agentName;
       },
       AGENT_ID(state, agentId) {
-        state.agentID = agentId;
+        state.liveAgent.agentID = agentId;
       },
       AGENT_AVATAR(state, imageUrl) {
-        state.agentAvatar = imageUrl;
+        state.liveAgent.agentAvatar = imageUrl;
       }
     },
     actions: {
@@ -939,7 +965,7 @@ function setupStore(callback) {
   // android and ios webview ASR and TTS - not working currently
   window.sendVoiceInput = function(userInput) {
     // console.log(`In SendVoiceInput: ${userInput}`);
-    //store.state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
+    //store.state.userInput.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
     store.commit("SET_USER_INPUT", userInput);
     store.commit("USER_INPUT_READY_FOR_SENDING");
     store.commit("HIDE_LISTENING_OVERLAY");

@@ -620,7 +620,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
+import { mapGetters } from "vuex";
 import Audio from "../components/Audio";
 import Carousel from "../components/Carousel";
 import ImageAnimation from "../components/ImageAnimation";
@@ -683,9 +683,7 @@ export default {
       "showLiveChatProcessing",
       "vimeoId",
       "audioInfo",
-      "youTubeVideoId"
-    ]),
-    ...mapState([
+      "youTubeVideoId",
       "userInputReadyForSending",
       "responseIcon",
       "userIcon",

@@ -32,7 +32,7 @@ if (parseBool(localStorage.getItem(STORAGE_KEY + "darkTheme")) === null) {
 /* eslint-disable no-new */
 
 storeInit(function(store) {
-  store.state.dark = parseBool(localStorage.getItem(STORAGE_KEY + "darkTheme")) !== false;
+  store.state.ui.dark = parseBool(localStorage.getItem(STORAGE_KEY + "darkTheme")) !== false;
 
   Vue.use(Dayjs, {
     lang: "en"

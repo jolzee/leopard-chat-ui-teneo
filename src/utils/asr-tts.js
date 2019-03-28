@@ -58,14 +58,14 @@ export function initializeASR(tts, store, asrCorrections) {
         if (store.getters.stopAudioCapture) {
           store.commit("CLEAR_USER_INPUT");
           store.commit("STOP_AUDIO_CAPTURE");
-          // store.state.stopAudioCapture = false;
+          // store.state.asr.stopAudioCapture = false;
           return;
         }
         // let's fix sany ASR transcription erros
 
         if (store.getters.userInput) {
           let fixedUserInput = store.getters.userInput;
-          // console.log("Final Transcription from ASR: " + store.state.userInput);
+          // console.log("Final Transcription from ASR: " + store.state.userInput.userInput);
           asrCorrections.forEach(replacement => {
             let startingText = fixedUserInput;
 
