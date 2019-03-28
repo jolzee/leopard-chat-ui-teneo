@@ -86,7 +86,7 @@
         >
           <transition-group
             name="chat-line-transition"
-            enter-active-class="animated zoomIn"
+            enter-active-class="animated fadeIn"
           >
             <!-- item && hasCollection(item) -->
             <v-expansion-panel-content
