@@ -2,10 +2,10 @@
 
 import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk"; // live chat
 import { mergeAsrCorrections, getParameterByName } from "./utils/utils";
-import Artyom from "artyom.js"; // for speech recognition and tts
+import { initializeTTS, initializeASR } from "./utils/asr-tts";
+
 import toHex from "colornames"; // can convert html color names to hex equivalent
 import parseBool from "parseboolean";
-import replaceString from "replace-string";
 import request from "simple-json-request";
 import stripHtml from "string-strip-html";
 import URL from "url-parse";
@@ -30,8 +30,10 @@ const TENEO_CHAT_DARK_THEME = "darkTheme";
 let store;
 
 // const USE_LOCAL_STORAGE = parseBool(activeSolution.useLocalStorage);
-let artyom = null;
+
 let ASR_CORRECTIONS_MERGED;
+let tts;
+let asr;
 let CHAT_TITLE = "Configure Me";
 let EMBED = false; // will eventually be used to build standard Web Component
 let ENABLE_LIVE_CHAT = false;
@@ -43,7 +45,7 @@ let REQUEST_PARAMETERS = "";
 let RESPONSE_ICON = "";
 let SEND_CTX_PARAMS = "login";
 let TENEO_URL = "";
-let timeoutVar;
+
 let USE_LOCAL_STORAGE = false;
 let USE_PUSHER = false;
 let USER_ICON = "";
@@ -161,6 +163,8 @@ function setupStore(callback) {
         });
       }
     });
+
+    tts = initializeTTS(LOCALE);
   }
 
   // update the IFRAME URL
@@ -168,28 +172,6 @@ function setupStore(callback) {
     document.getElementById("site-frame").src = IFRAME_URL;
   } else {
     EMBED = true;
-  }
-
-  if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
-    artyom = new Artyom();
-    artyom.ArtyomVoicesIdentifiers["en-GB"] = ["Google UK English Female", "Google UK English Male", "en-GB", "en_GB"];
-    // artyom.ArtyomVoicesIdentifiers["en-ZA"] = ["Google US English", "en-US", "en_US"];
-    artyom.initialize({
-      soundex: true,
-      continuous: false,
-      listen: false, // Start recognizing
-      lang:
-        LOCALE === "fr"
-          ? "fr-FR"
-          : LOCALE === "de"
-          ? "de-DE"
-          : LOCALE === "nl"
-          ? "nl-NL"
-          : LOCALE === "es"
-          ? "es-ES"
-          : "en-GB",
-      debug: false
-    });
   }
 
   store = new Vuex.Store({
@@ -761,12 +743,12 @@ function setupStore(callback) {
     },
     actions: {
       stopAudioCapture(context) {
-        if (artyom.isSpeaking()) {
+        if (tts.isSpeaking()) {
           // console.log("muted TTS!");
-          artyom.shutUp();
+          tts.shutUp();
         }
-        if (artyom.isObeying()) {
-          UserDictation.stop();
+        if (tts.isObeying()) {
+          asr.stop();
           context.commit("STOP_AUDIO_CAPTURE");
         }
       },
@@ -832,9 +814,9 @@ function setupStore(callback) {
       },
       sendUserInput(context, params = "") {
         // send user input to Teneo when a live chat has not begun
-        if (artyom && artyom.isSpeaking()) {
-          // Artyom is speaking something. Let's shut it up
-          artyom.shutUp();
+        if (tts && tts.isSpeaking()) {
+          // tts is speaking something. Let's shut it up
+          tts.shutUp();
         }
         if (!context.getters.isLiveChat) {
           Vue.jsonp(context.getters.teneoUrl + (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params), {
@@ -861,8 +843,8 @@ function setupStore(callback) {
 
               // check if this browser supports the Web Speech API
               if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
-                if (artyom && context.getters.speakBackResponses) {
-                  artyom.say(ttsText);
+                if (tts && context.getters.speakBackResponses) {
+                  tts.say(ttsText);
                 }
               }
 
@@ -928,13 +910,13 @@ function setupStore(callback) {
         }
       },
       captureAudio(context) {
-        if (UserDictation != null) {
-          if (artyom.isSpeaking()) {
-            // console.log("Artyom is speaking something. Let's shut it up");
-            artyom.shutUp();
+        if (asr != null) {
+          if (tts.isSpeaking()) {
+            // console.log("tts is speaking something. Let's shut it up");
+            tts.shutUp();
           }
           context.commit("START_AUDIO_CAPTURE");
-          UserDictation.start();
+          asr.start();
         }
       }
     }
@@ -947,78 +929,8 @@ function setupStore(callback) {
   });
   Vue.i18n.set(LOCALE);
 
-  // Artyom Speech Recognition and TTS
-  let UserDictation = null;
-  if (artyom != null) {
-    UserDictation = artyom.newDictation({
-      soundex: true,
-      continuous: false, // Enable continuous if HTTPS connection
-      onResult: function(text) {
-        clearTimeout(timeoutVar);
-        // Do something with the text
-        if (text) {
-          //text = text.replace(/^\w/, c => c.toUpperCase()); // upercases first letter of user input -- use cautiously
-          text = text.replace(/what's/gi, "what is");
-          store.commit("SET_USER_INPUT", text);
-        }
-        timeoutVar = setTimeout(function() {
-          // console.log("timeout - aborting recognition");
-          UserDictation.stop();
-          if (text) {
-            store.commit("SET_USER_INPUT", text); // final transcript from ASR
-          }
-        }, 800);
-      },
-      onStart: function() {},
-      onEnd: function() {
-        store.commit("HIDE_LISTENING_OVERLAY");
-
-        if (store.getters.stopAudioCapture) {
-          store.commit("CLEAR_USER_INPUT");
-          store.commit("STOP_AUDIO_CAPTURE");
-          // store.state.stopAudioCapture = false;
-          return;
-        }
-        // let's fix sany ASR transcription erros
-
-        if (store.getters.userInput) {
-          let fixedUserInput = store.getters.userInput;
-          // console.log("Final Transcription from ASR: " + store.state.userInput);
-          ASR_CORRECTIONS_MERGED.forEach(replacement => {
-            let startingText = fixedUserInput;
-
-            if (replacement[0].indexOf(".") > -1) {
-              fixedUserInput = replaceString(
-                fixedUserInput.toLowerCase(),
-                replacement[0].toLowerCase(),
-                replacement[1].toLowerCase()
-              );
-            } else {
-              let search = replacement[0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"); // escase any special characters
-              var re = new RegExp("\\b" + search + "\\b", "gi");
-              // fixedUserInput = fixedUserInput.toLowerCase().replace(re, replacement[1].toLowerCase());
-              fixedUserInput = fixedUserInput.replace(re, replacement[1]);
-            }
-
-            // console.log(`Starting: ${startingText} | Ending: ${fixedUserInput}`);
-
-            if (startingText.toLowerCase() !== fixedUserInput.toLowerCase()) {
-              console.log("Made a change to ASR response: " + replacement[0] + " >> " + replacement[1]);
-            }
-          });
-
-          if (store.getters.userInput.toLowerCase() !== fixedUserInput.toLowerCase()) {
-            store.commit("SET_USER_INPUT", fixedUserInput);
-            console.log(`Final Transcription: ${fixedUserInput}`);
-          }
-
-          setTimeout(function() {
-            store.commit("USER_INPUT_READY_FOR_SENDING");
-          }, 100);
-        }
-      }
-    });
-  }
+  // Setup ASR
+  asr = initializeASR(tts, store, ASR_CORRECTIONS_MERGED);
 
   // Live Chat
   let visitorSDK = null;
@@ -1135,8 +1047,8 @@ function setupStore(callback) {
           };
           store.commit("PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG", liveChatResponse); // push the getting message onto the dialog
           if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
-            if (artyom && store.getters.speakBackResponses) {
-              artyom.say(stripHtml(newMessage.text));
+            if (tts && store.getters.speakBackResponses) {
+              tts.say(stripHtml(newMessage.text));
             }
           }
 

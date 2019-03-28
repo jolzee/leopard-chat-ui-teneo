@@ -1,0 +1,105 @@
+import Artyom from "artyom.js"; // for speech recognition and tts
+import replaceString from "replace-string";
+
+export function initializeTTS(locale) {
+  let tts = null;
+  // Artyom Speech Recognition and TTS
+  if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
+    tts = new Artyom();
+    tts.ArtyomVoicesIdentifiers["en-GB"] = ["Google UK English Female", "Google UK English Male", "en-GB", "en_GB"];
+    // artyom.ArtyomVoicesIdentifiers["en-ZA"] = ["Google US English", "en-US", "en_US"];
+    tts.initialize({
+      soundex: true,
+      continuous: false,
+      listen: false, // Start recognizing
+      lang:
+        locale === "fr"
+          ? "fr-FR"
+          : locale === "de"
+          ? "de-DE"
+          : locale === "nl"
+          ? "nl-NL"
+          : locale === "es"
+          ? "es-ES"
+          : "en-GB",
+      debug: false
+    });
+  }
+  return tts;
+}
+
+export function initializeASR(tts, store, asrCorrections) {
+  let asr = null;
+  let timeoutVar;
+  if (tts != null) {
+    asr = tts.newDictation({
+      soundex: true,
+      continuous: false, // Enable continuous if HTTPS connection
+      onResult: function(text) {
+        clearTimeout(timeoutVar);
+        // Do something with the text
+        if (text) {
+          //text = text.replace(/^\w/, c => c.toUpperCase()); // upercases first letter of user input -- use cautiously
+          text = text.replace(/what's/gi, "what is");
+          store.commit("SET_USER_INPUT", text);
+        }
+        timeoutVar = setTimeout(function() {
+          // console.log("timeout - aborting recognition");
+          asr.stop();
+          if (text) {
+            store.commit("SET_USER_INPUT", text); // final transcript from ASR
+          }
+        }, 800);
+      },
+      onStart: function() {},
+      onEnd: function() {
+        store.commit("HIDE_LISTENING_OVERLAY");
+
+        if (store.getters.stopAudioCapture) {
+          store.commit("CLEAR_USER_INPUT");
+          store.commit("STOP_AUDIO_CAPTURE");
+          // store.state.stopAudioCapture = false;
+          return;
+        }
+        // let's fix sany ASR transcription erros
+
+        if (store.getters.userInput) {
+          let fixedUserInput = store.getters.userInput;
+          // console.log("Final Transcription from ASR: " + store.state.userInput);
+          asrCorrections.forEach(replacement => {
+            let startingText = fixedUserInput;
+
+            if (replacement[0].indexOf(".") > -1) {
+              fixedUserInput = replaceString(
+                fixedUserInput.toLowerCase(),
+                replacement[0].toLowerCase(),
+                replacement[1].toLowerCase()
+              );
+            } else {
+              let search = replacement[0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"); // escase any special characters
+              var re = new RegExp("\\b" + search + "\\b", "gi");
+              // fixedUserInput = fixedUserInput.toLowerCase().replace(re, replacement[1].toLowerCase());
+              fixedUserInput = fixedUserInput.replace(re, replacement[1]);
+            }
+
+            // console.log(`Starting: ${startingText} | Ending: ${fixedUserInput}`);
+
+            if (startingText.toLowerCase() !== fixedUserInput.toLowerCase()) {
+              console.log("Made a change to ASR response: " + replacement[0] + " >> " + replacement[1]);
+            }
+          });
+
+          if (store.getters.userInput.toLowerCase() !== fixedUserInput.toLowerCase()) {
+            store.commit("SET_USER_INPUT", fixedUserInput);
+            console.log(`Final Transcription: ${fixedUserInput}`);
+          }
+
+          setTimeout(function() {
+            store.commit("USER_INPUT_READY_FOR_SENDING");
+          }, 100);
+        }
+      }
+    });
+  }
+  return asr;
+}
