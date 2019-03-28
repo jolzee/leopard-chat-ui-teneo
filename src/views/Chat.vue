@@ -507,6 +507,8 @@
             <v-flex>
               <v-btn
                 fab
+                :disabled="progressBar"
+                :loading="progressBar"
                 v-long-press="swapInputButton"
                 v-if="!showAudioInput"
                 small
@@ -522,6 +524,8 @@
               ></span>
               <v-btn
                 fab
+                :disabled="progressBar"
+                :loading="progressBar"
                 v-long-press="swapInputButton"
                 small
                 v-if="showAudioInput"
