@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
-import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk"; // live chat
 import { mergeAsrCorrections, getParameterByName } from "./utils/utils";
+import { LiveChat } from "./utils/live-chat";
 import { initializeTTS, initializeASR } from "./utils/asr-tts";
 
 import toHex from "colornames"; // can convert html color names to hex equivalent
@@ -34,6 +34,7 @@ let store;
 let ASR_CORRECTIONS_MERGED;
 let tts;
 let asr;
+let liveChat;
 let CHAT_TITLE = "Configure Me";
 let EMBED = false; // will eventually be used to build standard Web Component
 let ENABLE_LIVE_CHAT = false;
@@ -595,7 +596,7 @@ function setupStore(callback) {
         state.dialog = [];
       },
       LIVE_CHAT(_state, transcript) {
-        doLiveChatRequest(transcript);
+        liveChat.sendMessage(transcript);
       },
       START_LIVE_CHAT(state) {
         state.isLiveChat = true;
@@ -904,7 +905,7 @@ function setupStore(callback) {
             context.commit("PUSH_USER_INPUT_TO_DIALOG_HISTORY", newUserInput);
           }
           sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(context.getters.dialogHistory));
-          doLiveChatRequest(context.getters.userInput);
+          liveChat.sendMessage(context.getters.userInput);
           context.commit("HIDE_PROGRESS_BAR");
           context.commit("CLEAR_USER_INPUT");
         }
@@ -932,164 +933,10 @@ function setupStore(callback) {
   // Setup ASR
   asr = initializeASR(tts, store, ASR_CORRECTIONS_MERGED);
 
-  // Live Chat
-  let visitorSDK = null;
+  // Setup Live Chat
+  liveChat = new LiveChat(store, tts, USE_LOCAL_STORAGE, STORAGE_KEY, TENEO_CHAT_HISTORY);
 
-  if (store.getters.enableLiveChat) {
-    const liveChatIncLicense = process.env.VUE_APP_LIVE_CHAT_INC_KEY; // change me https://www.livechatinc.com/
-    visitorSDK = LivechatVisitorSDK.init({
-      license: liveChatIncLicense
-    });
-
-    visitorSDK.on("chat_started", () => {
-      // console.log("chat_started");
-      // console.log(chatData);
-
-      // when a user reloads the page while a chat is going on, the message history is loaded. We need to stop that from happening by closing the chat
-      if (!store.getters.isLiveChat) {
-        visitorSDK
-          .closeChat()
-          .then(() => {
-            // console.log("Live chat has closed");
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      }
-    });
-
-    visitorSDK.on("visitor_queued", queueData => {
-      // console.log(queueData);
-      let message = "Chat request sent to agent. You are number " + queueData.numberInQueue + " in the queue.";
-      // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
-      if (store.getters.isLiveChat) {
-        let liveChatStatus = {
-          type: "liveChatQueue",
-          text: message,
-          bodyText: "",
-          hasExtraData: false
-        };
-        store.commit("PUSH_LIVE_CHAT_STATUS_TO_DIALOG", liveChatStatus); // push the getting message onto the dialog
-      } else {
-        visitorSDK
-          .closeChat()
-          .then(() => {
-            // console.log("Live chat has closed");
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      }
-    });
-
-    visitorSDK.on("agent_changed", newAgent => {
-      // console.log(newAgent);
-      store.commit("AGENT_NAME", newAgent.name);
-      store.commit("AGENT_ID", newAgent.id);
-      store.commit("AGENT_AVATAR", newAgent.avatarUrl);
-      // show typing output agentName + ' is typing...'
-
-      let message = "You are talking to " + newAgent.name + ".";
-
-      // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
-      if (store.getters.isLiveChat) {
-        let liveChatStatus = {
-          type: "liveChatStatus",
-          text: message,
-          bodyText: "",
-          hasExtraData: false
-        };
-        store.commit("PUSH_LIVE_CHAT_STATUS_TO_DIALOG", liveChatStatus); // push the getting message onto the dialog
-      } else {
-        visitorSDK
-          .closeChat()
-          .then(() => {
-            // console.log("Chat is closed");
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      }
-    });
-
-    visitorSDK.on("chat_ended", () => {
-      // console.log("chat ended");
-      let message = "Chat with live agent ended.";
-      // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
-      if (store.getters.isLiveChat) {
-        let liveChatStatus = {
-          type: "liveChatEnded",
-          text: message,
-          bodyText: "",
-          hasExtraData: false
-        };
-        store.commit("PUSH_LIVE_CHAT_STATUS_TO_DIALOG", liveChatStatus); // push the getting message onto the dialog
-      }
-      store.commit("STOP_LIVE_CHAT");
-    });
-
-    visitorSDK.on("typing_indicator", data => {
-      store.commit("LIVE_CHAT_LOADING", !!data.isTyping);
-    });
-
-    visitorSDK.on("new_message", newMessage => {
-      // console.log(newMessage);
-      // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
-      if (store.getters.isLiveChat) {
-        if (newMessage.authorId === store.getters.agentId) {
-          let liveChatResponse = {
-            type: "liveChatResponse",
-            text: newMessage.text,
-            agentAvatar: store.getters.agentAvatar,
-            agentName: store.getters.agentName,
-            bodyText: "",
-            hasExtraData: false
-          };
-          store.commit("PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG", liveChatResponse); // push the getting message onto the dialog
-          if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
-            if (tts && store.getters.speakBackResponses) {
-              tts.say(stripHtml(newMessage.text));
-            }
-          }
-
-          if (USE_LOCAL_STORAGE) {
-            localStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.getters.dialog));
-          }
-          store.commit("SET_DIALOG_HISTORY", JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY)));
-          if (store.getters.dialogHistory === null) {
-            store.commit("SET_DIALOG_HISTORY", store.getters.dialog);
-          } else {
-            store.commit("PUSH_RESPONSE_TO_DIALOG_HISTORY", liveChatResponse);
-          }
-          sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(store.getters.dialogHistory));
-          store.commit("CLEAR_USER_INPUT");
-        }
-      }
-    });
-  }
-
-  /**
-   * Send a message to message to the live chat agent
-   *
-   * @param {*} message
-   */
-  function doLiveChatRequest(message) {
-    // console.log("Sending message to Live Agent:" + message);
-    visitorSDK
-      .sendMessage({
-        text: message,
-        customId: String(Math.random())
-      })
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-
-  // android and ios webview ASR and TTS
-
+  // android and ios webview ASR and TTS - not working currently
   window.sendVoiceInput = function(userInput) {
     // console.log(`In SendVoiceInput: ${userInput}`);
     //store.state.userInput = userInput.replace(/^\w/, c => c.toUpperCase());

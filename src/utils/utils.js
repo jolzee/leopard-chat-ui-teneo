@@ -9,7 +9,6 @@ export function mergeAsrCorrections(activeSolution, leopardDefaultCorrections) {
         if (thisThatArray.length === 2) {
           thisThatArray[0] = thisThatArray[0].trim();
           thisThatArray[1] = thisThatArray[1].trim();
-          console.log(thisThatArray);
           solutionResplacements.push(thisThatArray);
         }
       }
