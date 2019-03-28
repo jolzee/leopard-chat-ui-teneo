@@ -146,12 +146,12 @@
                     v-if="item.type === 'liveChatResponse'"
                   >
                     <v-flex
-                      xs2
-                      class="text-xs-left mr-2"
+                      shrink
+                      class="text-xs-left"
                     >
                       <v-avatar
                         size="40px"
-                        color="grey lighten-4 elevation-6 mx-2 mt-2"
+                        class="teneo-response-icon elevation-2 mt-2"
                       >
                         <img
                           :src="item.agentAvatar"
@@ -159,10 +159,11 @@
                         >
                       </v-avatar>
                     </v-flex>
-                    <v-flex>
+                    <v-flex shrink>
                       <v-card
                         class="chat-card chat-card-left text-xs-left px-2"
                         :dark="dark"
+                        :color="dark ? '#333333' : '#FAFAFA'"
                       >
                         <v-container grid-list-s>
                           <v-layout row>
@@ -189,12 +190,13 @@
                       fill-height
                     >
                       <v-flex
-                        xs2
-                        class="text-xs-left mr-2"
+                        shrink
+                        class="text-xs-left"
                       >
                         <v-btn
                           v-long-press="swapInputButton"
                           color="secondary"
+                          class="teneo-response-icon elevation-2"
                           fab
                           small
                         >
@@ -203,7 +205,8 @@
                       </v-flex>
                       <v-flex shrink>
                         <v-card
-                          class="chat-card chat-card-left text-xs-left px-2"
+                          :color="dark ? '#333333' : '#FAFAFA'"
+                          class="chat-card chat-card-left text-xs-left"
                           :dark="dark"
                         >
                           <span
@@ -339,7 +342,8 @@
                       >
                         <v-btn
                           small
-                          fab=""
+                          fab
+                          class="teneo-userinput-icon elevation-2"
                           color="info"
                           @click="showDate = !showDate"
                         >
@@ -354,7 +358,8 @@
                       >
                         <v-btn
                           small
-                          fab=""
+                          fab
+                          class="teneo-userinput-icon elevation-2"
                           color="info"
                           @click="showTime = !showTime"
                         >
@@ -373,11 +378,12 @@
                     >
                       <v-flex
                         xs2
-                        class="text-xs-left mr-2"
+                        class="text-xs-left"
                       >
                         <v-btn
                           v-long-press="swapInputButton"
                           color="secondary"
+                          class="teneo-response-icon elevation-2"
                           fab
                           small
                         >
@@ -386,7 +392,7 @@
                       </v-flex>
                       <v-flex>
                         <v-card
-                          class="chat-card chat-card-left text-xs-left px-2"
+                          class="chat-card chat-card-left text-xs-left"
                           :dark="dark"
                         >
                           <span
@@ -431,6 +437,7 @@
                     >
                       <v-btn
                         v-long-press="swapInputButton"
+                        class="teneo-userinput-icon elevation-2"
                         fab
                         small
                         color="primary white--text"
@@ -1023,7 +1030,7 @@ export default {
 </style>
 <style>
 .v-expansion-panel__header {
-  padding-left: 10px !important;
+  padding-left: 8px !important;
   padding-right: 10px !important;
   padding-top: 0px !important;
   padding-bottom: 5px !important;
@@ -1068,9 +1075,22 @@ div.options-list a.v-list__tile--link {
   height: inherit !important;
 }
 
+.teneo-response-icon {
+  margin-left: 0px;
+  margin-right: 5px;
+}
+
+.teneo-userinput-icon {
+  margin-right: 0px;
+  margin-left: 5px;
+}
+
 .teneo-dialog {
   width: 360px;
+  max-width: none;
   border-top: unset !important;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .chat-responses-float {
