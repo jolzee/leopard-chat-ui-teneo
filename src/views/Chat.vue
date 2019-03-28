@@ -883,7 +883,7 @@ export default {
             this.userInput = err;
           });
       } else {
-        this.snackbar = true;
+        // this.snackbar = true;
       }
       this.$refs.userInput.focus();
     },
