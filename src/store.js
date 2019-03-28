@@ -781,7 +781,6 @@ function setupStore(callback) {
       },
       endSession(context) {
         context.commit("CLEAR_DIALOGS");
-        context.commit("FLAG_SESSION_RESTART");
         context.commit("REMOVE_MODAL_ITEM");
         let fullUrl = new URL(context.getters.teneoUrl);
         let endSessionUrl =
@@ -834,7 +833,12 @@ function setupStore(callback) {
             })
             .catch(err => {
               console.log(err);
-              context.commit("SHOW_MESSAGE_IN_CHAT", "Problems sending login command: " + err.message);
+              context.commit(
+                "SHOW_MESSAGE_IN_CHAT",
+                "Problems sending login command: " +
+                  err.message +
+                  ". Please make sure your Solution is published and that you are referencing the correct TIE Url."
+              );
               reject(err);
             });
         });

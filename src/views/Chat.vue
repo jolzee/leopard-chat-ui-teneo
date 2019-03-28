@@ -963,8 +963,21 @@ export default {
       }
     },
     swapInputButton() {
-      this.showAudioInput = !this.showAudioInput;
-      this.$store.commit("TTS_ENABLE", this.showAudioInput);
+      // check if we have access to the mic
+      let that = this;
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then(function(stream) {
+          that.showAudioInput = !that.showAudioInput;
+          that.$store.commit("TTS_ENABLE", that.showAudioInput);
+        })
+        .catch(function(err) {
+          console.log(err);
+          that.$store.commit(
+            "SHOW_MESSAGE_IN_CHAT",
+            "ASR input is not allowed. This could be because you're not loading this website over HTTPS or you have explicity denied microphone access in your browser. ASR and TTS is supported in Chrome."
+          );
+        });
     }
   }
 };
