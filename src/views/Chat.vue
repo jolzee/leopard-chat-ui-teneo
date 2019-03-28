@@ -971,7 +971,7 @@ export default {
       let that = this;
       navigator.mediaDevices
         .getUserMedia({ audio: true })
-        .then(function(stream) {
+        .then(function() {
           that.showAudioInput = !that.showAudioInput;
           that.$store.commit("TTS_ENABLE", that.showAudioInput);
         })
