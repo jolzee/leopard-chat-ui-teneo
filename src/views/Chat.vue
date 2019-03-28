@@ -1069,11 +1069,13 @@ div.options-list a.v-list__tile--link {
 }
 
 .teneo-dialog {
+  width: 360px;
   border-top: unset !important;
 }
 
 .chat-responses-float {
   min-height: calc(80vh - 130px);
+  max-height: calc(80vh - 130px);
   height: calc(80vh - 130px);
   height: calc(var(--vh, 1vh) * 80 - 130px);
   overflow-y: auto;
@@ -1081,6 +1083,8 @@ div.options-list a.v-list__tile--link {
 }
 
 .chat-responses {
+  min-height: calc(100vh - 130px);
+  min-height: calc(var(--vh, 1vh) * 100 - 130px);
   max-height: calc(100vh - 130px);
   max-height: calc(var(--vh, 1vh) * 100 - 130px);
   height: calc(100vh - 130px);
