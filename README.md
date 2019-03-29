@@ -4,6 +4,10 @@
 
 https://jolzee.gitbook.io/leopard/
 
+![Leopard UI](https://imgur.com/eZuAAYP)
+
+![ASR and TTS](https://imgur.com/AzrkrmV)
+
 ## Project setup
 
 ```
