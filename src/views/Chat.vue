@@ -94,6 +94,7 @@
               v-for="(item,i) in dialog"
               :key="i + 'itemsIter'"
               :hide-actions="true"
+              :class="{'pb-2': (i === dialog.length - 1), 'pt-2': (i === 0)}"
             >
 
               <div slot="header">
@@ -497,10 +498,13 @@
               <v-text-field
                 :disabled="progressBar"
                 hide-details
+                :append-icon="showAudioInput ? 'fa-angle-double-right' : ''"
+                @click:append="sendUserInput"
                 v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
                 @shortkey.native="swapInputButton"
                 clearable
                 auto-grow
+                autofocus
                 solo
                 name="userInput"
                 ref="userInput"
@@ -520,7 +524,7 @@
                 v-if="!showAudioInput"
                 small
                 color="primary"
-                class="white--text"
+                class="white--text elevation-2"
                 @click.native="sendUserInput"
               >
                 <v-icon>fa-angle-double-right</v-icon>
@@ -540,6 +544,7 @@
                 @shortkey.native="captureAudio"
                 :color="audioButtonColor"
                 :class="audioButtonClasses"
+                class="elevation-2"
                 @click.native="captureAudio"
               >
                 <v-icon medium>fa-microphone-alt</v-icon>
@@ -1134,6 +1139,7 @@ span.teneo-reply ul {
   bottom: 0px;
   width: 100%;
   height: 60px;
+  z-index: 1;
 }
 
 @media only screen and (max-width: 480px) {
