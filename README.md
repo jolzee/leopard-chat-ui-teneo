@@ -4,9 +4,9 @@
 
 https://jolzee.gitbook.io/leopard/
 
-![Leopard UI](https://imgur.com/eZuAAYP)
+![Leopard UI](https://i.imgur.com/eZuAAYP.jpg)
 
-![ASR and TTS](https://imgur.com/AzrkrmV)
+![ASR and TTS](https://imgur.com/AzrkrmV.jpg)
 
 ## Project setup
 
