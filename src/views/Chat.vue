@@ -201,10 +201,7 @@
                           fab
                           small
                         >
-                          <v-icon
-                            medium
-                            class="white--text"
-                          >{{responseIcon}}</v-icon>
+                          <v-icon class="white--text">{{responseIcon}}</v-icon>
                         </v-btn>
                       </v-flex>
                       <v-flex shrink>
