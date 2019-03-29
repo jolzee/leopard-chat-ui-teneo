@@ -201,7 +201,10 @@
                           fab
                           small
                         >
-                          <v-icon class="white--text">{{responseIcon}}</v-icon>
+                          <v-icon
+                            medium
+                            class="white--text"
+                          >{{responseIcon}}</v-icon>
                         </v-btn>
                       </v-flex>
                       <v-flex shrink>
@@ -1009,9 +1012,8 @@ export default {
 
 .loading {
   position: relative;
-  bottom: 8px;
   margin: 0 !important;
-  margin-bottom: -3px !important;
+  bottom: 3px;
 }
 
 .v-snack {
@@ -1132,14 +1134,14 @@ span.teneo-reply ul {
 }
 
 .teneo-footer {
-  padding-top: 8px;
   -webkit-box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.1);
   box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.1);
   position: inherit;
-  bottom: 0px;
+  bottom: 0px !important;
   width: 100%;
   height: 60px;
   z-index: 1;
+  padding-top: 2px;
 }
 
 @media only screen and (max-width: 480px) {
@@ -1155,6 +1157,10 @@ span.teneo-reply ul {
   .chat-responses-float {
     min-height: calc(100vh - 125px);
     min-height: calc(var(--vh, 1vh) * 100 - 125px);
+  }
+
+  .teneo-footer {
+    /* padding-top: 2px; */
   }
 }
 </style>

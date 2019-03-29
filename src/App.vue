@@ -455,8 +455,8 @@ export default {
 }
 
 .application-float {
-  max-height: 80vh !important;
-  height: 80vh !important;
+  max-height: 79.5vh !important;
+  height: 79.5vh !important;
   right: 5% !important;
   border-radius: 13px;
   -moz-border-radius: 13px;
