@@ -230,6 +230,34 @@ function setupStore(callback) {
       }
     },
     getters: {
+      lastReplyItem: state => {
+        return state.conversation.dialog
+          .slice()
+          .reverse()
+          .find(item => item.type === "reply");
+      },
+      askingForPassword(_state, getters) {
+        let item = getters.lastReplyItem;
+        let isAskingForPassword = false;
+        if (item && item.teneoResponse) {
+          let inputType = decodeURIComponent(item.teneoResponse.extraData.inputType);
+          if (inputType !== "undefined" && inputType.trim().toLowerCase() === "password") {
+            isAskingForPassword = true;
+          }
+        }
+        return isAskingForPassword;
+      },
+      askingForEmail(_state, getters) {
+        let item = getters.lastReplyItem;
+        let isAskingForEmail = false;
+        if (item && item.teneoResponse) {
+          let inputType = decodeURIComponent(item.teneoResponse.extraData.inputType);
+          if (inputType !== "undefined" && inputType.trim().toLowerCase() === "email") {
+            isAskingForEmail = true;
+          }
+        }
+        return isAskingForEmail;
+      },
       listening(state) {
         return state.progress.listening;
       },
@@ -658,23 +686,23 @@ function setupStore(callback) {
       TTS_ENABLE(state, useTTS) {
         state.tts.speakBackResponses = useTTS;
       },
-      UPDATE_CHAT_WINDOW_AND_STORAGE(state, response) {
+      UPDATE_CHAT_WINDOW_AND_STORAGE(state, payload) {
         let hasExtraData = false;
 
         if (
-          response.teneoResponse &&
-          (Object.keys(response.teneoResponse.extraData).some(function(k) {
+          payload.response.teneoResponse &&
+          (Object.keys(payload.response.teneoResponse.extraData).some(function(k) {
             return ~k.indexOf("extensions");
           }) ||
-            response.teneoResponse.extraData.liveChat ||
-            response.teneoResponse.link.href)
+            payload.response.teneoResponse.extraData.liveChat ||
+            payload.response.teneoResponse.link.href)
         ) {
           hasExtraData = true;
         }
-
+        console.log("Mask: " + payload.mask);
         let newUserInput = {
           type: "userInput",
-          text: response.userInput,
+          text: payload.mask ? "*********" : payload.response.userInput,
           bodyText: "",
           hasExtraData: false
         };
@@ -684,9 +712,9 @@ function setupStore(callback) {
 
         let newReply = {
           type: "reply",
-          text: response.teneoAnswer,
+          text: payload.response.teneoAnswer,
           bodyText: "",
-          teneoResponse: response.teneoResponse,
+          teneoResponse: payload.response.teneoResponse,
           hasExtraData: hasExtraData
         };
 
@@ -879,7 +907,20 @@ function setupStore(callback) {
                 }
               }
 
-              context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", response);
+              if (context.getters.askingForPassword) {
+                console.log("asked for password");
+                context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", {
+                  response,
+                  mask: true
+                });
+              } else {
+                console.log("Did not ask for password");
+                context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", {
+                  response,
+                  mask: false
+                });
+              }
+
               context.commit("HIDE_PROGRESS_BAR");
               if (response.teneoResponse && response.teneoResponse.extraData.liveChat) {
                 context.commit("START_LIVE_CHAT");

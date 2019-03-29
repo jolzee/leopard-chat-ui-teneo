@@ -489,78 +489,90 @@
           fluid
           grid-list-sm
         >
-          <v-layout row>
-            <v-flex
-              xs12
-              pl-3
-            >
-              <v-divider></v-divider>
-              <v-text-field
-                :disabled="progressBar"
-                hide-details
-                :append-icon="showAudioInput ? 'fa-angle-double-right' : ''"
-                @click:append="sendUserInput"
-                v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
-                @shortkey.native="swapInputButton"
-                clearable
-                auto-grow
-                autofocus
-                solo
-                name="userInput"
-                ref="userInput"
-                browser-autocomplete="off"
-                @keyup.enter.native="sendUserInput"
-                v-model.trim="userInput"
-                :label="$t('input.box.label')"
-                single-line
-              ></v-text-field>
-            </v-flex>
-            <v-flex>
-              <v-btn
-                fab
-                :disabled="progressBar"
-                :loading="progressBar"
-                v-long-press="swapInputButton"
-                v-if="!showAudioInput"
-                small
-                color="primary"
-                class="white--text elevation-2"
-                @click.native="sendUserInput"
-              >
-                <v-icon>fa-angle-double-right</v-icon>
-              </v-btn>
-              <span
-                v-shortkey="['esc']"
-                @shortkey="stopAudioCapture"
-              ></span>
-              <v-btn
-                fab
-                :disabled="progressBar"
-                :loading="progressBar"
-                v-long-press="swapInputButton"
-                small
-                v-if="showAudioInput"
-                v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}"
-                @shortkey.native="captureAudio"
-                :color="audioButtonColor"
-                :class="audioButtonClasses"
-                class="elevation-2"
-                @click.native="captureAudio"
-              >
-                <v-icon medium>fa-microphone-alt</v-icon>
-              </v-btn>
-              <!-- text & audio input area -->
+          <v-form
+            v-model="valid"
+            v-on:submit.prevent
+          >
+            <v-layout row>
 
-              <v-snackbar
-                v-model="snackbar"
-                bottom
-                :timeout="snackbarTimeout"
-                auto-height
+              <v-flex
+                xs12
+                pl-3
               >
-                {{ $t('empty.user.input') }} 😉
-              </v-snackbar>
-            </v-flex>
-          </v-layout>
+                <v-divider></v-divider>
+
+                <v-text-field
+                  :disabled="progressBar"
+                  :append-icon="showAudioInput ? 'fa-angle-double-right' : ''"
+                  @click:append="sendUserInput"
+                  v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
+                  @shortkey.native="swapInputButton"
+                  :prepend-inner-icon="askingForPassword ? showPassword ? 'visibility' : 'visibility_off' : ''"
+                  :type="askingForPassword ? showPassword ? 'text' : 'password' : 'text'"
+                  @click:prepend-inner="showPassword = !showPassword"
+                  :rules="askingForEmail ? [rules.email(userInput)] : []"
+                  clearable
+                  auto-grow
+                  autofocus
+                  required
+                  solo
+                  name="userInput"
+                  ref="userInput"
+                  browser-autocomplete="off"
+                  @keyup.enter.native="sendUserInput"
+                  v-model.trim="userInput"
+                  :label="askingForPassword ? 'Enter password?' : askingForEmail ? 'Enter email @' : $t('input.box.label')"
+                  single-line
+                ></v-text-field>
+              </v-flex>
+              <v-flex>
+                <v-btn
+                  fab
+                  :disabled="progressBar"
+                  :loading="progressBar"
+                  v-long-press="swapInputButton"
+                  v-if="!showAudioInput"
+                  small
+                  color="primary"
+                  class="white--text elevation-2"
+                  @click.native="sendUserInput"
+                >
+                  <v-icon>fa-angle-double-right</v-icon>
+                </v-btn>
+                <span
+                  v-shortkey="['esc']"
+                  @shortkey="stopAudioCapture"
+                ></span>
+                <v-btn
+                  fab
+                  :disabled="progressBar"
+                  :loading="progressBar"
+                  v-long-press="swapInputButton"
+                  small
+                  v-if="showAudioInput"
+                  v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}"
+                  @shortkey.native="captureAudio"
+                  :color="audioButtonColor"
+                  :class="audioButtonClasses"
+                  class="elevation-2"
+                  @click.native="captureAudio"
+                >
+                  <v-icon medium>fa-microphone-alt</v-icon>
+                </v-btn>
+                <!-- text & audio input area -->
+
+                <v-snackbar
+                  v-model="snackbar"
+                  bottom
+                  :timeout="snackbarTimeout"
+                  auto-height
+                >
+                  {{ $t('empty.user.input') }} 😉
+                </v-snackbar>
+              </v-flex>
+
+            </v-layout>
+          </v-form>
         </v-container>
 
       </v-flex>
@@ -676,13 +688,26 @@ export default {
       snackbar: false,
       snackbarTimeout: 1500,
       showDate: false,
+      showPassword: false,
       showTime: false,
       date: "",
-      time: ""
+      time: "",
+      rules: {
+        required: value => !!value || "Required.",
+        counter: value => value.length <= 20 || "Max 20 characters",
+        email: value => {
+          console.log(value);
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return pattern.test(value) || "Invalid e-mail.";
+        }
+      },
+      valid: false
     };
   },
   computed: {
     ...mapGetters([
+      "askingForPassword",
+      "askingForEmail",
       "carouselImageArray",
       "chatHistory",
       "chatHistorySessionStorage",
@@ -885,23 +910,25 @@ export default {
       return options;
     },
     sendUserInput() {
-      this.audioButtonColor = "success";
-      if (this.userInput) {
-        this.$store.commit("SHOW_PROGRESS_BAR");
-        this.showDate = false;
-        this.showTime = false;
-        this.date = "";
-        this.time = "";
-        this.$store
-          .dispatch("sendUserInput")
-          .then(this.$refs.userInput.focus())
-          .catch(err => {
-            this.userInput = err;
-          });
-      } else {
-        // this.snackbar = true;
+      if (this.valid) {
+        this.audioButtonColor = "success";
+        if (this.userInput) {
+          this.$store.commit("SHOW_PROGRESS_BAR");
+          this.showDate = false;
+          this.showTime = false;
+          this.date = "";
+          this.time = "";
+          this.$store
+            .dispatch("sendUserInput")
+            .then(this.$refs.userInput.focus())
+            .catch(err => {
+              this.userInput = err;
+            });
+        } else {
+          // this.snackbar = true;
+        }
+        this.$refs.userInput.focus();
       }
-      this.$refs.userInput.focus();
     },
     optionClicked(option) {
       this.$store.commit("SHOW_PROGRESS_BAR");
@@ -1033,6 +1060,11 @@ export default {
 }
 </style>
 <style>
+div.teneo-footer .v-text-field__details {
+  position: relative !important;
+  bottom: 20px !important;
+}
+
 .v-expansion-panel__header {
   padding-left: 8px !important;
   padding-right: 10px !important;
