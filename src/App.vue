@@ -109,6 +109,7 @@
         :color="toolbarColor"
         :dark="dark"
         :flat="false"
+        height="64"
         style="z-index: 3;"
         :class="{'teneo-toolbar-float' : float}"
       >

@@ -27,7 +27,7 @@
             dark
             color="primary"
             fixed
-            height="48"
+            height="64"
             :class="toolbarWidth"
           >
             <v-btn
@@ -612,7 +612,7 @@ export default {
 }
 
 .modal-height {
-  min-height: calc(100vh - 48px) !important;
+  min-height: calc(100vh - 64px) !important;
   height: fit-content;
 }
 
@@ -712,6 +712,14 @@ export default {
 @media only screen and (max-width: 480px) {
   .modal-fly-out {
     width: 100vw !important;
+  }
+
+  .teneo-modal,
+  .teneo-modal-small-width,
+  .teneo-modal-medium-width,
+  .teneo-modal-large-width,
+  .teneo-modal-x-large-width {
+    max-width: unset !important;
   }
 }
 </style>
