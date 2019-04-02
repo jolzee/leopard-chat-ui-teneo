@@ -59,7 +59,7 @@
         >
           <v-img
             :src='backgroundImage()'
-            height="160"
+            height="auto"
           >
             <v-layout
               pa-4
@@ -70,7 +70,7 @@
               <v-spacer></v-spacer>
               <v-flex shrink>
                 <div class="headline font-weight-medium">Artificial Solutions</div>
-                <div class="body-2"><strong>Teneo</strong> allows your customers to speak to applications, devices and web services in a natural, humanlike and intelligent way</div>
+                <div class="body-2">{{ $t('about.page.content') }}</div>
               </v-flex>
             </v-layout>
           </v-img>
@@ -441,6 +441,7 @@ export default {
 #teneo {
   width: 360px;
   position: initial !important;
+  word-break: break-word;
 }
 
 .teneo-toolbar-float {

@@ -18,7 +18,15 @@ export const TRANSLATIONS = {
     "more.button": "more",
     "more.info.title": "More Information",
     "no.chat.history.body": "Ask me a few questions to get things rolling..",
-    "no.chat.history.title": "No Chat History"
+    "no.chat.history.title": "No Chat History",
+    "input.box.label.password": "Enter password",
+    "input.box.label.email": "Enter email @",
+    "button.video": "Video",
+    "button.image": "Image",
+    "button.table": "Results Table",
+    "button.page": "Page",
+    "button.more": "More",
+    "button.pdf": "PDF"
   },
   fr: {
     "about.page.button": "Apprendre encore plus",
@@ -39,7 +47,15 @@ export const TRANSLATIONS = {
     "more.button": "plus",
     "more.info.title": "Plus d'information",
     "no.chat.history.body": "Posez-moi quelques questions pour faire avancer les choses..",
-    "no.chat.history.title": "Aucun historique de discussion"
+    "no.chat.history.title": "Aucun historique de discussion",
+    "input.box.label.password": "Entrer le mot de passe",
+    "input.box.label.email": "Entrez email @",
+    "button.video": "Vidéo",
+    "button.image": "Image",
+    "button.table": "Tableau de résultats",
+    "button.page": "Page",
+    "button.more": "Plus",
+    "button.pdf": "PDF"
   },
   de: {
     "about.page.button": "Erfahren Sie mehr",
@@ -60,7 +76,15 @@ export const TRANSLATIONS = {
     "more.button": "mehr",
     "more.info.title": "Weitere Informationen",
     "no.chat.history.body": "Stellen Sie mir ein paar Fragen, um die Dinge ins Rollen zu bringen",
-    "no.chat.history.title": "Kein Chatverlauf"
+    "no.chat.history.title": "Kein Chatverlauf",
+    "input.box.label.password": "Passwort eingeben",
+    "input.box.label.email": "Email eingeben @",
+    "button.video": "Video",
+    "button.image": "Bild",
+    "button.table": "Ergebnistabelle",
+    "button.page": "Seite",
+    "button.more": "Mehr",
+    "button.pdf": "PDF"
   },
   nl: {
     "about.page.button": "Meer informatie",
@@ -81,7 +105,15 @@ export const TRANSLATIONS = {
     "more.button": "meer",
     "more.info.title": "Meer informatie",
     "no.chat.history.body": "Stel me een paar vragen om dingen aan het rollen te krijgen",
-    "no.chat.history.title": "Geen chatgeschiedenis"
+    "no.chat.history.title": "Geen chatgeschiedenis",
+    "input.box.label.password": "Voer wachtwoord in",
+    "input.box.label.email": "Voer email in @",
+    "button.video": "Video",
+    "button.image": "Beeld",
+    "button.table": "Tabel met resultaten",
+    "button.page": "Pagina",
+    "button.more": "Meer",
+    "button.pdf": "PDF"
   },
   es: {
     "about.page.button": "Aprende más",
@@ -102,6 +134,43 @@ export const TRANSLATIONS = {
     "more.button": "Más",
     "more.info.title": "Más información",
     "no.chat.history.body": "Hazme algunas preguntas para que las cosas funcionen",
-    "no.chat.history.title": "Sin historial de chat"
+    "no.chat.history.title": "Sin historial de chat",
+    "input.box.label.password": "Introducir la contraseña",
+    "input.box.label.email": "Ingrese correo electrónico @",
+    "button.video": "Vídeo",
+    "button.image": "Imagen",
+    "button.table": "Tabla de resultados",
+    "button.page": "Página",
+    "button.more": "Más",
+    "button.pdf": "PDF"
+  },
+  ru: {
+    "about.page.button": "Учить больше",
+    "about.page.content":
+      "Teneo позволяет вашим клиентам общаться с приложениями, устройствами и веб-сервисами естественным, удобным и интеллектуальным способом",
+    "about.page.title": "Teneo от Artificial Solutions",
+    "about.page.url": "https://www.artificial-solutions.com/",
+    "back.to.chat.button": "вернуться в чат",
+    "empty.user.input": "Похоже, ты ничего не сказал мне",
+    "help.page.title": "Вот некоторые вещи, которые вы можете спросить у меня",
+    "input.box.label": "Скажите что-то...",
+    listening: "Прослушивание ...",
+    "menu.about": "Около",
+    "menu.chat": "чат",
+    "menu.config": "конфиг",
+    "menu.help": "Помогите",
+    "menu.history": "история",
+    "more.button": "Больше",
+    "more.info.title": "Дополнительная информация",
+    "no.chat.history.body": "Задайте мне несколько вопросов, чтобы заставить вещи катиться ..",
+    "no.chat.history.title": "Нет истории чата",
+    "input.box.label.password": "Введите пароль",
+    "input.box.label.email": "Введите адрес электронной почты @",
+    "button.video": "видео",
+    "button.image": "Образ",
+    "button.table": "Таблица результатов",
+    "button.page": "страница",
+    "button.more": "Больше",
+    "button.pdf": "PDF"
   }
 };

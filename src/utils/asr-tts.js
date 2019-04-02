@@ -15,6 +15,8 @@ export function initializeTTS(locale) {
       lang:
         locale === "fr"
           ? "fr-FR"
+          : locale === "ru"
+          ? "ru-RU"
           : locale === "de"
           ? "de-DE"
           : locale === "nl"

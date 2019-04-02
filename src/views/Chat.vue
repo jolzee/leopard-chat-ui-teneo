@@ -521,7 +521,7 @@
                   browser-autocomplete="off"
                   @keyup.enter.native="sendUserInput"
                   v-model.trim="userInput"
-                  :label="askingForPassword ? 'Enter password?' : askingForEmail ? 'Enter email @' : $t('input.box.label')"
+                  :label="askingForPassword ? $t('input.box.label.password') : askingForEmail ? $t('input.box.label.email') : $t('input.box.label')"
                   single-line
                 ></v-text-field>
               </v-flex>
@@ -940,24 +940,24 @@ export default {
     modalButtonText(item) {
       let extensions = this.itemExtensions(item);
       let countOfNonInlines = 0;
-      let buttonLabel = "More";
+      let buttonLabel = this.$t("button.more");
       extensions.forEach(extension => {
         if (!extension.inline || item.teneoResponse.link.href !== "") {
           countOfNonInlines++;
         }
         if (extension.name.startsWith("displayVideo")) {
-          buttonLabel = "Video";
+          buttonLabel = this.$t("button.video");
         } else if (extension.name.startsWith("displayImage")) {
-          buttonLabel = "Image";
+          buttonLabel = this.$t("button.image");
         } else if (extension.name.startsWith("displayTable")) {
-          buttonLabel = "Results Table";
+          buttonLabel = this.$t("button.table");
         }
         if (item.teneoResponse.link.href !== "") {
-          buttonLabel = "Page";
+          buttonLabel = this.$t("button.page");
         }
       });
       if (countOfNonInlines > 1) {
-        return "More";
+        return this.$t("button.more");
       }
       return buttonLabel;
     },
