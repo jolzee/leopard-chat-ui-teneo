@@ -1,4 +1,4 @@
-# chat-teneo-vue
+# Leopard Chat UI
 
 ## Full Documentation
 
