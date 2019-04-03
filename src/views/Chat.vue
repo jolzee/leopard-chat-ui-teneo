@@ -1069,11 +1069,12 @@ div.teneo-footer .v-text-field__details {
   bottom: 20px !important;
 }
 
-.v-expansion-panel__header {
+div.chat-container .v-expansion-panel__header {
   padding-left: 8px !important;
   padding-right: 10px !important;
   padding-top: 0px !important;
   padding-bottom: 5px !important;
+  cursor: unset;
 }
 
 .v-toolbar__title:not(:first-child) {

@@ -24,11 +24,12 @@ import {
 } from "vue-loaders";
 import { STORAGE_KEY } from "./constants/solution-config-default";
 import { storeInit } from "./store";
-console.log(
-  "%cLeopard Chat UI 💬",
-  "background: #3776D0; color: white; font-size: x-large; padding-left: 10px; padding-right: 10px"
-);
-console.log("Documentation - https://jolzee.gitbook.io/leopard/");
+console.groupCollapsed("Leopard Information");
+console.log("%cLeopard Chat UI 💬", "background: #3776D0; color: white; font-size: x-large;");
+console.log("Author: Peter Joles - peter.joles@artificial-solutions.com");
+console.log("Documentation: https://jolzee.gitbook.io/leopard/");
+console.log("Code: https://github.com/jolzee/chat-teneo-vue");
+console.groupEnd();
 
 if (parseBool(localStorage.getItem(STORAGE_KEY + "darkTheme")) === null) {
   localStorage.setItem(STORAGE_KEY + "darkTheme", "false");
