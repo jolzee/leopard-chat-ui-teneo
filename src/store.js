@@ -177,6 +177,7 @@ function setupStore(callback) {
         asr: null
       },
       chatConfig: chatConfig,
+      activeSolution: activeSolution,
       connection: {
         requestParameters: REQUEST_PARAMETERS,
         teneoUrl: TENEO_URL
@@ -257,6 +258,9 @@ function setupStore(callback) {
           }
         }
         return isAskingForEmail;
+      },
+      activeSolution(state) {
+        return state.activeSolution;
       },
       listening(state) {
         return state.progress.listening;

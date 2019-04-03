@@ -54,7 +54,6 @@
               outline
               color="indigo"
               :href="getActiveSolutionDeepLink"
-              target="_blank"
             >
               <v-icon dark>fa-link</v-icon>
             </v-btn>
@@ -1338,9 +1337,15 @@ export default {
       this.displaySnackBar("📋 Copied to clipboard");
     },
     setActiveSolutionAsSelected() {
-      this.selectedSolution = this.config.solutions.find(
-        solution => solution.name === this.config.activeSolution
-      );
+      // pre select the solution active in the browser
+      if (this.$store.getters.activeSolution) {
+        this.selectedSolution = this.$store.getters.activeSolution;
+      } else {
+        // fallback to the default active solutions
+        this.selectedSolution = this.config.solutions.find(
+          solution => solution.name === this.config.activeSolution
+        );
+      }
     },
     randId() {
       return Math.random()
@@ -1363,10 +1368,10 @@ export default {
     refreshBrowser() {
       this.refresh = true;
       sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
+
       window.location = `${location.protocol}//${location.host}${
         location.pathname
-      }`;
-      // window.location.reload(false);
+      }?dl=${this.selectedSolution.deepLink}`;
     },
     saveToLocalStorage() {
       localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
