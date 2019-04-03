@@ -193,6 +193,7 @@
                       <v-flex
                         shrink
                         class="text-xs-left"
+                        v-if="showChatIcons"
                       >
                         <v-btn
                           v-long-press="swapInputButton"
@@ -380,6 +381,7 @@
                       <v-flex
                         xs2
                         class="text-xs-left"
+                        v-if="showChatIcons"
                       >
                         <v-btn
                           v-long-press="swapInputButton"
@@ -435,6 +437,7 @@
                     <v-flex
                       shrink
                       class="text-xs-right"
+                      v-if="showChatIcons"
                     >
                       <v-btn
                         v-long-press="swapInputButton"
@@ -724,6 +727,7 @@ export default {
       "hasModal",
       "liveChatMessage",
       "progressBar",
+      "showChatIcons",
       "showChatLoading",
       "showLiveChatProcessing",
       "vimeoId",

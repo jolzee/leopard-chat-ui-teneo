@@ -675,6 +675,31 @@
                             append-icon="important_devices"
                           ></v-select>
                         </v-flex>
+                        <v-divider></v-divider>
+                        <v-flex
+                          xs12
+                          sm4
+                          class="hidden-xs-only"
+                        >
+                          <v-subheader>Show Chat Icons</v-subheader>
+                        </v-flex>
+                        <v-flex
+                          xs12
+                          sm8
+                        >
+                          <v-select
+                            :items="trueFalseOptions"
+                            validate-on-blur
+                            color="light-blue darken-1"
+                            outline
+                            hint="Show Chat Icons"
+                            label="Show Chat Icons"
+                            :menu-props="{contentClass:'select-options'}"
+                            :tabindex="getTabIndex"
+                            v-model="solution.showChatIcons"
+                            append-icon="important_devices"
+                          ></v-select>
+                        </v-flex>
 
                         <v-divider></v-divider>
                         <v-flex

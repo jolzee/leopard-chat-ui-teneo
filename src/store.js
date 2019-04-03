@@ -620,6 +620,9 @@ function setupStore(callback) {
       },
       chatTitle(state) {
         return state.ui.chatTitle;
+      },
+      showChatIcons(state) {
+        return state.activeSolution.showChatIcons !== undefined ? state.activeSolution.showChatIcons === "true" : true;
       }
     },
     mutations: {

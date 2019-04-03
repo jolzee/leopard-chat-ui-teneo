@@ -25,6 +25,7 @@ okkay | ok
   name: "",
   responseIcon: "fa-robot",
   sendContextParams: "login",
+  showChatIcons: true,
   theme: {
     accent: "#4CAF50",
     error: "#FF5252",
