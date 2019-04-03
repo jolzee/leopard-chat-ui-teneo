@@ -29,8 +29,6 @@ let store;
 // const USE_LOCAL_STORAGE = parseBool(activeSolution.useLocalStorage);
 
 let ASR_CORRECTIONS_MERGED;
-let tts;
-let asr;
 let liveChat;
 let CHAT_TITLE = "Configure Me";
 let EMBED = false; // will eventually be used to build standard Web Component
@@ -162,7 +160,7 @@ function setupStore(callback) {
       }
     });
 
-    tts = initializeTTS(LOCALE);
+    // tts = initializeTTS(LOCALE);
   }
 
   // update the IFRAME URL
@@ -175,7 +173,8 @@ function setupStore(callback) {
   store = new Vuex.Store({
     state: {
       asr: {
-        stopAudioCapture: false
+        stopAudioCapture: false,
+        asr: null
       },
       chatConfig: chatConfig,
       connection: {
@@ -212,7 +211,8 @@ function setupStore(callback) {
         showChatLoading: false
       },
       tts: {
-        speakBackResponses: false
+        speakBackResponses: false,
+        tts: initializeTTS(LOCALE)
       },
       ui: {
         chatTitle: CHAT_TITLE,
@@ -266,6 +266,12 @@ function setupStore(callback) {
       },
       userIcon(state) {
         return state.ui.userIcon;
+      },
+      tts(state) {
+        return state.tts.tts;
+      },
+      asr(state) {
+        return state.asr.asr;
       },
       agentAvatar(state) {
         return state.liveAgent.agentAvatar;
@@ -606,6 +612,9 @@ function setupStore(callback) {
       PUSH_USER_INPUT_TO_DIALOG_HISTORY(state, userInput) {
         state.conversation.dialogHistory.push(userInput);
       },
+      SET_CHAT_TITLE(state, title) {
+        state.ui.chatTitle = title;
+      },
       SET_DIALOG_HISTORY(state, newHistory) {
         state.conversation.dialogHistory = newHistory;
       },
@@ -765,7 +774,13 @@ function setupStore(callback) {
         state.asr.stopAudioCapture = true;
       },
       START_AUDIO_CAPTURE(state) {
-        state.asr.stopAudioCapture = false;
+        if (state.asr.asr != null) {
+          if (state.tts.tts.isSpeaking()) {
+            state.tts.tts.shutUp();
+          }
+          state.asr.stopAudioCapture = false;
+          state.asr.asr.start();
+        }
       },
       HIDE_CHAT_MODAL(state) {
         // console.log("hiding modal");
@@ -794,16 +809,31 @@ function setupStore(callback) {
       },
       AGENT_AVATAR(state, imageUrl) {
         state.liveAgent.agentAvatar = imageUrl;
+      },
+      UPDATE_UI_LOCALE(state, lang) {
+        state.i18n.locale = lang.toLowerCase();
+        Vue.i18n.set(lang);
+      },
+      UPDATE_FRAME_URL(state, langurl) {
+        if (document.getElementById("site-frame")) {
+          document.getElementById("site-frame").src = langurl;
+        }
+        state.iframe.iframeUrl = langurl;
+        state.iframe.iframeUrlBase = langurl.substring(0, langurl.lastIndexOf("/")) + "/";
+      },
+      CHANGE_ASR_TTS(state, lang) {
+        state.tts.tts = initializeTTS(lang);
+        initializeASR(store, ASR_CORRECTIONS_MERGED);
       }
     },
     actions: {
       stopAudioCapture(context) {
-        if (tts.isSpeaking()) {
+        if (context.getters.tts.isSpeaking()) {
           // console.log("muted TTS!");
-          tts.shutUp();
+          context.getters.tts.shutUp();
         }
-        if (tts.isObeying()) {
-          asr.stop();
+        if (context.getters.tts.isObeying()) {
+          context.getters.asr.stop();
           context.commit("STOP_AUDIO_CAPTURE");
         }
       },
@@ -873,9 +903,9 @@ function setupStore(callback) {
       },
       sendUserInput(context, params = "") {
         // send user input to Teneo when a live chat has not begun
-        if (tts && tts.isSpeaking()) {
+        if (context.getters.tts && context.getters.tts.isSpeaking()) {
           // tts is speaking something. Let's shut it up
-          tts.shutUp();
+          context.getters.tts.shutUp();
         }
         if (!context.getters.isLiveChat) {
           Vue.jsonp(context.getters.teneoUrl + (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params), {
@@ -902,8 +932,8 @@ function setupStore(callback) {
 
               // check if this browser supports the Web Speech API
               if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
-                if (tts && context.getters.speakBackResponses) {
-                  tts.say(ttsText);
+                if (context.getters.tts && context.getters.speakBackResponses) {
+                  context.getters.tts.say(ttsText);
                 }
               }
 
@@ -926,14 +956,31 @@ function setupStore(callback) {
                 context.commit("START_LIVE_CHAT");
               }
 
+              let chatTitle = decodeURIComponent(response.teneoResponse.extraData.chatTitle);
+              if (chatTitle !== "undefined") {
+                context.commit("SET_CHAT_TITLE", chatTitle);
+              }
+
               // added on request from Mark J - switch languages based on NER language detection
               let langInput = decodeURIComponent(response.teneoResponse.extraData.langinput);
               let langEngineUrl = decodeURIComponent(response.teneoResponse.extraData.langengineurl);
+              let lang = decodeURIComponent(response.teneoResponse.extraData.lang);
+              let langurl = decodeURIComponent(response.teneoResponse.extraData.langurl);
 
               if (langEngineUrl !== "undefined" && langInput !== "undefined") {
                 context.commit("UPDATE_TENEO_URL", langEngineUrl + "?viewname=STANDARDJSONP");
                 context.commit("SET_USER_INPUT", langInput);
                 context.commit("SHOW_PROGRESS_BAR");
+
+                if (lang !== "undefined") {
+                  context.commit("UPDATE_UI_LOCALE", lang);
+                  context.commit("CHANGE_ASR_TTS", lang);
+                }
+
+                if (langurl !== "undefined") {
+                  context.commit("UPDATE_FRAME_URL", langurl);
+                }
+
                 context
                   .dispatch("sendUserInput")
                   .then(console.log("Sent original lang input to new lang specific solution"))
@@ -982,14 +1029,7 @@ function setupStore(callback) {
         }
       },
       captureAudio(context) {
-        if (asr != null) {
-          if (tts.isSpeaking()) {
-            // console.log("tts is speaking something. Let's shut it up");
-            tts.shutUp();
-          }
-          context.commit("START_AUDIO_CAPTURE");
-          asr.start();
-        }
+        context.commit("START_AUDIO_CAPTURE");
       }
     }
   });
@@ -1002,10 +1042,10 @@ function setupStore(callback) {
   Vue.i18n.set(LOCALE);
 
   // Setup ASR
-  asr = initializeASR(tts, store, ASR_CORRECTIONS_MERGED);
+  initializeASR(store, ASR_CORRECTIONS_MERGED);
 
   // Setup Live Chat
-  liveChat = new LiveChat(store, tts, USE_LOCAL_STORAGE, STORAGE_KEY, TENEO_CHAT_HISTORY);
+  liveChat = new LiveChat(store, USE_LOCAL_STORAGE, STORAGE_KEY, TENEO_CHAT_HISTORY);
 
   // android and ios webview ASR and TTS - not working currently
   window.sendVoiceInput = function(userInput) {

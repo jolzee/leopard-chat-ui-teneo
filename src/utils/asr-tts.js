@@ -30,11 +30,11 @@ export function initializeTTS(locale) {
   return tts;
 }
 
-export function initializeASR(tts, store, asrCorrections) {
-  let asr = null;
+export function initializeASR(store, asrCorrections) {
+  // let asr = null;
   let timeoutVar;
-  if (tts != null) {
-    asr = tts.newDictation({
+  if (store.state.tts.tts != null) {
+    store.state.asr.asr = store.state.tts.tts.newDictation({
       soundex: true,
       continuous: false, // Enable continuous if HTTPS connection
       onResult: function(text) {
@@ -47,7 +47,7 @@ export function initializeASR(tts, store, asrCorrections) {
         }
         timeoutVar = setTimeout(function() {
           // console.log("timeout - aborting recognition");
-          asr.stop();
+          store.state.asr.asr.stop();
           if (text) {
             store.commit("SET_USER_INPUT", text); // final transcript from ASR
           }
@@ -103,5 +103,5 @@ export function initializeASR(tts, store, asrCorrections) {
       }
     });
   }
-  return asr;
+  // return asr;
 }

@@ -2,9 +2,9 @@ import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk"; // live ch
 import stripHtml from "string-strip-html";
 
 export class LiveChat {
-  constructor(store, tts, useLocalStorage, storageKey, teneoChatHistory) {
+  constructor(store, useLocalStorage, storageKey, teneoChatHistory) {
     this.store = store;
-    this.tts = tts;
+    this.tts = store.state.tts.tts;
     this.useLocalStorage = useLocalStorage;
     this.storageKey = storageKey;
     this.teneoChatHistory = teneoChatHistory;
