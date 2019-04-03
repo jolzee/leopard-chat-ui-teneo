@@ -248,6 +248,28 @@ function setupStore(callback) {
         }
         return isAskingForPassword;
       },
+      inputHelpText(_state, getters) {
+        let item = getters.lastReplyItem;
+        let inputHelpText;
+        if (item && item.teneoResponse) {
+          let helpText = decodeURIComponent(item.teneoResponse.extraData.inputHelpText);
+          if (helpText !== "undefined") {
+            inputHelpText = helpText;
+          }
+        }
+        return inputHelpText;
+      },
+      itemInputMask(_state, getters) {
+        let item = getters.lastReplyItem;
+        let itemInputMask;
+        if (item && item.teneoResponse) {
+          let mask = decodeURIComponent(item.teneoResponse.extraData.inputMask);
+          if (mask !== "undefined") {
+            itemInputMask = mask;
+          }
+        }
+        return itemInputMask;
+      },
       askingForEmail(_state, getters) {
         let item = getters.lastReplyItem;
         let isAskingForEmail = false;
@@ -712,7 +734,7 @@ function setupStore(callback) {
         ) {
           hasExtraData = true;
         }
-        console.log("Mask: " + payload.mask);
+
         let newUserInput = {
           type: "userInput",
           text: payload.mask ? "*********" : payload.response.userInput,
@@ -942,13 +964,11 @@ function setupStore(callback) {
               }
 
               if (context.getters.askingForPassword) {
-                console.log("asked for password");
                 context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", {
                   response,
                   mask: true
                 });
               } else {
-                console.log("Did not ask for password");
                 context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", {
                   response,
                   mask: false

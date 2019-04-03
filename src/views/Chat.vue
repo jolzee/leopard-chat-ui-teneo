@@ -515,13 +515,15 @@
                   auto-grow
                   autofocus
                   required
+                  return-masked-value
+                  :mask="itemInputMask"
                   solo
                   name="userInput"
                   ref="userInput"
                   browser-autocomplete="off"
                   @keyup.enter.native="sendUserInput"
                   v-model.trim="userInput"
-                  :label="askingForPassword ? $t('input.box.label.password') : askingForEmail ? $t('input.box.label.email') : $t('input.box.label')"
+                  :label="inputHelpText ? inputHelpText : askingForPassword ? $t('input.box.label.password') : askingForEmail ? $t('input.box.label.email') : $t('input.box.label')"
                   single-line
                 ></v-text-field>
               </v-flex>
@@ -714,7 +716,9 @@ export default {
       "dark",
       "float",
       "imageUrl",
+      "inputHelpText",
       "itemExtensions",
+      "itemInputMask",
       "hasInline",
       "hasInlineType",
       "hasModal",
