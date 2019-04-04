@@ -938,7 +938,7 @@ function setupStore(callback) {
         }
         if (!context.getters.isLiveChat) {
           Vue.jsonp(context.getters.teneoUrl + (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params), {
-            userinput: context.getters.userInput
+            userinput: stripHtml(context.getters.userInput)
           })
             .then(json => {
               if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
@@ -946,7 +946,7 @@ function setupStore(callback) {
               }
               // console.log(decodeURIComponent(json.responseData.answer))
               const response = {
-                userInput: context.getters.userInput,
+                userInput: stripHtml(context.getters.userInput),
                 teneoAnswer: decodeURIComponent(json.responseData.answer).replace(
                   /onclick="[^"]+"/g,
                   'class="sendInput"'
