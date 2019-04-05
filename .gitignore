@@ -18,3 +18,4 @@ yarn-error.log*
 static/default.json
 .history
 .history/
+public/static/default.json
