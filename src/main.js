@@ -31,6 +31,7 @@ console.log("Documentation: https://jolzee.gitbook.io/leopard/");
 console.log("Code: https://github.com/jolzee/chat-teneo-vue");
 console.groupEnd();
 
+// Get the dark theme setting from local storage
 if (parseBool(localStorage.getItem(STORAGE_KEY + "darkTheme")) === null) {
   localStorage.setItem(STORAGE_KEY + "darkTheme", "false");
 }
