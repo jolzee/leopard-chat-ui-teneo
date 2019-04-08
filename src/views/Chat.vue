@@ -1207,9 +1207,5 @@ span.teneo-reply ul {
     min-height: calc(100vh - 125px);
     min-height: calc(var(--vh, 1vh) * 100 - 125px);
   }
-
-  .teneo-footer {
-    /* padding-top: 2px; */
-  }
 }
 </style>
