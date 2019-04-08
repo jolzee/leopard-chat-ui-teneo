@@ -542,7 +542,9 @@ function setupStore(callback) {
         return state.knowledgeData;
       },
       settingLongResponsesInModal(state) {
-        return state.activeSolution.longResponsesInModal;
+        return state.activeSolution.longResponsesInModal !== undefined
+          ? state.activeSolution.longResponsesInModal === "true"
+          : false;
       },
       lastItemAnswerTextCropped(_state, getters) {
         let answer = getters.lastReplyItem.text;
@@ -551,11 +553,10 @@ function setupStore(callback) {
         }
         return answer;
       },
-      itemAnswerTextCropped: (state, getters) => item => {
+      itemAnswerTextCropped: (_state, getters) => item => {
         let answer = item.text;
         console.log(`1:${getters.settingLongResponsesInModal} 2:${getters.itemHasLongResponse(item)}`);
         if (getters.settingLongResponsesInModal && getters.itemHasLongResponse(item)) {
-          console.log(answer);
           answer = answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
         }
         return answer;
@@ -564,15 +565,15 @@ function setupStore(callback) {
         let hasLongResponse = false;
         if (getters.settingLongResponsesInModal) {
           let item = getters.lastReplyItem;
-          if (item && item.text && item.text.length > 400) {
+          if (getters.settingLongResponsesInModal && item && item.text && item.text.length > 400) {
             hasLongResponse = true;
           }
         }
         return hasLongResponse;
       },
-      itemHasLongResponse: (_state, _getters) => item => {
+      itemHasLongResponse: (_state, getters) => item => {
         let hasLongResponse = false;
-        if (item && item.text && item.text.length > 400) {
+        if (getters.settingLongResponsesInModal && item && item.text && item.text.length > 400) {
           hasLongResponse = true;
         }
         return hasLongResponse;
