@@ -541,6 +541,42 @@ function setupStore(callback) {
       knowledgeData(state) {
         return state.knowledgeData;
       },
+      settingLongResponsesInModal(state) {
+        return state.activeSolution.longResponsesInModal;
+      },
+      lastItemAnswerTextCropped(_state, getters) {
+        let answer = getters.lastReplyItem.text;
+        if (getters.settingLongResponsesInModal && getters.lastItemHasLongResponse) {
+          answer = answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
+        }
+        return answer;
+      },
+      itemAnswerTextCropped: (state, getters) => item => {
+        let answer = item.text;
+        console.log(`1:${getters.settingLongResponsesInModal} 2:${getters.itemHasLongResponse(item)}`);
+        if (getters.settingLongResponsesInModal && getters.itemHasLongResponse(item)) {
+          console.log(answer);
+          answer = answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
+        }
+        return answer;
+      },
+      lastItemHasLongResponse(_state, getters) {
+        let hasLongResponse = false;
+        if (getters.settingLongResponsesInModal) {
+          let item = getters.lastReplyItem;
+          if (item && item.text && item.text.length > 400) {
+            hasLongResponse = true;
+          }
+        }
+        return hasLongResponse;
+      },
+      itemHasLongResponse: (_state, _getters) => item => {
+        let hasLongResponse = false;
+        if (item && item.text && item.text.length > 400) {
+          hasLongResponse = true;
+        }
+        return hasLongResponse;
+      },
       showCustomModal(state) {
         return state.modals.showCustomModal;
       },

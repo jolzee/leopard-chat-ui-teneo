@@ -291,7 +291,10 @@ export default {
   },
   watch: {
     modalItem() {
-      if (this.modalItem && this.$store.getters.showModal) {
+      if (
+        (this.modalItem && this.$store.getters.showModal) ||
+        this.itemHasLongResponse(this.modalItem)
+      ) {
         this.resetModal();
         let item = this.modalItem;
         let transcript = this.liveChatTranscript(item);
@@ -308,7 +311,6 @@ export default {
           );
           this.$store.commit("HIDE_CHAT_MODAL"); // stops the transcript from being sent back constantly during a live chat
         }
-
         // send URL's to the I-FRAME
         let outputUrl = this.outputLink(item);
         if (outputUrl !== "") {
@@ -442,6 +444,16 @@ export default {
             }
           });
         }
+        if (this.itemHasLongResponse(this.modalItem)) {
+          this.title = decodeURIComponent(
+            this.modalItem.teneoResponse.lastinput
+          );
+          this.bodyText = this.modalItem.text.replace(
+            /(?:\r\n|\r|\n)/g,
+            "<br/><br/>"
+          );
+          displayModal = true;
+        }
         // look for anchors with callbacks
         if (this.bodyText) {
           this.bodyText = this.bodyText.replace(
@@ -475,7 +487,8 @@ export default {
       "outputLink",
       "userInput",
       "vimeoIdFromUrl",
-      "youTubeIdFromUrl"
+      "youTubeIdFromUrl",
+      "itemHasLongResponse"
     ]),
     showPusher() {
       if (this.displayPusherMessage) {
@@ -621,7 +634,6 @@ export default {
 }
 .cardText {
   padding-top: 5px;
-  padding-left: 30px;
   text-align: left;
 }
 

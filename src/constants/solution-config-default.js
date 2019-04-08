@@ -22,6 +22,7 @@ okkay | ok
   iframeUrl: "",
   knowledgeData: ["What's your name?", "Who created you?"],
   locale: "en",
+  longResponsesInModal: "false",
   name: "",
   responseIcon: "fa-robot",
   sendContextParams: "login",

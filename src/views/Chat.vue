@@ -322,7 +322,7 @@
                       <v-flex
                         xs12
                         class="text-xs-right"
-                        v-if="item.hasExtraData && hasModal(item) && notLiveChatTranscript(item)"
+                        v-if="(item.hasExtraData && hasModal(item) && notLiveChatTranscript(item)) || itemHasLongResponse(item)"
                       >
                         <v-btn
                           class="mr-0"
@@ -736,7 +736,12 @@ export default {
       "userInputReadyForSending",
       "responseIcon",
       "userIcon",
-      "listening"
+      "listening",
+      "settingLongResponsesInModal",
+      "lastItemAnswerTextCropped",
+      "itemAnswerTextCropped",
+      "lastItemHasLongResponse",
+      "itemHasLongResponse"
     ]),
     userInput: {
       get: function() {
@@ -809,6 +814,9 @@ export default {
       let itemText = item.text;
       if (itemText.includes("||")) {
         return itemText.split("||")[0];
+      } else {
+        itemText = this.itemAnswerTextCropped(item);
+        console.log(itemText);
       }
       return itemText;
     },
@@ -946,6 +954,9 @@ export default {
         .then(this.$refs.userInput.focus());
     },
     modalButtonText(item) {
+      if (this.itemHasLongResponse(item)) {
+        return this.$t("button.more");
+      }
       let extensions = this.itemExtensions(item);
       let countOfNonInlines = 0;
       let buttonLabel = this.$t("button.more");
