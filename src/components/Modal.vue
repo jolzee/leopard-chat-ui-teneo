@@ -177,6 +177,7 @@
                   :items="tableRows"
                   :search="search"
                   :footer="tableFooter"
+                  :rowsPerPage="tableRowsPerPage"
                 ></Table>
 
               </div>
@@ -244,6 +245,7 @@ export default {
       tableRows: [],
       tableTitle: "",
       tableEnableSearch: false,
+      tableRowsPerPage: [5, 10, 25],
       title: "",
       transactionHeaders: [
         {
@@ -353,6 +355,7 @@ export default {
               this.tableTitle = extension.parameters.title;
               this.tableRows = extension.parameters.rows;
               this.tableHeaders = extension.parameters.headers;
+              this.tableRowsPerPage = extension.parameters.rowsPerPage;
             }
 
             // check for displayTranactionTable - myBank
@@ -608,6 +611,7 @@ export default {
       this.tableRows = [];
       this.tableTitle = "";
       this.tableEnableSearch = false;
+      this.tableRowsPerPage = [5, 10, 25];
       this.title = "";
       this.transactionItems = [];
       this.videoType = "";

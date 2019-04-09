@@ -1,7 +1,7 @@
+import java.text.DateFormat
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
-import java.text.DateFormat
 
 class ExtensionHelper {
 
@@ -15,11 +15,11 @@ class ExtensionHelper {
         return headerParams
     }
 
-    static String displayTable(def channel = "webview", def title, def footer = "", def enableSearch = true, def headers, def rows) {
+    static String displayTable(def channel = "webview", def title, def footer = "", def enableSearch = true, def headers, def rows, def rowsPerPage = [5, 10, 25]) {
         if (channel == 'webview') {
             def attachment = [:]
             def params = [:]
-            params = ['title': title, 'enableSearch': enableSearch, 'headers': headers, 'rows': rows]
+            params = ['title': title, 'enableSearch': enableSearch, 'headers': headers, 'rows': rows, 'rowsPerPage': rowsPerPage]
 
             if (footer != "") {
                 params.put("footer", footer)
@@ -33,7 +33,7 @@ class ExtensionHelper {
 
     }
 
-	public static String displayPermanentClickableList (def content, def channel, def containsLongOptions = false) {
+    static String displayPermanentClickableList(def content, def channel, def containsLongOptions = false) {
         def result = ""
 
         if (channel == 'webview' || channel == 'tryout') {
@@ -41,8 +41,8 @@ class ExtensionHelper {
             def attachment = [:]
             def params = [:]
 
-            params = ['content':content]
-            attachment = ['name':'displayCollection', 'hasLongOptions': containsLongOptions, 'permanent': true, 'parameters':params]
+            params = ['content': content]
+            attachment = ['name': 'displayCollection', 'hasLongOptions': containsLongOptions, 'permanent': true, 'parameters': params]
             result = new groovy.json.JsonBuilder(attachment).toString()
         }
 
@@ -157,7 +157,7 @@ class ExtensionHelper {
             attachment = ['name': 'displayModal', 'items': items]
             result = new groovy.json.JsonBuilder(attachment).toString()
         } catch (PatternSyntaxException ex) {
-            ex.printStackTrace();
+            ex.printStackTrace()
         }
         return result
     }
