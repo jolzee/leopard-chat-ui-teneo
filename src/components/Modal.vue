@@ -151,6 +151,7 @@
                   <!-- show a search input box for the table -->
                   <v-flex
                     xs4
+                    v-if="tableEnableSearch"
                     class="mr-2"
                   >
                     <v-text-field
@@ -242,6 +243,7 @@ export default {
       tableHeaders: [],
       tableRows: [],
       tableTitle: "",
+      tableEnableSearch: false,
       title: "",
       transactionHeaders: [
         {
@@ -347,6 +349,7 @@ export default {
             // check for displayTranactionTable - myBank
             if (extension.name === "displayTable") {
               this.title = this.getFirstChunk(item.text);
+              this.tableEnableSearch = extension.parameters.enableSearch;
               this.tableTitle = extension.parameters.title;
               this.tableRows = extension.parameters.rows;
               this.tableHeaders = extension.parameters.headers;
@@ -604,6 +607,7 @@ export default {
       this.tableHeaders = [];
       this.tableRows = [];
       this.tableTitle = "";
+      this.tableEnableSearch = false;
       this.title = "";
       this.transactionItems = [];
       this.videoType = "";
