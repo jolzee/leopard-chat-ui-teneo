@@ -46,7 +46,7 @@ export default {
       let rowsPerPageArray = [
         { text: "$vuetify.dataIterator.rowsPerPageAll", value: -1 }
       ];
-      if (this.rowsPerPage && this.rowsPerPage.length > 0) {
+      if (this.rowsPerPage && this.rowsPerPage.length >= 0) {
         let reversedArray = this.rowsPerPage.slice(0);
         reversedArray = reversedArray.reverse();
         reversedArray.forEach(perPage => {
