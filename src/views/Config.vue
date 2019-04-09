@@ -1397,6 +1397,11 @@ export default {
         );
       }
     },
+    setSolutionAsSelected(solutionName) {
+      this.selectedSolution = this.config.solutions.find(
+        solution => solution.name === solutionName
+      );
+    },
     randId() {
       return Math.random()
         .toString(36)
@@ -1502,6 +1507,7 @@ export default {
           // ok uploading a full config
           this.config = newConfig;
           this.displaySnackBar("Imported a new full configuration", 3000);
+          this.setActiveSolutionAsSelected();
         } else if (newConfig && "name" in newConfig) {
           // uploading a single config - add it to the current solution config
           let existingSolution = this.config.solutions.findIndex(
@@ -1515,9 +1521,10 @@ export default {
             newConfig.deepLink = newConfig.deepLink + this.randId();
             this.config.solutions.push(newConfig);
           }
+          this.setSolutionAsSelected(newConfig.name);
           this.displaySnackBar("Imported as " + newConfig.name, 3000);
         }
-        this.setActiveSolutionAsSelected();
+
         this.closeUploadDialog();
         this.saveToLocalStorage();
       } else {
