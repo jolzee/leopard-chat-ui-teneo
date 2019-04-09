@@ -816,7 +816,6 @@ export default {
         return itemText.split("||")[0];
       } else {
         itemText = this.itemAnswerTextCropped(item);
-        console.log(itemText);
       }
       return itemText;
     },

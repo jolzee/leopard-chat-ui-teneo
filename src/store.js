@@ -555,7 +555,6 @@ function setupStore(callback) {
       },
       itemAnswerTextCropped: (_state, getters) => item => {
         let answer = item.text;
-        console.log(`1:${getters.settingLongResponsesInModal} 2:${getters.itemHasLongResponse(item)}`);
         if (getters.settingLongResponsesInModal && getters.itemHasLongResponse(item)) {
           answer = answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
         }
