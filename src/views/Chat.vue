@@ -624,27 +624,28 @@
       <v-dialog
         ref="dialogTime"
         v-model="showTime"
-        :return-value.sync="date"
-        lazy
         width="290px"
       >
 
         <v-time-picker
-          v-model="time"
+          v-model="userInput"
           format="24hr"
-        >
-          <v-spacer></v-spacer>
-          <v-btn
-            flat
-            color="primary"
-            @click="showTime = false"
-          >Cancel</v-btn>
-          <v-btn
-            flat
-            color="primary"
-            @click="sendUserInput"
-          >OK</v-btn>
-        </v-time-picker>
+        ></v-time-picker>
+        <v-card>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn
+              color="error"
+              @click="showTime = false"
+            >Cancel</v-btn>
+            <v-btn
+              color="success"
+              @click="sendUserInput"
+            >OK</v-btn>
+          </v-card-actions>
+        </v-card>
+
       </v-dialog>
     </v-flex>
 
@@ -696,7 +697,6 @@ export default {
       showPassword: false,
       showTime: false,
       date: "",
-      time: "",
       rules: {
         required: value => !!value || "Required.",
         counter: value => value.length <= 20 || "Max 20 characters",
@@ -747,9 +747,6 @@ export default {
       get: function() {
         if (this.date !== "") {
           this.updateInputBox(this.$dayjs(this.date).format("D MMMM YYYY"));
-        }
-        if (this.time !== "") {
-          this.updateInputBox(this.time);
         }
         if (this.userInputReadyForSending) {
           this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals
@@ -932,7 +929,6 @@ export default {
           this.showDate = false;
           this.showTime = false;
           this.date = "";
-          this.time = "";
           this.$store
             .dispatch("sendUserInput")
             .then(this.$refs.userInput.focus())
