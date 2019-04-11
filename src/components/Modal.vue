@@ -485,7 +485,6 @@ export default {
       "isAudioFile",
       "isLiveChat",
       "isVideoFile",
-      "itemActions",
       "liveChatTranscript",
       "modalItem",
       "modalSize",
