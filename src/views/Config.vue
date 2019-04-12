@@ -1226,7 +1226,7 @@ export default {
       showProgressUpload: false,
       activeColor: "",
       trueFalseOptions: ["true", "false"],
-      locales: ["en", "fr", "es", "nl", "de", "ru"],
+      locales: ["en", "fr", "es", "nl", "de", "ru", "sv", "no", "da"],
       displayAddEditDialog: false,
       currentModeEdit: "",
       dialogTitle: "",
