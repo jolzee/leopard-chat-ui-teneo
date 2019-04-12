@@ -1477,7 +1477,7 @@ export default {
       if (duplicateSolutions.length > 0) {
         clonedSolution.name = clonedSolution.name + " [" + this.randId() + "]";
       }
-      clonedSolution.deepLink = clonedSolution.deepLink + this.randId();
+      clonedSolution.deepLink = clonedSolution.deepLink + "-" + this.randId();
       this.config.solutions.push(clonedSolution);
       this.selectedSolution = this.cloneObject(clonedSolution);
       this.displaySnackBar(
