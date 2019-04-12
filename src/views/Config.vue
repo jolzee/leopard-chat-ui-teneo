@@ -1190,22 +1190,11 @@
         </v-container>
       </v-card>
     </v-dialog>
-    <textarea
-      id="copy-solution"
-      readonly
-      style="position:absolute;left:-9999px"
-      v-text="getCurrentSelectedSolutionConfig"
-    ></textarea>
-    <textarea
-      id="copy-whole-config"
-      readonly
-      style="position:absolute;left:-9999px"
-      v-text="getFullSolutionConfig"
-    ></textarea>
   </v-layout>
 </template>
 
 <script>
+import copy from "copy-to-clipboard";
 import { Compact } from "vue-color";
 import urlRegex from "url-regex";
 import { COLOR_NAMES } from "../constants/color-names.js";
@@ -1374,16 +1363,12 @@ export default {
       }
     },
     copyWholeConfigClipboard() {
-      let el = document.getElementById("copy-whole-config");
-      el.select();
-      document.execCommand("copy");
+      copy(JSON.stringify(this.config, null, 2));
       this.displaySnackBar("📋 Copied to clipboard");
       this.snackbarClipboard = true;
     },
     copySolutionToClipboard() {
-      let el = document.getElementById("copy-solution");
-      el.select();
-      document.execCommand("copy");
+      copy(JSON.stringify(this.selectedSolution, null, 2));
       this.displaySnackBar("📋 Copied to clipboard");
     },
     setActiveSolutionAsSelected() {
