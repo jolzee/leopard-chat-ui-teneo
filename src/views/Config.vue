@@ -681,6 +681,31 @@
                           sm4
                           class="hidden-xs-only"
                         >
+                          <v-subheader>Show Pulsing Chat Button</v-subheader>
+                        </v-flex>
+                        <v-flex
+                          xs12
+                          sm8
+                        >
+                          <v-select
+                            :items="trueFalseOptions"
+                            validate-on-blur
+                            color="light-blue darken-1"
+                            outline
+                            hint="Show Pulse Button"
+                            label="Show Pulse Button"
+                            :menu-props="{contentClass:'select-options'}"
+                            :tabindex="getTabIndex"
+                            v-model="solution.pulseButton"
+                            append-icon="fa-sun"
+                          ></v-select>
+                        </v-flex>
+                        <v-divider></v-divider>
+                        <v-flex
+                          xs12
+                          sm4
+                          class="hidden-xs-only"
+                        >
                           <v-subheader>Show Long Teneo Responses in Modal</v-subheader>
                         </v-flex>
                         <v-flex

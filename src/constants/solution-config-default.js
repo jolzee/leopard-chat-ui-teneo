@@ -19,6 +19,7 @@ okkay | ok
   deepLink: "",
   enableLiveChat: "false",
   float: "false",
+  pulseButton: "true",
   iframeUrl: "",
   knowledgeData: ["What's your name?", "Who created you?"],
   locale: "en",

@@ -546,6 +546,9 @@ function setupStore(callback) {
           ? state.activeSolution.longResponsesInModal === "true"
           : false;
       },
+      pulseButton(state) {
+        return state.activeSolution.pulseButton !== undefined ? state.activeSolution.pulseButton === "true" : false;
+      },
       lastItemAnswerTextCropped(_state, getters) {
         let answer = getters.lastReplyItem.text;
         if (getters.settingLongResponsesInModal && getters.lastItemHasLongResponse) {
