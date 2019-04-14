@@ -418,7 +418,7 @@ export default {
   transition: opacity 0.3s, transform 0.3s;
   transition: opacity 0.3s, transform 0.3s, -webkit-transform 0.3s;
   -webkit-animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
-  animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+  animation: pulse-animation 4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
   z-index: -1;
 }
 
@@ -428,11 +428,7 @@ export default {
     -webkit-transform: scale(1);
     transform: scale(1);
   }
-  50% {
-    opacity: 0;
-    -webkit-transform: scale(1.5);
-    transform: scale(1.5);
-  }
+  10%,
   100% {
     opacity: 0;
     -webkit-transform: scale(1.5);
@@ -446,11 +442,7 @@ export default {
     -webkit-transform: scale(1);
     transform: scale(1);
   }
-  50% {
-    opacity: 0;
-    -webkit-transform: scale(1.5);
-    transform: scale(1.5);
-  }
+  10%,
   100% {
     opacity: 0;
     -webkit-transform: scale(1.5);
