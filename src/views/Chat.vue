@@ -829,12 +829,14 @@ export default {
       // Check to make sure this is from our v-html because
       // we don't want to handle clicks from other things in
       // the Vue
-      if (!anchor.classList.contains("sendInput")) return;
-
-      event.stopPropagation();
-      event.preventDefault();
-      this.updateInputBox(anchor.innerText);
-      this.sendUserInput();
+      if (!anchor.classList.contains("sendInput")) {
+        return;
+      } else {
+        event.stopPropagation();
+        event.preventDefault();
+        this.updateInputBox(anchor.innerText);
+        this.sendUserInput();
+      }
     },
     updateInputBox(userInput) {
       this.$store.commit("SET_USER_INPUT", userInput);
