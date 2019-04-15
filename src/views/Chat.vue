@@ -505,6 +505,7 @@
                 <v-divider></v-divider>
 
                 <v-text-field
+                  id="teneo-input-field"
                   :disabled="progressBar"
                   :append-icon="showAudioInput ? 'fa-angle-double-right' : ''"
                   @click:append="sendUserInput"
@@ -788,7 +789,13 @@ export default {
         null,
         this.$refs.chatContainer
       );
-      this.$refs.userInput.focus();
+      const element = this.$el.querySelector("#teneo-input-field");
+      if (element) {
+        this.$nextTick(() => {
+          element.addEventListener("focusin", e => e.stopPropagation());
+          element.focus();
+        });
+      }
     } catch (e) {
       console.log(e);
       // do nothing
