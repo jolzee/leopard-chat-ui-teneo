@@ -15,8 +15,9 @@
         :key='
     key'
         class="text-xs-left"
+        v-html="props.item[header.value]"
       >
-        {{ props.item[header.value] }}
+
       </td>
     </template>
     <v-alert
