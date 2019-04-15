@@ -350,9 +350,16 @@ export default {
 
             // check for displayTranactionTable - myBank
             if (extension.name === "displayTable") {
-              this.title = this.getFirstChunk(item.text);
+              if (
+                "overrideTitle" in extension.parameters &&
+                extension.parameters.overrideTitle
+              ) {
+                this.title = extension.parameters.title;
+              } else {
+                this.title = this.getFirstChunk(item.text);
+                this.tableTitle = extension.parameters.title;
+              }
               this.tableEnableSearch = extension.parameters.enableSearch;
-              this.tableTitle = extension.parameters.title;
               this.tableRows = extension.parameters.rows;
               this.tableHeaders = extension.parameters.headers;
               this.tableRowsPerPage = extension.parameters.rowsPerPage;
