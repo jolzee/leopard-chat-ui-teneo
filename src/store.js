@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-
 import toHex from "colornames"; // can convert html color names to hex equivalent
 import parseBool from "parseboolean";
 import request from "simple-json-request";
@@ -17,6 +16,13 @@ import { TRANSLATIONS } from "./constants/translations"; // add UI translations 
 import { initializeASR, initializeTTS } from "./utils/asr-tts";
 import { LiveChat } from "./utils/live-chat";
 import { getParameterByName, mergeAsrCorrections } from "./utils/utils";
+import PromisedLocation from "promised-location";
+const LOCATION_OPTIONS = {
+  enableHighAccuracy: true,
+  timeout: 10000,
+  maximumAge: 60000
+};
+var locator = new PromisedLocation(LOCATION_OPTIONS);
 
 // Vue.use(VueLocalStorage);
 Vue.use(VueJsonp, 20000);
@@ -399,12 +405,17 @@ function setupStore(callback) {
               .forEach(function(key) {
                 ordered[key] = item.teneoResponse.extraData[key];
               });
-            for (var key in ordered) {
-              if (key.startsWith("extensions")) {
-                var value = decodeURIComponent(ordered[key]);
-                // console.log(`Key: ${key} Value: ${value}`);
-                actions.push(JSON.parse(value));
+            try {
+              for (var key in ordered) {
+                if (key.startsWith("extensions")) {
+                  var value = decodeURIComponent(ordered[key]);
+                  // console.log(`Key: ${key} Value: ${value}`);
+                  actions.push(JSON.parse(value));
+                }
               }
+            } catch (e) {
+              console.error(e);
+              // store.commit("SHOW_MESSAGE_IN_CHAT", "Problems with extension format: " + e.message + ".");
             }
           }
         }
@@ -550,7 +561,11 @@ function setupStore(callback) {
         return state.activeSolution.pulseButton !== undefined ? state.activeSolution.pulseButton === "true" : false;
       },
       lastItemAnswerTextCropped(_state, getters) {
-        let answer = getters.lastReplyItem.text;
+        let answer = "";
+        if (getters.lastReplyItem) {
+          answer = getters.lastReplyItem.text;
+        }
+
         if (getters.settingLongResponsesInModal && getters.lastItemHasLongResponse) {
           answer = answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
         }
@@ -785,7 +800,9 @@ function setupStore(callback) {
         };
 
         // add the user input - display it on the chat dialog
-        state.conversation.dialog.push(newUserInput);
+        if (newUserInput.text) {
+          state.conversation.dialog.push(newUserInput);
+        }
 
         let newReply = {
           type: "reply",
@@ -813,7 +830,9 @@ function setupStore(callback) {
           state.conversation.dialogHistory = state.conversation.dialog;
         } else {
           // add current user input and teneo response to the dialog history
-          state.conversation.dialogHistory.push(newUserInput);
+          if (newUserInput.text) {
+            state.conversation.dialogHistory.push(newUserInput);
+          }
           state.conversation.dialogHistory.push(newReply);
         }
         // save the dislaog history in session storage
@@ -970,22 +989,115 @@ function setupStore(callback) {
         });
       },
       sendUserInput(context, params = "") {
+        let currentUserInput = stripHtml(context.getters.userInput);
+        context.commit("CLEAR_USER_INPUT");
         // send user input to Teneo when a live chat has not begun
         if (context.getters.tts && context.getters.tts.isSpeaking()) {
           // tts is speaking something. Let's shut it up
           context.getters.tts.shutUp();
         }
         if (!context.getters.isLiveChat) {
+          // normal Teneo request needs to be made
           Vue.jsonp(context.getters.teneoUrl + (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params), {
-            userinput: stripHtml(context.getters.userInput)
+            userinput: currentUserInput
           })
             .then(json => {
               if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
                 console.log("Session is stale.. keep chat open and continue with the new session");
               }
+
+              // look for request for location information in the response
+              if (
+                json.responseData.extraData.hasOwnProperty("inputType") &&
+                json.responseData.extraData.inputType.startsWith("location")
+              ) {
+                locator
+                  .then(function(position) {
+                    // we now have the user's lat and long
+                    console.log(`${position.coords.latitude}, ${position.coords.longitude}`);
+                    if (json.responseData.extraData.inputType === "locationLatLong") {
+                      // send the lat and long
+                      context
+                        .dispatch(
+                          "sendUserInput",
+                          "&locationLatLong=" + encodeURI(position.coords.latitude + "," + position.coords.longitude)
+                        )
+                        .then(
+                          console.log(
+                            `Sent user's lat and long: ${position.coords.latitude}, ${position.coords.longitude}`
+                          )
+                        )
+                        .catch(err => {
+                          console.err("Unable to send lat and long info", err.message);
+                          context.commit(
+                            "SHOW_MESSAGE_IN_CHAT",
+                            "We were unable to obtain your location information.: " + err.message
+                          );
+                        });
+                    } else if (process.env.VUE_APP_LOCATION_IQ_KEY) {
+                      // good we have a licence key we can send all location information back
+                      let locationRequestType = json.responseData.extraData.inputType;
+                      request
+                        .request({
+                          method: "GET",
+                          url: `https://us1.locationiq.com/v1/reverse.php?key=${
+                            process.env.VUE_APP_LOCATION_IQ_KEY
+                          }&lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`
+                        })
+                        .then(data => {
+                          console.log(`${data.address.city}, ${data.address.state} ${data.address.postcode}`);
+
+                          let queryParam = `&${locationRequestType}=`;
+                          if (locationRequestType === "locationJson") {
+                            queryParam += encodeURI(JSON.stringify(data));
+                          } else if (locationRequestType === "locationZip") {
+                            queryParam += encodeURI(data.address.postcode);
+                          } else if (locationRequestType === "locationCityStateZip") {
+                            queryParam += encodeURI(
+                              `${data.address.city}, ${data.address.state} ${data.address.postcode}`
+                            );
+                          }
+
+                          context
+                            .dispatch("sendUserInput", queryParam)
+                            .then(
+                              console.log(
+                                `Sent user's location information: ${data.address.city}, ${data.address.state} ${
+                                  data.address.postcode
+                                }`
+                              )
+                            )
+                            .catch(err => {
+                              console.err("Unable to send user location", err.message);
+                              context.commit(
+                                "SHOW_MESSAGE_IN_CHAT",
+                                "We were unable to obtain your location information.: " + err.message
+                              );
+                            });
+                        })
+                        .catch(error => {
+                          console.log(error.message);
+                        });
+                    } else if (
+                      !process.env.VUE_APP_LOCATION_IQ_KEY &&
+                      json.responseData.extraData.inputType ===
+                        ("locationCityStateZip" || "locationZip" || "locationJson")
+                    ) {
+                      // no good. Asking for location information that requires a licence  key
+                      context.commit(
+                        "SHOW_MESSAGE_IN_CHAT",
+                        "A licence key for https://locationiq.com/ is needed to obtain the requested location information. Check the documentation."
+                      );
+                    }
+                  })
+                  .catch(function(err) {
+                    console.error("Position Error ", err.toString());
+                  });
+              }
+
               // console.log(decodeURIComponent(json.responseData.answer))
               const response = {
-                userInput: stripHtml(context.getters.userInput),
+                userInput: currentUserInput,
                 teneoAnswer: decodeURIComponent(json.responseData.answer).replace(
                   /onclick="[^"]+"/g,
                   'class="sendInput"'
@@ -1073,7 +1185,7 @@ function setupStore(callback) {
           // send the input to live chat agent and save user input to history
           let newUserInput = {
             type: "userInput",
-            text: context.getters.userInput,
+            text: currentUserInput,
             bodyText: "",
             hasExtraData: false
           };
@@ -1089,7 +1201,7 @@ function setupStore(callback) {
             context.commit("PUSH_USER_INPUT_TO_DIALOG_HISTORY", newUserInput);
           }
           sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(context.getters.dialogHistory));
-          liveChat.sendMessage(context.getters.userInput);
+          liveChat.sendMessage(currentUserInput);
           context.commit("HIDE_PROGRESS_BAR");
           context.commit("CLEAR_USER_INPUT");
         }

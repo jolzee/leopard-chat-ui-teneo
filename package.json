@@ -25,6 +25,7 @@
     "npm": "^6.9.0",
     "parseboolean": "^1.0.0",
     "prismjs": "^1.16.0",
+    "promised-location": "^1.0.1",
     "pusher": "^2.2.0",
     "replace-string": "^2.0.0",
     "request": "^2.88.0",
