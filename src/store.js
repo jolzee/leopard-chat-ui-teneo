@@ -965,11 +965,13 @@ function setupStore(callback) {
     },
     actions: {
       setUserInformation({ commit, getters }) {
-        getters.firebase.auth().onAuthStateChanged(function(user) {
-          if (user) {
-            commit("USER_INFO", { user: user }); // user is still signed in
-          }
-        });
+        if (getters.firebase) {
+          getters.firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              commit("USER_INFO", { user: user }); // user is still signed in
+            }
+          });
+        }
       },
       logout({ commit, getters }) {
         getters.firebase
