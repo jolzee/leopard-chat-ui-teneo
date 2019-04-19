@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { Ripple } from "vuetify/lib/directives";
 import gravatar from "gravatar";
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -162,7 +163,10 @@ function setupStore(callback) {
 
     Vue.use(Vuetify, {
       iconfont: ["md", "fa", "mdi"],
-      theme: THEME
+      theme: THEME,
+      directives: {
+        Ripple
+      }
     });
     ENABLE_LIVE_CHAT = parseBool(activeSolution.enableLiveChat);
 
@@ -250,7 +254,8 @@ function setupStore(callback) {
         overlayChat: FLOAT,
         responseIcon: RESPONSE_ICON,
         theme: THEME,
-        userIcon: USER_ICON
+        userIcon: USER_ICON,
+        showUploadButton: false
       },
       userInput: {
         userInput: "",
@@ -721,9 +726,18 @@ function setupStore(callback) {
       },
       showChatIcons(state) {
         return state.activeSolution.showChatIcons !== undefined ? state.activeSolution.showChatIcons === "true" : true;
+      },
+      showUploadButton(state) {
+        return state.ui.showUploadButton;
       }
     },
     mutations: {
+      SHOW_UPLOAD_BUTTON(state) {
+        state.ui.showUploadButton = true;
+      },
+      HIDE_UPLOAD_BUTTON(state) {
+        state.ui.showUploadButton = false;
+      },
       HIDE_CUSTOM_MODAL(state) {
         state.modals.showCustomModal = false;
       },
@@ -1170,6 +1184,13 @@ function setupStore(callback) {
             .then(json => {
               if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
                 console.log("Session is stale.. keep chat open and continue with the new session");
+              }
+
+              if (
+                json.responseData.extraData.hasOwnProperty("inputType") &&
+                json.responseData.extraData.inputType === "upload"
+              ) {
+                context.commit("SHOW_UPLOAD_BUTTON");
               }
 
               // look for request for location information in the response

@@ -118,8 +118,7 @@
                       :value="true"
                       color="info"
                       icon="fa-broadcast-tower"
-                    >
-                      {{item.text}}
+                    >{{item.text}}
                     </v-alert>
                   </div>
                   <!-- Live Chat Status -->
@@ -484,6 +483,7 @@
               size="10px"
             ></ball-pulse-sync-loader>
           </div>
+
           <span
             id="scroll-end"
             ref="pageBottom"
@@ -516,10 +516,9 @@
                 xs12
                 pl-3
               >
-                <v-divider></v-divider>
-
                 <v-text-field
                   id="teneo-input-field"
+                  v-show="!showUploadButton && !showUploadProgress"
                   :disabled="progressBar"
                   :append-icon="showAudioInput ? 'fa-angle-double-right' : ''"
                   @click:append="sendUserInput"
@@ -544,41 +543,68 @@
                   :label="inputHelpText ? inputHelpText : askingForPassword ? $t('input.box.label.password') : askingForEmail ? $t('input.box.label.email') : $t('input.box.label')"
                   single-line
                 ></v-text-field>
-              </v-flex>
-              <v-flex>
-                <v-btn
-                  fab
-                  :disabled="progressBar"
-                  :loading="progressBar"
-                  v-long-press="swapInputButton"
-                  v-if="!showAudioInput"
-                  small
-                  color="primary"
-                  class="white--text elevation-2"
-                  @click.native="sendUserInput"
-                >
-                  <v-icon>fa-angle-double-right</v-icon>
-                </v-btn>
                 <span
                   v-shortkey="['esc']"
                   @shortkey="stopAudioCapture"
                 ></span>
-                <v-btn
-                  fab
-                  :disabled="progressBar"
-                  :loading="progressBar"
-                  v-long-press="swapInputButton"
-                  small
-                  v-if="showAudioInput"
-                  v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}"
-                  @shortkey.native="captureAudio"
-                  :color="audioButtonColor"
-                  :class="audioButtonClasses"
-                  class="elevation-2"
-                  @click.native="captureAudio"
+
+              </v-flex>
+              <v-flex>
+                <upload-btn
+                  icon
+                  v-if="showUploadButton"
+                  :fileChangedCallback="fileChanged"
+                  large
+                  hover
+                  class="mx-0 px-0"
                 >
-                  <v-icon medium>fa-microphone-alt</v-icon>
-                </v-btn>
+                  <template slot="icon">
+                    <v-icon>mdi-paperclip</v-icon>
+                  </template>
+                </upload-btn>
+                <v-progress-circular
+                  v-if="showUploadProgress"
+                  :rotate="360"
+                  :size="40"
+                  :width="10"
+                  :value="progressValue"
+                  color="primary"
+                  class="mx-2 mt-1"
+                >
+                </v-progress-circular>
+                <template v-if="!showUploadButton && !showUploadProgress">
+                  <v-btn
+                    fab
+                    :disabled="progressBar"
+                    :loading="progressBar"
+                    v-long-press="swapInputButton"
+                    v-if="!showAudioInput"
+                    small
+                    color="primary"
+                    class="white--text elevation-2"
+                    @click.native="sendUserInput"
+                  >
+                    <v-icon>fa-angle-double-right</v-icon>
+                  </v-btn>
+
+                  <v-btn
+                    fab
+                    :disabled="progressBar"
+                    :loading="progressBar"
+                    v-long-press="swapInputButton"
+                    small
+                    v-if="showAudioInput"
+                    v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}"
+                    @shortkey.native="captureAudio"
+                    :color="audioButtonColor"
+                    :class="audioButtonClasses"
+                    class="elevation-2"
+                    @click.native="captureAudio"
+                  >
+                    <v-icon medium>fa-microphone-alt</v-icon>
+                  </v-btn>
+                </template>
+
                 <!-- text & audio input area -->
 
                 <v-snackbar
@@ -669,6 +695,7 @@
 </template>
 
 <script>
+import UploadButton from "vuetify-upload-button";
 import { mapGetters } from "vuex";
 import Audio from "../components/Audio";
 import Carousel from "../components/Carousel";
@@ -699,10 +726,12 @@ export default {
     ImageAnimation,
     Video,
     Vimeo,
-    YouTube
+    YouTube,
+    "upload-btn": UploadButton
   },
   data() {
     return {
+      interval: {},
       showAudioInput: false,
       audioButtonClasses: "white--text",
       audioButtonColor: "success",
@@ -711,6 +740,8 @@ export default {
       showDate: false,
       showPassword: false,
       showTime: false,
+      showUploadProgress: false,
+      progressValue: 0,
       date: "",
       rules: {
         required: value => !!value || "Required.",
@@ -745,6 +776,7 @@ export default {
       "progressBar",
       "showChatIcons",
       "showChatLoading",
+      "showUploadButton",
       "showLiveChatProcessing",
       "vimeoId",
       "audioInfo",
@@ -822,7 +854,27 @@ export default {
     this.$el.addEventListener("click", this.onHtmlClick);
     this.$refs.userInput.focus();
   },
+  beforeDestroy() {},
   methods: {
+    fileChanged(file) {
+      this.$store.commit("HIDE_UPLOAD_BUTTON");
+      this.showUploadProgress = true;
+      // handle file here. File will be an object.
+      // If multiple prop is true, it will return an object array of files.
+      this.interval = setInterval(() => {
+        if (this.progressValue === 100) {
+          clearInterval(this.interval);
+          this.showUploadProgress = false;
+          this.$store.commit(
+            "SHOW_MESSAGE_IN_CHAT",
+            `Thanks we have successfully received your file: ${file.name}`
+          );
+          return (this.progressValue = 0);
+        }
+        this.progressValue += 10;
+      }, 500);
+      console.log(file);
+    },
     responseHasChunks(item) {
       return item.type === "reply" && item.text.includes("||");
     },
