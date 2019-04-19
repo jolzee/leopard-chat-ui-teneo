@@ -873,7 +873,7 @@ export default {
         }
         this.progressValue += 10;
       }, 500);
-      console.log(file);
+      // console.log(file);
     },
     responseHasChunks(item) {
       return item.type === "reply" && item.text.includes("||");
