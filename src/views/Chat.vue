@@ -439,7 +439,21 @@
                       class="text-xs-right"
                       v-if="showChatIcons"
                     >
+                      <v-avatar
+                        v-if="authenticated && userProfileImage"
+                        v-long-press="swapInputButton"
+                        class="teneo-userinput-icon elevation-2"
+                        fab
+                        small
+                        @click="updateInputBox(item.text)"
+                      >
+                        <img
+                          :src="userProfileImage"
+                          :alt="displayName"
+                        >
+                      </v-avatar>
                       <v-btn
+                        v-else
                         v-long-press="swapInputButton"
                         class="teneo-userinput-icon elevation-2"
                         fab
@@ -712,6 +726,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "authenticated",
       "askingForPassword",
       "askingForEmail",
       "carouselImageArray",
@@ -737,6 +752,8 @@ export default {
       "userInputReadyForSending",
       "responseIcon",
       "userIcon",
+      "userProfileImage",
+      "displayName",
       "listening",
       "settingLongResponsesInModal",
       "lastItemAnswerTextCropped",

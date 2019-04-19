@@ -82,9 +82,10 @@
             <v-list-tile
               ripple
               value="true"
-              v-for="(menuItem, i) in menuItems"
+              v-for="(menuItem, i) in activeMenuItems"
               :key="i"
               :to="menuItem.route"
+              @click="lookForLogout(menuItem)"
             >
               <v-list-tile-action>
                 <v-icon
@@ -192,6 +193,24 @@ export default {
           icon: "tune",
           titleKey: "menu.config",
           route: "config"
+        },
+        {
+          icon: "mdi-account-plus",
+          titleKey: "menu.register",
+          route: "register",
+          when: "notAuthenticated"
+        },
+        {
+          icon: "mdi-login-variant",
+          titleKey: "menu.login",
+          route: "login",
+          when: "notAuthenticated"
+        },
+        {
+          icon: "mdi-logout-variant",
+          titleKey: "menu.logout",
+          route: "/",
+          when: "authenticated"
         }
       ],
       miniVariant: true,
@@ -203,6 +222,7 @@ export default {
     if (window.innerWidth <= 480) {
       this.onResize();
     }
+    this.$store.dispatch("setUserInformation");
   },
   computed: {
     ...mapGetters([
@@ -212,8 +232,33 @@ export default {
       "float",
       "overlayChat",
       "progressBar",
-      "pulseButton"
+      "pulseButton",
+      "authenticated"
     ]),
+    activeMenuItems() {
+      if (this.authenticated) {
+        return this.menuItems.filter(menuItem => {
+          if ("when" in menuItem && menuItem.when === "authenticated") {
+            return true;
+          } else if (!("when" in menuItem)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+      } else {
+        // anonymous
+        return this.menuItems.filter(menuItem => {
+          if ("when" in menuItem && menuItem.when === "notAuthenticated") {
+            return true;
+          } else if (!("when" in menuItem)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+      }
+    },
     menuClass() {
       if (!this.dark) {
         return "grey--text text--darken-1";
@@ -233,6 +278,10 @@ export default {
         return this.$t("menu.help");
       } else if (this.$route.name === "about") {
         return this.$t("menu.about");
+      } else if (this.$route.name === "register") {
+        return this.$t("menu.register");
+      } else if (this.$route.name === "login") {
+        return this.$t("menu.login");
       } else {
         return this.chatTitle;
       }
@@ -248,6 +297,12 @@ export default {
     }
   },
   methods: {
+    lookForLogout(menuItem) {
+      if (menuItem.titleKey === "menu.logout") {
+        this.$store.dispatch("logout");
+        this.drawer = false;
+      }
+    },
     backgroundImage() {
       return require("./assets/purple.jpg");
     },

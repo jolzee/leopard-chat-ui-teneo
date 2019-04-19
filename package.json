@@ -20,6 +20,8 @@
     "colornames": "github:timoxley/colornames",
     "copy-to-clipboard": "^3.1.0",
     "dayjs": "^1.8.12",
+    "firebase": "^5.9.4",
+    "gravatar": "^1.8.0",
     "livechatapi": "^0.6.0",
     "material-design-icons-iconfont": "^4.0.5",
     "npm": "^6.9.0",
@@ -52,6 +54,7 @@
     "vuex-i18n": "^1.10.5"
   },
   "devDependencies": {
+    "@mdi/font": "^3.6.95",
     "@vue/cli-plugin-babel": "^3.5.5",
     "@vue/cli-plugin-eslint": "^3.5.1",
     "@vue/cli-service": "^3.5.3",

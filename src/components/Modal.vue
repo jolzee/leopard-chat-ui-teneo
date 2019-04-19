@@ -461,10 +461,10 @@ export default {
           this.title = decodeURIComponent(
             this.modalItem.teneoResponse.lastinput
           );
-          this.bodyText = this.modalItem.text.replace(
-            /(?:\r\n|\r|\n)/g,
-            "<br/><br/>"
-          );
+          // this.bodyText = this.modalItem.text.replace(
+          //   /(?:\r\n|\r|\n)/g,
+          //   "<br/><br/>"
+          // );
           displayModal = true;
         }
         // look for anchors with callbacks

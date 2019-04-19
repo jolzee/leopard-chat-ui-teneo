@@ -1,4 +1,8 @@
 /* eslint-disable no-unused-vars */
+import gravatar from "gravatar";
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/database";
 import toHex from "colornames"; // can convert html color names to hex equivalent
 import parseBool from "parseboolean";
 import request from "simple-json-request";
@@ -31,6 +35,15 @@ Vue.use(Vuex);
 const TENEO_CHAT_HISTORY = "teneo-chat-history";
 const TENEO_CHAT_DARK_THEME = "darkTheme";
 let store;
+
+let firebaseConfig = {
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID
+};
 
 // const USE_LOCAL_STORAGE = parseBool(activeSolution.useLocalStorage);
 
@@ -148,7 +161,7 @@ function setupStore(callback) {
     THEME = theme;
 
     Vue.use(Vuetify, {
-      iconfont: ["md", "fa"],
+      iconfont: ["md", "fa", "mdi"],
       theme: THEME
     });
     ENABLE_LIVE_CHAT = parseBool(activeSolution.enableLiveChat);
@@ -187,6 +200,14 @@ function setupStore(callback) {
       connection: {
         requestParameters: REQUEST_PARAMETERS,
         teneoUrl: TENEO_URL
+      },
+      auth: {
+        firebase: firebaseConfig.apiKey ? firebase.initializeApp(firebaseConfig) : null,
+        userInfo: {
+          user: null,
+          username: null,
+          profileImage: null
+        }
       },
       conversation: {
         dialog: [],
@@ -243,6 +264,13 @@ function setupStore(callback) {
           .reverse()
           .find(item => item.type === "reply");
       },
+      userInformationParams(state) {
+        let userInfoParams = "";
+        if (state.auth.userInfo.user) {
+          userInfoParams = `&name=${state.auth.userInfo.user.displayName}&email=${state.auth.userInfo.user.email}`;
+        }
+        return userInfoParams;
+      },
       askingForPassword(_state, getters) {
         let item = getters.lastReplyItem;
         let isAskingForPassword = false;
@@ -297,7 +325,7 @@ function setupStore(callback) {
         return state.ui.responseIcon;
       },
       userIcon(state) {
-        return state.ui.userIcon;
+        return state.auth.userInfo.profileImage ? "account-check" : state.ui.userIcon;
       },
       tts(state) {
         return state.tts.tts;
@@ -336,6 +364,9 @@ function setupStore(callback) {
       },
       liveChatTranscript: _state => item => {
         return decodeURIComponent(item.teneoResponse.extraData.liveChat);
+      },
+      profileImageFromEmail: _state => email => {
+        return gravatar.url(email, { protocol: "https" });
       },
       isVideoFile: _state => url => {
         // console.log("IsVideo:" + url);
@@ -546,6 +577,9 @@ function setupStore(callback) {
       iFrameUrlBase(state) {
         return state.iframe.iframeUrlBase;
       },
+      firebase(state) {
+        return state.auth.firebase;
+      },
       isLiveChat(state) {
         return state.liveAgent.isLiveChat;
       },
@@ -668,6 +702,15 @@ function setupStore(callback) {
       },
       modalItem(state) {
         return state.modals.modalItem;
+      },
+      authenticated(state) {
+        return state.auth.userInfo.user ? true : false;
+      },
+      userProfileImage(state) {
+        return state.auth.userInfo.user ? state.auth.userInfo.user.photoURL : "";
+      },
+      displayName(state) {
+        return state.auth.userInfo.user ? state.auth.userInfo.user.displayName : "Anonymous";
       },
       dark(state) {
         return state.ui.dark;
@@ -908,12 +951,127 @@ function setupStore(callback) {
         state.iframe.iframeUrl = langurl;
         state.iframe.iframeUrlBase = langurl.substring(0, langurl.lastIndexOf("/")) + "/";
       },
+      USER_INFO(state, userInfo) {
+        state.auth.userInfo.user = userInfo.user;
+      },
       CHANGE_ASR_TTS(state, lang) {
         state.tts.tts = initializeTTS(lang);
         initializeASR(store, ASR_CORRECTIONS_MERGED);
+      },
+      CLEAR_USER_INFO(state) {
+        state.auth.userInfo.user = null;
       }
     },
     actions: {
+      setUserInformation({ commit, getters }) {
+        getters.firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            commit("USER_INFO", { user: user }); // user is still signed in
+          }
+        });
+      },
+      logout({ commit, getters }) {
+        getters.firebase
+          .auth()
+          .signOut()
+          .then(
+            () => {
+              commit("CLEAR_USER_INFO");
+              console.log("Signed out");
+            },
+            function(error) {
+              // An error happened.
+              console.error(error.message);
+            }
+          );
+      },
+      loginSocial({ commit, getters }, socialProvider) {
+        return new Promise((resolve, reject) => {
+          let provider = null;
+          switch (socialProvider) {
+            case "google":
+              provider = new firebase.auth.GoogleAuthProvider();
+              break;
+            case "facebook":
+              provider = new firebase.auth.FacebookAuthProvider();
+              break;
+            case "github":
+              provider = new firebase.auth.GithubAuthProvider();
+              break;
+            default:
+              break;
+          }
+          // getters.firebase.auth().languageCode = "en";
+          // To apply the default browser preference instead of explicitly setting it.
+          firebase.auth().useDeviceLanguage();
+
+          getters.firebase
+            .auth()
+            .signInWithPopup(provider)
+            .then(function(result) {
+              // This gives you a Google Access Token. You can use it to access the Google API.
+              // var token = result.credential.accessToken;
+              // The signed-in user info.
+              let user = result.user;
+              console.log(user);
+              commit("USER_INFO", { user: user });
+              resolve();
+            })
+            .catch(function(error) {
+              // Handle Errors here.
+              // var errorCode = error.code;
+              // var errorMessage = error.message;
+              // // The email of the user's account used.
+              // var email = error.email;
+              // // The firebase.auth.AuthCredential type that was used.
+              // var credential = error.credential;
+              // ...
+              reject(error.message);
+            });
+        });
+      },
+      loginUserWithUsernameEmailPassword({ commit, getters }, loginInfo) {
+        return new Promise((resolve, reject) => {
+          loginInfo.photoURL = getters.profileImageFromEmail(loginInfo.email);
+          getters.firebase
+            .auth()
+            .signInWithEmailAndPassword(loginInfo.email, loginInfo.password)
+            .then(user => {
+              commit("USER_INFO", { user: user });
+              resolve();
+            })
+            .catch(function(error) {
+              reject(error.message);
+            });
+        });
+      },
+      registerUserWithUsernameEmailPassword({ commit, getters }, registrationInfo) {
+        return new Promise((resolve, reject) => {
+          registrationInfo.photoURL = getters.profileImageFromEmail(registrationInfo.email);
+          getters.firebase
+            .auth()
+            .createUserWithEmailAndPassword(registrationInfo.email, registrationInfo.password)
+            .then(user => {
+              let currentUser = getters.firebase.auth().currentUser;
+              currentUser
+                .updateProfile({
+                  displayName: registrationInfo.displayName,
+                  photoURL: registrationInfo.photoURL
+                })
+                .then(function() {
+                  console.log("User's profile info updated");
+                })
+                .catch(function(error) {
+                  console.log(`Unable to update user's profile information: ${error.message}`);
+                });
+              commit("USER_INFO", { user: user });
+              resolve();
+            })
+            .catch(function(error) {
+              reject(error.message);
+            });
+        });
+      },
       stopAudioCapture(context) {
         if (context.getters.tts.isSpeaking()) {
           // console.log("muted TTS!");
@@ -945,7 +1103,7 @@ function setupStore(callback) {
       login(context) {
         // get the greeting message if we haven't done so for this session
         return new Promise((resolve, reject) => {
-          Vue.jsonp(TENEO_URL + REQUEST_PARAMETERS, {
+          Vue.jsonp(TENEO_URL + REQUEST_PARAMETERS + context.getters.userInformationParams, {
             command: "login"
             // userInput: ""
           })
@@ -998,9 +1156,14 @@ function setupStore(callback) {
         }
         if (!context.getters.isLiveChat) {
           // normal Teneo request needs to be made
-          Vue.jsonp(context.getters.teneoUrl + (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params), {
-            userinput: currentUserInput
-          })
+          Vue.jsonp(
+            context.getters.teneoUrl +
+              (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params) +
+              context.getters.userInformationParams,
+            {
+              userinput: currentUserInput
+            }
+          )
             .then(json => {
               if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
                 console.log("Session is stale.. keep chat open and continue with the new session");

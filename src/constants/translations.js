@@ -1,7 +1,8 @@
 export const TRANSLATIONS = {
   en: {
     "about.page.button": "Learn more",
-    "about.page.content": "Teneo allows your customers to speak to applications, devices and web services in a natural, human-like and intelligent way",
+    "about.page.content":
+      "Teneo allows your customers to speak to applications, devices and web services in a natural, human-like and intelligent way",
     "about.page.title": "Teneo by Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/",
     "back.to.chat.button": "back to chat",
@@ -14,6 +15,9 @@ export const TRANSLATIONS = {
     "menu.config": "Config",
     "menu.help": "Help",
     "menu.history": "History",
+    "menu.register": "Register",
+    "menu.login": "Login",
+    "menu.logout": "Logout",
     "more.button": "more",
     "more.info.title": "More Information",
     "no.chat.history.body": "Ask me a few questions to get things rolling..",
@@ -29,7 +33,8 @@ export const TRANSLATIONS = {
   },
   fr: {
     "about.page.button": "Apprendre encore plus",
-    "about.page.content": "Teneo permet à vos clients de parler des applications, des appareils et des services Web de manière naturelle, humaine et intelligente",
+    "about.page.content":
+      "Teneo permet à vos clients de parler des applications, des appareils et des services Web de manière naturelle, humaine et intelligente",
     "about.page.title": "Teneo par des Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/",
     "back.to.chat.button": "retour au chat",
@@ -42,6 +47,9 @@ export const TRANSLATIONS = {
     "menu.config": "Config",
     "menu.help": "Aidez-moi",
     "menu.history": "Histoire",
+    "menu.register": "Register",
+    "menu.login": "Login",
+    "menu.logout": "Logout",
     "more.button": "plus",
     "more.info.title": "Plus d'information",
     "no.chat.history.body": "Posez-moi quelques questions pour faire avancer les choses..",
@@ -57,7 +65,8 @@ export const TRANSLATIONS = {
   },
   de: {
     "about.page.button": "Erfahren Sie mehr",
-    "about.page.content": "Mit Teneo können Ihre Kunden auf natürliche, menschenähnliche und intelligente Weise mit Anwendungen, Geräten und Webdiensten sprechen",
+    "about.page.content":
+      "Mit Teneo können Ihre Kunden auf natürliche, menschenähnliche und intelligente Weise mit Anwendungen, Geräten und Webdiensten sprechen",
     "about.page.title": "Teneo von Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/de/",
     "back.to.chat.button": "zurück zum Chat",
@@ -70,6 +79,9 @@ export const TRANSLATIONS = {
     "menu.config": "Config",
     "menu.help": "Hilfe",
     "menu.history": "Geschichte",
+    "menu.register": "Register",
+    "menu.login": "Login",
+    "menu.logout": "Logout",
     "more.button": "mehr",
     "more.info.title": "Weitere Informationen",
     "no.chat.history.body": "Stellen Sie mir ein paar Fragen, um die Dinge ins Rollen zu bringen",
@@ -85,7 +97,8 @@ export const TRANSLATIONS = {
   },
   nl: {
     "about.page.button": "Meer informatie",
-    "about.page.content": "Met Teneo kunnen uw klanten op een natuurlijke, mensachtige en intelligente manier met applicaties, apparaten en webservices spreken",
+    "about.page.content":
+      "Met Teneo kunnen uw klanten op een natuurlijke, mensachtige en intelligente manier met applicaties, apparaten en webservices spreken",
     "about.page.title": "Teneo van Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/nl/",
     "back.to.chat.button": "terug naar chat",
@@ -98,6 +111,9 @@ export const TRANSLATIONS = {
     "menu.config": "Config",
     "menu.help": "Help",
     "menu.history": "Geschiedenis",
+    "menu.register": "Register",
+    "menu.login": "Login",
+    "menu.logout": "Logout",
     "more.button": "meer",
     "more.info.title": "Meer informatie",
     "no.chat.history.body": "Stel me een paar vragen om dingen aan het rollen te krijgen",
@@ -113,7 +129,8 @@ export const TRANSLATIONS = {
   },
   es: {
     "about.page.button": "Aprende más",
-    "about.page.content": "Teneo les permite a sus clientes hablar con aplicaciones, dispositivos y servicios web de forma natural, humana e inteligente",
+    "about.page.content":
+      "Teneo les permite a sus clientes hablar con aplicaciones, dispositivos y servicios web de forma natural, humana e inteligente",
     "about.page.title": "Teneo por Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/es/",
     "back.to.chat.button": "volver al chat",
@@ -126,6 +143,9 @@ export const TRANSLATIONS = {
     "menu.config": "Config",
     "menu.help": "Ayuda",
     "menu.history": "Historia",
+    "menu.register": "Register",
+    "menu.login": "Login",
+    "menu.logout": "Logout",
     "more.button": "Más",
     "more.info.title": "Más información",
     "no.chat.history.body": "Hazme algunas preguntas para que las cosas funcionen",
@@ -141,7 +161,8 @@ export const TRANSLATIONS = {
   },
   ru: {
     "about.page.button": "Учить больше",
-    "about.page.content": "Teneo позволяет вашим клиентам общаться с приложениями, устройствами и веб-сервисами естественным, удобным и интеллектуальным способом",
+    "about.page.content":
+      "Teneo позволяет вашим клиентам общаться с приложениями, устройствами и веб-сервисами естественным, удобным и интеллектуальным способом",
     "about.page.title": "Teneo от Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/",
     "back.to.chat.button": "вернуться в чат",
@@ -154,6 +175,9 @@ export const TRANSLATIONS = {
     "menu.config": "конфиг",
     "menu.help": "Помогите",
     "menu.history": "история",
+    "menu.register": "Register",
+    "menu.login": "Login",
+    "menu.logout": "Logout",
     "more.button": "Больше",
     "more.info.title": "Дополнительная информация",
     "no.chat.history.body": "Задайте мне несколько вопросов, чтобы заставить вещи катиться ..",
@@ -169,7 +193,8 @@ export const TRANSLATIONS = {
   },
   sv: {
     "about.page.button": "Läs mer",
-    "about.page.content": "Teneo tillåter dina kunder att prata med applikationer, enheter och webbtjänster på ett naturligt, mänskligt och intelligent sätt",
+    "about.page.content":
+      "Teneo tillåter dina kunder att prata med applikationer, enheter och webbtjänster på ett naturligt, mänskligt och intelligent sätt",
     "about.page.title": "Teneo av Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/",
     "back.to.chat.button": "tillbaka till chatt",
@@ -182,6 +207,9 @@ export const TRANSLATIONS = {
     "menu.config": "config",
     "menu.help": "Hjälp",
     "menu.history": "Historia",
+    "menu.register": "Register",
+    "menu.login": "Login",
+    "menu.logout": "Logout",
     "more.button": "Mer",
     "more.info.title": "Mer information",
     "no.chat.history.body": "Fråga mig några frågor för att få saker att rulla..",
@@ -197,7 +225,8 @@ export const TRANSLATIONS = {
   },
   no: {
     "about.page.button": "Lære mer",
-    "about.page.content": "Teneo gjør at kundene dine kan snakke med applikasjoner, enheter og webtjenester på en naturlig, menneskelig og intelligent måte",
+    "about.page.content":
+      "Teneo gjør at kundene dine kan snakke med applikasjoner, enheter og webtjenester på en naturlig, menneskelig og intelligent måte",
     "about.page.title": "Teneo av Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/",
     "back.to.chat.button": "tilbake til chat",
@@ -210,6 +239,9 @@ export const TRANSLATIONS = {
     "menu.config": "Konfigurasjon",
     "menu.help": "Hjelp",
     "menu.history": "Historie",
+    "menu.register": "Register",
+    "menu.login": "Login",
+    "menu.logout": "Logout",
     "more.button": "mer",
     "more.info.title": "Mer informasjon",
     "no.chat.history.body": "Spør meg noen spørsmål for å få ting å rulle..",
@@ -225,7 +257,8 @@ export const TRANSLATIONS = {
   },
   da: {
     "about.page.button": "Lær mere",
-    "about.page.content": "Teneo giver dine kunder mulighed for at tale med applikationer, enheder og webtjenester på en naturlig, menneskelig og intelligent måde",
+    "about.page.content":
+      "Teneo giver dine kunder mulighed for at tale med applikationer, enheder og webtjenester på en naturlig, menneskelig og intelligent måde",
     "about.page.title": "Teneo af Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/",
     "back.to.chat.button": "tilbage til chat",
@@ -238,6 +271,9 @@ export const TRANSLATIONS = {
     "menu.config": "Konfiguration",
     "menu.help": "Hjælp",
     "menu.history": "Historie",
+    "menu.register": "Register",
+    "menu.login": "Login",
+    "menu.logout": "Logout",
     "more.button": "mere",
     "more.info.title": "Mere information",
     "no.chat.history.body": "Spørg mig et par spørgsmål for at få tingene i gang..",
@@ -250,5 +286,5 @@ export const TRANSLATIONS = {
     "button.page": "Side",
     "button.more": "Mere",
     "button.pdf": "PDF"
-  },
+  }
 };
