@@ -327,7 +327,7 @@ export default {
         // Then we set the value in the --vh custom property to the root of the document
         document.documentElement.style.setProperty("--vh", `${vh}px`);
 
-        console.log("ok smaller than 480px");
+        // console.log("ok smaller than 480px");
         // open the chat automatially and hide the open and close chat button
         this.$router.push({ name: "chat" }); // make sure we show the main chat window
         this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
