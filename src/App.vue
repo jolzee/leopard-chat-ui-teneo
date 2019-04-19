@@ -226,6 +226,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "authenticated",
       "chatTitle",
       "dark",
       "embed",
@@ -233,7 +234,7 @@ export default {
       "overlayChat",
       "progressBar",
       "pulseButton",
-      "authenticated"
+      "socialAuthEnabled"
     ]),
     activeMenuItems() {
       if (this.authenticated) {
@@ -249,7 +250,10 @@ export default {
       } else {
         // anonymous
         return this.menuItems.filter(menuItem => {
-          if ("when" in menuItem && menuItem.when === "notAuthenticated") {
+          if (
+            this.socialAuthEnabled &&
+            ("when" in menuItem && menuItem.when === "notAuthenticated")
+          ) {
             return true;
           } else if (!("when" in menuItem)) {
             return true;

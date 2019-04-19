@@ -258,6 +258,7 @@ function setupStore(callback) {
       }
     },
     getters: {
+      socialAuthEnabled: state => (state.auth.firebase ? true : false),
       lastReplyItem: state => {
         return state.conversation.dialog
           .slice()
