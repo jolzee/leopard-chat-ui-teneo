@@ -28,6 +28,7 @@
           color="primary"
           @click="toggleChat"
           v-show="!hideChatButton"
+          :class="{ pulse: (pulseButton && hideChat)}"
         >
           <v-icon
             dark
@@ -81,9 +82,10 @@
             <v-list-tile
               ripple
               value="true"
-              v-for="(menuItem, i) in menuItems"
+              v-for="(menuItem, i) in activeMenuItems"
               :key="i"
               :to="menuItem.route"
+              @click="lookForLogout(menuItem)"
             >
               <v-list-tile-action>
                 <v-icon
@@ -191,6 +193,24 @@ export default {
           icon: "tune",
           titleKey: "menu.config",
           route: "config"
+        },
+        {
+          icon: "mdi-account-plus",
+          titleKey: "menu.register",
+          route: "register",
+          when: "notAuthenticated"
+        },
+        {
+          icon: "mdi-login-variant",
+          titleKey: "menu.login",
+          route: "login",
+          when: "notAuthenticated"
+        },
+        {
+          icon: "mdi-logout-variant",
+          titleKey: "menu.logout",
+          route: "/",
+          when: "authenticated"
         }
       ],
       miniVariant: true,
@@ -202,16 +222,47 @@ export default {
     if (window.innerWidth <= 480) {
       this.onResize();
     }
+    this.$store.dispatch("setUserInformation");
   },
   computed: {
     ...mapGetters([
+      "authenticated",
       "chatTitle",
       "dark",
       "embed",
       "float",
       "overlayChat",
-      "progressBar"
+      "progressBar",
+      "pulseButton",
+      "socialAuthEnabled"
     ]),
+    activeMenuItems() {
+      if (this.authenticated) {
+        return this.menuItems.filter(menuItem => {
+          if ("when" in menuItem && menuItem.when === "authenticated") {
+            return true;
+          } else if (!("when" in menuItem)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+      } else {
+        // anonymous
+        return this.menuItems.filter(menuItem => {
+          if (
+            this.socialAuthEnabled &&
+            ("when" in menuItem && menuItem.when === "notAuthenticated")
+          ) {
+            return true;
+          } else if (!("when" in menuItem)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+      }
+    },
     menuClass() {
       if (!this.dark) {
         return "grey--text text--darken-1";
@@ -231,6 +282,10 @@ export default {
         return this.$t("menu.help");
       } else if (this.$route.name === "about") {
         return this.$t("menu.about");
+      } else if (this.$route.name === "register") {
+        return this.$t("menu.register");
+      } else if (this.$route.name === "login") {
+        return this.$t("menu.login");
       } else {
         return this.chatTitle;
       }
@@ -246,6 +301,12 @@ export default {
     }
   },
   methods: {
+    lookForLogout(menuItem) {
+      if (menuItem.titleKey === "menu.logout") {
+        this.$store.dispatch("logout");
+        this.drawer = false;
+      }
+    },
     backgroundImage() {
       return require("./assets/purple.jpg");
     },
@@ -266,7 +327,7 @@ export default {
         // Then we set the value in the --vh custom property to the root of the document
         document.documentElement.style.setProperty("--vh", `${vh}px`);
 
-        console.log("ok smaller than 480px");
+        // console.log("ok smaller than 480px");
         // open the chat automatially and hide the open and close chat button
         this.$router.push({ name: "chat" }); // make sure we show the main chat window
         this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
@@ -395,6 +456,58 @@ export default {
 
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
+
+.pulse {
+  overflow: visible;
+  position: relative;
+}
+
+.pulse::before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: inherit;
+  border-radius: inherit;
+  -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
+  transition: opacity 0.3s, -webkit-transform 0.3s;
+  transition: opacity 0.3s, transform 0.3s;
+  transition: opacity 0.3s, transform 0.3s, -webkit-transform 0.3s;
+  -webkit-animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+  animation: pulse-animation 4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+  z-index: -1;
+}
+
+@-webkit-keyframes pulse-animation {
+  0% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  10%,
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(1.5);
+    transform: scale(1.5);
+  }
+}
+
+@keyframes pulse-animation {
+  0% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  10%,
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(1.5);
+    transform: scale(1.5);
+  }
+}
 
 .light-scroll::-webkit-scrollbar {
   height: 14px;

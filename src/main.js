@@ -1,4 +1,5 @@
 import "@fortawesome/fontawesome-free/css/all.css";
+import "@mdi/font/css/materialdesignicons.css";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import "vue-loaders/dist/vue-loaders.css";
 import "vue-plyr/dist/vue-plyr.css";

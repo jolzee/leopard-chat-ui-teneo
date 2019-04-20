@@ -19,7 +19,25 @@ class ExtensionHelper {
         if (channel == 'webview') {
             def attachment = [:]
             def params = [:]
-            params = ['title': title, 'enableSearch': enableSearch, 'headers': headers, 'rows': rows, 'rowsPerPage': rowsPerPage]
+            params = ['title': title, 'enableSearch': enableSearch, 'headers': headers, 'rows': rows, 'rowsPerPage': rowsPerPage, ]
+
+            if (footer != "") {
+                params.put("footer", footer)
+            }
+
+            attachment = ['name': 'displayTable', 'parameters': params]
+            def result = new groovy.json.JsonBuilder(attachment).toString()
+            return result
+        }
+        return ""
+
+    }
+
+    static String displayTableWithMainTitle(def channel = "webview", def title, def footer = "", def enableSearch = true, def headers, def rows, def rowsPerPage = [5, 10, 25]) {
+        if (channel == 'webview') {
+            def attachment = [:]
+            def params = [:]
+            params = ['title': title, 'enableSearch': enableSearch, 'headers': headers, 'rows': rows, 'rowsPerPage': rowsPerPage, 'overrideTitle': true]
 
             if (footer != "") {
                 params.put("footer", footer)

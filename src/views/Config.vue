@@ -681,6 +681,31 @@
                           sm4
                           class="hidden-xs-only"
                         >
+                          <v-subheader>Show Pulsing Chat Button</v-subheader>
+                        </v-flex>
+                        <v-flex
+                          xs12
+                          sm8
+                        >
+                          <v-select
+                            :items="trueFalseOptions"
+                            validate-on-blur
+                            color="light-blue darken-1"
+                            outline
+                            hint="Show Pulse Button"
+                            label="Show Pulse Button"
+                            :menu-props="{contentClass:'select-options'}"
+                            :tabindex="getTabIndex"
+                            v-model="solution.pulseButton"
+                            append-icon="fa-sun"
+                          ></v-select>
+                        </v-flex>
+                        <v-divider></v-divider>
+                        <v-flex
+                          xs12
+                          sm4
+                          class="hidden-xs-only"
+                        >
                           <v-subheader>Show Long Teneo Responses in Modal</v-subheader>
                         </v-flex>
                         <v-flex
@@ -1190,22 +1215,11 @@
         </v-container>
       </v-card>
     </v-dialog>
-    <textarea
-      id="copy-solution"
-      readonly
-      style="position:absolute;left:-9999px"
-      v-text="getCurrentSelectedSolutionConfig"
-    ></textarea>
-    <textarea
-      id="copy-whole-config"
-      readonly
-      style="position:absolute;left:-9999px"
-      v-text="getFullSolutionConfig"
-    ></textarea>
   </v-layout>
 </template>
 
 <script>
+import copy from "copy-to-clipboard";
 import { Compact } from "vue-color";
 import urlRegex from "url-regex";
 import { COLOR_NAMES } from "../constants/color-names.js";
@@ -1237,7 +1251,7 @@ export default {
       showProgressUpload: false,
       activeColor: "",
       trueFalseOptions: ["true", "false"],
-      locales: ["en", "fr", "es", "nl", "de", "ru"],
+      locales: ["en", "fr", "es", "nl", "de", "ru", "sv", "no", "da"],
       displayAddEditDialog: false,
       currentModeEdit: "",
       dialogTitle: "",
@@ -1302,6 +1316,45 @@ export default {
     this.setActiveSolutionAsSelected();
   },
   methods: {
+    importSolution(newSolution) {
+      let existingSolutionsWithName = this.config.solutions.findIndex(
+        solution => solution.name === newSolution.name
+      );
+      let existingSolutionsWithDeepLink = this.config.solutions.findIndex(
+        solution => solution.deepLink === newSolution.deepLink
+      );
+
+      if (existingSolutionsWithName < 0 && existingSolutionsWithDeepLink < 0) {
+        // no clashes in name or deep link
+        this.config.solutions.push(newSolution); // no conflicts
+        console.log("no clashes");
+      } else if (
+        existingSolutionsWithName >= 0 &&
+        existingSolutionsWithDeepLink >= 0
+      ) {
+        // name and deep link clash
+        console.log("name and deep link clash");
+        newSolution.name = newSolution.name + " [imported]";
+        newSolution.deepLink = newSolution.deepLink + "-" + this.randId();
+        this.config.solutions.push(newSolution);
+      } else if (
+        existingSolutionsWithName >= 0 &&
+        existingSolutionsWithDeepLink < 0
+      ) {
+        // name clash only
+        console.log("name clash only");
+        newSolution.name = newSolution.name + " [imported]";
+        this.config.solutions.push(newSolution);
+      } else if (
+        existingSolutionsWithDeepLink >= 0 &&
+        existingSolutionsWithName < 0
+      ) {
+        // deeplink clash only
+        console.log("deep link clash only");
+        newSolution.deepLink = newSolution.deepLink + "-" + this.randId();
+        this.config.solutions.push(newSolution);
+      }
+    },
     resetColorsToDefault() {
       this.solution.theme = Object.assign({}, SOLUTION_DEFAULT.theme);
     },
@@ -1374,16 +1427,12 @@ export default {
       }
     },
     copyWholeConfigClipboard() {
-      let el = document.getElementById("copy-whole-config");
-      el.select();
-      document.execCommand("copy");
+      copy(JSON.stringify(this.config, null, 2));
       this.displaySnackBar("📋 Copied to clipboard");
       this.snackbarClipboard = true;
     },
     copySolutionToClipboard() {
-      let el = document.getElementById("copy-solution");
-      el.select();
-      document.execCommand("copy");
+      copy(JSON.stringify(this.selectedSolution, null, 2));
       this.displaySnackBar("📋 Copied to clipboard");
     },
     setActiveSolutionAsSelected() {
@@ -1453,7 +1502,7 @@ export default {
       if (duplicateSolutions.length > 0) {
         clonedSolution.name = clonedSolution.name + " [" + this.randId() + "]";
       }
-      clonedSolution.deepLink = clonedSolution.deepLink + this.randId();
+      clonedSolution.deepLink = clonedSolution.deepLink + "-" + this.randId();
       this.config.solutions.push(clonedSolution);
       this.selectedSolution = this.cloneObject(clonedSolution);
       this.displaySnackBar(
@@ -1505,22 +1554,25 @@ export default {
         }
         if (newConfig && "activeSolution" in newConfig) {
           // ok uploading a full config
-          this.config = newConfig;
-          this.displaySnackBar("Imported a new full configuration", 3000);
+          if ("activeSolution" in this.config) {
+            // let's merge
+            newConfig.solutions.forEach(newSolution => {
+              this.importSolution(newSolution);
+            });
+            this.displaySnackBar(
+              "Merged existing full config with newly uploded",
+              3000
+            );
+          } else {
+            // current config is empty
+            this.config = newConfig;
+            this.displaySnackBar("Imported a new full configuration", 3000);
+          }
+
           this.setActiveSolutionAsSelected();
         } else if (newConfig && "name" in newConfig) {
           // uploading a single config - add it to the current solution config
-          let existingSolution = this.config.solutions.findIndex(
-            solution => solution.name === newConfig.name
-          );
-          if (existingSolution < 0) {
-            this.config.solutions.push(newConfig);
-          } else {
-            // there's another solution with the same name. Import this new config but make the name unique and the deep link
-            newConfig.name = newConfig.name + " [imported]";
-            newConfig.deepLink = newConfig.deepLink + this.randId();
-            this.config.solutions.push(newConfig);
-          }
+          this.importSolution(newConfig);
           this.setSolutionAsSelected(newConfig.name);
           this.displaySnackBar("Imported as " + newConfig.name, 3000);
         }

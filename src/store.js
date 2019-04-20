@@ -1,5 +1,9 @@
 /* eslint-disable no-unused-vars */
-
+import { Ripple } from "vuetify/lib/directives";
+import gravatar from "gravatar";
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/database";
 import toHex from "colornames"; // can convert html color names to hex equivalent
 import parseBool from "parseboolean";
 import request from "simple-json-request";
@@ -17,6 +21,13 @@ import { TRANSLATIONS } from "./constants/translations"; // add UI translations 
 import { initializeASR, initializeTTS } from "./utils/asr-tts";
 import { LiveChat } from "./utils/live-chat";
 import { getParameterByName, mergeAsrCorrections } from "./utils/utils";
+import PromisedLocation from "promised-location";
+const LOCATION_OPTIONS = {
+  enableHighAccuracy: true,
+  timeout: 10000,
+  maximumAge: 60000
+};
+var locator = new PromisedLocation(LOCATION_OPTIONS);
 
 // Vue.use(VueLocalStorage);
 Vue.use(VueJsonp, 20000);
@@ -25,6 +36,15 @@ Vue.use(Vuex);
 const TENEO_CHAT_HISTORY = "teneo-chat-history";
 const TENEO_CHAT_DARK_THEME = "darkTheme";
 let store;
+
+let firebaseConfig = {
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID
+};
 
 // const USE_LOCAL_STORAGE = parseBool(activeSolution.useLocalStorage);
 
@@ -142,8 +162,11 @@ function setupStore(callback) {
     THEME = theme;
 
     Vue.use(Vuetify, {
-      iconfont: ["md", "fa"],
-      theme: THEME
+      iconfont: ["md", "fa", "mdi"],
+      theme: THEME,
+      directives: {
+        Ripple
+      }
     });
     ENABLE_LIVE_CHAT = parseBool(activeSolution.enableLiveChat);
 
@@ -181,6 +204,14 @@ function setupStore(callback) {
       connection: {
         requestParameters: REQUEST_PARAMETERS,
         teneoUrl: TENEO_URL
+      },
+      auth: {
+        firebase: firebaseConfig.apiKey ? firebase.initializeApp(firebaseConfig) : null,
+        userInfo: {
+          user: null,
+          username: null,
+          profileImage: null
+        }
       },
       conversation: {
         dialog: [],
@@ -223,7 +254,8 @@ function setupStore(callback) {
         overlayChat: FLOAT,
         responseIcon: RESPONSE_ICON,
         theme: THEME,
-        userIcon: USER_ICON
+        userIcon: USER_ICON,
+        showUploadButton: false
       },
       userInput: {
         userInput: "",
@@ -231,11 +263,19 @@ function setupStore(callback) {
       }
     },
     getters: {
+      socialAuthEnabled: state => (state.auth.firebase ? true : false),
       lastReplyItem: state => {
         return state.conversation.dialog
           .slice()
           .reverse()
           .find(item => item.type === "reply");
+      },
+      userInformationParams(state) {
+        let userInfoParams = "";
+        if (state.auth.userInfo.user) {
+          userInfoParams = `&name=${state.auth.userInfo.user.displayName}&email=${state.auth.userInfo.user.email}`;
+        }
+        return userInfoParams;
       },
       askingForPassword(_state, getters) {
         let item = getters.lastReplyItem;
@@ -291,7 +331,7 @@ function setupStore(callback) {
         return state.ui.responseIcon;
       },
       userIcon(state) {
-        return state.ui.userIcon;
+        return state.auth.userInfo.profileImage ? "account-check" : state.ui.userIcon;
       },
       tts(state) {
         return state.tts.tts;
@@ -330,6 +370,9 @@ function setupStore(callback) {
       },
       liveChatTranscript: _state => item => {
         return decodeURIComponent(item.teneoResponse.extraData.liveChat);
+      },
+      profileImageFromEmail: _state => email => {
+        return gravatar.url(email, { protocol: "https" });
       },
       isVideoFile: _state => url => {
         // console.log("IsVideo:" + url);
@@ -399,12 +442,17 @@ function setupStore(callback) {
               .forEach(function(key) {
                 ordered[key] = item.teneoResponse.extraData[key];
               });
-            for (var key in ordered) {
-              if (key.startsWith("extensions")) {
-                var value = decodeURIComponent(ordered[key]);
-                // console.log(`Key: ${key} Value: ${value}`);
-                actions.push(JSON.parse(value));
+            try {
+              for (var key in ordered) {
+                if (key.startsWith("extensions")) {
+                  var value = decodeURIComponent(ordered[key]);
+                  // console.log(`Key: ${key} Value: ${value}`);
+                  actions.push(JSON.parse(value));
+                }
               }
+            } catch (e) {
+              console.error(e);
+              // store.commit("SHOW_MESSAGE_IN_CHAT", "Problems with extension format: " + e.message + ".");
             }
           }
         }
@@ -535,6 +583,9 @@ function setupStore(callback) {
       iFrameUrlBase(state) {
         return state.iframe.iframeUrlBase;
       },
+      firebase(state) {
+        return state.auth.firebase;
+      },
       isLiveChat(state) {
         return state.liveAgent.isLiveChat;
       },
@@ -546,8 +597,15 @@ function setupStore(callback) {
           ? state.activeSolution.longResponsesInModal === "true"
           : false;
       },
+      pulseButton(state) {
+        return state.activeSolution.pulseButton !== undefined ? state.activeSolution.pulseButton === "true" : false;
+      },
       lastItemAnswerTextCropped(_state, getters) {
-        let answer = getters.lastReplyItem.text;
+        let answer = "";
+        if (getters.lastReplyItem) {
+          answer = getters.lastReplyItem.text;
+        }
+
         if (getters.settingLongResponsesInModal && getters.lastItemHasLongResponse) {
           answer = answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
         }
@@ -651,6 +709,15 @@ function setupStore(callback) {
       modalItem(state) {
         return state.modals.modalItem;
       },
+      authenticated(state) {
+        return state.auth.userInfo.user ? true : false;
+      },
+      userProfileImage(state) {
+        return state.auth.userInfo.user ? state.auth.userInfo.user.photoURL : "";
+      },
+      displayName(state) {
+        return state.auth.userInfo.user ? state.auth.userInfo.user.displayName : "Anonymous";
+      },
       dark(state) {
         return state.ui.dark;
       },
@@ -659,9 +726,18 @@ function setupStore(callback) {
       },
       showChatIcons(state) {
         return state.activeSolution.showChatIcons !== undefined ? state.activeSolution.showChatIcons === "true" : true;
+      },
+      showUploadButton(state) {
+        return state.ui.showUploadButton;
       }
     },
     mutations: {
+      SHOW_UPLOAD_BUTTON(state) {
+        state.ui.showUploadButton = true;
+      },
+      HIDE_UPLOAD_BUTTON(state) {
+        state.ui.showUploadButton = false;
+      },
       HIDE_CUSTOM_MODAL(state) {
         state.modals.showCustomModal = false;
       },
@@ -782,7 +858,9 @@ function setupStore(callback) {
         };
 
         // add the user input - display it on the chat dialog
-        state.conversation.dialog.push(newUserInput);
+        if (newUserInput.text) {
+          state.conversation.dialog.push(newUserInput);
+        }
 
         let newReply = {
           type: "reply",
@@ -810,7 +888,9 @@ function setupStore(callback) {
           state.conversation.dialogHistory = state.conversation.dialog;
         } else {
           // add current user input and teneo response to the dialog history
-          state.conversation.dialogHistory.push(newUserInput);
+          if (newUserInput.text) {
+            state.conversation.dialogHistory.push(newUserInput);
+          }
           state.conversation.dialogHistory.push(newReply);
         }
         // save the dislaog history in session storage
@@ -886,12 +966,129 @@ function setupStore(callback) {
         state.iframe.iframeUrl = langurl;
         state.iframe.iframeUrlBase = langurl.substring(0, langurl.lastIndexOf("/")) + "/";
       },
+      USER_INFO(state, userInfo) {
+        state.auth.userInfo.user = userInfo.user;
+      },
       CHANGE_ASR_TTS(state, lang) {
         state.tts.tts = initializeTTS(lang);
         initializeASR(store, ASR_CORRECTIONS_MERGED);
+      },
+      CLEAR_USER_INFO(state) {
+        state.auth.userInfo.user = null;
       }
     },
     actions: {
+      setUserInformation({ commit, getters }) {
+        if (getters.firebase) {
+          getters.firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              commit("USER_INFO", { user: user }); // user is still signed in
+            }
+          });
+        }
+      },
+      logout({ commit, getters }) {
+        getters.firebase
+          .auth()
+          .signOut()
+          .then(
+            () => {
+              commit("CLEAR_USER_INFO");
+              console.log("Signed out");
+            },
+            function(error) {
+              // An error happened.
+              console.error(error.message);
+            }
+          );
+      },
+      loginSocial({ commit, getters }, socialProvider) {
+        return new Promise((resolve, reject) => {
+          let provider = null;
+          switch (socialProvider) {
+            case "google":
+              provider = new firebase.auth.GoogleAuthProvider();
+              break;
+            case "facebook":
+              provider = new firebase.auth.FacebookAuthProvider();
+              break;
+            case "github":
+              provider = new firebase.auth.GithubAuthProvider();
+              break;
+            default:
+              break;
+          }
+          // getters.firebase.auth().languageCode = "en";
+          // To apply the default browser preference instead of explicitly setting it.
+          firebase.auth().useDeviceLanguage();
+
+          getters.firebase
+            .auth()
+            .signInWithPopup(provider)
+            .then(function(result) {
+              // This gives you a Google Access Token. You can use it to access the Google API.
+              // var token = result.credential.accessToken;
+              // The signed-in user info.
+              let user = result.user;
+              console.log(user);
+              commit("USER_INFO", { user: user });
+              resolve();
+            })
+            .catch(function(error) {
+              // Handle Errors here.
+              // var errorCode = error.code;
+              // var errorMessage = error.message;
+              // // The email of the user's account used.
+              // var email = error.email;
+              // // The firebase.auth.AuthCredential type that was used.
+              // var credential = error.credential;
+              // ...
+              reject(error.message);
+            });
+        });
+      },
+      loginUserWithUsernameEmailPassword({ commit, getters }, loginInfo) {
+        return new Promise((resolve, reject) => {
+          loginInfo.photoURL = getters.profileImageFromEmail(loginInfo.email);
+          getters.firebase
+            .auth()
+            .signInWithEmailAndPassword(loginInfo.email, loginInfo.password)
+            .then(user => {
+              commit("USER_INFO", { user: user });
+              resolve();
+            })
+            .catch(function(error) {
+              reject(error.message);
+            });
+        });
+      },
+      registerUserWithUsernameEmailPassword({ commit, getters }, registrationInfo) {
+        return new Promise((resolve, reject) => {
+          registrationInfo.photoURL = getters.profileImageFromEmail(registrationInfo.email);
+          getters.firebase
+            .auth()
+            .createUserWithEmailAndPassword(registrationInfo.email, registrationInfo.password)
+            .then(user => {
+              let currentUser = getters.firebase.auth().currentUser;
+              currentUser
+                .updateProfile({
+                  displayName: registrationInfo.displayName,
+                  photoURL: registrationInfo.photoURL
+                })
+                .then(function() {
+                  console.log("User's profile info updated");
+                })
+                .catch(function(error) {
+                  console.log(`Unable to update user's profile information: ${error.message}`);
+                });
+              commit("USER_INFO", { user: user });
+              resolve();
+            })
+            .catch(function(error) {
+              reject(error.message);
+            });
+        });
+      },
       stopAudioCapture(context) {
         if (context.getters.tts.isSpeaking()) {
           // console.log("muted TTS!");
@@ -923,7 +1120,7 @@ function setupStore(callback) {
       login(context) {
         // get the greeting message if we haven't done so for this session
         return new Promise((resolve, reject) => {
-          Vue.jsonp(TENEO_URL + REQUEST_PARAMETERS, {
+          Vue.jsonp(TENEO_URL + REQUEST_PARAMETERS + context.getters.userInformationParams, {
             command: "login"
             // userInput: ""
           })
@@ -967,22 +1164,127 @@ function setupStore(callback) {
         });
       },
       sendUserInput(context, params = "") {
+        let currentUserInput = stripHtml(context.getters.userInput);
+        context.commit("CLEAR_USER_INPUT");
         // send user input to Teneo when a live chat has not begun
         if (context.getters.tts && context.getters.tts.isSpeaking()) {
           // tts is speaking something. Let's shut it up
           context.getters.tts.shutUp();
         }
         if (!context.getters.isLiveChat) {
-          Vue.jsonp(context.getters.teneoUrl + (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params), {
-            userinput: stripHtml(context.getters.userInput)
-          })
+          // normal Teneo request needs to be made
+          Vue.jsonp(
+            context.getters.teneoUrl +
+              (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params) +
+              context.getters.userInformationParams,
+            {
+              userinput: currentUserInput
+            }
+          )
             .then(json => {
               if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
                 console.log("Session is stale.. keep chat open and continue with the new session");
               }
+
+              if (
+                json.responseData.extraData.hasOwnProperty("inputType") &&
+                json.responseData.extraData.inputType === "upload"
+              ) {
+                context.commit("SHOW_UPLOAD_BUTTON");
+              }
+
+              // look for request for location information in the response
+              if (
+                json.responseData.extraData.hasOwnProperty("inputType") &&
+                json.responseData.extraData.inputType.startsWith("location")
+              ) {
+                locator
+                  .then(function(position) {
+                    // we now have the user's lat and long
+                    console.log(`${position.coords.latitude}, ${position.coords.longitude}`);
+                    if (json.responseData.extraData.inputType === "locationLatLong") {
+                      // send the lat and long
+                      context
+                        .dispatch(
+                          "sendUserInput",
+                          "&locationLatLong=" + encodeURI(position.coords.latitude + "," + position.coords.longitude)
+                        )
+                        .then(
+                          console.log(
+                            `Sent user's lat and long: ${position.coords.latitude}, ${position.coords.longitude}`
+                          )
+                        )
+                        .catch(err => {
+                          console.err("Unable to send lat and long info", err.message);
+                          context.commit(
+                            "SHOW_MESSAGE_IN_CHAT",
+                            "We were unable to obtain your location information.: " + err.message
+                          );
+                        });
+                    } else if (process.env.VUE_APP_LOCATION_IQ_KEY) {
+                      // good we have a licence key we can send all location information back
+                      let locationRequestType = json.responseData.extraData.inputType;
+                      request
+                        .request({
+                          method: "GET",
+                          url: `https://us1.locationiq.com/v1/reverse.php?key=${
+                            process.env.VUE_APP_LOCATION_IQ_KEY
+                          }&lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`
+                        })
+                        .then(data => {
+                          console.log(`${data.address.city}, ${data.address.state} ${data.address.postcode}`);
+
+                          let queryParam = `&${locationRequestType}=`;
+                          if (locationRequestType === "locationJson") {
+                            queryParam += encodeURI(JSON.stringify(data));
+                          } else if (locationRequestType === "locationZip") {
+                            queryParam += encodeURI(data.address.postcode);
+                          } else if (locationRequestType === "locationCityStateZip") {
+                            queryParam += encodeURI(
+                              `${data.address.city}, ${data.address.state} ${data.address.postcode}`
+                            );
+                          }
+
+                          context
+                            .dispatch("sendUserInput", queryParam)
+                            .then(
+                              console.log(
+                                `Sent user's location information: ${data.address.city}, ${data.address.state} ${
+                                  data.address.postcode
+                                }`
+                              )
+                            )
+                            .catch(err => {
+                              console.err("Unable to send user location", err.message);
+                              context.commit(
+                                "SHOW_MESSAGE_IN_CHAT",
+                                "We were unable to obtain your location information.: " + err.message
+                              );
+                            });
+                        })
+                        .catch(error => {
+                          console.log(error.message);
+                        });
+                    } else if (
+                      !process.env.VUE_APP_LOCATION_IQ_KEY &&
+                      json.responseData.extraData.inputType ===
+                        ("locationCityStateZip" || "locationZip" || "locationJson")
+                    ) {
+                      // no good. Asking for location information that requires a licence  key
+                      context.commit(
+                        "SHOW_MESSAGE_IN_CHAT",
+                        "A licence key for https://locationiq.com/ is needed to obtain the requested location information. Check the documentation."
+                      );
+                    }
+                  })
+                  .catch(function(err) {
+                    console.error("Position Error ", err.toString());
+                  });
+              }
+
               // console.log(decodeURIComponent(json.responseData.answer))
               const response = {
-                userInput: stripHtml(context.getters.userInput),
+                userInput: currentUserInput,
                 teneoAnswer: decodeURIComponent(json.responseData.answer).replace(
                   /onclick="[^"]+"/g,
                   'class="sendInput"'
@@ -1070,7 +1372,7 @@ function setupStore(callback) {
           // send the input to live chat agent and save user input to history
           let newUserInput = {
             type: "userInput",
-            text: context.getters.userInput,
+            text: currentUserInput,
             bodyText: "",
             hasExtraData: false
           };
@@ -1086,7 +1388,7 @@ function setupStore(callback) {
             context.commit("PUSH_USER_INPUT_TO_DIALOG_HISTORY", newUserInput);
           }
           sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(context.getters.dialogHistory));
-          liveChat.sendMessage(context.getters.userInput);
+          liveChat.sendMessage(currentUserInput);
           context.commit("HIDE_PROGRESS_BAR");
           context.commit("CLEAR_USER_INPUT");
         }
