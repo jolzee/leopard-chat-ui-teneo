@@ -302,6 +302,8 @@ export default {
   },
   methods: {
     lookForLogout(menuItem) {
+      this.drawer = false;
+      document.activeElement.blur();
       if (menuItem.titleKey === "menu.logout") {
         this.$store.dispatch("logout");
         this.drawer = false;
