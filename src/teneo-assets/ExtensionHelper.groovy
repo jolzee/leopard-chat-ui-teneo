@@ -1,3 +1,5 @@
+import groovy.json.JsonOutput
+
 import java.text.DateFormat
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -5,163 +7,88 @@ import java.util.regex.PatternSyntaxException
 
 class ExtensionHelper {
 
-    static Map createTableHeader(text, value, sortable = false, align = "center", width = "") {
-        def headerParams = [:]
-        headerParams = ['text': text, 'value': value, 'align': align, 'sortable': sortable]
+    static Map createTableHeader(Map config) {
+        Map headerParams = ['text': config.text, 'value': config.value, 'align': config.get('align', 'center'), 'sortable': config.get('sortable', false)]
+        if (config.get('width', '') != "") {
+            headerParams.put('width', config.width as String)
+        }
+        return headerParams
+    }
 
+    static Map createTableHeader(text, value, sortable = false, align = "center", width = "") {
+        Map headerParams = ['text': text, 'value': value, 'align': align, 'sortable': sortable]
         if (width != "") {
             headerParams.put('width', width)
         }
         return headerParams
     }
 
+    static String displayTable(Map config) {
+        Map params = ['title'      : config.title, 'enableSearch': config.get('enableSearch', true), 'headers': config.headers, 'rows': config.rows,
+                      'rowsPerPage': config.get('rowsPerPage', [5, 10, 25]), 'overrideTitle': config.get('overrideTitle', false),
+                      'footer'     : config.get('footer', "")]
+
+        JsonOutput.toJson(['name': 'displayTable', 'parameters': params])
+    }
+
     static String displayTable(def channel = "webview", def title, def footer = "", def enableSearch = true, def headers, def rows, def rowsPerPage = [5, 10, 25]) {
-        if (channel == 'webview') {
-            def attachment = [:]
-            def params = [:]
-            params = ['title': title, 'enableSearch': enableSearch, 'headers': headers, 'rows': rows, 'rowsPerPage': rowsPerPage, ]
-
-            if (footer != "") {
-                params.put("footer", footer)
-            }
-
-            attachment = ['name': 'displayTable', 'parameters': params]
-            def result = new groovy.json.JsonBuilder(attachment).toString()
-            return result
+        Map params = ['title': title, 'enableSearch': enableSearch, 'headers': headers, 'rows': rows, 'rowsPerPage': rowsPerPage,]
+        if (footer != "") {
+            params.put("footer", footer)
         }
-        return ""
-
+        Map attachment = ['name': 'displayTable', 'parameters': params]
+        JsonOutput.toJson(attachment)
     }
 
     static String displayTableWithMainTitle(def channel = "webview", def title, def footer = "", def enableSearch = true, def headers, def rows, def rowsPerPage = [5, 10, 25]) {
-        if (channel == 'webview') {
-            def attachment = [:]
-            def params = [:]
-            params = ['title': title, 'enableSearch': enableSearch, 'headers': headers, 'rows': rows, 'rowsPerPage': rowsPerPage, 'overrideTitle': true]
-
-            if (footer != "") {
-                params.put("footer", footer)
-            }
-
-            attachment = ['name': 'displayTable', 'parameters': params]
-            def result = new groovy.json.JsonBuilder(attachment).toString()
-            return result
+        Map params = ['title': title, 'enableSearch': enableSearch, 'headers': headers, 'rows': rows, 'rowsPerPage': rowsPerPage, 'overrideTitle': true]
+        if (footer != "") {
+            params.put("footer", footer)
         }
-        return ""
-
+        Map attachment = ['name': 'displayTable', 'parameters': params]
+        return JsonOutput.toJson(attachment)
     }
 
-    static String displayPermanentClickableList(def content, def channel, def containsLongOptions = false) {
-        def result = ""
-
-        if (channel == 'webview' || channel == 'tryout') {
-            // construct json for table
-            def attachment = [:]
-            def params = [:]
-
-            params = ['content': content]
-            attachment = ['name': 'displayCollection', 'hasLongOptions': containsLongOptions, 'permanent': true, 'parameters': params]
-            result = new groovy.json.JsonBuilder(attachment).toString()
-        }
-
-        return result
+    static String displayClickableList(Map config) {
+        Map attachment = ['name'     : 'displayCollection', 'hasLongOptions': config.get('containsLongOptions', false),
+                          'permanent': config.get('permanent', false), 'parameters': ['content': config.content]]
+        JsonOutput.toJson(attachment)
     }
 
-    static String displayClickableList(def content, def channel, def containsLongOptions = false) {
-        def result = ""
-        if (channel == 'facebook') {
-            // construct json for facebook attachment
-            // generic facebook template
-            def attachment = [:]
-            def payload = [:]
-            def elements = []
-            elements = content.items.collect {
-                item ->
-                    [
-                            title    : item.name,
-                            subtitle : item.description,
-                            image_url: item.image_url,
-                            buttons  : [
-                                    [type: 'web_url', url: item.item_url, title: 'View page']
-                            ]
-                    ]
-            }
+    static String displayPermanentClickableList(def content, def channel, boolean hasLongOptions = false) {
+        return displayClickableList(['content': content, hasLongOptions: hasLongOptions, 'permanent': true] as Map)
+    }
 
-            payload = [template_type: 'generic', elements: elements]
-            attachment = [type: 'template', payload: payload]
-            result = new groovy.json.JsonBuilder([attachment: attachment]).toString()
+    static String displayClickableList(def content, def channel, def hasLongOptions = false) {
+        return displayClickableList(['content': content, hasLongOptions: hasLongOptions, 'permanent': false] as Map)
+    }
 
-        }
-        if (channel == 'slack') {
-            // construct json for attachments
-            def elements = []
-            elements = content.items.collect {
-                item ->
-                    [
-                            fallback  : item.name,
-                            title     : item.name,
-                            title_link: item.item_url,
-                            text      : item.description,
-                            thumb_url : item.image_url
-                    ]
-            }
-
-            result = new groovy.json.JsonBuilder([attachments: elements]).toString()
-        }
-
-        if (channel == 'webview') {
-            // construct json for table
-            def attachment = [:]
-            def params = [:]
-
-            params = ['content': content]
-            attachment = ['name': 'displayCollection', 'hasLongOptions': containsLongOptions, 'parameters': params]
-            result = new groovy.json.JsonBuilder(attachment).toString()
-
-        }
-
-        return result
+    static String displayImage(Map config) {
+        Map params = [image_url: config.imageUrl]
+        Map attachment = [name: 'displayImage', parameters: params, inline: config.get('inline', true)]
+        JsonOutput.toJson(attachment)
     }
 
     static String displayImage(def imageUrl, def channel, def inline = false) {
-        def result = ""
-        if (channel == 'facebook') {
-            // construct json for facebook attachment
-            // just add an image
-            def attachment = [:]
-            def payload = [:]
+        Map params = [image_url: imageUrl]
+        Map attachment = [name: 'displayImage', parameters: params, inline: inline]
+        JsonOutput.toJson(attachment)
+    }
 
-            payload = [url: imageUrl]
-            attachment = [type: 'image', payload: payload]
-            result = new groovy.json.JsonBuilder([attachment: attachment]).toString()
+    static String displayImageCarousel(Map config) {
+        Map params = [images: config.images]
+        Map attachment = [name: 'displayImageCarousel', parameters: params, inline: config.get('inline', true)]
+        JsonOutput.toJson(attachment)
+    }
 
-        }
-
-        if (channel == 'slack') {
-            // construct json for attachments
-            def elements = []
-            elements = [
-                    fallback : "Here's an image",
-                    image_url: imageUrl
-            ]
-            result = new groovy.json.JsonBuilder([attachments: [elements]]).toString()
-        }
-
-        if (channel == 'webview') {
-            // construct json for image
-            def attachment = [:]
-            def params = [:]
-
-            params = [image_url: imageUrl]
-            attachment = [name: 'displayImage', parameters: params, inline: inline]
-            result = new groovy.json.JsonBuilder(attachment).toString()
-        }
-        return result
+    static String displayImageCarousel(def images, def channel, def inline = false) {
+        Map params = [images: images]
+        Map attachment = [name: 'displayImageCarousel', parameters: params, inline: inline]
+        JsonOutput.toJson(attachment)
     }
 
     static String displayModal(def model, String template) {
         def result = ""
-        def attachment = [:]
         def items = []
 
         try {
@@ -172,92 +99,50 @@ class ExtensionHelper {
                 items.add(item)
 
             }
-            attachment = ['name': 'displayModal', 'items': items]
-            result = new groovy.json.JsonBuilder(attachment).toString()
+            Map attachment = ['name': 'displayModal', 'items': items]
+            result = JsonOutput.toJson(attachment)
         } catch (PatternSyntaxException ex) {
             ex.printStackTrace()
         }
         return result
     }
 
-    static String displayImageCarousel(def images, def channel, def inline = false) {
-        def result = ""
-        if (channel == 'facebook') {
-            // construct json for facebook attachment
-            // just add an image
-            def attachment = [:]
-            def payload = [:]
+    static String displayVideo(Map config) {
+        Map params = [video_url: config.videoUrl]
+        Map attachment = [name: 'displayVideo', parameters: params, inline: config.get('inline', true)]
+        JsonOutput.toJson(attachment)
+    }
 
-            payload = [url: images[0]]
-            attachment = [type: 'image', payload: payload]
-            result = new groovy.json.JsonBuilder([attachment: attachment]).toString()
-
-        }
-
-        if (channel == 'slack') {
-            // construct json for attachments
-            def elements = [
-                    fallback : "Here's an image",
-                    image_url: images[0]
-            ]
-            result = new groovy.json.JsonBuilder([attachments: [elements]]).toString()
-        }
-
-        if (channel == 'webview') {
-            // construct json for image
-            def attachment = [:]
-            def params = [:]
-
-            params = [images: images]
-            attachment = [name: 'displayImageCarousel', parameters: params, inline: inline]
-            result = new groovy.json.JsonBuilder(attachment).toString()
-        }
-        return result
+    static String displayAudio(Map config) {
+        Map params = [video_url: config.videoUrl]
+        Map attachment = [name: 'displayVideo', parameters: params, inline: config.get('inline', true)]
+        JsonOutput.toJson(attachment)
     }
 
     static String displayVideo(def videoUrl, def channel, def inline = false) {
-        def result = ""
-
-        if (channel == 'facebook') {
-            // construct json for facebook attachment
-            // just add an image
-            def attachment = [:]
-            def payload = [:]
-
-            payload = [url: videoUrl]
-            attachment = [type: 'video', payload: payload]
-            result = new groovy.json.JsonBuilder([attachment: attachment]).toString()
-
-        }
-
-        if (channel == 'webview') {
-            // construct json for image
-            def attachment = [:]
-            def params = [:]
-
-            params = [video_url: videoUrl]
-            attachment = [name: 'displayVideo', parameters: params, inline: inline]
-            result = new groovy.json.JsonBuilder(attachment).toString()
-        }
-
-        return result
+        Map params = [video_url: videoUrl]
+        Map attachment = [name: 'displayVideo', parameters: params, inline: inline]
+        JsonOutput.toJson(attachment)
     }
 
+    static String displayPanel(Map config) {
+        Map params = ['content': config.content]
+        Map attachment = [name: 'displayPanelCard', parameters: params]
+        JsonOutput.toJson(attachment)
+    }
 
     static String displayPanel(def content, def channel) {
-        def result = ""
+        Map params = ['content': content]
+        Map attachment = [name: 'displayPanelCard', parameters: params]
+        JsonOutput.toJson(attachment)
+    }
 
-        if (channel == 'webview') {
-            // construct json for image
-            def attachment = [:]
-            def params = [:]
-
-            params = ['content': content]
-            attachment = [name: 'displayPanelCard', parameters: params]
-            result = new groovy.json.JsonBuilder(attachment).toString()
-        }
-
-        return result
+    private static String dateFormat(String isoDate) {
+        Calendar cal = javax.xml.bind.DatatypeConverter.parseDateTime(isoDate)
+        DateFormat df = DateFormat.getDateInstance()
+        int hour = cal.get(Calendar.HOUR_OF_DAY)
+        int minutes = cal.get(Calendar.MINUTE)
+        return df.format(cal.getTime()) + " at " + java.time.LocalTime.of(hour, minutes).toString()
     }
 
     // DEMO SPECIFIC EXTENSIONS
@@ -296,9 +181,7 @@ class ExtensionHelper {
                 'parameters': parameters
         ]
 
-        result = new groovy.json.JsonBuilder(action).toString()
-
-        return result
+        JsonOutput.toJson(action)
     }
 
     // CARRYME
@@ -401,15 +284,11 @@ class ExtensionHelper {
                     "currency"              : details["currency"]
             ]
             attachment = ["type": 'template', "payload": payload]
-            result = new groovy.json.JsonBuilder(["attachment": attachment]).toString()
-
+            result = JsonOutput.toJson(["attachment": attachment])
         }
 
         if (channel == 'webview') { // construct json for webview itinerary
-            def attachment = [:]
-            def params = [:]
-
-            params = [
+            Map params = [
                     'outbound_departure_airport': details["out_dep_airport_code"],
                     'outbound_departure_date'   : dateFormat(details["out_dep_time"]),
                     'outbound_arrival_airport'  : details["out_arr_airport_code"],
@@ -424,50 +303,24 @@ class ExtensionHelper {
                     'airlinename'               : details["out_airline_name"],
                     'footer'                    : details["currency"] + ' ' + details["price"] + '<br>' + details["out_travel_class"]
             ]
-            attachment = ["name": 'displayItinerary', "parameters": params]
-            result = new groovy.json.JsonBuilder(attachment).toString()
-        }
-        return result
-    }
-
-    private static String dateFormat(String isoDate) {
-        Calendar cal = javax.xml.bind.DatatypeConverter.parseDateTime(isoDate)
-        DateFormat df = DateFormat.getDateInstance()
-        int hour = cal.get(Calendar.HOUR_OF_DAY)
-        int minutes = cal.get(Calendar.MINUTE)
-        return df.format(cal.getTime()) + " at " + java.time.LocalTime.of(hour, minutes).toString()
-    }
-
-    // MYBANK
-    static String displayTransactions(def transactions, def channel) {
-        def result = ""
-
-        if (channel == 'webview') {
-            // construct json for table
-            def attachment = [:]
-            def params = [:]
-
-            params = ['transactions': transactions]
-            attachment = ['name': 'displayTransactionsTable', 'parameters': params]
-            result = new groovy.json.JsonBuilder(attachment).toString()
+            Map attachment = ["name": 'displayItinerary', "parameters": params]
+            result = JsonOutput.toJson(attachment)
         }
         return result
     }
 
     // MYBANK
-    static String displayAccounts(def accountsTableContent, def channel) {
-        def result = ""
+    static String displayTransactions(def transactions, def channel = "webview") {
+        Map params = ['transactions': transactions]
+        Map attachment = ['name': 'displayTransactionsTable', 'parameters': params]
+        JsonOutput.toJson(attachment)
+    }
 
-        if (channel == 'webview') {
-            // construct json for table
-            def attachment = [:]
-            def params = [:]
-
-            params = ['accountsTableContent': accountsTableContent]
-            attachment = ['name': 'displayAccountsTable', 'parameters': params]
-            result = new groovy.json.JsonBuilder(attachment).toString()
-        }
-        return result
+    // MYBANK
+    static String displayAccounts(def accountsTableContent, def channel = "webview") {
+        Map params = ['accountsTableContent': accountsTableContent]
+        Map attachment = ['name': 'displayAccountsTable', 'parameters': params]
+        JsonOutput.toJson(attachment)
     }
 
 }
