@@ -457,6 +457,12 @@ export default {
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
+div.v-input__slot:focus, button:focus, a:focus {
+	-webkit-box-shadow: 0 0 0 3px rgba(116,116,116, .5) !important;
+	box-shadow: 0 0 0 3px rgba(116,116,116, .5) !important;
+	outline: 0;
+}
+
 .pulse {
   overflow: visible;
   position: relative;

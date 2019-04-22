@@ -471,7 +471,7 @@ export default {
         if (this.bodyText) {
           this.bodyText = this.bodyText.replace(
             /(?:onclick='DI\.VA\.hope\.sendInput\(")([^"]+)(?:"\)')/g,
-            'data-callback="$1" class="sendInput"'
+            'data-input="$1" class="sendInput"'
           );
         }
         this.showModal = displayModal;
@@ -574,10 +574,14 @@ export default {
       // we don't want to handle clicks from other things in
       // the Vue
       if (!anchor.classList.contains("sendInput")) return;
-      // console.log(anchor.dataset.callback);
+      // console.log(anchor.dataset.input);
       event.stopPropagation();
       event.preventDefault();
-      this.updateInputBox(anchor.dataset.callback);
+      if (anchor.getAttribute('data-input')) {
+        this.updateInputBox(anchor.getAttribute('data-input'));
+      } else {
+        this.updateInputBox(anchor.innerText);
+      }
       this.sendUserInput();
     },
     sendUserInput() {

@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Ripple } from "vuetify/lib/directives";
+import MobileDetect from "mobile-detect";
 import gravatar from "gravatar";
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -22,6 +23,8 @@ import { initializeASR, initializeTTS } from "./utils/asr-tts";
 import { LiveChat } from "./utils/live-chat";
 import { getParameterByName, mergeAsrCorrections } from "./utils/utils";
 import PromisedLocation from "promised-location";
+
+let mobileDetect = new MobileDetect(window.navigator.userAgent);
 const LOCATION_OPTIONS = {
   enableHighAccuracy: true,
   timeout: 10000,
@@ -205,6 +208,9 @@ function setupStore(callback) {
         requestParameters: REQUEST_PARAMETERS,
         teneoUrl: TENEO_URL
       },
+      browser: {
+        isMobile: mobileDetect.mobile() || mobileDetect.tablet() ? true : false
+      },
       auth: {
         firebase: firebaseConfig.apiKey ? firebase.initializeApp(firebaseConfig) : null,
         userInfo: {
@@ -263,6 +269,7 @@ function setupStore(callback) {
       }
     },
     getters: {
+      isMobileDevice: state => state.browser.isMobile,
       socialAuthEnabled: state => (state.auth.firebase ? true : false),
       lastReplyItem: state => {
         return state.conversation.dialog
@@ -779,6 +786,9 @@ function setupStore(callback) {
       },
       CLEAR_USER_INPUT(state) {
         state.userInput.userInput = "";
+        if (state.browser.isMobile) {
+          document.activeElement.blur();
+        }
       },
       SHOW_CHAT_LOADING(state) {
         if (!USE_LOCAL_STORAGE) {

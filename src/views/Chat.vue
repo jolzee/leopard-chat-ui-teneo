@@ -530,7 +530,6 @@
                   :rules="askingForEmail ? [rules.email(userInput)] : []"
                   clearable
                   auto-grow
-                  autofocus
                   required
                   return-masked-value
                   :mask="itemInputMask"
@@ -767,6 +766,7 @@ export default {
       "float",
       "imageUrl",
       "inputHelpText",
+      "isMobileDevice",
       "itemExtensions",
       "itemInputMask",
       "hasInline",
@@ -838,13 +838,16 @@ export default {
         null,
         this.$refs.chatContainer
       );
-      const element = this.$el.querySelector("#teneo-input-field");
-      if (element) {
-        this.$nextTick(() => {
-          element.addEventListener("focusin", e => e.stopPropagation());
-          element.focus();
-        });
+      if(!this.isMobileDevice) {
+        const element = this.$el.querySelector("#teneo-input-field");
+        if (element) {
+          this.$nextTick(() => {
+            element.addEventListener("focusin", e => e.stopPropagation());
+            element.focus();
+          });
+        }
       }
+
     } catch (e) {
       console.log(e);
       // do nothing
@@ -852,10 +855,17 @@ export default {
   },
   mounted() {
     this.$el.addEventListener("click", this.onHtmlClick);
-    this.$refs.userInput.focus();
+    if(!this.isMobileDevice) {
+      this.$refs.userInput.focus();
+    } else {
+      document.activeElement.blur();
+    }
   },
   beforeDestroy() {},
   methods: {
+    hideKeyboard() {
+        document.activeElement.blur();
+    },
     fileChanged(file) {
       this.$store.commit("HIDE_UPLOAD_BUTTON");
       this.showUploadProgress = true;
@@ -910,13 +920,21 @@ export default {
       } else {
         event.stopPropagation();
         event.preventDefault();
-        this.updateInputBox(anchor.innerText);
+        if (anchor.getAttribute('data-input')) {
+          this.updateInputBox(anchor.getAttribute('data-input'));
+        } else {
+          this.updateInputBox(anchor.innerText);
+        }
         this.sendUserInput();
       }
     },
     updateInputBox(userInput) {
       this.$store.commit("SET_USER_INPUT", userInput);
-      this.$refs.userInput.focus();
+      if(!this.isMobileDevice) {
+        this.$refs.userInput.focus();
+      } else {
+        document.activeElement.blur();
+      }
     },
     hideProgressBar() {
       this.$store.commit("HIDE_PROGRESS_BAR");
@@ -1001,6 +1019,7 @@ export default {
     },
     sendUserInput() {
       if (this.valid) {
+
         this.audioButtonColor = "success";
         if (this.userInput) {
           this.$store.commit("SHOW_PROGRESS_BAR");
@@ -1009,14 +1028,24 @@ export default {
           this.date = "";
           this.$store
             .dispatch("sendUserInput")
-            .then(this.$refs.userInput.focus())
+            .then(() => {
+              if(!this.isMobileDevice) {
+                this.$refs.userInput.focus()
+              } else {
+                document.activeElement.blur();
+              }
+            })
             .catch(err => {
               this.userInput = err;
             });
         } else {
           // this.snackbar = true;
         }
-        this.$refs.userInput.focus();
+        if(!this.isMobileDevice) {
+          this.$refs.userInput.focus();
+        } else {
+          document.activeElement.blur();
+        }
       }
     },
     optionClicked(option) {
@@ -1024,7 +1053,13 @@ export default {
       this.$store.commit("SET_USER_INPUT", option.name);
       this.$store
         .dispatch("sendUserInput", option.params ? "&" + option.params : "")
-        .then(this.$refs.userInput.focus());
+        .then(() => {
+          if(!this.isMobileDevice) {
+            this.$refs.userInput.focus()
+          } else {
+            document.activeElement.blur();
+          }
+        });
     },
     modalButtonText(item) {
       if (this.itemHasLongResponse(item)) {
