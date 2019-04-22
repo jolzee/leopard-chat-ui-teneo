@@ -619,6 +619,12 @@ iframe#site-frame {
   padding-right: 1.5em;
 }
 
+@media only screen and (max-height: 250px) {
+  .application {
+    display: none !important;
+  }
+}
+
 @media only screen and (max-width: 480px) {
   #teneo,
   .v-toolbar,
