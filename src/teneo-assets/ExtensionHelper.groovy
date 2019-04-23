@@ -7,6 +7,17 @@ import java.util.regex.PatternSyntaxException
 
 class ExtensionHelper {
 
+    static String setUploadConfig(Map config) {
+        Map params = ['postUrl' : config.postUrl,
+                    'postFileNameParam' : config.get('postFileNameParam', 'file'),
+                    'postParams' : config.get('postParams', [:]),
+                    'teneoSuccessQuery': config.get('teneoSuccessQuery', ''),
+                    'teneoFailureQuery': config.get('teneoFailureQuery',''),
+                    'reqUserInputSuccess': config.get('reqUserInputSuccess', 'I have uploaded my file'),
+                    'reqUserInputFailure': config.get('reqUserInputFailure', 'I tried uploading but it didn\'t work')]
+        JsonOutput.toJson(['name': 'uploadConfig', 'parameters': params] as java.util.Map)
+    }
+
     static Map createTableHeader(Map config) {
         Map headerParams = ['text': config.text, 'value': config.value, 'align': config.get('align', 'center'), 'sortable': config.get('sortable', false)]
         if (config.get('width', '') != "") {
@@ -28,7 +39,7 @@ class ExtensionHelper {
                       'rowsPerPage': config.get('rowsPerPage', [5, 10, 25]), 'overrideTitle': config.get('overrideTitle', false),
                       'footer'     : config.get('footer', "")]
 
-        JsonOutput.toJson(['name': 'displayTable', 'parameters': params])
+        JsonOutput.toJson(['name': 'displayTable', 'parameters': params] as java.util.Map)
     }
 
     static String displayTable(def channel = "webview", def title, def footer = "", def enableSearch = true, def headers, def rows, def rowsPerPage = [5, 10, 25]) {
@@ -181,7 +192,7 @@ class ExtensionHelper {
                 'parameters': parameters
         ]
 
-        JsonOutput.toJson(action)
+        JsonOutput.toJson(action as java.util.Map)
     }
 
     // CARRYME
@@ -284,7 +295,7 @@ class ExtensionHelper {
                     "currency"              : details["currency"]
             ]
             attachment = ["type": 'template', "payload": payload]
-            result = JsonOutput.toJson(["attachment": attachment])
+            result = JsonOutput.toJson(["attachment": attachment] as java.util.Map)
         }
 
         if (channel == 'webview') { // construct json for webview itinerary

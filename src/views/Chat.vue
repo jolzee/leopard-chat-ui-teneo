@@ -702,6 +702,8 @@ import ImageAnimation from "../components/ImageAnimation";
 import Video from "../components/Video";
 import Vimeo from "../components/Vimeo";
 import YouTube from "../components/YouTube";
+// import FormData from 'form-data';
+import axios from "axios";
 
 if (window.Element && !Element.prototype.closest) {
   Element.prototype.closest = function(s) {
@@ -788,6 +790,7 @@ export default {
       "displayName",
       "listening",
       "settingLongResponsesInModal",
+      "uploadConfig",
       "lastItemAnswerTextCropped",
       "itemAnswerTextCropped",
       "lastItemHasLongResponse",
@@ -838,7 +841,7 @@ export default {
         null,
         this.$refs.chatContainer
       );
-      if(!this.isMobileDevice) {
+      if (!this.isMobileDevice) {
         const element = this.$el.querySelector("#teneo-input-field");
         if (element) {
           this.$nextTick(() => {
@@ -847,7 +850,6 @@ export default {
           });
         }
       }
-
     } catch (e) {
       console.log(e);
       // do nothing
@@ -855,7 +857,7 @@ export default {
   },
   mounted() {
     this.$el.addEventListener("click", this.onHtmlClick);
-    if(!this.isMobileDevice) {
+    if (!this.isMobileDevice) {
       this.$refs.userInput.focus();
     } else {
       document.activeElement.blur();
@@ -864,21 +866,78 @@ export default {
   beforeDestroy() {},
   methods: {
     hideKeyboard() {
-        document.activeElement.blur();
+      document.activeElement.blur();
     },
     fileChanged(file) {
       this.$store.commit("HIDE_UPLOAD_BUTTON");
       this.showUploadProgress = true;
-      // handle file here. File will be an object.
+      if (this.uploadConfig) {
+        let config = this.uploadConfig.parameters;
+        var formData = new FormData();
+        formData.append(config.postFileNameParam, file);
+        if (config.postParams) {
+          for (const [key, value] of Object.entries(config.postParams)) {
+            formData.append(key, value);
+          }
+        }
+
+        let self = this;
+
+        axios({
+          method: "post",
+          url: config.postUrl,
+          data: formData,
+          config: { headers: { "Content-Type": "multipart/form-data" } }
+        })
+          .then(function(response) {
+            //handle success
+            if (config.reqUserInputSuccess) {
+              self.$store.commit("SET_USER_INPUT", config.reqUserInputSuccess);
+            }
+            self.$store.dispatch(
+              "sendUserInput",
+              config.teneoSuccessQuery ? config.teneoSuccessQuery : ""
+            );
+            console.log(response);
+          })
+          .catch(function(response) {
+            //handle error
+            if (config.reqUserInputFailure) {
+              self.$store.commit("SET_USER_INPUT", config.reqUserInputFailure);
+            }
+            self.$store.dispatch(
+              "sendUserInput",
+              config.teneoFailureQuery ? config.teneoFailureQuery : ""
+            );
+            console.log(response);
+          });
+
+        // {
+        //   "name": "uploadConfig",
+        //   "parameters": {
+        //     postUrl: "http://url-to-post-file-to.com/some-context",
+        //     postFileNameParam: "file",
+        //     postParams: {
+        //       "my_key": "my_value"
+        //     },
+        //     teneoSuccessQuery: "&uploadResult=success",
+        //     teneoFailureQuery: "&uploadResult=error",
+        //     reqUserInputSuccess: "I have uploaded my file",
+        //     reqUserInputFailure: "I tried uploading but it didn't work"
+        //   }
+        // }
+      }
       // If multiple prop is true, it will return an object array of files.
       this.interval = setInterval(() => {
         if (this.progressValue === 100) {
           clearInterval(this.interval);
           this.showUploadProgress = false;
-          this.$store.commit(
-            "SHOW_MESSAGE_IN_CHAT",
-            `Thanks we have successfully received your file: ${file.name}`
-          );
+          if (!this.uploadConfig) {
+            this.$store.commit(
+              "SHOW_MESSAGE_IN_CHAT",
+              `Thanks we have successfully received your file: ${file.name}`
+            );
+          }
           return (this.progressValue = 0);
         }
         this.progressValue += 10;
@@ -920,8 +979,8 @@ export default {
       } else {
         event.stopPropagation();
         event.preventDefault();
-        if (anchor.getAttribute('data-input')) {
-          this.updateInputBox(anchor.getAttribute('data-input'));
+        if (anchor.getAttribute("data-input")) {
+          this.updateInputBox(anchor.getAttribute("data-input"));
         } else {
           this.updateInputBox(anchor.innerText);
         }
@@ -930,7 +989,7 @@ export default {
     },
     updateInputBox(userInput) {
       this.$store.commit("SET_USER_INPUT", userInput);
-      if(!this.isMobileDevice) {
+      if (!this.isMobileDevice) {
         this.$refs.userInput.focus();
       } else {
         document.activeElement.blur();
@@ -1019,7 +1078,6 @@ export default {
     },
     sendUserInput() {
       if (this.valid) {
-
         this.audioButtonColor = "success";
         if (this.userInput) {
           this.$store.commit("SHOW_PROGRESS_BAR");
@@ -1029,8 +1087,8 @@ export default {
           this.$store
             .dispatch("sendUserInput")
             .then(() => {
-              if(!this.isMobileDevice) {
-                this.$refs.userInput.focus()
+              if (!this.isMobileDevice) {
+                this.$refs.userInput.focus();
               } else {
                 document.activeElement.blur();
               }
@@ -1041,7 +1099,7 @@ export default {
         } else {
           // this.snackbar = true;
         }
-        if(!this.isMobileDevice) {
+        if (!this.isMobileDevice) {
           this.$refs.userInput.focus();
         } else {
           document.activeElement.blur();
@@ -1054,8 +1112,8 @@ export default {
       this.$store
         .dispatch("sendUserInput", option.params ? "&" + option.params : "")
         .then(() => {
-          if(!this.isMobileDevice) {
-            this.$refs.userInput.focus()
+          if (!this.isMobileDevice) {
+            this.$refs.userInput.focus();
           } else {
             document.activeElement.blur();
           }

@@ -269,6 +269,15 @@ function setupStore(callback) {
       }
     },
     getters: {
+      uploadConfig(_state, getters) {
+        let item = getters.lastReplyItem;
+        let uploadConfigJson = {};
+        if (getters.itemExtraData(item, "uploadConfig")) {
+          uploadConfigJson = getters.itemExtraData(item, "uploadConfig");
+        }
+
+        return uploadConfigJson;
+      },
       isMobileDevice: state => state.browser.isMobile,
       socialAuthEnabled: state => (state.auth.firebase ? true : false),
       lastReplyItem: state => {
@@ -433,6 +442,13 @@ function setupStore(callback) {
           }
         });
         return modalExtensions;
+      },
+      itemExtraData: _state => (item, name) => {
+        let response = {};
+        if (item && item.teneoResponse && name in item.teneoResponse.extraData) {
+          response = JSON.parse(decodeURIComponent(item.teneoResponse.extraData[name]));
+        }
+        return response;
       },
       itemExtensions: _state => item => {
         let actions = [];
