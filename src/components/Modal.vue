@@ -461,6 +461,7 @@ export default {
           this.title = decodeURIComponent(
             this.modalItem.teneoResponse.lastinput
           );
+          this.bodyText = this.modalItem.text;
           // this.bodyText = this.modalItem.text.replace(
           //   /(?:\r\n|\r|\n)/g,
           //   "<br/><br/>"
@@ -577,8 +578,8 @@ export default {
       // console.log(anchor.dataset.input);
       event.stopPropagation();
       event.preventDefault();
-      if (anchor.getAttribute('data-input')) {
-        this.updateInputBox(anchor.getAttribute('data-input'));
+      if (anchor.getAttribute("data-input")) {
+        this.updateInputBox(anchor.getAttribute("data-input"));
       } else {
         this.updateInputBox(anchor.innerText);
       }
