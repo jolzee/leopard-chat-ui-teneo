@@ -558,7 +558,7 @@
                   class="mx-0 px-0"
                 >
                   <template slot="icon">
-                    <v-icon>mdi-paperclip</v-icon>
+                    <v-icon dark>mdi-paperclip</v-icon>
                   </template>
                 </upload-btn>
                 <v-progress-circular
@@ -748,7 +748,6 @@ export default {
         required: value => !!value || "Required.",
         counter: value => value.length <= 20 || "Max 20 characters",
         email: value => {
-          console.log(value);
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           return pattern.test(value) || "Invalid e-mail.";
         }
@@ -1245,6 +1244,13 @@ export default {
 }
 </style>
 <style>
+div.teneo-footer .v-input__slot {
+  -webkit-box-shadow: unset !important;
+  box-shadow: unset !important;
+  background: unset !important;
+  padding-left: 5px !important;
+}
+
 div.teneo-footer .v-text-field__details {
   position: relative !important;
   bottom: 20px !important;
@@ -1354,7 +1360,7 @@ span.teneo-reply ul {
   position: inherit;
   bottom: 0px !important;
   width: 100%;
-  height: 60px;
+  height: 62px;
   z-index: 1;
   padding-top: 2px;
 }
