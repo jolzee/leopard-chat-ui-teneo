@@ -209,7 +209,8 @@ function setupStore(callback) {
         teneoUrl: TENEO_URL
       },
       browser: {
-        isMobile: mobileDetect.mobile() || mobileDetect.tablet() ? true : false
+        isMobile: mobileDetect.mobile() || mobileDetect.tablet() ? true : false,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       },
       auth: {
         firebase: firebaseConfig.apiKey ? firebase.initializeApp(firebaseConfig) : null,
@@ -269,6 +270,9 @@ function setupStore(callback) {
       }
     },
     getters: {
+      timeZoneParam(state) {
+        return "&timeZone=" + encodeURI(state.browser.timeZone);
+      },
       uploadConfig(_state, getters) {
         let item = getters.lastReplyItem;
         let uploadConfigJson = {};
@@ -1146,10 +1150,13 @@ function setupStore(callback) {
       login(context) {
         // get the greeting message if we haven't done so for this session
         return new Promise((resolve, reject) => {
-          Vue.jsonp(TENEO_URL + REQUEST_PARAMETERS + context.getters.userInformationParams, {
-            command: "login"
-            // userInput: ""
-          })
+          Vue.jsonp(
+            TENEO_URL + REQUEST_PARAMETERS + context.getters.userInformationParams + context.getters.timeZoneParam,
+            {
+              command: "login"
+              // userInput: ""
+            }
+          )
             .then(json => {
               context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
               // console.log(decodeURIComponent(json.responseData.answer))
@@ -1202,7 +1209,8 @@ function setupStore(callback) {
           Vue.jsonp(
             context.getters.teneoUrl +
               (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params) +
-              context.getters.userInformationParams,
+              context.getters.userInformationParams +
+              context.getters.timeZoneParam,
             {
               userinput: currentUserInput
             }
