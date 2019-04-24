@@ -509,6 +509,7 @@
           <v-form
             v-model="valid"
             v-on:submit.prevent
+            ref="userInputForm"
           >
             <v-layout row>
 
@@ -1077,6 +1078,7 @@ export default {
     },
     sendUserInput() {
       if (this.valid) {
+        this.$refs.userInputForm.resetValidation();
         this.audioButtonColor = "success";
         if (this.userInput) {
           this.$store.commit("SHOW_PROGRESS_BAR");
