@@ -275,7 +275,7 @@ function setupStore(callback) {
       },
       uploadConfig(_state, getters) {
         let item = getters.lastReplyItem;
-        let uploadConfigJson = {};
+        let uploadConfigJson = null;
         if (getters.itemExtraData(item, "uploadConfig")) {
           uploadConfigJson = getters.itemExtraData(item, "uploadConfig");
         }

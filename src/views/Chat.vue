@@ -871,9 +871,10 @@ export default {
     fileChanged(file) {
       this.$store.commit("HIDE_UPLOAD_BUTTON");
       this.showUploadProgress = true;
-      if (this.uploadConfig) {
+      if (this.uploadConfig && Object.keys(this.uploadConfig).length) {
         let config = this.uploadConfig.parameters;
         var formData = new FormData();
+
         formData.append(config.postFileNameParam, file);
         if (config.postParams) {
           for (const [key, value] of Object.entries(config.postParams)) {
@@ -932,7 +933,7 @@ export default {
         if (this.progressValue === 100) {
           clearInterval(this.interval);
           this.showUploadProgress = false;
-          if (!this.uploadConfig) {
+          if (!this.uploadConfig || !Object.keys(this.uploadConfig).length) {
             this.$store.commit(
               "SHOW_MESSAGE_IN_CHAT",
               `Thanks we have successfully received your file: ${file.name}`
