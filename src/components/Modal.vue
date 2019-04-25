@@ -651,6 +651,7 @@ export default {
 .v-menu__content {
   position: inherit !important;
 }
+
 .cardText {
   padding-top: 5px;
   text-align: left;
@@ -664,32 +665,37 @@ export default {
   border-collapse: collapse;
   text-align: left;
   width: 100%;
-  border: 3px solid #0070a8;
+  border: 3px solid rgb(105, 104, 104);
 }
+
 .cardText table td,
 .cardText table th {
   padding: 3px 10px;
 }
+
 .cardText table thead th {
-  background-color: #006699;
-  color: #ffffff;
+  background-color: #8e8e93b5;
   font-size: 11px;
-  font-weight: bold;
-  border-left: 1px solid #ffffff;
+  font-weight: 700;
+  border-left: 1px solid #333;
 }
+
 .cardText table td.summaryHeader {
-  border-top: 1px solid #0070a8;
-  border-bottom: 1px solid #0070a8;
-  background-color: rgb(165, 165, 165);
+  border-top: 1px solid #8e8e93;
+  border-bottom: 1px solid #8e8e93;
+  background-color: #fafafa;
 }
+
 .cardText table tbody td {
-  border-left: 1px solid #0070a8;
+  border-left: 1px solid #8e8e93;
   font-size: 12px;
-  font-weight: normal;
+  font-weight: 400;
 }
+
 .cardText table tbody td:first-child {
   border-left: none;
 }
+
 .cardText table tbody tr:last-child td {
   border-bottom: none;
 }

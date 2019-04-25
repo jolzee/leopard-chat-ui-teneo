@@ -888,7 +888,7 @@
                                 @click="setActiveColor('primary')"
                                 validate-on-blur
                                 color="light-blue darken-1"
-                                :v-text="solution.theme.primary"
+                                :value="solution.theme.primary"
                                 :tabindex="getTabIndex"
                                 label="primary"
                                 :rules="[ruleMustHaveValue, ruleMustHaveColor]"

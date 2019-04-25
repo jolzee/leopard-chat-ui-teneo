@@ -414,7 +414,7 @@ function setupStore(callback) {
         const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#]*).*/;
         const match = url.match(regExp);
         if (match) {
-          return match && match[7].length == 11 ? match[7] : false;
+          return match[7].length == 11 ? match[7] : false;
         } else {
           return false;
         }
@@ -498,12 +498,13 @@ function setupStore(callback) {
       },
       hasInline: (_state, getters) => item => {
         let extensions = getters.itemExtensions(item);
+        let hasInline = false;
         extensions.forEach(extension => {
           if (extension && extension.inline) {
-            return true;
+            hasInline = true;
           }
         });
-        return false;
+        return hasInline;
       },
       hasInlineType: (_state, getters) => (extension, type) => {
         if (extension && extension.inline) {
@@ -649,7 +650,7 @@ function setupStore(callback) {
         let hasLongResponse = false;
         if (getters.settingLongResponsesInModal) {
           let item = getters.lastReplyItem;
-          if (getters.settingLongResponsesInModal && item && item.text && item.text.length > 400) {
+          if (item && item.text && item.text.length > 400) {
             hasLongResponse = true;
           }
         }
@@ -1327,7 +1328,7 @@ function setupStore(callback) {
               };
 
               let ttsText = stripHtml(response.teneoAnswer);
-              if (response.teneoResponse.extraData.tts) {
+              if (response.teneoResponse && response.teneoResponse.extraData.tts) {
                 ttsText = stripHtml(decodeURIComponent(response.teneoResponse.extraData.tts));
               }
 
