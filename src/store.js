@@ -1327,70 +1327,73 @@ function setupStore(callback) {
                 teneoResponse: json.responseData
               };
 
-              let ttsText = stripHtml(response.teneoAnswer);
-              if (response.teneoResponse && response.teneoResponse.extraData.tts) {
-                ttsText = stripHtml(decodeURIComponent(response.teneoResponse.extraData.tts));
-              }
-
-              // check if this browser supports the Web Speech API
-              if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
-                if (context.getters.tts && context.getters.speakBackResponses) {
-                  context.getters.tts.say(ttsText);
-                }
-              }
-
-              if (context.getters.askingForPassword) {
-                context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", {
-                  response,
-                  mask: true
-                });
-              } else {
-                context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", {
-                  response,
-                  mask: false
-                });
-              }
-
-              context.commit("HIDE_PROGRESS_BAR");
-              if (response.teneoResponse && response.teneoResponse.extraData.liveChat) {
-                context.commit("START_LIVE_CHAT");
-              }
-
-              let chatTitle = decodeURIComponent(response.teneoResponse.extraData.chatTitle);
-              if (chatTitle !== "undefined") {
-                context.commit("SET_CHAT_TITLE", chatTitle);
-              }
-
-              // added on request from Mark J - switch languages based on NER language detection
-              let langInput = decodeURIComponent(response.teneoResponse.extraData.langinput);
-              let langEngineUrl = decodeURIComponent(response.teneoResponse.extraData.langengineurl);
-              let lang = decodeURIComponent(response.teneoResponse.extraData.lang);
-              let langurl = decodeURIComponent(response.teneoResponse.extraData.langurl);
-
-              if (langEngineUrl !== "undefined" && langInput !== "undefined") {
-                context.commit("UPDATE_TENEO_URL", langEngineUrl + "?viewname=STANDARDJSONP");
-                context.commit("SET_USER_INPUT", langInput);
-                context.commit("SHOW_PROGRESS_BAR");
-
-                if (lang !== "undefined") {
-                  context.commit("UPDATE_UI_LOCALE", lang);
-                  context.commit("CHANGE_ASR_TTS", lang);
+              if (response.teneoResponse) {
+                let ttsText = stripHtml(response.teneoAnswer);
+                if (response.teneoResponse.extraData.tts) {
+                  ttsText = stripHtml(decodeURIComponent(response.teneoResponse.extraData.tts));
                 }
 
-                if (langurl !== "undefined") {
-                  context.commit("UPDATE_FRAME_URL", langurl);
+                // check if this browser supports the Web Speech API
+                if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
+                  if (context.getters.tts && context.getters.speakBackResponses) {
+                    context.getters.tts.say(ttsText);
+                  }
                 }
 
-                context
-                  .dispatch("sendUserInput")
-                  .then(console.log("Sent original lang input to new lang specific solution"))
-                  .catch(err => {
-                    console.err("Unable to send lang input to new lang specific solution", err.message);
-                    context.commit(
-                      "SHOW_MESSAGE_IN_CHAT",
-                      "Unable to send lang input to new lang specific solution: " + err.message
-                    );
+                if (context.getters.askingForPassword) {
+                  context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", {
+                    response,
+                    mask: true
                   });
+                } else {
+                  context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", {
+                    response,
+                    mask: false
+                  });
+                }
+
+                context.commit("HIDE_PROGRESS_BAR");
+                if (response.teneoResponse.extraData.liveChat) {
+                  context.commit("START_LIVE_CHAT");
+                }
+                if (response.teneoResponse.extraData.chatTitle) {
+                  let chatTitle = decodeURIComponent(response.teneoResponse.extraData.chatTitle);
+                  if (chatTitle !== "undefined") {
+                    context.commit("SET_CHAT_TITLE", chatTitle);
+                  }
+                }
+
+                // added on request from Mark J - switch languages based on NER language detection
+                let langInput = decodeURIComponent(response.teneoResponse.extraData.langinput);
+                let langEngineUrl = decodeURIComponent(response.teneoResponse.extraData.langengineurl);
+                let lang = decodeURIComponent(response.teneoResponse.extraData.lang);
+                let langurl = decodeURIComponent(response.teneoResponse.extraData.langurl);
+
+                if (langEngineUrl !== "undefined" && langInput !== "undefined") {
+                  context.commit("UPDATE_TENEO_URL", langEngineUrl + "?viewname=STANDARDJSONP");
+                  context.commit("SET_USER_INPUT", langInput);
+                  context.commit("SHOW_PROGRESS_BAR");
+
+                  if (lang !== "undefined") {
+                    context.commit("UPDATE_UI_LOCALE", lang);
+                    context.commit("CHANGE_ASR_TTS", lang);
+                  }
+
+                  if (langurl !== "undefined") {
+                    context.commit("UPDATE_FRAME_URL", langurl);
+                  }
+
+                  context
+                    .dispatch("sendUserInput")
+                    .then(console.log("Sent original lang input to new lang specific solution"))
+                    .catch(err => {
+                      console.err("Unable to send lang input to new lang specific solution", err.message);
+                      context.commit(
+                        "SHOW_MESSAGE_IN_CHAT",
+                        "Unable to send lang input to new lang specific solution: " + err.message
+                      );
+                    });
+                }
               }
             })
             .catch(err => {
