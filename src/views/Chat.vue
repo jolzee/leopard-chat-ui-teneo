@@ -395,6 +395,7 @@
                       <v-flex>
                         <v-card
                           class="chat-card chat-card-left text-xs-left"
+                          :color="dark ? '#333333' : '#FAFAFA'"
                           :dark="dark"
                         >
                           <span
