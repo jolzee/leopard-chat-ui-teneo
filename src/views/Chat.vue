@@ -257,6 +257,42 @@
                         ></Carousel>
                       </v-flex>
                     </v-layout>
+                    <!-- Additional Response Chunks -->
+                    <div v-if="responseHasChunks(item)">
+                      <v-layout
+                        row
+                        v-for="(chunkText, index) in getChunks(item)"
+                        :key="index + uuid"
+                      >
+                        <v-flex
+                          xs2
+                          class="text-xs-left"
+                          v-if="showChatIcons"
+                        >
+                          <v-btn
+                            v-long-press="swapInputButton"
+                            color="secondary"
+                            class="teneo-response-icon elevation-2"
+                            fab
+                            small
+                          >
+                            <v-icon class="white--text">{{responseIcon}}</v-icon>
+                          </v-btn>
+                        </v-flex>
+                        <v-flex>
+                          <v-card
+                            class="chat-card chat-card-left text-xs-left"
+                            :color="dark ? '#333333' : '#FAFAFA'"
+                            :dark="dark"
+                          >
+                            <span
+                              v-html="chunkText"
+                              class="teneo-reply"
+                            ></span>
+                          </v-card>
+                        </v-flex>
+                      </v-layout>
+                    </div>
                     <!-- show any options in the response: for example Yes, No Maybe -->
                     <v-card
                       flat
@@ -312,12 +348,6 @@
                     </v-card>
                     <!-- more info for modals & calendar picker button -->
                     <v-layout row>
-                      <!-- <v-flex
-                        xs12
-                        class="text-xs-right"
-                        v-if="item.hasExtraData && hasModal(item) && !hasCollection(item) && notLiveChatTranscript(item)"
-                      > -->
-
                       <v-flex
                         xs12
                         class="text-xs-right"
@@ -369,43 +399,6 @@
                       </v-flex>
                     </v-layout>
                   </template>
-                  <!-- Additional Response Chunks -->
-                  <div v-if="responseHasChunks(item)">
-
-                    <v-layout
-                      row
-                      v-for="(chunkText, index) in getChunks(item)"
-                      :key="index + uuid"
-                    >
-                      <v-flex
-                        xs2
-                        class="text-xs-left"
-                        v-if="showChatIcons"
-                      >
-                        <v-btn
-                          v-long-press="swapInputButton"
-                          color="secondary"
-                          class="teneo-response-icon elevation-2"
-                          fab
-                          small
-                        >
-                          <v-icon class="white--text">{{responseIcon}}</v-icon>
-                        </v-btn>
-                      </v-flex>
-                      <v-flex>
-                        <v-card
-                          class="chat-card chat-card-left text-xs-left"
-                          :color="dark ? '#333333' : '#FAFAFA'"
-                          :dark="dark"
-                        >
-                          <span
-                            v-html="chunkText"
-                            class="teneo-reply"
-                          ></span>
-                        </v-card>
-                      </v-flex>
-                    </v-layout>
-                  </div>
 
                   <!-- user question -->
                   <v-layout
@@ -1260,6 +1253,10 @@ export default {
 }
 </style>
 <style>
+div#chat-area p {
+  margin-bottom: 5px;
+}
+
 div.teneo-footer .v-input__slot {
   -webkit-box-shadow: unset !important;
   box-shadow: unset !important;

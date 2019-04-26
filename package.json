@@ -35,6 +35,7 @@
     "pusher": "^2.2.0",
     "replace-string": "^2.0.0",
     "request": "^2.88.0",
+    "showdown": "^1.9.0",
     "simple-json-request": "^0.5.2",
     "string-strip-html": "^4.0.12",
     "tinyurl": "^1.1.2",

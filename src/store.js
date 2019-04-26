@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import showdown from "showdown";
 import { Ripple } from "vuetify/lib/directives";
 import MobileDetect from "mobile-detect";
 import uuidv1 from "uuid/v1";
@@ -24,6 +25,7 @@ import { initializeASR, initializeTTS } from "./utils/asr-tts";
 import { LiveChat } from "./utils/live-chat";
 import { getParameterByName, mergeAsrCorrections } from "./utils/utils";
 import PromisedLocation from "promised-location";
+let converter = new showdown.Converter();
 
 let mobileDetect = new MobileDetect(window.navigator.userAgent);
 const LOCATION_OPTIONS = {
@@ -1177,7 +1179,9 @@ function setupStore(callback) {
               }
               const response = {
                 type: "reply",
-                text: decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"'),
+                text: converter.makeHtml(
+                  decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
+                ),
                 bodyText: "",
                 teneoResponse: json.responseData,
                 hasExtraData: hasExtraData
@@ -1324,9 +1328,8 @@ function setupStore(callback) {
               // console.log(decodeURIComponent(json.responseData.answer))
               const response = {
                 userInput: currentUserInput,
-                teneoAnswer: decodeURIComponent(json.responseData.answer).replace(
-                  /onclick="[^"]+"/g,
-                  'class="sendInput"'
+                teneoAnswer: converter.makeHtml(
+                  decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
                 ),
                 teneoResponse: json.responseData
               };
