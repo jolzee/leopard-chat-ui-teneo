@@ -7,20 +7,35 @@
     :class="{'application-float': float}"
   >
     <div id="chat-open-close-button">
-      <!-- <v-hover>
-        <v-avatar
-          slot-scope="{ hover }"
-          size="66"
-          :class="`elevation-${hover ? 6 : 2}`"
-          @click="toggleChat"
-          v-show="!hideChatButton"
-        >
-          <img
-            src="https://avatars0.githubusercontent.com/u/36912049?s=460&v=4"
-            alt="Peter"
+      <!-- <v-badge
+        overlap
+        color="#282A2E"
+      >
+        <template v-slot:badge>
+          <v-icon
+            dark
+            small
+            color="#1CB51C"
           >
-        </v-avatar>
-      </v-hover> -->
+            mdi-checkbox-multiple-blank-circle
+          </v-icon>
+        </template>
+        <v-hover>
+          <v-avatar
+            slot-scope="{ hover }"
+            size="66"
+            :class="`elevation-${hover ? 6 : 2}`"
+            @click="toggleChat"
+            v-show="!hideChatButton"
+          >
+            <img
+              :src="hover ? 'https://lh3.googleusercontent.com/-l34qOEimV5o/AAAAAAAAAAI/AAAAAAADJFg/Qu4IolfMLzc/photo.jpg?sz=150' : 'https://avatars0.githubusercontent.com/u/36912049?s=460&v=4'"
+              alt="Peter"
+            >
+          </v-avatar>
+        </v-hover>
+      </v-badge> -->
+
       <v-fab-transition>
         <v-btn
           fab
@@ -305,9 +320,50 @@ export default {
       this.drawer = false;
       document.activeElement.blur();
       if (menuItem.titleKey === "menu.logout") {
+        let chatButton = document.getElementById("chat-open-close-button");
+        let siteFrame;
+        if (this.embed) {
+          siteFrame = document.getElementById("site-frame");
+        }
+
         this.$store.dispatch("logout");
         this.drawer = false;
-      }
+        // hide chat window - button clicked - logout
+        this.$store.commit("HIDE_CHAT_MODAL");
+        if (!this.embed && !this.overlayChat && siteFrame) {
+          siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
+        }
+
+        setTimeout(
+          function() {
+            this.hideChat = !this.hideChat; // close the chat window - i want the iframe to resize first and then the chat window to close
+            chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
+          }.bind(this),
+          1000
+        );
+
+        this.hideChatButton = !this.hideChatButton;
+
+        // now end the Teneo Session - user clicked the close button - intention is clear
+        this.$store.dispatch("endSession").then(() => {
+          this.$store.commit("CLEAR_CHAT_HISTORY"); // clear the dialogs once we have successfully ended the session
+
+          // show the loading gif as the window is closing. Although delay a bit
+          setTimeout(
+            function() {
+              this.$store.commit("SHOW_CHAT_LOADING");
+            }.bind(this),
+            400
+          );
+
+          setTimeout(
+            function() {
+              this.hideChatButton = !this.hideChatButton; // only show the open chat button once the session has ended
+            }.bind(this),
+            1500
+          );
+        });
+      } //
     },
     backgroundImage() {
       return require("./assets/purple.jpg");
@@ -417,6 +473,7 @@ export default {
             console.log("ERROR LOGGING IN TO CHAT: ", err.message);
           });
       } else {
+        let chatButton = document.getElementById("chat-open-close-button");
         // hide chat window - button clicked - logout
         this.$store.commit("HIDE_CHAT_MODAL");
         if (!this.embed && !this.overlayChat && siteFrame) {
