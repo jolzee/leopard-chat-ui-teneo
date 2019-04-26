@@ -92,7 +92,7 @@
             <v-expansion-panel-content
               class="teneo-dialog"
               v-for="(item,i) in dialog"
-              :key="i + 'itemsIter'"
+              :key="i + 'itemsIter' + uuid"
               :hide-actions="true"
               :class="{'pb-2': (i === dialog.length - 1), 'pt-2': (i === 0)}"
             >
@@ -220,7 +220,7 @@
                     <!-- Show Inline Components -->
                     <v-layout
                       v-for="(extension, index) in itemExtensions(item)"
-                      :key="index + 'inlines'"
+                      :key="index + 'inlines' + uuid"
                       row
                     >
                       <v-flex xs12>
@@ -276,7 +276,7 @@
                         <span
                           v-else
                           v-for="(option,i) in getOptions(item).items"
-                          :key="i"
+                          :key="i + 'option' + uuid"
                         >
                           <v-btn
                             class="option-btn"
@@ -296,9 +296,9 @@
                         class="pt-1"
                       >
                         <template v-for="(option,i) in getOptions(item).items">
-                          <v-divider :key="i"></v-divider>
+                          <v-divider :key="'div' + i + uuid"></v-divider>
                           <v-list-tile
-                            :key="i"
+                            :key="'lineoption' + i + uuid"
                             ripple
                             @click="optionClicked(option)"
                             class="options-list"
@@ -375,7 +375,7 @@
                     <v-layout
                       row
                       v-for="(chunkText, index) in getChunks(item)"
-                      :key="index"
+                      :key="index + uuid"
                     >
                       <v-flex
                         xs2
@@ -628,7 +628,7 @@
     <!-- Date picker dialog -->
     <v-flex
       xs12
-      key="datePicker"
+      :key="'datePicker' + uuid"
     >
       <v-dialog
         ref="dialogDate"
@@ -660,7 +660,7 @@
     <!-- Time picker dialog -->
     <v-flex
       xs12
-      key="timePicker"
+      :key="'timePicker' + uuid"
     >
       <v-dialog
         ref="dialogTime"
@@ -787,6 +787,7 @@ export default {
       "responseIcon",
       "userIcon",
       "userProfileImage",
+      "uuid",
       "displayName",
       "listening",
       "settingLongResponsesInModal",
@@ -938,6 +939,17 @@ export default {
               "SHOW_MESSAGE_IN_CHAT",
               `Thanks we have successfully received your file: ${file.name}`
             );
+            this.$store.dispatch("sendUserInput").then(() => {
+              console.log("Upload flag sent to Teneo");
+            });
+
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+              console.log(e.target.result);
+            };
+
+            reader.readAsDataURL(file);
           }
           return (this.progressValue = 0);
         }

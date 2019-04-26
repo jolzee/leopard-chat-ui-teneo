@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Ripple } from "vuetify/lib/directives";
 import MobileDetect from "mobile-detect";
+import uuidv1 from "uuid/v1";
 import gravatar from "gravatar";
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -270,6 +271,9 @@ function setupStore(callback) {
       }
     },
     getters: {
+      uuid(_state) {
+        return uuidv1();
+      },
       timeZoneParam(state) {
         return "&timeZone=" + encodeURI(state.browser.timeZone);
       },
