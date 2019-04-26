@@ -459,10 +459,38 @@ export default {
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
-div.v-input__slot:focus, button:focus, a:focus {
-	-webkit-box-shadow: 0 0 0 3px rgba(116,116,116, .5) !important;
-	box-shadow: 0 0 0 3px rgba(116,116,116, .5) !important;
-	outline: 0;
+hr {
+  border: 0;
+  height: 3px;
+  background: #d7d7d7;
+  margin-bottom: 4px;
+  border-top: 1px dashed #8c8b8b;
+}
+
+blockquote {
+  border-left: 6px solid #d7d7d7;
+  margin: 0.5em 0px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+blockquote:before {
+  color: #d7d7d7;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+blockquote p {
+  display: inline;
+}
+
+div.v-input__slot:focus,
+button:focus,
+a:focus {
+  -webkit-box-shadow: 0 0 0 3px rgba(116, 116, 116, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(116, 116, 116, 0.5) !important;
+  outline: 0;
 }
 
 .pulse {
