@@ -1,222 +1,92 @@
 /* eslint-disable no-unused-vars */
-import showdown from "showdown";
-import { Ripple } from "vuetify/lib/directives";
-import MobileDetect from "mobile-detect";
-import uuidv1 from "uuid/v1";
-import gravatar from "gravatar";
-import * as firebase from "firebase/app";
+
 import "firebase/auth";
 import "firebase/database";
-import toHex from "colornames"; // can convert html color names to hex equivalent
-import parseBool from "parseboolean";
-import request from "simple-json-request";
+import "regenerator-runtime/runtime";
+import * as firebase from "firebase/app";
+import axios from "axios";
+import gravatar from "gravatar";
 import stripHtml from "string-strip-html";
 import URL from "url-parse";
+import uuidv1 from "uuid/v1";
 import Vue from "vue";
 import VueJsonp from "vue-jsonp";
-import Vuetify from "vuetify/lib";
-import "vuetify/src/stylus/app.styl";
 import Vuex from "vuex";
 import vuexI18n from "vuex-i18n"; // i18n the leopard interface
-import { ASR_CORRECTIONS } from "./constants/asr-corrections"; // fix ASR issues before they get to Teneo
+import vueSmoothScroll from "vue-smoothscroll";
+import VuePlyr from "vue-plyr";
+import VueSession from "vue-session";
+import longpress from "vue-long-press-directive";
+import Dayjs from "vue-dayjs";
+import Listening from "./components/Listening.vue"; // component dialog that shows then capturing audio
+import Modal from "./components/Modal.vue";
+import Prism from "prismjs";
+// import "./plugins/vuetify";
+import {
+  BallPulseSyncLoader,
+  BallScaleRippleMultipleLoader,
+  LineScaleLoader,
+  LineScalePulseOutRapidLoader
+} from "vue-loaders";
+
+import { initializeASR, initializeTTS } from "./utils/asr-tts";
+
 import { STORAGE_KEY } from "./constants/solution-config-default"; // application storage key
 import { TRANSLATIONS } from "./constants/translations"; // add UI translations for different language here
-import { initializeASR, initializeTTS } from "./utils/asr-tts";
-import { LiveChat } from "./utils/live-chat";
-import { getParameterByName, mergeAsrCorrections } from "./utils/utils";
-import PromisedLocation from "promised-location";
-let converter = new showdown.Converter();
+import Setup from "./utils/setup";
 
-let mobileDetect = new MobileDetect(window.navigator.userAgent);
-const LOCATION_OPTIONS = {
-  enableHighAccuracy: true,
-  timeout: 10000,
-  maximumAge: 60000
-};
-var locator = new PromisedLocation(LOCATION_OPTIONS);
-
+let config = new Setup();
+let store;
 // Vue.use(VueLocalStorage);
 Vue.use(VueJsonp, 20000);
 Vue.use(Vuex);
+Vue.use(Dayjs, {
+  lang: "en"
+});
 
-const TENEO_CHAT_HISTORY = "teneo-chat-history";
-const TENEO_CHAT_DARK_THEME = "darkTheme";
-let store;
+Vue.use(VuePlyr);
+Vue.use(Prism);
+Vue.use(longpress, { duration: process.env.VUE_APP_LONG_PRESS_LENGTH });
 
-let firebaseConfig = {
-  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
-  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
-  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID
-};
+Vue.use(VueSession);
+Vue.use(require("vue-shortkey"));
+Vue.use(vueSmoothScroll);
 
-// const USE_LOCAL_STORAGE = parseBool(activeSolution.useLocalStorage);
+Vue.component("teneo-modal", Modal);
+Vue.component("teneo-listening", Listening);
+Vue.component(LineScaleLoader.name, LineScaleLoader);
+Vue.component(LineScalePulseOutRapidLoader.name, LineScalePulseOutRapidLoader);
+Vue.component(BallPulseSyncLoader.name, BallPulseSyncLoader);
+Vue.component(BallScaleRippleMultipleLoader.name, BallScaleRippleMultipleLoader);
 
-let ASR_CORRECTIONS_MERGED;
-let liveChat;
-let CHAT_TITLE = "Configure Me";
-let EMBED = false; // will eventually be used to build standard Web Component
-let ENABLE_LIVE_CHAT = false;
-let FLOAT = false;
-let IFRAME_URL = "";
-let KNOWLEDGE_DATA = [];
-let LOCALE = "en";
-let REQUEST_PARAMETERS = "";
-let RESPONSE_ICON = "";
-let SEND_CTX_PARAMS = "login";
-let TENEO_URL = "";
+Vue.config.productionTip = false;
 
-let USE_LOCAL_STORAGE = false;
-let USE_PUSHER = false;
-let USER_ICON = "";
-
-let THEME = {
-  primary: "#3277D5",
-  secondary: "#E78600",
-  accent: "#4CAF50",
-  error: "#FF5252",
-  info: "#2196F3",
-  success: "#4CAF50",
-  warning: "#FFC107"
-}; // default theme
-
-let chatConfig = JSON.parse(localStorage.getItem(STORAGE_KEY + "config"));
-let activeSolution = null;
-
-if (USE_PUSHER) {
-  Vue.use(require("vue-pusher"), {
-    api_key: process.env.VUE_APP_PUSHER_KEY,
-    options: {
-      cluster: "us2",
-      encrypted: true,
-      forceTLS: true
-    }
-  });
+export function getStore(callback) {
+  config
+    .init()
+    .then(() => storeSetup(callback))
+    .catch(message => console.error(message));
 }
 
-export function storeInit(callback) {
-  if (!chatConfig || (chatConfig && chatConfig.solutions.length === 0)) {
-    console.log("No config: Looking for default.json");
-    loadDefaultConfig(function() {
-      setupStore(callback);
-    });
-  } else {
-    setupStore(callback);
-  }
-}
-
-async function loadDefaultConfig(callback) {
-  // look for default config on the server
-  const defaultConfigUrl = `${location.protocol}//${location.host}${location.pathname}/../static/default.json`;
-
-  request
-    .request({
-      method: "GET",
-      url: defaultConfigUrl
-    })
-    .then(data => {
-      console.log("Found and loaded default config");
-      localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(data));
-      chatConfig = data;
-      callback();
-    })
-    .catch(error => {
-      console.log(error);
-      callback();
-    });
-}
-
-function setupStore(callback) {
-  if (chatConfig && chatConfig.activeSolution) {
-    let deepLink = getParameterByName("dl"); // look for deep link
-    if (!deepLink) {
-      activeSolution = chatConfig.activeSolution;
-      const matchingSolutions = chatConfig.solutions.filter(solution => solution.name === activeSolution);
-      activeSolution = matchingSolutions[0];
-    } else {
-      // allow for deep linking to a specific solution ?dl=<deepLink>
-      const matchingSolutions = chatConfig.solutions.filter(solution => solution.deepLink === deepLink);
-      if (matchingSolutions.length > 0) {
-        activeSolution = matchingSolutions[0];
-      } else {
-        // fall back to default
-        activeSolution = chatConfig.activeSolution;
-        const matchingSolutions = chatConfig.solutions.filter(solution => solution.name === activeSolution);
-        activeSolution = matchingSolutions[0];
-      }
-    }
-    ASR_CORRECTIONS_MERGED = mergeAsrCorrections(activeSolution, ASR_CORRECTIONS);
-    CHAT_TITLE = activeSolution.chatTitle;
-    IFRAME_URL = activeSolution.iframeUrl;
-    KNOWLEDGE_DATA = activeSolution.knowledgeData;
-    LOCALE = activeSolution.locale;
-    FLOAT = activeSolution.float ? activeSolution.float == "true" : false;
-    RESPONSE_ICON = activeSolution.responseIcon;
-    SEND_CTX_PARAMS = activeSolution.sendContextParams ? activeSolution.sendContextParams : "login";
-    TENEO_URL = activeSolution.url + "?viewname=STANDARDJSONP";
-    USER_ICON = activeSolution.userIcon;
-
-    // const USE_LOCAL_STORAGE = parseBool(activeSolution.useLocalStorage);
-    USE_LOCAL_STORAGE = false;
-    let theme = activeSolution.theme;
-    // convert color names to their #hex equivalent
-    for (const key in theme) {
-      if (theme[key].charAt(0) !== "#") theme[key] = toHex(theme[key]);
-    }
-    THEME = theme;
-
-    Vue.use(Vuetify, {
-      iconfont: ["md", "fa", "mdi"],
-      theme: THEME,
-      directives: {
-        Ripple
-      }
-    });
-    ENABLE_LIVE_CHAT = parseBool(activeSolution.enableLiveChat);
-
-    document.title = activeSolution.name;
-
-    // find active CTX parameters and build the parameters part of the URL
-    activeSolution.contextParams.forEach(function(contextParam) {
-      if (contextParam) {
-        contextParam.values.forEach(function(value) {
-          if (value.active) {
-            REQUEST_PARAMETERS = REQUEST_PARAMETERS + "&" + contextParam.name + "=" + encodeURIComponent(value.text);
-          }
-        });
-      }
-    });
-
-    // tts = initializeTTS(LOCALE);
-  }
-
-  // update the IFRAME URL
-  if (document.getElementById("site-frame")) {
-    document.getElementById("site-frame").src = IFRAME_URL;
-  } else {
-    EMBED = true;
-  }
-
+function storeSetup(callback) {
   store = new Vuex.Store({
     state: {
       asr: {
         stopAudioCapture: false,
         asr: null
       },
-      chatConfig: chatConfig,
-      activeSolution: activeSolution,
+      chatConfig: config.chatConfig,
+      activeSolution: config.activeSolution,
       connection: {
-        requestParameters: REQUEST_PARAMETERS,
-        teneoUrl: TENEO_URL
+        requestParameters: config.REQUEST_PARAMETERS,
+        teneoUrl: config.TENEO_URL
       },
       browser: {
-        isMobile: mobileDetect.mobile() || mobileDetect.tablet() ? true : false,
+        isMobile: config.getMobileDetector().mobile() || config.getMobileDetector().tablet() ? true : false,
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       },
       auth: {
-        firebase: firebaseConfig.apiKey ? firebase.initializeApp(firebaseConfig) : null,
+        firebase: config.getFirebaseConfig().apiKey ? firebase.initializeApp(config.getFirebaseConfig()) : null,
         userInfo: {
           user: null,
           username: null,
@@ -228,15 +98,17 @@ function setupStore(callback) {
         dialogHistory: []
       },
       iframe: {
-        iframeUrl: IFRAME_URL,
-        iframeUrlBase: IFRAME_URL ? IFRAME_URL.substring(0, IFRAME_URL.lastIndexOf("/")) + "/" : IFRAME_URL
+        iframeUrl: config.IFRAME_URL,
+        iframeUrlBase: config.IFRAME_URL
+          ? config.IFRAME_URL.substring(0, config.IFRAME_URL.lastIndexOf("/")) + "/"
+          : config.IFRAME_URL
       },
-      knowledgeData: KNOWLEDGE_DATA,
+      knowledgeData: config.KNOWLEDGE_DATA,
       liveAgent: {
         agentAvatar: null,
         agentID: null,
         agentName: null,
-        enableLiveChat: ENABLE_LIVE_CHAT,
+        enableLiveChat: config.ENABLE_LIVE_CHAT,
         isLiveChat: false,
         liveChatMessage: null,
         showLiveChatProcessing: false
@@ -254,17 +126,19 @@ function setupStore(callback) {
       },
       tts: {
         speakBackResponses: false,
-        tts: initializeTTS(LOCALE)
+        tts: initializeTTS(config.LOCALE)
       },
       ui: {
-        chatTitle: CHAT_TITLE,
-        dark: false,
-        embed: EMBED,
+        chatTitle: config.CHAT_TITLE,
+        dark: localStorage.getItem(STORAGE_KEY + "darkTheme")
+          ? localStorage.getItem(STORAGE_KEY + "darkTheme") === "true"
+          : false,
+        embed: config.EMBED,
         isWebSite: true,
-        overlayChat: FLOAT,
-        responseIcon: RESPONSE_ICON,
-        theme: THEME,
-        userIcon: USER_ICON,
+        overlayChat: config.FLOAT,
+        responseIcon: config.RESPONSE_ICON,
+        theme: config.THEME,
+        userIcon: config.USER_ICON,
         showUploadButton: false
       },
       userInput: {
@@ -627,12 +501,10 @@ function setupStore(callback) {
         return state.knowledgeData;
       },
       settingLongResponsesInModal(state) {
-        return state.activeSolution.longResponsesInModal !== undefined
-          ? state.activeSolution.longResponsesInModal === "true"
-          : false;
+        return state.activeSolution.longResponsesInModal ? state.activeSolution.longResponsesInModal === "true" : false;
       },
       pulseButton(state) {
-        return state.activeSolution.pulseButton !== undefined ? state.activeSolution.pulseButton === "true" : false;
+        return state.activeSolution.pulseButton ? state.activeSolution.pulseButton === "true" : false;
       },
       lastItemAnswerTextCropped(_state, getters) {
         let answer = "";
@@ -688,14 +560,14 @@ function setupStore(callback) {
         return state.liveAgent.showLiveChatProcessing;
       },
       chatHistory(state) {
-        if (USE_LOCAL_STORAGE) {
+        if (config.USE_LOCAL_STORAGE) {
           if (state.conversation.dialog.length !== 0) {
-            let chatHistory = JSON.parse(localStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY, "[]"));
+            let chatHistory = JSON.parse(localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]"));
             if (chatHistory.length !== 0) {
               state.conversation.dialog.concat(chatHistory);
             }
           } else {
-            state.conversation.dialog = JSON.parse(localStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY, "[]"));
+            state.conversation.dialog = JSON.parse(localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]"));
           }
         }
         return state.conversation.dialog;
@@ -703,7 +575,9 @@ function setupStore(callback) {
       chatHistorySessionStorage(state) {
         // TODO: Try and make the chat history in session storage unique to the deeplink
         if (state.conversation.dialogHistory.length === 0) {
-          state.conversation.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
+          state.conversation.dialogHistory = JSON.parse(
+            sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY)
+          );
           if (state.conversation.dialogHistory === null) {
             state.conversation.dialogHistory = [];
           }
@@ -818,12 +692,12 @@ function setupStore(callback) {
         }
       },
       SHOW_CHAT_LOADING(state) {
-        if (!USE_LOCAL_STORAGE) {
+        if (!config.USE_LOCAL_STORAGE) {
           state.progress.showChatLoading = true;
         }
       },
       HIDE_CHAT_LOADING(state) {
-        if (!USE_LOCAL_STORAGE) {
+        if (!config.USE_LOCAL_STORAGE) {
           state.progress.showChatLoading = false;
         }
       },
@@ -840,7 +714,7 @@ function setupStore(callback) {
         state.conversation.dialog = [];
       },
       LIVE_CHAT(_state, transcript) {
-        liveChat.sendMessage(transcript);
+        config.liveChat.sendMessage(transcript);
       },
       START_LIVE_CHAT(state) {
         state.liveAgent.isLiveChat = true;
@@ -850,7 +724,7 @@ function setupStore(callback) {
       },
       CHANGE_THEME(state) {
         state.ui.dark = !state.ui.dark;
-        localStorage.setItem(STORAGE_KEY + TENEO_CHAT_DARK_THEME, JSON.stringify(state.ui.dark));
+        localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_DARK_THEME, JSON.stringify(state.ui.dark));
       },
       SHOW_LISTING_OVERLAY(state) {
         state.progress.listening = true;
@@ -917,10 +791,10 @@ function setupStore(callback) {
         state.userInput.userInput = ""; // reset the user input to nothing
 
         // deal with persiting the chat history
-        if (USE_LOCAL_STORAGE) {
-          localStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(state.conversation.dialog));
+        if (config.USE_LOCAL_STORAGE) {
+          localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, JSON.stringify(state.conversation.dialog));
         }
-        state.conversation.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY));
+        state.conversation.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY));
         if (state.conversation.dialogHistory === null) {
           state.conversation.dialogHistory = state.conversation.dialog;
         } else {
@@ -931,7 +805,10 @@ function setupStore(callback) {
           state.conversation.dialogHistory.push(newReply);
         }
         // save the dislaog history in session storage
-        sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(state.conversation.dialogHistory));
+        sessionStorage.setItem(
+          STORAGE_KEY + config.TENEO_CHAT_HISTORY,
+          JSON.stringify(state.conversation.dialogHistory)
+        );
       },
       SHOW_PROGRESS_BAR(state) {
         state.progress.progressBar = true;
@@ -1008,7 +885,7 @@ function setupStore(callback) {
       },
       CHANGE_ASR_TTS(state, lang) {
         state.tts.tts = initializeTTS(lang);
-        initializeASR(store, ASR_CORRECTIONS_MERGED);
+        initializeASR(store, config.ASR_CORRECTIONS_MERGED);
       },
       CLEAR_USER_INFO(state) {
         state.auth.userInfo.user = null;
@@ -1067,7 +944,7 @@ function setupStore(callback) {
               // var token = result.credential.accessToken;
               // The signed-in user info.
               let user = result.user;
-              console.log(user);
+              // console.log(user);
               commit("USER_INFO", { user: user });
               resolve();
             })
@@ -1146,9 +1023,9 @@ function setupStore(callback) {
           fullUrl.host +
           fullUrl.pathname +
           "endsession?viewtype=STANDARDJSONP" +
-          (SEND_CTX_PARAMS === "all"
-            ? REQUEST_PARAMETERS.length > 0
-              ? "&" + REQUEST_PARAMETERS.substring(1, REQUEST_PARAMETERS.length)
+          (config.SEND_CTX_PARAMS === "all"
+            ? config.REQUEST_PARAMETERS.length > 0
+              ? "&" + config.REQUEST_PARAMETERS.substring(1, config.REQUEST_PARAMETERS.length)
               : ""
             : "");
 
@@ -1158,7 +1035,10 @@ function setupStore(callback) {
         // get the greeting message if we haven't done so for this session
         return new Promise((resolve, reject) => {
           Vue.jsonp(
-            TENEO_URL + REQUEST_PARAMETERS + context.getters.userInformationParams + context.getters.timeZoneParam,
+            config.TENEO_URL +
+              config.REQUEST_PARAMETERS +
+              context.getters.userInformationParams +
+              context.getters.timeZoneParam,
             {
               command: "login"
               // userInput: ""
@@ -1179,7 +1059,7 @@ function setupStore(callback) {
               }
               const response = {
                 type: "reply",
-                text: converter.makeHtml(
+                text: config.markDownConvertor.makeHtml(
                   decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
                 ),
                 bodyText: "",
@@ -1217,7 +1097,7 @@ function setupStore(callback) {
           // normal Teneo request needs to be made
           Vue.jsonp(
             context.getters.teneoUrl +
-              (SEND_CTX_PARAMS === "all" ? REQUEST_PARAMETERS + params : params) +
+              (config.SEND_CTX_PARAMS === "all" ? config.REQUEST_PARAMETERS + params : params) +
               context.getters.userInformationParams +
               context.getters.timeZoneParam,
             {
@@ -1241,7 +1121,8 @@ function setupStore(callback) {
                 json.responseData.extraData.hasOwnProperty("inputType") &&
                 json.responseData.extraData.inputType.startsWith("location")
               ) {
-                locator
+                config
+                  .getLocator()
                   .then(function(position) {
                     // we now have the user's lat and long
                     console.log(`${position.coords.latitude}, ${position.coords.longitude}`);
@@ -1267,14 +1148,14 @@ function setupStore(callback) {
                     } else if (process.env.VUE_APP_LOCATION_IQ_KEY) {
                       // good we have a licence key we can send all location information back
                       let locationRequestType = json.responseData.extraData.inputType;
-                      request
-                        .request({
-                          method: "GET",
-                          url: `https://us1.locationiq.com/v1/reverse.php?key=${
-                            process.env.VUE_APP_LOCATION_IQ_KEY
-                          }&lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`
-                        })
-                        .then(data => {
+                      axios
+                        .get(
+                          `https://us1.locationiq.com/v1/reverse.php?key=${process.env.VUE_APP_LOCATION_IQ_KEY}&lat=${
+                            position.coords.latitude
+                          }&lon=${position.coords.longitude}&format=json`
+                        )
+                        .then(response => {
+                          let data = response.data;
                           console.log(`${data.address.city}, ${data.address.state} ${data.address.postcode}`);
 
                           let queryParam = `&${locationRequestType}=`;
@@ -1328,7 +1209,7 @@ function setupStore(callback) {
               // console.log(decodeURIComponent(json.responseData.answer))
               const response = {
                 userInput: currentUserInput,
-                teneoAnswer: converter.makeHtml(
+                teneoAnswer: config.markDownConvertor.makeHtml(
                   decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
                 ),
                 teneoResponse: json.responseData
@@ -1423,17 +1304,23 @@ function setupStore(callback) {
           };
           context.commit("PUSH_USER_INPUT_TO_DIALOG", newUserInput);
 
-          if (USE_LOCAL_STORAGE) {
-            localStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(context.getters.dialog));
+          if (config.USE_LOCAL_STORAGE) {
+            localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, JSON.stringify(context.getters.dialog));
           }
-          context.commit("SET_DIALOG_HISTORY", JSON.parse(sessionStorage.getItem(STORAGE_KEY + TENEO_CHAT_HISTORY)));
+          context.commit(
+            "SET_DIALOG_HISTORY",
+            JSON.parse(sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY))
+          );
           if (context.getters.dialogHistory === null) {
             context.commit("SET_DIALOG_HISTORY", context.getters.dialog);
           } else {
             context.commit("PUSH_USER_INPUT_TO_DIALOG_HISTORY", newUserInput);
           }
-          sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(context.getters.dialogHistory));
-          liveChat.sendMessage(currentUserInput);
+          sessionStorage.setItem(
+            STORAGE_KEY + config.TENEO_CHAT_HISTORY,
+            JSON.stringify(context.getters.dialogHistory)
+          );
+          config.liveChat.sendMessage(currentUserInput);
           context.commit("HIDE_PROGRESS_BAR");
           context.commit("CLEAR_USER_INPUT");
         }
@@ -1449,22 +1336,13 @@ function setupStore(callback) {
   Object.keys(TRANSLATIONS).forEach(function(key) {
     Vue.i18n.add(key, TRANSLATIONS[key]);
   });
-  Vue.i18n.set(LOCALE);
+  Vue.i18n.set(config.LOCALE);
 
   // Setup ASR
-  initializeASR(store, ASR_CORRECTIONS_MERGED);
+  initializeASR(store, config.ASR_CORRECTIONS_MERGED);
 
   // Setup Live Chat
-  liveChat = new LiveChat(store, USE_LOCAL_STORAGE, STORAGE_KEY, TENEO_CHAT_HISTORY);
-
-  // android and ios webview ASR and TTS - not working currently
-  window.sendVoiceInput = function(userInput) {
-    // console.log(`In SendVoiceInput: ${userInput}`);
-    //store.state.userInput.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
-    store.commit("SET_USER_INPUT", userInput);
-    store.commit("USER_INPUT_READY_FOR_SENDING");
-    store.commit("HIDE_LISTENING_OVERLAY");
-  };
+  config.setupLiveChat(store);
 
   callback(store);
 }
