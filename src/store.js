@@ -82,11 +82,11 @@ function storeSetup(callback) {
         teneoUrl: config.TENEO_URL
       },
       browser: {
-        isMobile: config.getMobileDetector().mobile() || config.getMobileDetector().tablet() ? true : false,
+        isMobile: config.mobileDetector.mobile() || config.mobileDetector.tablet() ? true : false,
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       },
       auth: {
-        firebase: config.getFirebaseConfig().apiKey ? firebase.initializeApp(config.getFirebaseConfig()) : null,
+        firebase: config.firebaseConfig.apiKey ? firebase.initializeApp(config.firebaseConfig) : null,
         userInfo: {
           user: null,
           username: null,

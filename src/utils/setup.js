@@ -24,8 +24,17 @@ export default class Setup {
     this.CHAT_TITLE = "Configure Me";
     this.EMBED = false; // will eventually be used to build standard Web Component
     this.ENABLE_LIVE_CHAT = false;
+    this.mobileDetect = new MobileDetect(window.navigator.userAgent);
     this.FLOAT = false;
-    this.THEME = this.getDefaultTheme();
+    this.THEME = {
+      primary: "#3277D5",
+      secondary: "#E78600",
+      accent: "#4CAF50",
+      error: "#FF5252",
+      info: "#2196F3",
+      success: "#4CAF50",
+      warning: "#FFC107"
+    };
     this.IFRAME_URL = "";
     this.KNOWLEDGE_DATA = [];
     this.LOCALE = "en";
@@ -38,6 +47,14 @@ export default class Setup {
     this.activeSolution = null;
     this.chatConfig = null;
     this.converter = new showdown.Converter();
+    this.firebaseConfig = {
+      apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+      authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+      databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
+      projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+      storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID
+    };
     // Get the dark theme setting from local storage
     if (parseBool(localStorage.getItem(STORAGE_KEY + "darkTheme")) === null) {
       localStorage.setItem(STORAGE_KEY + "darkTheme", "false");
@@ -169,17 +186,6 @@ export default class Setup {
     });
   }
 
-  getFirebaseConfig() {
-    return {
-      apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
-      authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
-      databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
-      projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
-      storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID
-    };
-  }
-
   setupLiveChat(store) {
     this.liveChat = new LiveChat(store, this.USE_LOCAL_STORAGE, STORAGE_KEY, this.TENEO_CHAT_HISTORY);
   }
@@ -218,9 +224,8 @@ export default class Setup {
     return this.converter;
   }
 
-  getMobileDetector() {
-    let mobileDetect = new MobileDetect(window.navigator.userAgent);
-    return mobileDetect;
+  get mobileDetector() {
+    return this.mobileDetect;
   }
 
   isPusherEnabled() {
@@ -235,19 +240,6 @@ export default class Setup {
     if (!results) return null;
     if (!results[2]) return "";
     return decodeURIComponent(results[2].replace(/\+/g, " "));
-  }
-
-  getDefaultTheme() {
-    let theme = {
-      primary: "#3277D5",
-      secondary: "#E78600",
-      accent: "#4CAF50",
-      error: "#FF5252",
-      info: "#2196F3",
-      success: "#4CAF50",
-      warning: "#FFC107"
-    };
-    return theme;
   }
 
   setupPusher() {
