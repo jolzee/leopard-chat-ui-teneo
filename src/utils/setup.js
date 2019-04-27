@@ -24,6 +24,7 @@ export default class Setup {
     this.EMBED = false; // will eventually be used to build standard Web Component
     this.ENABLE_LIVE_CHAT = false;
     this.FLOAT = false;
+    this.THEME = this.getDefaultTheme();
     this.IFRAME_URL = "";
     this.KNOWLEDGE_DATA = [];
     this.LOCALE = "en";
