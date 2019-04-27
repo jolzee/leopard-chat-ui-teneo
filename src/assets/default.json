@@ -1,0 +1,42 @@
+{
+  "activeSolution": "Leopard Test Solution",
+  "solutions": [
+    {
+      "name": "Leopard Test Solution",
+      "url": "https://teneo5feature-demos.presales.artificial-solutions.com/leopard/",
+      "deepLink": "leopard",
+      "iframeUrl": "https://jolzee.gitbook.io/leopard/",
+      "sendContextParams": "all",
+      "contextParams": [
+        {
+          "name": "channel",
+          "values": [
+            {
+              "text": "webview",
+              "active": true
+            }
+          ]
+        }
+      ],
+      "locale": "en",
+      "chatTitle": "Speak with Leo",
+      "responseIcon": "person",
+      "userIcon": "fa-comment-alt",
+      "useLocalStorage": "false",
+      "enableLiveChat": "false",
+      "theme": {
+        "primary": "#322C6B",
+        "secondary": "#28BEC8",
+        "accent": "#4CAF50",
+        "error": "#FF5252",
+        "info": "#2196F3",
+        "success": "#4CAF50",
+        "warning": "#FFC107"
+      },
+      "knowledgeData": ["What's your name?", "Who created you?"],
+      "float": "true",
+      "showChatIcons": "true",
+      "asrCorrections": "pizza | Peter\nthiss | that"
+    }
+  ]
+}

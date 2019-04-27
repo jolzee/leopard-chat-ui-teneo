@@ -7,6 +7,7 @@ import showdown from "showdown";
 import toHex from "colornames"; // can convert html color names to hex equivalent
 import Vue from "vue";
 import Vuetify from "vuetify/lib";
+import internalConfig from "../assets/default.json";
 
 import "vuetify/src/stylus/app.styl";
 
@@ -147,19 +148,24 @@ export default class Setup {
 
   _loadDefaultConfig() {
     return new Promise((resolve, reject) => {
-      // look for default config on the server
-      const defaultConfigUrl = `${location.protocol}//${location.host}${location.pathname}/../static/default.json`;
-      axios
-        .get(defaultConfigUrl)
-        .then(function(response) {
-          console.log("Found and loaded default config");
-          let defaultConfig = response.data;
-          localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(defaultConfig));
-          resolve(defaultConfig);
-        })
-        .catch(function(error) {
-          reject("Could not load default.json: " + error.message);
-        });
+      if (process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG) {
+        console.log("Loaded internal config");
+        resolve(internalConfig);
+      } else {
+        // look for default config on the server
+        const defaultConfigUrl = `${location.protocol}//${location.host}${location.pathname}/../static/default.json`;
+        axios
+          .get(defaultConfigUrl)
+          .then(function(response) {
+            console.log("Found and loaded external default config");
+            let defaultConfig = response.data;
+            localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(defaultConfig));
+            resolve(defaultConfig);
+          })
+          .catch(function(error) {
+            reject("Could not load default.json: " + error.message);
+          });
+      }
     });
   }
 
