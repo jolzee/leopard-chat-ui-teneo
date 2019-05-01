@@ -169,9 +169,6 @@ export class LiveChat {
         text: message,
         customId: String(Math.random())
       })
-      .then(response => {
-        console.log(response);
-      })
       .catch(error => {
         console.log(error);
       });

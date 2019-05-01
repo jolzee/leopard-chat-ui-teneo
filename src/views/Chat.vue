@@ -5,48 +5,9 @@
     id="chat-area"
     class="chat-container"
   >
-    <v-layout v-if="noHistory && isHistoryPage">
-      <v-flex xs12>
-        <v-card>
-          <v-img
-            :src="noHistoryImage"
-            class="elevation-4"
-          ></v-img>
-          <v-card-title primary-title>
-            <v-card-text>
-              <div class="text-xs-center">
-                <h3 class="headline mb-2 text-xs-center">{{ $t('no.chat.history.title') }}</h3>
-                <div class="text-xs-center">{{ $t('no.chat.history.body') }}</div>
-              </div>
-            </v-card-text>
-          </v-card-title>
-          <v-layout
-            justify-center
-            class="pb-3"
-          >
-            <v-card-actions>
-              <v-btn
-                dark
-                color="primary"
-                :to="{name: 'chat'}"
-              >{{ $t('menu.chat') }}</v-btn>
-              <v-btn
-                dark
-                color="primary"
-                :to="{name: 'help'}"
-              >{{ $t('menu.help') }}</v-btn>
-              <v-btn
-                dark
-                color="primary"
-                :to="{name: 'about'}"
-              >{{ $t('menu.about') }}</v-btn>
-            </v-card-actions>
-          </v-layout>
-        </v-card>
-      </v-flex>
-    </v-layout>
+    <ChatNoHistory v-if="noHistory && isHistoryPage"></ChatNoHistory>
+
     <!-- show the listening modal when recognizing audio input -->
-    <!-- start -->
     <teneo-listening
       v-bind:value="listening"
       :message="$t('listening')"
@@ -64,22 +25,8 @@
         ref="chatContainer"
       >
         <!-- show the initial loding ball animation when first loading the chat window -->
+        <ChatLoading v-if="showChatLoading"></ChatLoading>
 
-        <v-layout
-          row
-          wrap
-          justify-center
-          align-center
-          class="loading-ball text-xs-center mt-3"
-          v-if="showChatLoading"
-        >
-          <v-flex xs12>
-            <line-scale-loader
-              color="#C2C2C2"
-              size="60px"
-            ></line-scale-loader>
-          </v-flex>
-        </v-layout>
         <v-expansion-panel
           :value="getCurrentItem"
           class="chat-container-inner"
@@ -102,372 +49,31 @@
                   grid-list-xs
                   fluid
                 >
-                  <!-- Live Chat Queue -->
-                  <div v-if="item.type === 'liveChatQueue'">
-                    <v-alert
-                      :value="true"
-                      color="info"
-                      icon="fa-clock"
-                    >
-                      {{item.text}}
-                    </v-alert>
-                  </div>
-                  <!-- Misc Message -->
-                  <div v-if="item.type === 'miscMessage'">
-                    <v-alert
-                      :value="true"
-                      color="info"
-                      icon="fa-broadcast-tower"
-                    >{{item.text}}
-                    </v-alert>
-                  </div>
-                  <!-- Live Chat Status -->
-                  <div v-if="item.type === 'liveChatStatus'">
-                    <v-alert
-                      :value="true"
-                      color="info"
-                      icon="fa-thumbs-up"
-                    >
-                      {{item.text}}
-                    </v-alert>
-                  </div>
-                  <div v-if="item.type === 'liveChatEnded'">
-                    <v-alert
-                      :value="true"
-                      color="info"
-                      icon="fa-hand-paper"
-                    >
-                      {{item.text}}
-                    </v-alert>
-                  </div>
-                  <!-- Live Chat Response -->
-                  <v-layout
-                    row
-                    v-if="item.type === 'liveChatResponse'"
-                  >
-                    <v-flex
-                      shrink
-                      class="text-xs-left"
-                    >
-                      <v-avatar
-                        size="40px"
-                        class="teneo-response-icon elevation-2 mt-2"
-                      >
-                        <img
-                          :src="item.agentAvatar"
-                          :alt="item.agentName"
-                        >
-                      </v-avatar>
-                    </v-flex>
-                    <v-flex shrink>
-                      <v-card
-                        class="chat-card chat-card-left text-xs-left px-2"
-                        :dark="dark"
-                        :color="dark ? '#333333' : '#FAFAFA'"
-                      >
-                        <v-container grid-list-s>
-                          <v-layout row>
-                            <v-flex>
-                              <div>
-                                <span
-                                  v-html="item.text"
-                                  class="teneo-reply"
-                                ></span>
-                              </div>
-                            </v-flex>
-                          </v-layout>
-                        </v-container>
-                      </v-card>
-                    </v-flex>
-                  </v-layout>
-                  <!-- end live chat reply -->
-                  <!-- Reply -->
-                  <template v-if="item.type === 'reply'">
-                    <v-layout
-                      align-start
-                      justify-start
-                      row
-                      fill-height
-                    >
-                      <v-flex
-                        shrink
-                        class="text-xs-left"
-                        v-if="showChatIcons"
-                      >
-                        <v-btn
-                          v-long-press="swapInputButton"
-                          color="secondary"
-                          class="teneo-response-icon elevation-2"
-                          fab
-                          small
-                        >
-                          <v-icon class="white--text">{{responseIcon}}</v-icon>
-                        </v-btn>
-                      </v-flex>
-                      <v-flex shrink>
-                        <v-card
-                          :color="dark ? '#333333' : '#FAFAFA'"
-                          class="chat-card chat-card-left text-xs-left"
-                          :dark="dark"
-                        >
-                          <span
-                            v-html="itemText(item)"
-                            class="teneo-reply"
-                          ></span>
-                        </v-card>
-                      </v-flex>
-                    </v-layout>
-                    <!-- Show Inline Components -->
-                    <v-layout
-                      v-for="(extension, index) in itemExtensions(item)"
-                      :key="index + 'inlines' + uuid"
-                      row
-                    >
-                      <v-flex xs12>
-                        <YouTube
-                          v-if="hasInlineType(extension,'youTube')"
-                          :videoId="youTubeVideoId(extension)"
-                          class="mt-2"
-                        ></YouTube>
-                        <Audio
-                          v-if="hasInlineType(extension,'audio')"
-                          :url="audioInfo(extension).audioUrl"
-                          class="mt-2"
-                        ></Audio>
-                        <Vimeo
-                          v-if="hasInlineType(extension,'vimeo')"
-                          :videoId="vimeoId(extension)"
-                          class="mt-2"
-                        ></Vimeo>
-                        <Video
-                          v-if="hasInlineType(extension,'video')"
-                          :url="videoInfo(extension).videoUrl"
-                          :type="videoInfo(extension).videoType"
-                          class="mt-2"
-                        ></Video>
-                        <ImageAnimation
-                          v-if="hasInlineType(extension,'image')"
-                          :url="imageUrl(extension)"
-                          class="mt-2"
-                        ></ImageAnimation>
-                        <Carousel
-                          v-if="hasInlineType(extension,'carousel')"
-                          :imageItems="carouselImageArray(extension)"
-                          class="mt-2"
-                        ></Carousel>
-                      </v-flex>
-                    </v-layout>
-                    <!-- Additional Response Chunks -->
-                    <div v-if="responseHasChunks(item)">
-                      <v-layout
-                        row
-                        v-for="(chunkText, index) in getChunks(item)"
-                        :key="index + uuid"
-                      >
-                        <v-flex
-                          xs2
-                          class="text-xs-left"
-                          v-if="showChatIcons"
-                        >
-                          <v-btn
-                            v-long-press="swapInputButton"
-                            color="secondary"
-                            class="teneo-response-icon elevation-2"
-                            fab
-                            small
-                          >
-                            <v-icon class="white--text">{{responseIcon}}</v-icon>
-                          </v-btn>
-                        </v-flex>
-                        <v-flex>
-                          <v-card
-                            class="chat-card chat-card-left text-xs-left"
-                            :color="dark ? '#333333' : '#FAFAFA'"
-                            :dark="dark"
-                          >
-                            <span
-                              v-html="chunkText"
-                              class="teneo-reply"
-                            ></span>
-                          </v-card>
-                        </v-flex>
-                      </v-layout>
-                    </div>
-                    <!-- show any options in the response: for example Yes, No Maybe -->
-                    <v-card
-                      flat
-                      v-if="hasCollection(item) && ((i === dialog.length - 1) || hasPermanentOptions(item))"
-                      class="text-xs-center"
-                      width="320px"
-                    >
-                      <!-- Button Options -->
-                      <v-card-text v-if="!hasLongOptions(item)">
-                        <h2 v-text="getOptions(item).title"></h2>
-                        <div
-                          v-if="getOptions(item).html"
-                          class="elevation-5 mt-2"
-                          v-html="getOptions(item).items"
-                        >
-                        </div>
-                        <span
-                          v-else
-                          v-for="(option,i) in getOptions(item).items"
-                          :key="i + 'option' + uuid"
-                        >
-                          <v-btn
-                            class="option-btn"
-                            small
-                            color="success"
-                            @click="optionClicked(option)"
-                          >{{option.name}}
-                          </v-btn>
-                        </span>
-                      </v-card-text>
-                      <!-- Line based List Options -->
-                      <v-list
-                        three-line
-                        dense
-                        subheader
-                        v-else
-                        class="pt-1"
-                      >
-                        <template v-for="(option,i) in getOptions(item).items">
-                          <v-divider :key="'div' + i + uuid"></v-divider>
-                          <v-list-tile
-                            :key="'lineoption' + i + uuid"
-                            ripple
-                            @click="optionClicked(option)"
-                            class="options-list"
-                          >
-                            <v-list-tile-content>
-                              <v-list-tile-sub-title class="options-list-subtile">{{option.name}}</v-list-tile-sub-title>
-                            </v-list-tile-content>
-                          </v-list-tile>
-                        </template>
-                      </v-list>
-                    </v-card>
-                    <!-- more info for modals & calendar picker button -->
-                    <v-layout row>
-                      <v-flex
-                        xs12
-                        class="text-xs-right"
-                        v-if="(item.hasExtraData && hasModal(item) && notLiveChatTranscript(item)) || itemHasLongResponse(item)"
-                      >
-                        <v-btn
-                          class="mr-0"
-                          color="success"
-                          @click="showModal(item)"
-                        >{{ modalButtonText(item) }}
-                          <v-icon
-                            right
-                            small
-                            color="white"
-                          >{{ modalButtonIcon(item) }}</v-icon>
-                        </v-btn>
-                      </v-flex>
-                      <!-- Date Picker -->
-                      <v-flex
-                        class="text-xs-right"
-                        xs12
-                        v-if="mustShowDate(item) && (i === dialog.length - 1)"
-                      >
-                        <v-btn
-                          small
-                          fab
-                          class="teneo-userinput-icon elevation-2"
-                          color="info"
-                          @click="showDate = !showDate"
-                        >
-                          <v-icon>fa-calendar-alt</v-icon>
-                        </v-btn>
-                      </v-flex>
-                      <!-- Time Picker -->
-                      <v-flex
-                        class="text-xs-right"
-                        xs12
-                        v-if="mustShowTime(item) && (i === dialog.length - 1)"
-                      >
-                        <v-btn
-                          small
-                          fab
-                          class="teneo-userinput-icon elevation-2"
-                          color="info"
-                          @click="showTime = !showTime"
-                        >
-                          <v-icon>fa-clock</v-icon>
-                        </v-btn>
-                      </v-flex>
-                    </v-layout>
-                  </template>
+                  <ChatBroadcastMessage :item="item"></ChatBroadcastMessage>
 
-                  <!-- user question -->
-                  <v-layout
-                    align-start
-                    justify-end
-                    row
-                    fill-height
-                    v-if="item.type === 'userInput'"
-                  >
+                  <LiveChatResponse :item="item"></LiveChatResponse>
 
-                    <v-flex shrink>
-                      <v-card
-                        color="primary white--text"
-                        class="chat-card chat-card-right text-xs-right"
-                      >
-                        <v-container
-                          fluid
-                          grid-list-s
-                        >
-                          <v-layout row>
-                            <v-flex shrink>
-                              <div class="pr-2">{{item.text}}
-                              </div>
-                            </v-flex>
-                          </v-layout>
-                        </v-container>
-                      </v-card>
-                    </v-flex>
-                    <v-flex
-                      shrink
-                      class="text-xs-right"
-                      v-if="showChatIcons"
-                    >
-                      <v-avatar
-                        v-if="authenticated && userProfileImage"
-                        v-long-press="swapInputButton"
-                        class="teneo-userinput-icon elevation-2"
-                        fab
-                        small
-                        @click="updateInputBox(item.text)"
-                      >
-                        <img
-                          :src="userProfileImage"
-                          :alt="displayName"
-                        >
-                      </v-avatar>
-                      <v-btn
-                        v-else
-                        v-long-press="swapInputButton"
-                        class="teneo-userinput-icon elevation-2"
-                        fab
-                        small
-                        color="primary white--text"
-                        @click="updateInputBox(item.text)"
-                      >
-                        <v-icon color="white">{{userIcon}}</v-icon>
-                      </v-btn>
-                    </v-flex>
-                  </v-layout>
+                  <ChatTeneoResponse
+                    :item="item"
+                    :itemIndexInDialog="i"
+                    @swapInputButton="swapInputButton"
+                    @handleFocus="handleFocus"
+                    @toggleDate="showDate = !showDate"
+                    @toggleTime="showTime = !showTime"
+                  ></ChatTeneoResponse>
+
+                  <ChatUserQuestion
+                    :item="item"
+                    @clicked="updateInputBox"
+                    @swapInputButton="swapInputButton"
+                  ></ChatUserQuestion>
 
                 </v-container>
-                <!-- live chat typing -->
               </div>
-
             </v-expansion-panel-content>
-
           </transition-group>
 
-          <!--<div class="text-xs-center mt-3" v-if="liveChatMessage">{{ liveChatMessage }}</div>-->
+          <!-- live chat typing -->
           <div
             class="text-xs-center my-3"
             v-if="showLiveChatProcessing"
@@ -485,6 +91,7 @@
         </v-expansion-panel>
 
       </v-flex>
+      <!-- Chat Footer - Input Field and Buttons -->
       <v-flex
         xs12
         class="teneo-footer"
@@ -598,25 +205,11 @@
                     <v-icon medium>fa-microphone-alt</v-icon>
                   </v-btn>
                 </template>
-
-                <!-- text & audio input area -->
-
-                <v-snackbar
-                  v-model="snackbar"
-                  bottom
-                  :timeout="snackbarTimeout"
-                  auto-height
-                >
-                  {{ $t('empty.user.input') }} 😉
-                </v-snackbar>
               </v-flex>
-
             </v-layout>
           </v-form>
         </v-container>
-
       </v-flex>
-
     </v-layout>
     <!-- end -->
     <!-- Date picker dialog -->
@@ -661,7 +254,6 @@
         v-model="showTime"
         width="290px"
       >
-
         <v-time-picker
           v-model="userInput"
           format="24hr"
@@ -669,7 +261,6 @@
         <v-card>
           <v-card-actions>
             <v-spacer></v-spacer>
-
             <v-btn
               color="error"
               @click="showTime = false"
@@ -680,7 +271,6 @@
             >OK</v-btn>
           </v-card-actions>
         </v-card>
-
       </v-dialog>
     </v-flex>
 
@@ -689,16 +279,15 @@
 </template>
 
 <script>
+import ChatBroadcastMessage from "../components/ChatBroadcastMessage";
+import ChatLoading from "../components/ChatLoading";
+import ChatNoHistory from "../components/ChatNoHistory";
+import ChatTeneoResponse from "../components/ChatTeneoResponse";
+import ChatUserQuestion from "../components/ChatUserQuestion";
+import LiveChatResponse from "../components/LiveChatResponse";
 import UploadButton from "vuetify-upload-button";
-import { mapGetters } from "vuex";
-import Audio from "../components/Audio";
-import Carousel from "../components/Carousel";
-import ImageAnimation from "../components/ImageAnimation";
-import Video from "../components/Video";
-import Vimeo from "../components/Vimeo";
-import YouTube from "../components/YouTube";
-// import FormData from 'form-data';
 import axios from "axios";
+import { mapGetters } from "vuex";
 
 if (window.Element && !Element.prototype.closest) {
   Element.prototype.closest = function(s) {
@@ -717,12 +306,12 @@ if (window.Element && !Element.prototype.closest) {
 
 export default {
   components: {
-    Audio,
-    Carousel,
-    ImageAnimation,
-    Video,
-    Vimeo,
-    YouTube,
+    ChatBroadcastMessage,
+    ChatLoading,
+    ChatNoHistory,
+    ChatUserQuestion,
+    ChatTeneoResponse,
+    LiveChatResponse,
     "upload-btn": UploadButton
   },
   data() {
@@ -731,8 +320,6 @@ export default {
       showAudioInput: false,
       audioButtonClasses: "white--text",
       audioButtonColor: "success",
-      snackbar: false,
-      snackbarTimeout: 1500,
       showDate: false,
       showPassword: false,
       showTime: false,
@@ -752,31 +339,19 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "authenticated",
       "askingForPassword",
       "askingForEmail",
-      "carouselImageArray",
       "chatHistory",
       "chatHistorySessionStorage",
       "dark",
       "float",
-      "imageUrl",
       "inputHelpText",
       "isMobileDevice",
-      "itemExtensions",
       "itemInputMask",
-      "hasInline",
-      "hasInlineType",
-      "hasModal",
-      "liveChatMessage",
       "progressBar",
-      "showChatIcons",
       "showChatLoading",
       "showUploadButton",
       "showLiveChatProcessing",
-      "vimeoId",
-      "audioInfo",
-      "youTubeVideoId",
       "userInputReadyForSending",
       "responseIcon",
       "userIcon",
@@ -815,9 +390,6 @@ export default {
     noHistory() {
       let history = this.chatHistorySessionStorage;
       return history.length === 0;
-    },
-    noHistoryImage() {
-      return require("../assets/history.png");
     },
     dialog() {
       if (this.$route.name === "chat") {
@@ -860,6 +432,13 @@ export default {
   },
   beforeDestroy() {},
   methods: {
+    handleFocus() {
+      if (!this.isMobileDevice) {
+        this.$refs.userInput.focus();
+      } else {
+        document.activeElement.blur();
+      }
+    },
     hideKeyboard() {
       document.activeElement.blur();
     },
@@ -951,23 +530,7 @@ export default {
       }, 500);
       // console.log(file);
     },
-    responseHasChunks(item) {
-      return item.type === "reply" && item.text.includes("||");
-    },
-    getChunks(item) {
-      let chunks = item.text.split("||");
-      chunks.shift();
-      return chunks;
-    },
-    itemText(item) {
-      let itemText = item.text;
-      if (itemText.includes("||")) {
-        return itemText.split("||")[0];
-      } else {
-        itemText = this.itemAnswerTextCropped(item);
-      }
-      return itemText;
-    },
+
     stopAudioCapture() {
       this.$store.commit("HIDE_LISTENING_OVERLAY");
       this.$store.dispatch("stopAudioCapture");
@@ -1005,84 +568,6 @@ export default {
     hideProgressBar() {
       this.$store.commit("HIDE_PROGRESS_BAR");
     },
-    mustShowDate(item) {
-      if (
-        decodeURIComponent(item.teneoResponse.extraData.datePicker) !==
-        "undefined"
-      ) {
-        return true;
-      }
-      return false;
-    },
-    mustShowTime(item) {
-      if (
-        decodeURIComponent(item.teneoResponse.extraData.timePicker) !==
-        "undefined"
-      ) {
-        return true;
-      }
-      return false;
-    },
-    hasCollection(item) {
-      let extensions = this.itemExtensions(item);
-      let hasOptions = false;
-
-      extensions.forEach(extension => {
-        if (extension.name.startsWith("displayCollection")) {
-          hasOptions = true;
-        }
-      });
-
-      return hasOptions;
-    },
-    notLiveChatTranscript(item) {
-      let transcript = decodeURIComponent(
-        item.teneoResponse.extraData.liveChat
-      );
-      return transcript === "undefined";
-    },
-    hasPermanentOptions(item) {
-      let extensions = this.itemExtensions(item);
-      let hasPermanentOptions = false;
-      extensions.forEach(extension => {
-        if (extension.name.startsWith("displayCollection")) {
-          if (extension.permanent !== "undefined") {
-            hasPermanentOptions = extension.permanent;
-          }
-        }
-      });
-      return hasPermanentOptions;
-    },
-    hasLongOptions(item) {
-      let extensions = this.itemExtensions(item);
-      let hasLongOptions = false;
-      extensions.forEach(extension => {
-        if (extension.name.startsWith("displayCollection")) {
-          if (extension.hasLongOptions !== "undefined") {
-            hasLongOptions = extension.hasLongOptions;
-          }
-        }
-      });
-      return hasLongOptions;
-    },
-    getOptions(item) {
-      let extensions = this.itemExtensions(item);
-      // only get the first set of options.
-      let options = {};
-      extensions.forEach(extension => {
-        if (extension.name === "displayCollection") {
-          options = extension.parameters.content;
-        } else if (extension.name.startsWith("displayCollectionBasic")) {
-          extension.parameters.html = true;
-          extension.parameters.items = extension.parameters.items.replace(
-            /left/g,
-            ""
-          );
-          options = extension.parameters;
-        }
-      });
-      return options;
-    },
     sendUserInput() {
       if (this.valid) {
         this.$refs.userInputForm.resetValidation();
@@ -1104,8 +589,6 @@ export default {
             .catch(err => {
               this.userInput = err;
             });
-        } else {
-          // this.snackbar = true;
         }
         if (!this.isMobileDevice) {
           this.$refs.userInput.focus();
@@ -1114,78 +597,7 @@ export default {
         }
       }
     },
-    optionClicked(option) {
-      this.$store.commit("SHOW_PROGRESS_BAR");
-      this.$store.commit("SET_USER_INPUT", option.name);
-      this.$store
-        .dispatch("sendUserInput", option.params ? "&" + option.params : "")
-        .then(() => {
-          if (!this.isMobileDevice) {
-            this.$refs.userInput.focus();
-          } else {
-            document.activeElement.blur();
-          }
-        });
-    },
-    modalButtonText(item) {
-      if (this.itemHasLongResponse(item)) {
-        return this.$t("button.more");
-      }
-      let extensions = this.itemExtensions(item);
-      let countOfNonInlines = 0;
-      let buttonLabel = this.$t("button.more");
-      extensions.forEach(extension => {
-        if (!extension.inline || item.teneoResponse.link.href !== "") {
-          countOfNonInlines++;
-        }
-        if (extension.name.startsWith("displayVideo")) {
-          buttonLabel = this.$t("button.video");
-        } else if (extension.name.startsWith("displayImage")) {
-          buttonLabel = this.$t("button.image");
-        } else if (extension.name.startsWith("displayTable")) {
-          buttonLabel = this.$t("button.table");
-        }
-        if (item.teneoResponse.link.href !== "") {
-          buttonLabel = this.$t("button.page");
-        }
-      });
-      if (countOfNonInlines > 1) {
-        return this.$t("button.more");
-      }
-      return buttonLabel;
-    },
-    modalButtonIcon(item) {
-      let extensions = this.itemExtensions(item);
-      let countOfNonInlines = 0;
-      let iconName = "fa-angle-double-up";
-      extensions.forEach(extension => {
-        if (!extension.inline || item.teneoResponse.link.href !== "") {
-          countOfNonInlines++;
-        }
 
-        if (extension.name.startsWith("displayVideo")) {
-          iconName = "fa-film";
-        } else if (extension.name.startsWith("displayImage")) {
-          iconName = "fa-image";
-        } else if (extension.name.startsWith("displayTable")) {
-          iconName = "fa-table";
-        }
-
-        if (item.teneoResponse.link.href !== "") {
-          iconName = "fa-link";
-        }
-      });
-
-      if (countOfNonInlines > 1) {
-        return "fa-angle-double-up";
-      }
-
-      return iconName;
-    },
-    showModal(item) {
-      this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals first
-      this.$store.commit("SHOW_CHAT_MODAL", item);
-    },
     captureAudio() {
       if (
         window.hasOwnProperty("webkitSpeechRecognition") &&
@@ -1231,25 +643,6 @@ export default {
   position: relative;
   margin: 0 !important;
   bottom: 3px;
-}
-
-.v-snack {
-  position: absolute;
-  bottom: 0px;
-}
-
-.option-btn {
-  font-size: 13px;
-  text-transform: unset;
-  white-space: normal;
-}
-
-.options-list {
-  height: 50px !important;
-}
-
-.options-list-subtile {
-  color: unset !important;
 }
 </style>
 <style>
@@ -1379,7 +772,6 @@ span.teneo-reply ul {
 }
 
 @media only screen and (max-width: 480px) {
-  .v-snack,
   .v-footer,
   .chat-container,
   .teneo-dialog,
