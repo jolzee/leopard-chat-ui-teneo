@@ -224,10 +224,14 @@
         lazy
         width="290px"
       >
-        <v-date-picker
+        <!-- <v-date-picker
           v-model="date"
           scrollable
           :min="this.$dayjs().format('YYYY-MM-DD')"
+        > -->
+        <v-date-picker
+          v-model="date"
+          scrollable
         >
           <v-spacer></v-spacer>
           <v-btn
@@ -516,18 +520,18 @@ export default {
               console.log("Upload flag sent to Teneo");
             });
 
-            var reader = new FileReader();
+            // var reader = new FileReader();
 
-            reader.onload = function(e) {
-              console.log(e.target.result);
-            };
+            // reader.onload = function(e) {
+            //   console.log(e.target.result);
+            // };
 
-            reader.readAsDataURL(file);
+            // reader.readAsDataURL(file);
           }
           return (this.progressValue = 0);
         }
         this.progressValue += 10;
-      }, 500);
+      }, 300);
       // console.log(file);
     },
 

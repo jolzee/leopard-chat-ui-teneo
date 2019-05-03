@@ -6,6 +6,7 @@
       justify-start
       row
       fill-height
+      v-if="itemText !== '<p>'"
     >
       <v-flex
         shrink
@@ -119,7 +120,10 @@
       width="320px"
     >
       <!-- Button Options -->
-      <v-card-text v-if="!hasLongOptions">
+      <v-card-text
+        class="teneo-button-options"
+        v-if="!hasLongOptions"
+      >
         <h2 v-text="getOptions.title"></h2>
         <div
           v-if="getOptions.html"
@@ -317,7 +321,8 @@ export default {
     itemText() {
       let itemText = this.item.text;
       if (itemText.includes("||")) {
-        return itemText.split("||")[0];
+        let firstAnswer = itemText.split("||")[0].trim();
+        itemText = firstAnswer;
       } else {
         itemText = this.itemAnswerTextCropped(this.item);
       }
@@ -340,7 +345,7 @@ export default {
     },
     getChunks() {
       let chunks = this.item.text.split("||");
-      chunks.shift();
+      chunks.shift(); // get everything but the first one
       return chunks;
     },
     dialog() {
@@ -446,6 +451,11 @@ export default {
 </script>
 
 <style scoped>
+.teneo-button-options {
+  padding: 0;
+  margin-top: 10px;
+}
+
 .option-btn {
   font-size: 13px;
   text-transform: unset;
