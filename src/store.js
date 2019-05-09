@@ -1101,7 +1101,7 @@ function storeSetup(callback) {
               context.getters.userInformationParams +
               context.getters.timeZoneParam,
             {
-              userinput: currentUserInput
+              userinput: currentUserInput.trim()
             }
           )
             .then(json => {

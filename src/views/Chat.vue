@@ -140,7 +140,7 @@
                   ref="userInput"
                   browser-autocomplete="off"
                   @keyup.enter.native="sendUserInput"
-                  v-model.trim="userInput"
+                  v-model="userInput"
                   :label="inputHelpText ? inputHelpText : askingForPassword ? $t('input.box.label.password') : askingForEmail ? $t('input.box.label.email') : $t('input.box.label')"
                   single-line
                 ></v-text-field>
@@ -576,7 +576,7 @@ export default {
       if (this.valid) {
         this.$refs.userInputForm.resetValidation();
         this.audioButtonColor = "success";
-        if (this.userInput) {
+        if (this.userInput.trim()) {
           this.$store.commit("SHOW_PROGRESS_BAR");
           this.showDate = false;
           this.showTime = false;
