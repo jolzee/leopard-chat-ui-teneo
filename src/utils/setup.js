@@ -22,7 +22,7 @@ export default class Setup {
     this.ASR_CORRECTIONS_MERGED;
     this.liveChat;
     this.CHAT_TITLE = "Configure Me";
-    this.EMBED = false; // will eventually be used to build standard Web Component
+    this.EMBED = this.doesParameterExist("embed");
     this.ENABLE_LIVE_CHAT = false;
     this.mobileDetect = new MobileDetect(window.navigator.userAgent);
     this.FLOAT = false;
@@ -230,6 +230,16 @@ export default class Setup {
 
   isPusherEnabled() {
     return process.env.VUE_APP_FIREBASE_API_KEY ? true : false;
+  }
+
+  doesParameterExist(name) {
+    var queryString = location.search;
+    var params = queryString.substring(1).split("&");
+    for (var i = 0; i < params.length; i++) {
+      var pair = params[i].split("=");
+      if (decodeURIComponent(pair[0]) == name) return true;
+    }
+    return false;
   }
 
   getParameterByName(name, url) {

@@ -4,7 +4,7 @@
     toolbar
     :dark="dark"
     class="elevation-4 "
-    :class="{'application-float': float}"
+    :class="{'application-float': float, 'application-embed': embed}"
   >
     <div id="chat-open-close-button">
       <!-- <v-badge
@@ -128,7 +128,7 @@
         :flat="false"
         height="64"
         style="z-index: 3;"
-        :class="{'teneo-toolbar-float' : float}"
+        :class="{'teneo-toolbar-float' : float, 'teneo-toolbar-embed' : embed}"
       >
         <v-toolbar-side-icon
           @click.stop="drawer = !drawer"
@@ -712,11 +712,11 @@ iframe#site-frame {
   padding-right: 1.5em;
 }
 
-@media only screen and (max-height: 250px) {
+/* @media only screen and (max-height: 250px) {
   .application {
     display: none !important;
   }
-}
+} */
 
 @media only screen and (max-width: 480px) {
   #teneo,
@@ -752,6 +752,18 @@ iframe#site-frame {
 
   #chat-open-close-button {
     display: none;
+  }
+
+  .application-embed {
+    border-radius: 13px !important;
+    -moz-border-radius: 13px !important;
+    -webkit-border-radius: 13px !important;
+  }
+
+  .teneo-toolbar-embed {
+    border-radius: 13px 13px 0 0 !important;
+    -moz-border-radius: 13px 13px 0 0 !important;
+    -webkit-border-radius: 13px 13px 0 0 !important;
   }
 
   .teneo-toolbar-float {
