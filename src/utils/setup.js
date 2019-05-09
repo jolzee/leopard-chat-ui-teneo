@@ -165,7 +165,7 @@ export default class Setup {
 
   _loadDefaultConfig() {
     return new Promise((resolve, reject) => {
-      if (process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG) {
+      if (!process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG) {
         console.log("Loaded internal config");
         resolve(internalConfig);
       } else {
