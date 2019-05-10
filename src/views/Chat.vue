@@ -683,10 +683,10 @@ div.chat-container .v-expansion-panel__header {
   white-space: unset !important;
 }
 
-.v-toolbar__content,
+/* .v-toolbar__content,
 .v-toolbar__extension {
   padding: 0 12px;
-}
+} */
 
 .chat-card {
   font-size: 16px !important;
