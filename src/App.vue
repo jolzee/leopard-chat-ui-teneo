@@ -3,8 +3,7 @@
   <v-app
     toolbar
     :dark="dark"
-    class="elevation-4 "
-    :class="{'application-float': float, 'application-embed': embed}"
+    :class="{'elevation-4': !embed, 'application-float': float, 'application-embed': embed}"
   >
     <div id="chat-open-close-button">
       <!-- <v-badge
