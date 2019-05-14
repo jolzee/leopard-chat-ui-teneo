@@ -23,6 +23,7 @@ export default class Setup {
     this.liveChat;
     this.CHAT_TITLE = "Configure Me";
     this.EMBED = this.doesParameterExist("embed");
+    this.SHOW_BUTTON_ONLY = this.doesParameterExist("button");
     this.ENABLE_LIVE_CHAT = false;
     this.mobileDetect = new MobileDetect(window.navigator.userAgent);
     this.FLOAT = false;
@@ -65,6 +66,10 @@ export default class Setup {
     return new Promise((resolve, reject) => {
       this.getSolutionConfig()
         .then(() => {
+          if (!this.EMBED && !this.SHOW_BUTTON_ONLY) {
+            this.addIframeHtml();
+          }
+
           if (this.chatConfig && this.chatConfig.activeSolution) {
             let deepLink = this.getParameterByName("dl"); // look for deep link
             if (!deepLink) {
@@ -117,7 +122,8 @@ export default class Setup {
               }
             });
             this.ENABLE_LIVE_CHAT = parseBool(this.activeSolution.enableLiveChat);
-
+            this.UNIQUE_KEY =
+              this.activeSolution.deepLink + (window.location.href.indexOf("mobile=true") > -1 ? "_mobile" : "");
             document.title = this.activeSolution.name;
 
             let self = this;
@@ -135,10 +141,8 @@ export default class Setup {
           }
 
           // update the IFRAME URL
-          if (document.getElementById("site-frame")) {
+          if (!this.EMBED && !this.SHOW_BUTTON_ONLY && document.getElementById("site-frame")) {
             document.getElementById("site-frame").src = this.IFRAME_URL;
-          } else {
-            this.EMBED = true;
           }
           resolve();
         })
@@ -230,6 +234,22 @@ export default class Setup {
 
   isPusherEnabled() {
     return process.env.VUE_APP_FIREBASE_API_KEY ? true : false;
+  }
+
+  addIframeHtml() {
+    let iframeHtml = this.getFunctionHTMLTemplate(function() {
+      /*!
+      <iframe id="site-frame" src="" frameborder="0"></iframe>
+      */
+    });
+    document.body.innerHTML += iframeHtml;
+  }
+
+  getFunctionHTMLTemplate(f) {
+    return f
+      .toString()
+      .replace(/^[^/]+\/\*!?/, "")
+      .replace(/\*\/[^/]+$/, "");
   }
 
   doesParameterExist(name) {

@@ -60,7 +60,8 @@
     "vuetify": "^1.5.11",
     "vuetify-upload-button": "^1.2.2",
     "vuex": "^3.0.1",
-    "vuex-i18n": "^1.10.5"
+    "vuex-i18n": "^1.10.5",
+    "vuex-shared-mutations": "^1.0.2"
   },
   "devDependencies": {
     "@mdi/font": "^3.6.95",

@@ -1,12 +1,37 @@
 <template>
 
-  <v-app
-    toolbar
-    :dark="dark"
-    :class="{'elevation-4': !embed, 'application-float': float, 'application-embed': embed}"
-  >
-    <div id="chat-open-close-button">
-      <!-- <v-badge
+  <div>
+    <div
+      v-if="showButtonOnly"
+      id="chat-open-close-button-embed"
+      @click="toggleEmbedButton"
+    >
+      <v-fab-transition>
+        <v-btn
+          fab
+          dark
+          color="primary"
+          v-if="showChatButton"
+          :class="{ pulse: (pulseButton && chatButtonInitial)}"
+        >
+          <v-icon
+            dark
+            v-text="chatButtonInitial ? 'chat' : 'close'"
+          ></v-icon>
+        </v-btn>
+      </v-fab-transition>
+    </div>
+    <v-app
+      v-else
+      toolbar
+      :dark="dark"
+      :class="{'elevation-4': !embed, 'application-float': float, 'application-embed': embed}"
+    >
+      <div
+        id="chat-open-close-button"
+        v-if="!embed"
+      >
+        <!-- <v-badge
         overlap
         color="#282A2E"
       >
@@ -25,7 +50,7 @@
             size="66"
             :class="`elevation-${hover ? 6 : 2}`"
             @click="toggleChat"
-            v-show="!hideChatButton"
+            v-show="showChatButton"
           >
             <img
               :src="hover ? 'https://lh3.googleusercontent.com/-l34qOEimV5o/AAAAAAAAAAI/AAAAAAADJFg/Qu4IolfMLzc/photo.jpg?sz=150' : 'https://avatars0.githubusercontent.com/u/36912049?s=460&v=4'"
@@ -35,141 +60,142 @@
         </v-hover>
       </v-badge> -->
 
-      <v-fab-transition>
-        <v-btn
-          fab
-          dark
-          color="primary"
-          @click="toggleChat"
-          v-show="!hideChatButton"
-          :class="{ pulse: (pulseButton && hideChat)}"
-        >
-          <v-icon
+        <v-fab-transition>
+          <v-btn
+            fab
             dark
-            v-text="hideChat ? 'chat' : 'close'"
-          ></v-icon>
-        </v-btn>
-      </v-fab-transition>
-    </div>
-    <div
-      id="teneo"
-      :class="getChatState"
-      v-if="!hideChat"
-    >
-      <transition
-        name="menu-transition"
-        enter-active-class="animated slideInRight"
-        leave-active-class="animated slideOutRight"
-      >
-        <v-navigation-drawer
-          :dark="dark"
-          app
-          :clipped="clipped"
-          v-if="drawer"
-          v-model="drawer"
-          enable-resize-watcher
-          temporary
-          right
-          width="250"
-        >
-          <v-img
-            :src='backgroundImage()'
-            height="auto"
+            color="primary"
+            @click="toggleChat"
+            v-show="showChatButton"
+            :class="{ pulse: (pulseButton && !showChatWindow)}"
           >
-            <v-layout
-              pa-4
-              column
-              fill-height
-              class="lightbox white--text"
-            >
-              <v-spacer></v-spacer>
-              <v-flex shrink>
-                <div class="headline font-weight-medium">Artificial Solutions</div>
-                <div class="body-2">{{ $t('about.page.content') }}</div>
-              </v-flex>
-            </v-layout>
-          </v-img>
-          <v-list
+            <v-icon
+              dark
+              v-text="showChatWindow ? 'close' : 'chat'"
+            ></v-icon>
+          </v-btn>
+        </v-fab-transition>
+      </div>
+      <div
+        id="teneo"
+        :class="getChatState"
+        v-if="showChatWindow"
+      >
+        <transition
+          name="menu-transition"
+          enter-active-class="animated slideInRight"
+          leave-active-class="animated slideOutRight"
+        >
+          <v-navigation-drawer
             :dark="dark"
-            class="px-2"
+            app
+            :clipped="clipped"
+            v-if="drawer"
+            v-model="drawer"
+            enable-resize-watcher
+            temporary
+            right
+            width="250"
           >
-            <v-list-tile
-              ripple
-              value="true"
-              v-for="(menuItem, i) in activeMenuItems"
-              :key="i"
-              :to="menuItem.route"
-              @click="lookForLogout(menuItem)"
+            <v-img
+              :src='backgroundImage()'
+              height="auto"
             >
-              <v-list-tile-action>
-                <v-icon
-                  medium
-                  :dark="dark"
-                  :class="menuClass"
-                >{{menuItem.icon}}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title
-                  class="subheading"
-                  :dark="dark"
-                  :class="menuClassText"
-                >{{ $t(menuItem.titleKey) }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-        </v-navigation-drawer>
-      </transition>
+              <v-layout
+                pa-4
+                column
+                fill-height
+                class="lightbox white--text"
+              >
+                <v-spacer></v-spacer>
+                <v-flex shrink>
+                  <div class="headline font-weight-medium">Artificial Solutions</div>
+                  <div class="body-2">{{ $t('about.page.content') }}</div>
+                </v-flex>
+              </v-layout>
+            </v-img>
+            <v-list
+              :dark="dark"
+              class="px-2"
+            >
+              <v-list-tile
+                ripple
+                value="true"
+                v-for="(menuItem, i) in activeMenuItems"
+                :key="i"
+                :to="menuItem.route"
+                @click="lookForLogout(menuItem)"
+              >
+                <v-list-tile-action>
+                  <v-icon
+                    medium
+                    :dark="dark"
+                    :class="menuClass"
+                  >{{menuItem.icon}}</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                  <v-list-tile-title
+                    class="subheading"
+                    :dark="dark"
+                    :class="menuClassText"
+                  >{{ $t(menuItem.titleKey) }}</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+          </v-navigation-drawer>
+        </transition>
 
-      <v-toolbar
-        :clipped-left="clipped"
-        :color="toolbarColor"
-        :dark="dark"
-        :flat="false"
-        height="64"
-        style="z-index: 3;"
-        :class="{'teneo-toolbar-float' : float, 'teneo-toolbar-embed' : embed}"
-      >
-        <v-toolbar-side-icon
-          @click.stop="drawer = !drawer"
-          style="flex: 0 0 auto;"
+        <v-toolbar
+          :clipped-left="clipped"
           :color="toolbarColor"
-        ></v-toolbar-side-icon>
-        <v-toolbar-title v-text="toolbarTitle"></v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn
-          round
-          small
-          dark
-          fab
-          @click="toggleBrightness"
-          style="flex: 0 0 auto;"
-          :color="dark ? 'primary': 'secondary'"
+          :dark="dark"
+          :flat="false"
+          height="64"
+          style="z-index: 3;"
+          :class="{'teneo-toolbar-float' : float, 'teneo-toolbar-embed' : embed}"
         >
-          <v-icon
+          <v-toolbar-side-icon
+            @click.stop="drawer = !drawer"
+            style="flex: 0 0 auto;"
+            :color="toolbarColor"
+          ></v-toolbar-side-icon>
+          <v-toolbar-title v-text="toolbarTitle"></v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn
+            round
+            small
             dark
-            v-text="
+            fab
+            @click="toggleBrightness"
+            style="flex: 0 0 auto;"
+            :color="dark ? 'primary': 'secondary'"
+          >
+            <v-icon
+              dark
+              v-text="
             dark
             ? 'fa-moon'
             : 'fa-sun'"
-          ></v-icon>
-        </v-btn>
-      </v-toolbar>
-      <v-content
-        app
-        class="
+            ></v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-content
+          app
+          class="
             content-area"
-      >
-        <transition
-          name="page-transition"
-          enter-active-class="animation fadeIn"
         >
-          <router-view />
-        </transition>
-        <teneo-modal></teneo-modal>
-      </v-content>
+          <transition
+            name="page-transition"
+            enter-active-class="animation fadeIn"
+          >
+            <router-view />
+          </transition>
+          <teneo-modal></teneo-modal>
+        </v-content>
 
-    </div>
-  </v-app>
+      </div>
+    </v-app>
+  </div>
 </template>
 
 <script>
@@ -178,8 +204,6 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      hideChatButton: false,
-      hideChat: true,
       clipped: false,
       drawer: false,
       menuItems: [
@@ -233,8 +257,8 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.onResize);
-    if (window.innerWidth <= 480) {
-      this.onResize();
+    if (window.innerWidth <= 480 || this.embed) {
+      this.onResizeOrEmbed();
     }
     this.$store.dispatch("setUserInformation");
   },
@@ -248,7 +272,11 @@ export default {
       "overlayChat",
       "progressBar",
       "pulseButton",
-      "socialAuthEnabled"
+      "socialAuthEnabled",
+      "showButtonOnly",
+      "showChatWindow",
+      "showChatButton",
+      "chatButtonInitial"
     ]),
     activeMenuItems() {
       if (this.authenticated) {
@@ -308,20 +336,30 @@ export default {
       return !this.dark ? "primary white--text" : "";
     },
     getChatState() {
-      if (!this.hideChat) {
+      if (this.showChatWindow) {
         return "show-the-chat";
       }
       return "";
     }
   },
   methods: {
+    toggleEmbedButton() {
+      this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY");
+      this.$store.commit("TOGGLE_CHAT_BUTTON");
+      setTimeout(
+        function() {
+          this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // only show the open chat button once the session has ended
+        }.bind(this),
+        2000
+      );
+    },
     lookForLogout(menuItem) {
       this.drawer = false;
       document.activeElement.blur();
       if (menuItem.titleKey === "menu.logout") {
         let chatButton = document.getElementById("chat-open-close-button");
         let siteFrame;
-        if (this.embed) {
+        if (!this.embed && !this.showButtonOnly) {
           siteFrame = document.getElementById("site-frame");
         }
 
@@ -335,13 +373,13 @@ export default {
 
         setTimeout(
           function() {
-            this.hideChat = !this.hideChat; // close the chat window - i want the iframe to resize first and then the chat window to close
+            this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // close the chat window - i want the iframe to resize first and then the chat window to close
             chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
           }.bind(this),
           1000
         );
 
-        this.hideChatButton = !this.hideChatButton;
+        this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY");
 
         // now end the Teneo Session - user clicked the close button - intention is clear
         this.$store.dispatch("endSession").then(() => {
@@ -357,7 +395,7 @@ export default {
 
           setTimeout(
             function() {
-              this.hideChatButton = !this.hideChatButton; // only show the open chat button once the session has ended
+              this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // only show the open chat button once the session has ended
             }.bind(this),
             1500
           );
@@ -367,14 +405,19 @@ export default {
     backgroundImage() {
       return require("./assets/purple.jpg");
     },
-    onResize() {
+    onResizeOrEmbed() {
       // on mobile devices open the chat window automatically
-      if (window.innerWidth <= 480 && this.hideChat) {
-        this.hideChatButton = true;
-        this.hideChat = false; // show the chat window
+      if (
+        (window.innerWidth <= 480 &&
+          !this.showChatWindow &&
+          !this.showButtonOnly) ||
+        (this.embed && !this.showChatWindow)
+      ) {
+        this.$store.commit("HIDE_CHAT_BUTTON");
+        this.$store.commit("SHOW_CHAT_WINDOW"); // show the chat window
         //animate the IFrame
         let siteFrame;
-        if (this.embed) {
+        if (!this.embed && !this.showButtonOnly) {
           siteFrame = document.getElementById("site-frame");
         }
         let chatButton = document.getElementById("chat-open-close-button");
@@ -393,10 +436,12 @@ export default {
           function() {
             // console.log(`In move button left: ${isChatUiFloating}`);
             // wait just a bit before animating things - need the chat button to hide first
-            if (isChatUiFloating) {
-              chatButton.setAttribute("class", "move-button-left-float"); // reposition the chat button
-            } else {
-              chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+            if (chatButton && !this.embed) {
+              if (isChatUiFloating) {
+                chatButton.setAttribute("class", "move-button-left-float"); // reposition the chat button
+              } else {
+                chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+              }
             }
 
             if (!this.embed && !this.overlayChat && siteFrame) {
@@ -413,8 +458,8 @@ export default {
           .catch(err => {
             console.log("ERROR LOGGING IN TO CHAT: ", err.message);
           });
-      } else if (window.innerWidth > 480 && !this.hideChat) {
-        this.hideChatButton = false;
+      } else if (window.innerWidth > 480 && this.showChatWindow) {
+        this.$store.commit("SHOW_CHAT_BUTTON");
       }
     },
     toggleBrightness() {
@@ -425,11 +470,12 @@ export default {
         !this.$store.state.chatConfig ||
         !this.$store.state.chatConfig.activeSolution
       ) {
-        this.hideChat = !this.hideChat;
+        this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY");
         this.$router.push({ name: "config" });
         return;
       }
-      this.hideChatButton = !this.hideChatButton; // toggle the chat button visibility
+
+      this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // toggle the chat button visibility
       this.$store.commit("STOP_TTS"); // always reset audio to not speak when chat button is clicked
       let siteFrame;
       //animate the IFrame
@@ -440,21 +486,24 @@ export default {
       let chatButton = document.getElementById("chat-open-close-button");
 
       // show chat window - button clicked - login
-      if (this.hideChat) {
+      if (!this.showChatWindow) {
         this.$router.push({ name: "chat" }); // make sure we show the main chat window
         this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
         let isChatUiFloating = this.float;
         setTimeout(
           function() {
             // wait just a bit before animating things - need the chat button to hide first
-            this.hideChat = !this.hideChat; // show the chat window
+            this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // show the chat window
             // console.log(`In move button left: ${isChatUiFloating}`);
             // wait just a bit before animating things - need the chat button to hide first
-            if (isChatUiFloating) {
-              chatButton.setAttribute("class", "move-button-left-float"); // reposition the chat button
-            } else {
-              chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+            if (chatButton) {
+              if (isChatUiFloating) {
+                chatButton.setAttribute("class", "move-button-left-float"); // reposition the chat button
+              } else {
+                chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+              }
             }
+
             if (!this.embed && !this.overlayChat && siteFrame) {
               siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
             }
@@ -466,7 +515,7 @@ export default {
           .dispatch("login")
           .then(() => {
             console.log("Successfully logged into chat");
-            this.hideChatButton = !this.hideChatButton; // only show the chat button after a successful login
+            this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // only show the chat button after a successful login
           })
           .catch(err => {
             console.log("ERROR LOGGING IN TO CHAT: ", err.message);
@@ -481,8 +530,10 @@ export default {
 
         setTimeout(
           function() {
-            this.hideChat = !this.hideChat; // close the chat window - i want the iframe to resize first and then the chat window to close
-            chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
+            this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // close the chat window - i want the iframe to resize first and then the chat window to close
+            if (chatButton) {
+              chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
+            }
           }.bind(this),
           1000
         );
@@ -501,7 +552,7 @@ export default {
 
           setTimeout(
             function() {
-              this.hideChatButton = !this.hideChatButton; // only show the open chat button once the session has ended
+              this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // only show the open chat button once the session has ended
             }.bind(this),
             1500
           );
@@ -514,6 +565,13 @@ export default {
 
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
+
+#chat-open-close-button-embed {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 hr {
   border: 0;
@@ -691,6 +749,7 @@ a:focus {
 }
 
 iframe#site-frame {
+  z-index: -100;
   overflow: hidden;
   height: 100%;
   width: 100%;

@@ -5,6 +5,7 @@
     id="chat-area"
     class="chat-container"
   >
+
     <ChatNoHistory v-if="noHistory && isHistoryPage"></ChatNoHistory>
 
     <!-- show the listening modal when recognizing audio input -->
@@ -111,6 +112,7 @@
             v-model="valid"
             v-on:submit.prevent
             ref="userInputForm"
+            style="height: 50px;"
           >
             <v-layout row>
 

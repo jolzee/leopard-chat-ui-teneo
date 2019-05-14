@@ -5,6 +5,7 @@ import "firebase/database";
 import "regenerator-runtime/runtime";
 import * as firebase from "firebase/app";
 import axios from "axios";
+import createMutationsSharer, { BroadcastChannelStrategy } from "vuex-shared-mutations";
 import gravatar from "gravatar";
 import stripHtml from "string-strip-html";
 import URL from "url-parse";
@@ -70,6 +71,12 @@ export function getStore(callback) {
 
 function storeSetup(callback) {
   store = new Vuex.Store({
+    plugins: [
+      createMutationsSharer({
+        predicate: ["SHOW_CHAT_WINDOW"],
+        strategy: new BroadcastChannelStrategy({ key: config.UNIQUE_KEY })
+      })
+    ],
     state: {
       asr: {
         stopAudioCapture: false,
@@ -139,7 +146,11 @@ function storeSetup(callback) {
         responseIcon: config.RESPONSE_ICON,
         theme: config.THEME,
         userIcon: config.USER_ICON,
-        showUploadButton: false
+        showUploadButton: false,
+        showChatWindow: false,
+        showChatButton: true,
+        showButtonOnly: config.SHOW_BUTTON_ONLY,
+        chatButtonInitial: true
       },
       userInput: {
         userInput: "",
@@ -147,11 +158,23 @@ function storeSetup(callback) {
       }
     },
     getters: {
+      chatButtonInitial(state) {
+        return state.ui.chatButtonInitial;
+      },
       uuid(_state) {
         return uuidv1();
       },
+      showButtonOnly(state) {
+        return state.ui.showButtonOnly;
+      },
       timeZoneParam(state) {
         return "&timeZone=" + encodeURI(state.browser.timeZone);
+      },
+      showChatWindow(state) {
+        return state.ui.showChatWindow;
+      },
+      showChatButton(state) {
+        return state.ui.showChatButton;
       },
       uploadConfig(_state, getters) {
         let item = getters.lastReplyItem;
@@ -648,6 +671,35 @@ function storeSetup(callback) {
       },
       HIDE_CUSTOM_MODAL(state) {
         state.modals.showCustomModal = false;
+      },
+      TOGGLE_CHAT_WINDOW_DISPLAY(state) {
+        if (!state.ui.showButtonOnly) {
+          state.ui.showChatWindow = !state.ui.showChatWindow;
+        }
+        if (state.ui.showChatWindow) {
+          state.ui.chatButtonInitial = false;
+        } else {
+          state.ui.chatButtonInitial = true;
+        }
+      },
+      TOGGLE_CHAT_BUTTON(state) {
+        state.ui.chatButtonInitial = !state.ui.chatButtonInitial;
+      },
+      SHOW_CHAT_WINDOW(state) {
+        state.ui.showChatWindow = true;
+        state.ui.chatButtonInitial = false;
+      },
+      HIDE_CHAT_WINDOW(state) {
+        state.ui.showChatWindow = false;
+      },
+      HIDE_CHAT_BUTTON(state) {
+        state.ui.showChatButton = false;
+      },
+      SHOW_CHAT_BUTTON(state) {
+        state.ui.showChatButton = true;
+      },
+      TOGGLE_CHAT_BUTTON_DISPLAY(state) {
+        state.ui.showChatButton = !state.ui.showChatButton;
       },
       SHOW_CUSTOM_MODAL(state) {
         state.modals.showCustomModal = true;

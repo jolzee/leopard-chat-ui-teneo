@@ -317,7 +317,7 @@ export default {
         }
         // send URL's to the I-FRAME
         let outputUrl = this.outputLink(item);
-        if (outputUrl !== "") {
+        if (outputUrl !== "" && !this.embed && !this.showButtonOnly) {
           if (outputUrl.startsWith("./")) {
             let currentIframeUrl =
               this.iFrameUrlBase + outputUrl.substring(2, outputUrl.length);
@@ -484,6 +484,8 @@ export default {
   computed: {
     ...mapGetters([
       "dark",
+      "embed",
+      "showButtonOnly",
       "extensionIsInline",
       "hasInline",
       "hasModal",
