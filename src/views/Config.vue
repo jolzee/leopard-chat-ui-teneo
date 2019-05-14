@@ -1469,13 +1469,28 @@ export default {
       }
       return false;
     },
+    doesParameterExist(name) {
+      var queryString = location.search;
+      var params = queryString.substring(1).split("&");
+      for (var i = 0; i < params.length; i++) {
+        var pair = params[i].split("=");
+        if (decodeURIComponent(pair[0]) == name) return true;
+      }
+      return false;
+    },
     refreshBrowser() {
       this.refresh = true;
       sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
-
+      let addtionalParams = "";
+      if (this.doesParameterExist("embed")) {
+        addtionalParams += "&embed";
+      }
+      if (this.doesParameterExist("button")) {
+        addtionalParams += "&button";
+      }
       window.location = `${location.protocol}//${location.host}${
         location.pathname
-      }?dl=${this.selectedSolution.deepLink}`;
+      }?dl=${this.selectedSolution.deepLink}${addtionalParams}`;
     },
     saveToLocalStorage() {
       localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));

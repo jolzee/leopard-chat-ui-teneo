@@ -11,8 +11,8 @@ import { getStore } from "./store";
 import App from "./App";
 import router from "./router";
 
-console.groupCollapsed("Leopard Information");
-console.log("%cLeopard Chat UI 💬", "background: #3776D0; color: white; font-size: x-large;");
+console.groupCollapsed("Powered by Leopard 💬");
+console.log("Leopard Chat UI");
 console.log("Author: Peter Joles - peter.joles@artificial-solutions.com");
 console.log("Documentation: https://jolzee.gitbook.io/leopard/");
 console.log("Code: https://github.com/jolzee/chat-teneo-vue");

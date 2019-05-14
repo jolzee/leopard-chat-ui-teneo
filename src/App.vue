@@ -1,26 +1,31 @@
 <template>
 
   <div>
-    <div
+    <v-app
       v-if="showButtonOnly"
-      id="chat-open-close-button-embed"
-      @click="toggleEmbedButton"
+      class="application-button"
     >
-      <v-fab-transition>
-        <v-btn
-          fab
-          dark
-          color="primary"
-          v-if="showChatButton"
-          :class="{ pulse: (pulseButton && chatButtonInitial)}"
-        >
-          <v-icon
+      <div
+        id="chat-open-close-button-embed"
+        @click="toggleEmbedButton"
+        :dark="dark"
+      >
+        <v-fab-transition>
+          <v-btn
+            fab
             dark
-            v-text="chatButtonInitial ? 'chat' : 'close'"
-          ></v-icon>
-        </v-btn>
-      </v-fab-transition>
-    </div>
+            color="primary"
+            v-if="showChatButton"
+            :class="{ pulse: (pulseButton && chatButtonInitial)}"
+          >
+            <v-icon
+              dark
+              v-text="chatButtonInitial ? 'chat' : 'close'"
+            ></v-icon>
+          </v-btn>
+        </v-fab-transition>
+      </div>
+    </v-app>
     <v-app
       v-else
       toolbar
@@ -565,6 +570,19 @@ export default {
 
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
+
+.application-button {
+  max-width: unset !important;
+  max-height: unset !important;
+  height: unset !important;
+  overflow: unset !important;
+  margin: unset !important;
+  position: unset !important;
+  top: unset !important;
+  bottom: unset !important;
+  right: unset !important;
+  background: transparent !important;
+}
 
 #chat-open-close-button-embed {
   position: absolute;

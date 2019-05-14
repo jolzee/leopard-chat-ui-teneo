@@ -95,12 +95,12 @@
       <!-- Chat Footer - Input Field and Buttons -->
       <v-flex
         xs12
-        class="teneo-footer"
+        class="teneo-footer transparent"
       >
         <v-progress-linear
           :indeterminate="true"
           :active="progressBar"
-          class="loading"
+          class="teneo-input-loading"
           height="3"
         ></v-progress-linear>
 
@@ -645,10 +645,10 @@ export default {
   padding: 0 !important;
 }
 
-.loading {
+.teneo-input-loading {
   position: relative;
   margin: 0 !important;
-  bottom: 3px;
+  /* bottom: 3px; */
 }
 </style>
 <style>
@@ -767,14 +767,19 @@ span.teneo-reply ul {
 }
 
 .teneo-footer {
-  -webkit-box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.1);
-  box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.1);
+  /* -webkit-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.4); */
+
+  -webkit-box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
+    0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    0 1px 10px 0 rgba(0, 0, 0, 0.12);
+
   position: inherit;
   bottom: 0px !important;
   width: 100%;
-  height: 62px;
-  z-index: 1;
-  padding-top: 2px;
+  height: 60px;
+  z-index: 200;
 }
 
 @media only screen and (max-width: 480px) {
