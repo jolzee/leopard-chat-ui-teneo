@@ -99,22 +99,6 @@ document.body.innerHTML += leopardButtonTemplate;
 
 window.setInterval(checkButtonFocus, 600);
 
-var sentTeneoCtx = false;
-
-var ctxInterval = setInterval(function() {
-  if (!sentTeneoCtx) {
-    let teneoFrameWindow = window.frames.teneochatwidget;
-    if (teneoFrameWindow) {
-      if (window.TENEOCTX) {
-        console.log("sending message to Teneo....");
-        teneoFrameWindow.postMessage(JSON.stringify(window.TENEOCTX), "*");
-        sentTeneoCtx = true;
-        clearInterval(ctxInterval);
-      }
-    }
-  }
-}, 4000);
-
 function checkButtonFocus() {
   if (document.activeElement == document.getElementById("teneo-chat-button")) {
     var element = document.getElementById("teneo-chat-widget-container");
