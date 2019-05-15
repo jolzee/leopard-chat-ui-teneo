@@ -1,3 +1,5 @@
+var tieUrl = "http://127.0.0.1:8080/";
+
 function getLeopardTemplate(f) {
   return f
     .toString()
@@ -45,7 +47,7 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
   id="teneo-chat-button-container"
 >
   <iframe
-    src="http://127.0.0.1:8080/?button"
+    src="[tieUrl]?button"
     allowtransparency="true"
     id="teneo-chat-button"
     name="teneo-chat-button"
@@ -65,10 +67,10 @@ var leopardChatTemplate = getLeopardTemplate(function() {
   id="teneo-chat-widget-container" style="display:none;" class="animated rotateInUpRight delay-1s"
 >
   <iframe
-    src="http://127.0.0.1:8080/?embed"
+    src="[tieUrl]?embed[teneoCtxParams]"
     allowtransparency="true"
     id="teneo-chat-widget"
-    name="teneo-chat-widget"
+    name="teneochatwidget"
     scrolling="no"
     role="application"
     aria-label="Teneo chat widget"
@@ -79,15 +81,46 @@ var leopardChatTemplate = getLeopardTemplate(function() {
   */
 });
 
+var tieUrlRegex = /\[tieUrl\]/g;
+var teneoCtxParamsRegex = /\[teneoCtxParams\]/g;
+
+leopardButtonTemplate = leopardButtonTemplate.replace(tieUrlRegex, tieUrl);
+leopardChatTemplate = leopardChatTemplate.replace(tieUrlRegex, tieUrl);
+if (window.TENEOCTX) {
+  leopardChatTemplate = leopardChatTemplate.replace(
+    teneoCtxParamsRegex,
+    "&teneoCtx=" + encodeURIComponent(JSON.stringify(window.TENEOCTX))
+  );
+} else {
+  leopardChatTemplate = leopardChatTemplate.replace(teneoCtxParamsRegex, "");
+}
+
 document.body.innerHTML += leopardButtonTemplate;
 
 window.setInterval(checkButtonFocus, 600);
+
+var sentTeneoCtx = false;
+
+var ctxInterval = setInterval(function() {
+  if (!sentTeneoCtx) {
+    let teneoFrameWindow = window.frames.teneochatwidget;
+    if (teneoFrameWindow) {
+      if (window.TENEOCTX) {
+        console.log("sending message to Teneo....");
+        teneoFrameWindow.postMessage(JSON.stringify(window.TENEOCTX), "*");
+        sentTeneoCtx = true;
+        clearInterval(ctxInterval);
+      }
+    }
+  }
+}, 4000);
 
 function checkButtonFocus() {
   if (document.activeElement == document.getElementById("teneo-chat-button")) {
     var element = document.getElementById("teneo-chat-widget-container");
     if (!element) {
       document.body.innerHTML += leopardChatTemplate;
+
       setTimeout(function() {
         element = document.getElementById("teneo-chat-widget-container");
         element.style.display = "block";

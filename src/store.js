@@ -86,6 +86,7 @@ function storeSetup(callback) {
       activeSolution: config.activeSolution,
       connection: {
         requestParameters: config.REQUEST_PARAMETERS,
+        ctxParameters: config.doesParameterExist("teneoCtx") ? JSON.parse(config.getParameterByName("teneoCtx")) : "",
         teneoUrl: config.TENEO_URL
       },
       browser: {
@@ -387,6 +388,16 @@ function storeSetup(callback) {
           }
         }
         return actions;
+      },
+      ctxParameters(state) {
+        let ctxParams = state.connection.ctxParameters;
+        if (ctxParams) {
+          let queryParams = Object.keys(ctxParams)
+            .map(key => key + "=" + ctxParams[key])
+            .join("&");
+          return `&${queryParams}`;
+        }
+        return "";
       },
       hasModal: (_state, getters) => item => {
         let extensions = getters.itemExtensions(item);
@@ -1090,7 +1101,8 @@ function storeSetup(callback) {
             config.TENEO_URL +
               config.REQUEST_PARAMETERS +
               context.getters.userInformationParams +
-              context.getters.timeZoneParam,
+              context.getters.timeZoneParam +
+              context.getters.ctxParameters,
             {
               command: "login"
               // userInput: ""
@@ -1151,7 +1163,8 @@ function storeSetup(callback) {
             context.getters.teneoUrl +
               (config.SEND_CTX_PARAMS === "all" ? config.REQUEST_PARAMETERS + params : params) +
               context.getters.userInformationParams +
-              context.getters.timeZoneParam,
+              context.getters.timeZoneParam +
+              context.getters.ctxParameters,
             {
               userinput: currentUserInput.trim()
             }
@@ -1398,3 +1411,18 @@ function storeSetup(callback) {
 
   callback(store);
 }
+
+function stoperror() {
+  return true;
+}
+
+window.addEventListener("message", function(event) {
+  try {
+    let messageObject = JSON.parse(event.data);
+    console.log(messageObject);
+    store.state.userInput.userInput = messageObject.message;
+    store.state.connection.ctxParameters = messageObject;
+  } catch (error) {
+    stoperror();
+  }
+});
