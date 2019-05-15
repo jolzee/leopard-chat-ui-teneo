@@ -13,7 +13,7 @@
         <v-toolbar
           dark
           color="primary"
-          height="48"
+          height="64"
           fixed
           :class="toolbarWidth"
         >

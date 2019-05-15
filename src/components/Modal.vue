@@ -639,10 +639,12 @@ export default {
 <style>
 .v-toolbar--fixed {
   left: unset !important;
+  z-index: 5000;
 }
 
 .modal-container {
   padding: 0px;
+  margin-top: 20px;
 }
 
 .modal-height {

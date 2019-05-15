@@ -779,7 +779,7 @@ span.teneo-reply ul {
   bottom: 0px !important;
   width: 100%;
   height: 60px;
-  z-index: 200;
+  z-index: 5;
 }
 
 @media only screen and (max-width: 480px) {

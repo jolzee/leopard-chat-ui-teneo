@@ -18,11 +18,11 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
     visibility: visible;
     z-index: 2147483640;
     position: fixed;
-    bottom: 0px;
+    bottom: 17px;
     right: 3%;
     margin-right: -20px;
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 82px;
     background-color: transparent;
     border: 0px;
     transition: none 0s ease 0s !important;
@@ -49,7 +49,7 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
     scrolling="no"
     role="application"
     aria-label="Teneo chat widget button"
-    style="height: 100%; width: 100%; border-width: 0px; border-style: none; border-color: green; border-image: unset;"
+    style="height: 100%; width: 100%; border-width: 0px; border-style: none; border-image: unset;"
   ></iframe>
 </div>
 */

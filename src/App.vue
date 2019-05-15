@@ -7,8 +7,8 @@
     >
       <div
         id="chat-open-close-button-embed"
-        @click="toggleEmbedButton"
         :dark="dark"
+        @click="toggleEmbedButton"
       >
         <v-fab-transition>
           <v-btn
@@ -16,6 +16,7 @@
             dark
             color="primary"
             v-if="showChatButton"
+            class="embed-button-center"
             :class="{ pulse: (pulseButton && chatButtonInitial)}"
           >
             <v-icon
@@ -571,6 +572,14 @@ export default {
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
+.embed-button-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
 .application-button {
   max-width: unset !important;
   max-height: unset !important;
@@ -585,10 +594,8 @@ export default {
 }
 
 #chat-open-close-button-embed {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  height: 100vh;
+  width: 100vw;
 }
 
 hr {
