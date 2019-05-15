@@ -572,14 +572,6 @@ export default {
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
-.embed-button-center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-
 .application-button {
   max-width: unset !important;
   max-height: unset !important;
@@ -594,8 +586,12 @@ export default {
 }
 
 #chat-open-close-button-embed {
-  height: 100vh;
-  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 100vh;
 }
 
 hr {

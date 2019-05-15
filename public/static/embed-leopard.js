@@ -23,7 +23,7 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
     position: fixed;
     bottom: 17px;
     right: 3%;
-    margin-right: -20px;
+    margin-right: -16px;
     width: 90px;
     height: 82px;
     background-color: transparent;
