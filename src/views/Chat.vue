@@ -760,6 +760,10 @@ div.options-list a.v-list__tile--link {
 
 .chat-container-inner {
   overflow-x: hide !important;
+  -webkit-box-shadow: 0 2px 20px -1px rgba(0, 0, 0, 0.2),
+    0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 20px -1px rgba(0, 0, 0, 0.2),
+    0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
 }
 
 span.teneo-reply ul {
@@ -767,13 +771,10 @@ span.teneo-reply ul {
 }
 
 .teneo-footer {
-  /* -webkit-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.4);
-  box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.4); */
-
-  -webkit-box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.2),
-    0px -4px 0px 0 rgba(0, 0, 0, 0.14), 0px -1px 0px 0px rgba(0, 0, 0, 0.12);
-  box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.2),
-    0px -4px 0px 0 rgba(0, 0, 0, 0.14), 0px -1px 0px 0px rgba(0, 0, 0, 0.12);
+  -webkit-box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12),
+    0px -2px 0px 0 rgba(0, 0, 0, 0.08), 0px -3px 0px 0px rgba(0, 0, 0, 0.04);
+  box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12),
+    0px -2px 0px 0 rgba(0, 0, 0, 0.08), 0px -3px 0px 0px rgba(0, 0, 0, 0.04);
 
   position: inherit;
   bottom: 0px !important;
