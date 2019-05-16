@@ -1420,7 +1420,6 @@ window.addEventListener("message", function(event) {
   try {
     let messageObject = JSON.parse(event.data);
     console.log(messageObject);
-    store.state.userInput.userInput = messageObject.message;
     store.state.connection.ctxParameters = messageObject;
   } catch (error) {
     stoperror();
