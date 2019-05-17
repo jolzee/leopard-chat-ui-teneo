@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Client's Website</title>
+    <script type="text/javascript">
+      window.TENEOCTX || (TENEOCTX = {});
+      TENEOCTX = {
+        eventSource: "leopard-embed",
+        pageTitle: document.title,
+        pageUrl: window.location.href,
+        pageTopic: "Help",
+        message: "This was sent from the customer's web site"
+      };
+    </script>
   </head>
   <body>
     <script src="static/embed-leopard.js"></script>

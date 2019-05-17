@@ -1,4 +1,5 @@
 var tieUrl = "http://127.0.0.1:8080/";
+var teneoChatWindowOpen = sessionStorage.getItem("teneo-chat-window-state") === "open";
 
 function getLeopardTemplate(f) {
   return f
@@ -47,10 +48,10 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
   id="teneo-chat-button-container"
 >
   <iframe
-    src="[tieUrl]?button"
+    src="[tieUrl]?button&chatopen=[leopardButtonState]"
     allowtransparency="true"
     id="teneo-chat-button"
-    name="teneo-chat-button"
+    name="teneochatbuttonwidget"
     scrolling="no"
     role="application"
     aria-label="Teneo chat widget button"
@@ -64,7 +65,7 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
 var leopardChatTemplate = getLeopardTemplate(function() {
   /*!
 <div
-  id="teneo-chat-widget-container" style="display:none;" class="animated rotateInUpRight delay-1s"
+  id="teneo-chat-widget-container" style="display:none;" class="animated rotateInUpRight"
 >
   <iframe
     src="[tieUrl]?embed[teneoCtxParams]"
@@ -83,8 +84,10 @@ var leopardChatTemplate = getLeopardTemplate(function() {
 
 var tieUrlRegex = /\[tieUrl\]/g;
 var teneoCtxParamsRegex = /\[teneoCtxParams\]/g;
+var leopardButtonState = /\[leopardButtonState\]/g;
 
 leopardButtonTemplate = leopardButtonTemplate.replace(tieUrlRegex, tieUrl);
+leopardButtonTemplate = leopardButtonTemplate.replace(leopardButtonState, teneoChatWindowOpen);
 leopardChatTemplate = leopardChatTemplate.replace(tieUrlRegex, tieUrl);
 if (window.TENEOCTX) {
   leopardChatTemplate = leopardChatTemplate.replace(
@@ -95,26 +98,30 @@ if (window.TENEOCTX) {
   leopardChatTemplate = leopardChatTemplate.replace(teneoCtxParamsRegex, "");
 }
 
-document.body.innerHTML += leopardButtonTemplate;
+document.body.innerHTML += leopardButtonTemplate + leopardChatTemplate;
 
-window.setInterval(checkButtonFocus, 600);
+if (sessionStorage.getItem("teneo-chat-window-state") === "open") {
+  var element = document.getElementById("teneo-chat-widget-container");
+  element.style.display = "block";
+}
+
+window.setInterval(checkButtonFocus, 300);
 
 function checkButtonFocus() {
   if (document.activeElement == document.getElementById("teneo-chat-button")) {
     var element = document.getElementById("teneo-chat-widget-container");
     if (!element) {
-      document.body.innerHTML += leopardChatTemplate;
-
+      document.body.innerHTML += leopardChatTemplate; // does cause a reload of the other frame :(
       setTimeout(function() {
         element = document.getElementById("teneo-chat-widget-container");
         element.style.display = "block";
       }, 500);
+    } else if (element.style.display === "none") {
+      element.style.display = "block";
+      sessionStorage.setItem("teneo-chat-window-state", "open");
     } else {
-      if (element.style.display === "none") {
-        element.style.display = "block";
-      } else {
-        element.style.display = "none";
-      }
+      element.style.display = "none";
+      sessionStorage.setItem("teneo-chat-window-state", "closed");
     }
     window.focus();
   }

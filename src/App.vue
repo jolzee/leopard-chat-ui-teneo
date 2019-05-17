@@ -262,7 +262,7 @@ export default {
     };
   },
   mounted() {
-    window.addEventListener("resize", this.onResize);
+    window.addEventListener("resize", this.onResizeOrEmbed);
     if (window.innerWidth <= 480 || this.embed) {
       this.onResizeOrEmbed();
     }
@@ -272,6 +272,7 @@ export default {
     ...mapGetters([
       "authenticated",
       "chatTitle",
+      "chatHistory",
       "dark",
       "embed",
       "float",
@@ -456,14 +457,18 @@ export default {
           }.bind(this),
           400
         );
-        this.$store
-          .dispatch("login")
-          .then(() => {
-            console.log("Successfully logged into chat");
-          })
-          .catch(err => {
-            console.log("ERROR LOGGING IN TO CHAT: ", err.message);
-          });
+        if (this.chatHistory.length === 0) {
+          this.$store
+            .dispatch("login")
+            .then(() => {
+              console.log("Successfully logged into chat");
+            })
+            .catch(err => {
+              console.log("ERROR LOGGING IN TO CHAT: ", err.message);
+            });
+        } else {
+          this.$store.commit("HIDE_CHAT_LOADING");
+        }
       } else if (window.innerWidth > 480 && this.showChatWindow) {
         this.$store.commit("SHOW_CHAT_BUTTON");
       }

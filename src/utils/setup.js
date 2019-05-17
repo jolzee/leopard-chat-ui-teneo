@@ -44,6 +44,7 @@ export default class Setup {
     this.SEND_CTX_PARAMS = "login";
     this.TENEO_URL = "";
     this.USE_LOCAL_STORAGE = false;
+    this.USE_SESSION_STORAGE = this.EMBED;
     this.USER_ICON = "";
     this.activeSolution = null;
     this.chatConfig = null;
@@ -105,8 +106,6 @@ export default class Setup {
             this.TENEO_URL = this.activeSolution.url + "?viewname=STANDARDJSONP";
             this.USER_ICON = this.activeSolution.userIcon;
 
-            // const USE_LOCAL_STORAGE = parseBool(activeSolution.useLocalStorage);
-            this.USE_LOCAL_STORAGE = false;
             let theme = this.activeSolution.theme;
             // convert color names to their #hex equivalent
             for (const key in theme) {
@@ -212,6 +211,30 @@ export default class Setup {
       finalCorrections = leopardDefaultCorrections.concat(solutionResplacements);
     }
     return finalCorrections;
+  }
+
+  getUrlVars() {
+    var vars = {};
+    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+      vars[key] = value;
+    });
+    return vars;
+  }
+
+  getUrlParam(parameter, defaultvalue) {
+    let urlparameter = "";
+    if (window.location.href.indexOf(parameter) > -1) {
+      urlparameter = this.getUrlVars()[parameter];
+      if (urlparameter) {
+        urlparameter = urlparameter.split("#")[0];
+        urlparameter = urlparameter === "true" ? true : urlparameter === "false" ? false : urlparameter;
+      } else {
+        urlparameter = defaultvalue;
+      }
+    } else {
+      urlparameter = defaultvalue;
+    }
+    return urlparameter;
   }
 
   getLocator() {

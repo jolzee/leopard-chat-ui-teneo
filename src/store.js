@@ -5,7 +5,6 @@ import "firebase/database";
 import "regenerator-runtime/runtime";
 import * as firebase from "firebase/app";
 import axios from "axios";
-import createMutationsSharer, { BroadcastChannelStrategy } from "vuex-shared-mutations";
 import gravatar from "gravatar";
 import stripHtml from "string-strip-html";
 import URL from "url-parse";
@@ -71,12 +70,7 @@ export function getStore(callback) {
 
 function storeSetup(callback) {
   store = new Vuex.Store({
-    plugins: [
-      createMutationsSharer({
-        predicate: ["SHOW_CHAT_WINDOW"],
-        strategy: new BroadcastChannelStrategy({ key: config.UNIQUE_KEY })
-      })
-    ],
+    plugins: [],
     state: {
       asr: {
         stopAudioCapture: false,
@@ -151,7 +145,7 @@ function storeSetup(callback) {
         showChatWindow: false,
         showChatButton: true,
         showButtonOnly: config.SHOW_BUTTON_ONLY,
-        chatButtonInitial: true
+        chatButtonInitial: !config.getUrlParam("chatopen", false)
       },
       userInput: {
         userInput: "",
@@ -160,6 +154,7 @@ function storeSetup(callback) {
     },
     getters: {
       chatButtonInitial(state) {
+        // console.log(`Chat Window Open? : ${!state.ui.chatButtonInitial}`);
         return state.ui.chatButtonInitial;
       },
       uuid(_state) {
@@ -393,7 +388,7 @@ function storeSetup(callback) {
         let ctxParams = state.connection.ctxParameters;
         if (ctxParams) {
           let queryParams = Object.keys(ctxParams)
-            .map(key => key + "=" + ctxParams[key])
+            .map(key => key + "=" + encodeURIComponent(ctxParams[key]))
             .join("&");
           return `&${queryParams}`;
         }
@@ -594,15 +589,29 @@ function storeSetup(callback) {
         return state.liveAgent.showLiveChatProcessing;
       },
       chatHistory(state) {
-        if (config.USE_LOCAL_STORAGE) {
+        if (config.USE_SESSION_STORAGE) {
+          if (state.conversation.dialog.length !== 0) {
+            let chatHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]"));
+            if (chatHistory && chatHistory.length !== 0) {
+              state.conversation.dialog.concat(chatHistory);
+            }
+          } else {
+            state.conversation.dialog = JSON.parse(
+              sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
+            );
+          }
+        } else if (config.USE_LOCAL_STORAGE) {
           if (state.conversation.dialog.length !== 0) {
             let chatHistory = JSON.parse(localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]"));
-            if (chatHistory.length !== 0) {
+            if (chatHistory && chatHistory.length !== 0) {
               state.conversation.dialog.concat(chatHistory);
             }
           } else {
             state.conversation.dialog = JSON.parse(localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]"));
           }
+        }
+        if (!state.conversation.dialog) {
+          state.conversation.dialog = [];
         }
         return state.conversation.dialog;
       },
@@ -755,14 +764,10 @@ function storeSetup(callback) {
         }
       },
       SHOW_CHAT_LOADING(state) {
-        if (!config.USE_LOCAL_STORAGE) {
-          state.progress.showChatLoading = true;
-        }
+        state.progress.showChatLoading = true;
       },
       HIDE_CHAT_LOADING(state) {
-        if (!config.USE_LOCAL_STORAGE) {
-          state.progress.showChatLoading = false;
-        }
+        state.progress.showChatLoading = false;
       },
       LIVE_CHAT_LOADING(state, mustShow) {
         state.liveAgent.showLiveChatProcessing = mustShow;
@@ -1419,6 +1424,9 @@ function stoperror() {
 window.addEventListener("message", function(event) {
   try {
     let messageObject = JSON.parse(event.data);
+    if ("info" in messageObject && "id" in messageObject) {
+      return true;
+    }
     console.log(messageObject);
     store.state.connection.ctxParameters = messageObject;
   } catch (error) {

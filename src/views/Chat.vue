@@ -435,6 +435,12 @@ export default {
     } else {
       document.activeElement.blur();
     }
+    this.$SmoothScroll(
+      this.$refs.pageBottom,
+      2000,
+      null,
+      this.$refs.chatContainer
+    );
   },
   beforeDestroy() {},
   methods: {
@@ -659,7 +665,7 @@ div#chat-area p {
 div.teneo-footer .v-input__slot {
   -webkit-box-shadow: unset !important;
   box-shadow: unset !important;
-  background: unset !important;
+  background: transparent !important;
   padding-left: 5px !important;
 }
 
