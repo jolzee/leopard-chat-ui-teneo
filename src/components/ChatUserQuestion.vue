@@ -32,7 +32,8 @@
     >
       <v-avatar
         v-if="authenticated && userProfileImage"
-        v-long-press="swapInputButton"
+        v-long-press="1000"
+        @long-press-start="swapInputButton"
         class="teneo-userinput-icon elevation-2"
         fab
         small
@@ -45,7 +46,8 @@
       </v-avatar>
       <v-btn
         v-else
-        v-long-press="swapInputButton"
+        v-long-press="1000"
+        @long-press-start="swapInputButton"
         class="teneo-userinput-icon elevation-2"
         fab
         small
@@ -59,9 +61,13 @@
 </template>
 
 <script>
+import LongPress from "vue-directive-long-press";
 import { mapGetters } from "vuex";
 export default {
   name: "ChatUserQuestion",
+  directives: {
+    "long-press": LongPress
+  },
   props: ["item"],
   methods: {
     updateInputBox(userInput) {

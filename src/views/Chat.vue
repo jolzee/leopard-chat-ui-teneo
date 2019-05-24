@@ -22,6 +22,7 @@
     >
       <v-flex
         xs12
+        id="teneo-chat-scroll"
         :class="{'dark-scroll': dark, 'light-scroll': !dark, 'chat-responses-float': float, 'chat-responses': !float}"
         ref="chatContainer"
       >
@@ -180,7 +181,8 @@
                     fab
                     :disabled="progressBar"
                     :loading="progressBar"
-                    v-long-press="swapInputButton"
+                    v-long-press="1000"
+                    @long-press-start="swapInputButton"
                     v-if="!showAudioInput"
                     small
                     color="primary"
@@ -194,7 +196,8 @@
                     fab
                     :disabled="progressBar"
                     :loading="progressBar"
-                    v-long-press="swapInputButton"
+                    v-long-press="1000"
+                    @long-press-start="swapInputButton"
                     small
                     v-if="showAudioInput"
                     v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}"
@@ -226,11 +229,6 @@
         lazy
         width="290px"
       >
-        <!-- <v-date-picker
-          v-model="date"
-          scrollable
-          :min="this.$dayjs().format('YYYY-MM-DD')"
-        > -->
         <v-date-picker
           v-model="date"
           scrollable
@@ -285,6 +283,8 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
+import LongPress from "vue-directive-long-press";
 import ChatBroadcastMessage from "../components/ChatBroadcastMessage";
 import ChatLoading from "../components/ChatLoading";
 import ChatNoHistory from "../components/ChatNoHistory";
@@ -320,9 +320,14 @@ export default {
     LiveChatResponse,
     "upload-btn": UploadButton
   },
+  directives: {
+    "long-press": LongPress
+  },
   data() {
     return {
       interval: {},
+      mustScroll: true,
+      oldDialogLength: 0,
       showAudioInput: false,
       audioButtonClasses: "white--text",
       audioButtonColor: "success",
@@ -342,6 +347,16 @@ export default {
       },
       valid: false
     };
+  },
+  watch: {
+    dialog: function(newDialog) {
+      console.log(`watching... ${newDialog.length}: ${this.oldDialogLength}`);
+      if (newDialog.length !== this.oldDialogLength) {
+        this.mustScroll = true;
+        this.oldDialogLength = newDialog.length;
+        console.log("Yes, we must scroll");
+      }
+    }
   },
   computed: {
     ...mapGetters([
@@ -375,7 +390,7 @@ export default {
     userInput: {
       get: function() {
         if (this.date !== "") {
-          this.updateInputBox(this.$dayjs(this.date).format("D MMMM YYYY"));
+          this.updateInputBox(dayjs(this.date).format("D MMMM YYYY"));
         }
         if (this.userInputReadyForSending) {
           this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals
@@ -408,12 +423,19 @@ export default {
   },
   updated: function() {
     try {
-      this.$SmoothScroll(
-        this.$refs.pageBottom,
-        2000,
-        null,
-        this.$refs.chatContainer
-      );
+      // this should work now
+      if (this.mustScroll) {
+        this.mustScroll = false;
+        this.srcollToBottom();
+      }
+
+      // this.$SmoothScroll(
+      //   this.$refs.pageBottom,
+      //   2000,
+      //   null,
+      //   this.$refs.chatContainer
+      // );
+
       if (!this.isMobileDevice) {
         const element = this.$el.querySelector("#teneo-input-field");
         if (element) {
@@ -435,15 +457,24 @@ export default {
     } else {
       document.activeElement.blur();
     }
-    this.$SmoothScroll(
-      this.$refs.pageBottom,
-      2000,
-      null,
-      this.$refs.chatContainer
-    );
+    this.srcollToBottom();
+    // this.$SmoothScroll(
+    //   this.$refs.pageBottom,
+    //   2000,
+    //   null,
+    //   this.$refs.chatContainer
+    // );
   },
   beforeDestroy() {},
   methods: {
+    srcollToBottom() {
+      let theChatScrollElement = document.getElementById("teneo-chat-scroll");
+      theChatScrollElement.scrollBy({
+        top: theChatScrollElement.scrollHeight,
+        left: 0,
+        behavior: "smooth"
+      });
+    },
     handleFocus() {
       if (!this.isMobileDevice) {
         this.$refs.userInput.focus();
@@ -589,6 +620,7 @@ export default {
           this.showDate = false;
           this.showTime = false;
           this.date = "";
+          this.srcollToBottom();
           this.$store
             .dispatch("sendUserInput")
             .then(() => {
@@ -695,6 +727,19 @@ div.chat-container .v-expansion-panel__header {
 .v-toolbar__extension {
   padding: 0 12px;
 } */
+
+@media screen and (-ms-high-contrast: active),
+  screen and (-ms-high-contrast: none) {
+  /* IE10+ specific styles go here */
+  .chat-card {
+    font-size: 16px !important;
+    font-weight: 500;
+    padding: 5px;
+    padding-left: 10px;
+    margin-top: 10px;
+    width: 260px;
+  }
+}
 
 .chat-card {
   font-size: 16px !important;

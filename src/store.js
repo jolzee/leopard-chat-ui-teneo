@@ -1,12 +1,11 @@
 /* eslint-disable no-unused-vars */
-
 import "firebase/auth";
 import "firebase/database";
 import "regenerator-runtime/runtime";
 import * as firebase from "firebase/app";
 import axios from "axios";
 import gravatar from "gravatar";
-import stripHtml from "string-strip-html";
+var stripHtml = require("string-strip-html");
 import URL from "url-parse";
 import uuidv1 from "uuid/v1";
 import Vue from "vue";
@@ -15,9 +14,8 @@ import Vuex from "vuex";
 import vuexI18n from "vuex-i18n"; // i18n the leopard interface
 import vueSmoothScroll from "vue-smoothscroll";
 import VuePlyr from "vue-plyr";
-import VueSession from "vue-session";
-import longpress from "vue-long-press-directive";
-import Dayjs from "vue-dayjs";
+// const VueShortKey = require("vue-shortkey");
+// import longpress from "vue-long-press-directive";
 import Listening from "./components/Listening.vue"; // component dialog that shows then capturing audio
 import Modal from "./components/Modal.vue";
 import Prism from "prismjs";
@@ -37,18 +35,13 @@ import Setup from "./utils/setup";
 
 let config = new Setup();
 let store;
-// Vue.use(VueLocalStorage);
 Vue.use(VueJsonp, 20000);
 Vue.use(Vuex);
-Vue.use(Dayjs, {
-  lang: "en"
-});
 
 Vue.use(VuePlyr);
 Vue.use(Prism);
-Vue.use(longpress, { duration: process.env.VUE_APP_LONG_PRESS_LENGTH });
+// Vue.use(longpress, { duration: process.env.VUE_APP_LONG_PRESS_LENGTH });
 
-Vue.use(VueSession);
 Vue.use(require("vue-shortkey"));
 Vue.use(vueSmoothScroll);
 
@@ -70,7 +63,6 @@ export function getStore(callback) {
 
 function storeSetup(callback) {
   store = new Vuex.Store({
-    plugins: [],
     state: {
       asr: {
         stopAudioCapture: false,

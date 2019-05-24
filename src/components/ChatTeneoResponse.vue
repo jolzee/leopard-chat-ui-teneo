@@ -14,7 +14,8 @@
         v-if="showChatIcons"
       >
         <v-btn
-          v-long-press="swapInputButton"
+          v-long-press="1000"
+          @long-press-start="swapInputButton"
           color="secondary"
           class="teneo-response-icon elevation-2"
           fab
@@ -89,7 +90,8 @@
           v-if="showChatIcons"
         >
           <v-btn
-            v-long-press="swapInputButton"
+            v-long-press="1000"
+            @long-press-start="swapInputButton"
             color="secondary"
             class="teneo-response-icon elevation-2"
             fab
@@ -224,6 +226,7 @@
 </template>
 
 <script>
+import LongPress from "vue-directive-long-press";
 import Audio from "./Audio";
 import Carousel from "./Carousel";
 import ImageAnimation from "./ImageAnimation";
@@ -233,6 +236,9 @@ import YouTube from "./YouTube";
 import { mapGetters } from "vuex";
 export default {
   name: "ChatTeneoResponse",
+  directives: {
+    "long-press": LongPress
+  },
   components: {
     Audio,
     Carousel,

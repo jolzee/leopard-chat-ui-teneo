@@ -1219,6 +1219,7 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
 import copy from "copy-to-clipboard";
 import { Compact } from "vue-color";
 import urlRegex from "url-regex";
@@ -1391,7 +1392,7 @@ export default {
     downloadSolutionConfig() {
       this.download(
         this.getFullSolutionConfig,
-        `leopard-all-config-${this.$dayjs().format("YYYYMMDD[-]H[-]mm")}.txt`
+        `leopard-all-config-${dayjs().format("YYYYMMDD[-]H[-]mm")}.txt`
       );
     },
     downloadSelectedSolutionConfig() {
@@ -1400,9 +1401,7 @@ export default {
         `leopard-${this.selectedSolution.name
           .replace(/[|&;$%@"<>()+,]/g, "")
           .replace(/\s+/g, "-")
-          .toLowerCase()}-config-${this.$dayjs().format(
-          "YYYYMMDD[-]H[-]mm"
-        )}.txt`
+          .toLowerCase()}-config-${dayjs().format("YYYYMMDD[-]H[-]mm")}.txt`
       );
     },
     download(data, filename, type = "text/plain") {

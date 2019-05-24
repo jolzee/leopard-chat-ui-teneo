@@ -1,5 +1,5 @@
 import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk"; // live chat
-import stripHtml from "string-strip-html";
+var stripHtml = require("string-strip-html");
 
 export class LiveChat {
   constructor(store, useLocalStorage, storageKey, teneoChatHistory) {
