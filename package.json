@@ -7,7 +7,8 @@
   "scripts": {
     "serve": "vue-cli-service serve --open",
     "dev": "vue-cli-service serve --open",
-    "build": "vue-cli-service build --modern",
+    "build:modern": "vue-cli-service build --modern",
+    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -53,7 +54,6 @@
     "vue-directive-long-press": "^1.1.0",
     "vue-jsonp": "^0.1.8",
     "vue-loaders": "^2.0.0",
-    "vue-long-press-directive": "^1.0.2",
     "vue-plyr": "^5.1.3",
     "vue-prism-component": "^1.1.1",
     "vue-pusher": "^1.0.0",

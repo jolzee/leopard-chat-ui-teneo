@@ -350,11 +350,9 @@ export default {
   },
   watch: {
     dialog: function(newDialog) {
-      console.log(`watching... ${newDialog.length}: ${this.oldDialogLength}`);
       if (newDialog.length !== this.oldDialogLength) {
         this.mustScroll = true;
         this.oldDialogLength = newDialog.length;
-        console.log("Yes, we must scroll");
       }
     }
   },
