@@ -20,8 +20,12 @@ export function initializeTTS(locale) {
         "no-NO" : locale === "de" ?
         "de-DE" : locale === "nl" ?
         "nl-NL" : locale === "es" ?
-        "es-ES" : "en-GB",
-      debug: false
+		"es-ES" : locale === "jp" ?
+		"jp-JP" : locale === "cn" ?
+		"zh-CN" : locale === "cn(hk)" ?
+		"zh-HK" : locale === "id" ?
+		"id-ID" : "en-GB",
+      debug: true
     });
   }
   return tts;
