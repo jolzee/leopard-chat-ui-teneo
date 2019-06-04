@@ -321,8 +321,7 @@ export const TRANSLATIONS = {
   },
   cn: {
     "about.page.button": "学到更多",
-    "about.page.content":
-      "Teneo允许您的客户以自然，类似人类和智能的方式与应用程序，设备和Web服务进行通信",
+    "about.page.content": "Teneo允许您的客户以自然，类似人类和智能的方式与应用程序，设备和Web服务进行通信",
     "about.page.title": "Teneo by Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/",
     "back.to.chat.button": "back to chat",
@@ -353,8 +352,7 @@ export const TRANSLATIONS = {
   },
   "cn(hk)": {
     "about.page.button": "學到更多",
-    "about.page.content":
-      "Teneo允許您的客戶以自然，類似人類和智能的方式與應用程序，設備和Web服務進行通信",
+    "about.page.content": "Teneo允許您的客戶以自然，類似人類和智能的方式與應用程序，設備和Web服務進行通信",
     "about.page.title": "Teneo by Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/",
     "back.to.chat.button": "back to chat",

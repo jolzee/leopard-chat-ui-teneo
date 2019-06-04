@@ -12,19 +12,32 @@ export function initializeTTS(locale) {
       soundex: true,
       continuous: false,
       listen: false, // Start recognizing
-      lang: locale === "fr" ?
-        "fr-FR" : locale === "ru" ?
-        "ru-RU" : locale === "da" ?
-        "da-DK" : locale === "sv" ?
-        "sv-SE" : locale === "no" ?
-        "no-NO" : locale === "de" ?
-        "de-DE" : locale === "nl" ?
-        "nl-NL" : locale === "es" ?
-		"es-ES" : locale === "jp" ?
-		"jp-JP" : locale === "cn" ?
-		"zh-CN" : locale === "cn(hk)" ?
-		"zh-HK" : locale === "id" ?
-		"id-ID" : "en-GB",
+      lang:
+        locale === "fr"
+          ? "fr-FR"
+          : locale === "ru"
+          ? "ru-RU"
+          : locale === "da"
+          ? "da-DK"
+          : locale === "sv"
+          ? "sv-SE"
+          : locale === "no"
+          ? "no-NO"
+          : locale === "de"
+          ? "de-DE"
+          : locale === "nl"
+          ? "nl-NL"
+          : locale === "es"
+          ? "es-ES"
+          : locale === "jp"
+          ? "ja-JP"
+          : locale === "cn"
+          ? "zh-CN"
+          : locale === "cn(hk)"
+          ? "zh-HK"
+          : locale === "id"
+          ? "id-ID"
+          : "en-GB",
       debug: true
     });
   }
@@ -38,7 +51,7 @@ export function initializeASR(store, asrCorrections) {
     store.state.asr.asr = store.state.tts.tts.newDictation({
       soundex: true,
       continuous: false, // Enable continuous if HTTPS connection
-      onResult: function (text) {
+      onResult: function(text) {
         clearTimeout(timeoutVar);
         // Do something with the text
         if (text) {
@@ -46,7 +59,7 @@ export function initializeASR(store, asrCorrections) {
           text = text.replace(/what's/gi, "what is");
           store.commit("SET_USER_INPUT", text);
         }
-        timeoutVar = setTimeout(function () {
+        timeoutVar = setTimeout(function() {
           // console.log("timeout - aborting recognition");
           store.state.asr.asr.stop();
           if (text) {
@@ -54,8 +67,8 @@ export function initializeASR(store, asrCorrections) {
           }
         }, 800);
       },
-      onStart: function () {},
-      onEnd: function () {
+      onStart: function() {},
+      onEnd: function() {
         store.commit("HIDE_LISTENING_OVERLAY");
 
         if (store.getters.stopAudioCapture) {
@@ -97,7 +110,7 @@ export function initializeASR(store, asrCorrections) {
             console.log(`Final Transcription: ${fixedUserInput}`);
           }
 
-          setTimeout(function () {
+          setTimeout(function() {
             store.commit("USER_INPUT_READY_FOR_SENDING");
           }, 100);
         }
