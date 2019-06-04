@@ -6,7 +6,27 @@ export function initializeTTS(locale) {
   // Artyom Speech Recognition and TTS
   if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
     tts = new Artyom();
-    tts.ArtyomVoicesIdentifiers["en-GB"] = ["Google UK English Female", "Google UK English Male", "en-GB", "en_GB"];
+
+    if (locale === "en-us-male") {
+      tts.ArtyomVoicesIdentifiers["en-US"] = [
+        "Microsoft David Desktop - English (United States)",
+        "Google US English",
+        "en-US",
+        "en_US"
+      ];
+    } else if (locale === "en-us-female") {
+      tts.ArtyomVoicesIdentifiers["en-US"] = [
+        "Microsoft Zira Desktop - English (United States)",
+        "Google US English",
+        "en-US",
+        "en_US"
+      ];
+    } else if (locale === "en-uk-male") {
+      tts.ArtyomVoicesIdentifiers["en-GB"] = ["Google UK English Male", "Google UK English Female", "en-GB", "en_GB"];
+    } else {
+      tts.ArtyomVoicesIdentifiers["en-GB"] = ["Google UK English Female", "Google UK English Male", "en-GB", "en_GB"];
+    }
+
     // artyom.ArtyomVoicesIdentifiers["en-ZA"] = ["Google US English", "en-US", "en_US"];
     tts.initialize({
       soundex: true,
@@ -37,6 +57,8 @@ export function initializeTTS(locale) {
           ? "zh-HK"
           : locale === "id"
           ? "id-ID"
+          : locale.startsWith("en-us")
+          ? "en-US"
           : "en-GB",
       debug: true
     });
