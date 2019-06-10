@@ -50,7 +50,7 @@ export function initializeTTS(locale) {
           : locale === "es"
           ? "es-ES"
           : locale === "jp"
-          ? "ja-JP"
+          ? "jp-JP"
           : locale === "cn"
           ? "zh-CN"
           : locale === "cn(hk)"
