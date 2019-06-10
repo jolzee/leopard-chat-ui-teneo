@@ -60,7 +60,7 @@ export function initializeTTS(locale) {
           : locale.startsWith("en-us")
           ? "en-US"
           : "en-GB",
-      debug: true
+      debug: false
     });
   }
   return tts;
