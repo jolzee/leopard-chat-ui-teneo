@@ -18,6 +18,7 @@
             v-if="showChatButton"
             class="embed-button-center"
             :class="{ pulse: (pulseButton && chatButtonInitial)}"
+            :style="customCssButtonToolbar"
           >
             <v-icon
               dark
@@ -74,6 +75,7 @@
             @click="toggleChat"
             v-show="showChatButton"
             :class="{ pulse: (pulseButton && !showChatWindow)}"
+            :style="customCssButtonToolbar"
           >
             <v-icon
               dark
@@ -159,6 +161,7 @@
           height="64"
           style="z-index: 3;"
           :class="{'teneo-toolbar-float' : float, 'teneo-toolbar-embed' : embed}"
+          :style="customCssButtonToolbar"
         >
           <v-toolbar-side-icon
             @click.stop="drawer = !drawer"
@@ -283,7 +286,8 @@ export default {
       "showButtonOnly",
       "showChatWindow",
       "showChatButton",
-      "chatButtonInitial"
+      "chatButtonInitial",
+      "customCssButtonToolbar"
     ]),
     activeMenuItems() {
       if (this.authenticated) {

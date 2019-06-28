@@ -155,6 +155,10 @@ function storeSetup(callback) {
       showButtonOnly(state) {
         return state.ui.showButtonOnly;
       },
+      customCssButtonToolbar(state) {
+        console.log(state.activeSolution.customCssButtonToolbar);
+        return state.activeSolution.customCssButtonToolbar ? state.activeSolution.customCssButtonToolbar : "";
+      },
       timeZoneParam(state) {
         return "&timeZone=" + encodeURI(state.browser.timeZone);
       },

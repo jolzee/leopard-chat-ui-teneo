@@ -5,6 +5,7 @@ replacethat | with this
 okkay | ok
 `,
   chatTitle: "Teneo Chat Client",
+  customCssButtonToolbar: "",
   contextParams: [
     {
       name: "channel",

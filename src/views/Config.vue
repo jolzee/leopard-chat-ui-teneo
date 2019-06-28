@@ -973,6 +973,28 @@
                           sm4
                           class="hidden-xs-only"
                         >
+                          <v-subheader>Button and Toolbar Custom CSS</v-subheader>
+                        </v-flex>
+                        <v-flex
+                          xs12
+                          sm8
+                        >
+                          <v-textarea
+                            outline
+                            color="light-blue darken-1"
+                            name="input-7-4"
+                            :tabindex="getTabIndex"
+                            label="Custom CSS"
+                            v-model.trim="solution.customCssButtonToolbar"
+                          ></v-textarea>
+                        </v-flex>
+                        <v-divider></v-divider>
+                        <!-- ASR Corrections -->
+                        <v-flex
+                          xs12
+                          sm4
+                          class="hidden-xs-only"
+                        >
                           <v-subheader>ASR Corrections</v-subheader>
                         </v-flex>
                         <v-flex
