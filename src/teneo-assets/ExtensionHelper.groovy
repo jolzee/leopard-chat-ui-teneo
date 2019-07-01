@@ -8,13 +8,13 @@ import java.util.regex.PatternSyntaxException
 class ExtensionHelper {
 
     static String setUploadConfig(Map config) {
-        Map params = ['postUrl' : config.postUrl,
-                    'postFileNameParam' : config.get('postFileNameParam', 'file'),
-                    'postParams' : config.get('postParams', [:]),
-                    'teneoSuccessQuery': config.get('teneoSuccessQuery', ''),
-                    'teneoFailureQuery': config.get('teneoFailureQuery',''),
-                    'reqUserInputSuccess': config.get('reqUserInputSuccess', 'I have uploaded my file'),
-                    'reqUserInputFailure': config.get('reqUserInputFailure', 'I tried uploading but it didn\'t work')]
+        Map params = ['postUrl'            : config.postUrl,
+                      'postFileNameParam'  : config.get('postFileNameParam', 'file'),
+                      'postParams'         : config.get('postParams', [:]),
+                      'teneoSuccessQuery'  : config.get('teneoSuccessQuery', ''),
+                      'teneoFailureQuery'  : config.get('teneoFailureQuery', ''),
+                      'reqUserInputSuccess': config.get('reqUserInputSuccess', 'I have uploaded my file'),
+                      'reqUserInputFailure': config.get('reqUserInputFailure', 'I tried uploading but it didn\'t work')]
         JsonOutput.toJson(['name': 'uploadConfig', 'parameters': params] as java.util.Map)
     }
 
@@ -61,7 +61,7 @@ class ExtensionHelper {
     }
 
     static String displayClickableList(Map config) {
-        Map attachment = ['name'     : 'displayCollection', 'hasLongOptions': config.get('containsLongOptions', false),
+        Map attachment = ['name'     : 'displayCollection', 'hasLongOptions': config.get('hasLongOptions', false),
                           'permanent': config.get('permanent', false), 'parameters': ['content': config.content]]
         JsonOutput.toJson(attachment)
     }
@@ -73,6 +73,25 @@ class ExtensionHelper {
     static String displayClickableList(def content, def channel, def hasLongOptions = false) {
         return displayClickableList(['content': content, hasLongOptions: hasLongOptions, 'permanent': false] as Map)
     }
+
+    static String simpleDisplayClickableList(def content, def channel, def hasLongOptions = false) {
+        def list = content.split(";")
+        def title = list[0]
+        def items = []
+        list.eachWithIndex { button, idx ->
+            if (idx > 0) {
+                def item = [:]
+                item.put('name', button)
+                items << item
+            }
+        }
+        def formattedContent = [:]
+        formattedContent.put("title", title)
+        formattedContent.put("items", items)
+
+        return displayClickableList(formattedContent, channel, hasLongOptions)
+    }
+
 
     static String displayImage(Map config) {
         Map params = [image_url: config.imageUrl]
