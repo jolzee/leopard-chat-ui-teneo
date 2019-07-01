@@ -156,7 +156,6 @@ function storeSetup(callback) {
         return state.ui.showButtonOnly;
       },
       customCssButtonToolbar(state) {
-        console.log(state.activeSolution.customCssButtonToolbar);
         return state.activeSolution.customCssButtonToolbar ? state.activeSolution.customCssButtonToolbar : "";
       },
       timeZoneParam(state) {
@@ -1151,6 +1150,9 @@ function storeSetup(callback) {
         });
       },
       sendUserInput(context, params = "") {
+        if (typeof params !== "string") {
+          params = "";
+        }
         let currentUserInput = stripHtml(context.getters.userInput);
         context.commit("CLEAR_USER_INPUT");
         // send user input to Teneo when a live chat has not begun
