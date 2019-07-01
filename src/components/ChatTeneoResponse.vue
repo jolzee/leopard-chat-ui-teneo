@@ -446,8 +446,14 @@ export default {
     optionClicked(option) {
       this.$store.commit("SHOW_PROGRESS_BAR");
       this.$store.commit("SET_USER_INPUT", option.name);
+      let optionClickParam = "&isClick=true";
       this.$store
-        .dispatch("sendUserInput", option.params ? "&" + option.params : "")
+        .dispatch(
+          "sendUserInput",
+          option.params
+            ? "&" + option.params + optionClickParam
+            : optionClickParam
+        )
         .then(() => {
           this.$emit("handleFocus");
         });

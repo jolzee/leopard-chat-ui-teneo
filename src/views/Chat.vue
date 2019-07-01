@@ -595,7 +595,7 @@ export default {
         } else {
           this.updateInputBox(anchor.innerText);
         }
-        this.sendUserInput();
+        this.sendUserInput("&isClick=true");
       }
     },
     updateInputBox(userInput) {
@@ -609,7 +609,7 @@ export default {
     hideProgressBar() {
       this.$store.commit("HIDE_PROGRESS_BAR");
     },
-    sendUserInput() {
+    sendUserInput(params = "") {
       if (this.valid) {
         this.$refs.userInputForm.resetValidation();
         this.audioButtonColor = "success";
@@ -620,7 +620,7 @@ export default {
           this.date = "";
           this.srcollToBottom();
           this.$store
-            .dispatch("sendUserInput")
+            .dispatch("sendUserInput", params)
             .then(() => {
               if (!this.isMobileDevice) {
                 this.$refs.userInput.focus();

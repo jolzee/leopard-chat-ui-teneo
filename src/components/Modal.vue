@@ -545,9 +545,9 @@ export default {
         this.currentModalSize !== "undefined"
       ) {
         for (var i = 0; i < modalElements.length; i++) {
-          modalElements[i].className += ` teneo-modal-${
-            this.currentModalPosition
-          } teneo-modal-${this.currentModalSize}-width`;
+          modalElements[
+            i
+          ].className += ` teneo-modal-${this.currentModalPosition} teneo-modal-${this.currentModalSize}-width`;
         }
       }
     },
@@ -585,12 +585,12 @@ export default {
       } else {
         this.updateInputBox(anchor.innerText);
       }
-      this.sendUserInput();
+      this.sendUserInput("&isClick=true");
     },
-    sendUserInput() {
+    sendUserInput(params = "") {
       if (this.userInput) {
         this.$store.commit("SHOW_PROGRESS_BAR");
-        this.$store.dispatch("sendUserInput");
+        this.$store.dispatch("sendUserInput", params);
       }
     },
     updateInputBox(userInput) {
