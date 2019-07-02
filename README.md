@@ -16,7 +16,9 @@
 
 [![Leopard Chat Client](https://user-images.githubusercontent.com/36912049/58361444-b10f7680-7e43-11e9-83f7-cad45a5a4ae7.jpg)](https://youtu.be/cidZ9WxSMVY)
 
-### 🏠 [Homepage](https://www.teneo.ai/)
+### 🏠 [Teneo AI](https://www.teneo.ai/)
+
+### 📖 [Leopard Documentation](https://github.com/jolzee/chat-teneo-vue)
 
 ## Install
 
