@@ -1,4 +1,4 @@
-<h1>Welcome to Leopard Chat UI 👋</h1>
+<h1>Leopard Chat Client for Teneo 🐆</h1>
 <p>
   <a href="https://jolzee.gitbook.io/leopard/">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" target="_blank" />
@@ -11,11 +11,11 @@
   </a>
 </p>
 
-> A Teneo Chat Client based on Vue and Vuetify
+> An [Artificial Solutions](https://www.artificial-solutions.com/) based chat client based on Vue and Vuetify.
 
-[![Leopard Chat Client](https://user-images.githubusercontent.com/36912049/58361444-b10f7680-7e43-11e9-83f7-cad45a5a4ae7.jpg)](https://youtu.be/cidZ9WxSMVY)
+<a href="https://youtu.be/cidZ9WxSMVY"  target="_blank"><img src="https://user-images.githubusercontent.com/36912049/58361444-b10f7680-7e43-11e9-83f7-cad45a5a4ae7.jpg" alt="Leopard Chat UI" style="width:300px;"/></a>
 
-### 🏠 [Teneo AI](https://www.teneo.ai/)
+### 🏡 [Teneo AI](https://www.teneo.ai/)
 
 ### 📖 [Leopard Documentation](https://jolzee.gitbook.io/leopard/)
 
