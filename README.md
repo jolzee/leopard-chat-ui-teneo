@@ -1,6 +1,5 @@
-<h1 align="center">Welcome to Leopard Chat UI 👋</h1>
+<h1>Welcome to Leopard Chat UI 👋</h1>
 <p>
-  <img src="https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://jolzee.gitbook.io/leopard/">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" target="_blank" />
   </a>
@@ -18,7 +17,7 @@
 
 ### 🏠 [Teneo AI](https://www.teneo.ai/)
 
-### 📖 [Leopard Documentation](https://github.com/jolzee/chat-teneo-vue)
+### 📖 [Leopard Documentation](https://jolzee.gitbook.io/leopard/)
 
 ## Install
 
@@ -38,9 +37,9 @@ npm run serve
 npm run build
 ```
 
-## Author
+## 🧑🏻 Author
 
-👤 **Peter Joles**
+**Peter Joles**
 
 - Twitter: [@jolzee](https://twitter.com/jolzee)
 - Github: [@jolzee](https://github.com/jolzee)
