@@ -433,6 +433,11 @@ function storeSetup(callback) {
                 return true;
               }
               break;
+            case "map":
+              if (getters.mapInfo(extension)) {
+                return true;
+              }
+              break;
             case "image":
               if (getters.imageUrl(extension)) {
                 return true;
@@ -493,6 +498,18 @@ function storeSetup(callback) {
             return {
               videoType: `video/${videoFileExt}`,
               videoUrl: url
+            };
+          }
+        }
+
+        return;
+      },
+      mapInfo: (_state, getters) => extension => {
+        if (extension && extension.name === "displayMap") {
+          let address = extension.parameters.address;
+          if (address) {
+            return {
+              address: address
             };
           }
         }

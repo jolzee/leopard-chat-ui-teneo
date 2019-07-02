@@ -73,6 +73,11 @@
                 :url="item.value"
                 type="mp4"
               ></Video>
+              <Map
+                v-if="hasInlineType(extension,'map')"
+                :address="mapInfo(extension).address"
+                class="mt-2"
+              ></Map>
               <ImageAnimation
                 v-if="item.type === 'image'"
                 :url="item.value"
@@ -115,6 +120,7 @@ import Audio from "./Audio";
 import Carousel from "./Carousel";
 import ImageAnimation from "./ImageAnimation";
 import Video from "./Video";
+import Map from "./Map";
 import Vimeo from "./Vimeo";
 import YouTube from "./YouTube";
 
@@ -124,6 +130,7 @@ export default {
     Audio,
     Carousel,
     ImageAnimation,
+    Map,
     Video,
     Vimeo,
     YouTube

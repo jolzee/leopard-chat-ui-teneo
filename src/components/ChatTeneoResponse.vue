@@ -65,6 +65,11 @@
           :type="videoInfo(extension).videoType"
           class="mt-2"
         ></Video>
+        <Map
+          v-if="hasInlineType(extension,'map')"
+          :address="mapInfo(extension).address"
+          class="mt-2"
+        ></Map>
         <ImageAnimation
           v-if="hasInlineType(extension,'image')"
           :url="imageUrl(extension)"
@@ -231,6 +236,7 @@ import Audio from "./Audio";
 import Carousel from "./Carousel";
 import ImageAnimation from "./ImageAnimation";
 import Video from "./Video";
+import Map from "./Map";
 import Vimeo from "./Vimeo";
 import YouTube from "./YouTube";
 import { mapGetters } from "vuex";
@@ -243,6 +249,7 @@ export default {
     Audio,
     Carousel,
     ImageAnimation,
+    Map,
     Video,
     Vimeo,
     YouTube
@@ -267,6 +274,8 @@ export default {
       "itemHasLongResponse",
       "vimeoId",
       "audioInfo",
+      "videoInfo",
+      "mapInfo",
       "youTubeVideoId"
     ]),
     modalButtonText() {

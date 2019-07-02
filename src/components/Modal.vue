@@ -65,6 +65,13 @@
               :type="videoType"
             ></Video>
 
+            <!-- Gogle Map -->
+            <Map
+              v-if="address"
+              :address="address"
+              class="mt-2"
+            ></Map>
+
             <v-container class="modal-container">
 
               <!-- show an image if available -->
@@ -203,6 +210,7 @@ import MyBankTransactions from "./MyBankTransactions";
 import Pusher from "./Pusher";
 import Table from "./Table";
 import Video from "./Video";
+import Map from "./Map";
 import Vimeo from "./Vimeo";
 import YouTube from "./YouTube";
 import { mapGetters } from "vuex";
@@ -215,6 +223,7 @@ export default {
     FlightItinerary,
     ImageAnimation,
     MyBankTransactions,
+    Map,
     Pusher,
     Table,
     Video,
@@ -272,6 +281,7 @@ export default {
       transactionItems: [],
       videoType: "",
       videoUrl: "",
+      address: "",
       vimeoVideoId: "",
       youTubeVideoId: ""
     };
@@ -427,6 +437,10 @@ export default {
               this.bodyText = extension.parameters.content;
             }
 
+            if (extension.name === "displayMap") {
+              this.address = extension.parameters.address;
+            }
+
             // check for display video action
             if (extension.name === "displayVideo") {
               let url = extension.parameters.video_url;
@@ -489,6 +503,7 @@ export default {
       "extensionIsInline",
       "hasInline",
       "hasModal",
+      "hasInlineType",
       "iFrameUrlBase",
       "itemExtensions",
       "itemExtensionsModal",
@@ -629,6 +644,7 @@ export default {
       this.transactionItems = [];
       this.videoType = "";
       this.videoUrl = "";
+      this.address = "";
       this.vimeoVideoId = "";
       this.youTubeVideoId = "";
     }

@@ -143,6 +143,18 @@ class ExtensionHelper {
         JsonOutput.toJson(attachment)
     }
 
+    static String displayMap(Map config) {
+        Map params = [address: config.address]
+        Map attachment = [name: 'displayMap', parameters: params, inline: config.get('inline', true)]
+        JsonOutput.toJson(attachment)
+    }
+
+    static String displayMap(def address, def channel, def inline = false) {
+        Map params = [address: address]
+        Map attachment = [name: 'displayMap', parameters: params, inline: inline]
+        JsonOutput.toJson(attachment)
+    }
+
     static String displayAudio(Map config) {
         Map params = [video_url: config.videoUrl]
         Map attachment = [name: 'displayVideo', parameters: params, inline: config.get('inline', true)]
