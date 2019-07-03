@@ -265,6 +265,7 @@ export default {
     };
   },
   mounted() {
+    // this.toggleChat(); // will automatically open the chat window on load
     window.addEventListener("resize", this.onResizeOrEmbed);
     if (window.innerWidth <= 480 || this.embed) {
       this.onResizeOrEmbed();
