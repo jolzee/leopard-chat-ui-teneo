@@ -4,7 +4,7 @@
     "name": "Leopard Test Solution",
     "url": "https://teneo-demos-fusion.presales.artificial-solutions.com/leopard/",
     "deepLink": "leopard",
-    "iframeUrl": "https://jolzee.gitbook.io/leopard/",
+    "iframeUrl": "https://wi.presales.artificial-solutions.com/leopard-info/",
     "sendContextParams": "all",
     "contextParams": [{
       "name": "channel",
@@ -20,17 +20,21 @@
     "useLocalStorage": "false",
     "enableLiveChat": "false",
     "theme": {
-      "primary": "#322C6B",
-      "secondary": "#28BEC8",
+      "primary": "#4291B4",
+      "secondary": "#7F6764",
       "accent": "#4CAF50",
       "error": "#FF5252",
       "info": "#2196F3",
       "success": "#4CAF50",
       "warning": "#FFC107"
     },
-    "knowledgeData": ["What's your name?", "Who created you?"],
+    "knowledgeData": [
+      "What's your name?",
+      "Who created you?"
+    ],
     "float": "true",
     "showChatIcons": "true",
-    "asrCorrections": "pizza | Peter\nthiss | that"
+    "asrCorrections": "pizza | Peter\nthiss | that",
+    "pulseButton": "true"
   }]
 }
