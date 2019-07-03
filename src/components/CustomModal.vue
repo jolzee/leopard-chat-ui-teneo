@@ -74,8 +74,8 @@
                 type="mp4"
               ></Video>
               <Map
-                v-if="hasInlineType(extension,'map')"
-                :address="mapInfo(extension).address"
+                v-if="item.type === 'map'"
+                :address="item.value"
                 class="mt-2"
               ></Map>
               <ImageAnimation
