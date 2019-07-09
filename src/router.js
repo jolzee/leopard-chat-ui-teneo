@@ -34,7 +34,14 @@ export default new Router({
     {
       path: "/config",
       name: "config",
-      component: Config
+      component: Config,
+      beforeEnter: (to, from, next) => {
+        if (process.env.VUE_APP_HIDE_CONFIG_MENU) {
+          next(false);
+        } else {
+          next();
+        }
+      }
     },
     {
       path: "/help",

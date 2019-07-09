@@ -275,26 +275,29 @@ export default {
   computed: {
     ...mapGetters([
       "authenticated",
-      "chatTitle",
+      "chatButtonInitial",
       "chatHistory",
+      "chatTitle",
+      "customCssButtonToolbar",
       "dark",
       "embed",
       "float",
+      "hideConfigMenu",
       "overlayChat",
       "progressBar",
       "pulseButton",
-      "socialAuthEnabled",
       "showButtonOnly",
-      "showChatWindow",
       "showChatButton",
-      "chatButtonInitial",
-      "customCssButtonToolbar"
+      "showChatWindow",
+      "socialAuthEnabled"
     ]),
     activeMenuItems() {
       if (this.authenticated) {
         return this.menuItems.filter(menuItem => {
           if ("when" in menuItem && menuItem.when === "authenticated") {
             return true;
+          } else if (menuItem.route === "config") {
+            return this.hideConfigMenu ? false : true;
           } else if (!("when" in menuItem)) {
             return true;
           } else {
@@ -309,6 +312,8 @@ export default {
             ("when" in menuItem && menuItem.when === "notAuthenticated")
           ) {
             return true;
+          } else if (menuItem.route === "config") {
+            return this.hideConfigMenu ? false : true;
           } else if (!("when" in menuItem)) {
             return true;
           } else {

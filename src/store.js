@@ -128,6 +128,7 @@ function storeSetup(callback) {
           ? localStorage.getItem(STORAGE_KEY + "darkTheme") === "true"
           : false,
         embed: config.EMBED,
+        hideConfigMenu: process.env.VUE_APP_HIDE_CONFIG_MENU === "true",
         isWebSite: true,
         overlayChat: config.FLOAT,
         responseIcon: config.RESPONSE_ICON,
@@ -148,6 +149,9 @@ function storeSetup(callback) {
       chatButtonInitial(state) {
         // console.log(`Chat Window Open? : ${!state.ui.chatButtonInitial}`);
         return state.ui.chatButtonInitial;
+      },
+      hideConfigMenu(state) {
+        return state.ui.hideConfigMenu;
       },
       uuid(_state) {
         return uuidv1();
