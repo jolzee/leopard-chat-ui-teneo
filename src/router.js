@@ -36,7 +36,7 @@ export default new Router({
       name: "config",
       component: Config,
       beforeEnter: (to, from, next) => {
-        if (process.env.VUE_APP_HIDE_CONFIG_MENU) {
+        if (process.env.VUE_APP_HIDE_CONFIG_MENU === 'true') {
           next(false);
         } else {
           next();
