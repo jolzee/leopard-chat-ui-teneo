@@ -151,6 +151,11 @@ export default class Setup {
 
   getSolutionConfig() {
     return new Promise((resolve, reject) => {
+      // Reload config for each load. Maybe there a new deployment change that you want to
+      if (process.env.VUE_APP_LOAD_CONFIG_FOR_NEW_SESSIONS === "true") {
+        localStorage.removeItem(STORAGE_KEY + "config");
+        console.log("Cleared local storage");
+      }
       this.chatConfig = JSON.parse(localStorage.getItem(STORAGE_KEY + "config"));
       if (!this.chatConfig || (this.chatConfig && this.chatConfig.solutions.length === 0)) {
         console.log("No config: Looking for default.json");
