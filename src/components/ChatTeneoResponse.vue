@@ -119,6 +119,7 @@
         </v-flex>
       </v-layout>
     </div>
+    <DelayedResponse v-if="showDelayedResponse && (itemIndexInDialog === dialog.length - 1)"></DelayedResponse>
     <!-- show any options in the response: for example Yes, No Maybe -->
     <v-card
       flat
@@ -235,6 +236,7 @@ import LongPress from "vue-directive-long-press";
 import Audio from "./Audio";
 import Carousel from "./Carousel";
 import ImageAnimation from "./ImageAnimation";
+import DelayedResponse from "./DelayedResponse";
 import Video from "./Video";
 import Map from "./Map";
 import Vimeo from "./Vimeo";
@@ -249,6 +251,7 @@ export default {
     Audio,
     Carousel,
     ImageAnimation,
+    DelayedResponse,
     Map,
     Video,
     Vimeo,
@@ -272,6 +275,7 @@ export default {
       "hasModal",
       "lastItemHasLongResponse",
       "itemHasLongResponse",
+      "showDelayedResponse",
       "vimeoId",
       "audioInfo",
       "videoInfo",

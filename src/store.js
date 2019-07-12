@@ -128,6 +128,7 @@ function storeSetup(callback) {
           ? localStorage.getItem(STORAGE_KEY + "darkTheme") === "true"
           : false,
         embed: config.EMBED,
+        showDelayedResponse: false,
         hideConfigMenu: process.env.VUE_APP_HIDE_CONFIG_MENU === "true",
         isWebSite: true,
         overlayChat: config.FLOAT,
@@ -146,6 +147,9 @@ function storeSetup(callback) {
       }
     },
     getters: {
+      showDelayedResponse(state) {
+        return state.ui.showDelayedResponse;
+      },
       chatButtonInitial(state) {
         // console.log(`Chat Window Open? : ${!state.ui.chatButtonInitial}`);
         return state.ui.chatButtonInitial;
@@ -699,6 +703,12 @@ function storeSetup(callback) {
       }
     },
     mutations: {
+      SHOW_RESPONSE_DELAY(state) {
+        state.ui.showDelayedResponse = true;
+      },
+      HIDE_RESPONSE_DELAY(state) {
+        state.ui.showDelayedResponse = false;
+      },
       SHOW_UPLOAD_BUTTON(state) {
         state.ui.showUploadButton = true;
       },
@@ -1197,6 +1207,27 @@ function storeSetup(callback) {
               if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
                 console.log("Session is stale.. keep chat open and continue with the new session");
               }
+
+              // Start of delay logic
+              if (
+                json.responseData.extraData.hasOwnProperty("command") &&
+                json.responseData.extraData.command === "delay"
+              ) {
+                context.commit("SHOW_RESPONSE_DELAY");
+                context.commit("SET_USER_INPUT", "");
+                context
+                  .dispatch("sendUserInput", "&command=continue")
+                  .then(console.log(`Continue with long operation`))
+                  .catch(err => {
+                    console.err("Unable to continue conversation", err.message);
+                    context.commit("SHOW_MESSAGE_IN_CHAT", "We're sorry for the inconvience: " + err.message);
+                  });
+              }
+
+              if (params.indexOf("command=continue") != -1) {
+                context.commit("HIDE_RESPONSE_DELAY");
+              }
+              // end of delay logic
 
               if (
                 json.responseData.extraData.hasOwnProperty("inputType") &&
