@@ -315,6 +315,22 @@
               bottom
             >
               <v-btn
+                slot="activator"
+                fab
+                dark
+                small
+                color="deep-purple"
+                @click="toggleDisplayOfSolutionConfig"
+              >
+                <v-icon dark>{{ displayFullSolutionConfig ? 'fa-eye' : 'fa-eye-slash' }}</v-icon>
+              </v-btn>
+              <span>Toggle display of full solution config</span>
+            </v-tooltip>
+            <v-tooltip
+              open-delay="600"
+              bottom
+            >
+              <v-btn
                 fab
                 slot="activator"
                 dark
@@ -328,7 +344,9 @@
               <span>Help / Documentation</span>
             </v-tooltip>
 
-            <prism language="json">{{ prettyPrintFullConfig }}</prism>
+            <div v-if="displayFullSolutionConfig && !displayAddEditDialog">
+              <prism language="json">{{ prettyPrintFullConfig }}</prism>
+            </div>
 
             <!-- upload new configuration -->
             <v-dialog
@@ -1271,6 +1289,7 @@ export default {
       globalSnackbarTimeout: 2000,
       globalSnackbarColor: "",
       uploadTextAreaLoading: false,
+      displayFullSolutionConfig: false,
       showProgressUpload: false,
       activeColor: "",
       trueFalseOptions: ["true", "false"],
@@ -1330,15 +1349,11 @@ export default {
     },
     getActiveSolutionDeepLink() {
       sessionStorage.removeItem(STORAGE_KEY + "teneo-chat-history");
-      return `${location.protocol}//${location.host}${location.pathname}?dl=${
-        this.selectedSolution.deepLink
-      }`;
+      return `${location.protocol}//${location.host}${location.pathname}?dl=${this.selectedSolution.deepLink}`;
     },
     getActiveSolutionDeepLinkMobile() {
       sessionStorage.removeItem(STORAGE_KEY + "teneo-chat-history");
-      return `${location.protocol}//${location.host}${
-        location.pathname
-      }mobile.html?dl=${this.selectedSolution.deepLink}`;
+      return `${location.protocol}//${location.host}${location.pathname}mobile.html?dl=${this.selectedSolution.deepLink}`;
     },
     getCurrentSelectedSolutionConfig() {
       const result = JSON.stringify(this.selectedSolution, null, 2);
@@ -1356,6 +1371,9 @@ export default {
     this.setActiveSolutionAsSelected();
   },
   methods: {
+    toggleDisplayOfSolutionConfig() {
+      this.displayFullSolutionConfig = !this.displayFullSolutionConfig;
+    },
     importSolution(newSolution) {
       let existingSolutionsWithName = this.config.solutions.findIndex(
         solution => solution.name === newSolution.name
@@ -1526,9 +1544,7 @@ export default {
       if (this.doesParameterExist("button")) {
         addtionalParams += "&button";
       }
-      window.location = `${location.protocol}//${location.host}${
-        location.pathname
-      }?dl=${this.selectedSolution.deepLink}${addtionalParams}`;
+      window.location = `${location.protocol}//${location.host}${location.pathname}?dl=${this.selectedSolution.deepLink}${addtionalParams}`;
     },
     saveToLocalStorage() {
       localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
