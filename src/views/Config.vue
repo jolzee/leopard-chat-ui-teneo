@@ -87,12 +87,265 @@
         </v-toolbar>
 
         <v-container class="mt-5 pt-5">
-          <v-flex
-            xs12
-            md10
-            offset-md1
-          >
+          <v-flex xs12>
+            <v-layout>
+              <v-flex xs12>
+                <v-card>
+                  <v-card-title primary-title>
+                    <div>
+                      <h3 class="headline mb-0">Solution Config</h3>
+                      <div>
+                        <v-container fluid>
+                          <v-layout
+                            row
+                            wrap
+                          >
+                            <v-flex
+                              xs12
+                              v-if="hasSolutions"
+                            >
+                              <v-select
+                                style="max-width: 452px;"
+                                color="light-blue darken-1"
+                                item-avatar="userIcon"
+                                autofocus
+                                ref="selectedSolution"
+                                item-text="name"
+                                item-value="name"
+                                v-model="selectedSolution"
+                                :menu-props="{contentClass:'select-options'}"
+                                solo
+                                :items="sortedSolutions"
+                                return-object
+                                no-data-text="No Solutions"
+                                label="Select Teneo Solution"
+                                append-icon="fa-arrow-circle-down"
+                              ></v-select>
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-tooltip
+                                open-delay="600"
+                                bottom
+                              >
+                                <v-btn
+                                  slot="activator"
+                                  fab
+                                  dark
+                                  small
+                                  @click="addSolution"
+                                  color="green"
+                                >
+                                  <v-icon dark>add_circle</v-icon>
+                                </v-btn>
+                                <span>Create a new solution config</span>
+                              </v-tooltip>
+                              <v-tooltip
+                                open-delay="600"
+                                bottom
+                              >
+                                <v-btn
+                                  slot="activator"
+                                  fab
+                                  dark
+                                  color="light-blue darken-1"
+                                  small
+                                  @click="setActiveSolution"
+                                  v-if="selectedSolution"
+                                >
+                                  <v-icon dark>{{(selectedSolution && (config.activeSolution === selectedSolution.name)) ? "fa-check-square" : "fa-square"}}
+                                  </v-icon>
+                                </v-btn>
+                                <span>Active/Deactive</span>
+                              </v-tooltip>
+                              <span v-if="selectedSolution">
+                                <v-tooltip
+                                  open-delay="600"
+                                  bottom
+                                >
+                                  <v-btn
+                                    slot="activator"
+                                    fab
+                                    dark
+                                    small
+                                    color="pink darken-4"
+                                    @click="editSolution"
+                                  >
+                                    <v-icon dark>fa-cog</v-icon>
+                                  </v-btn>
+                                  <span>Edit</span>
+                                </v-tooltip>
+                                <v-tooltip
+                                  open-delay="600"
+                                  bottom
+                                >
+                                  <v-btn
+                                    slot="activator"
+                                    fab
+                                    dark
+                                    small
+                                    @click="cloneSolution"
+                                    color="orange"
+                                  >
+                                    <v-icon dark>fa-clone</v-icon>
+                                  </v-btn>
+                                  <span>Clone</span>
+                                </v-tooltip>
+                                <v-tooltip
+                                  open-delay="600"
+                                  bottom
+                                >
+                                  <v-btn
+                                    slot="activator"
+                                    fab
+                                    dark
+                                    small
+                                    @click="deleteSolutionConfig"
+                                    color="red"
+                                  >
+                                    <v-icon dark>fa-trash</v-icon>
+                                  </v-btn>
+                                  <span>Delete</span>
+                                </v-tooltip>
+                                <v-tooltip
+                                  open-delay="600"
+                                  bottom
+                                >
+                                  <v-btn
+                                    slot="activator"
+                                    fab
+                                    dark
+                                    small
+                                    color="indigo"
+                                    @click="copySolutionToClipboard"
+                                  >
+                                    <v-icon dark>fa-clipboard</v-icon>
+                                  </v-btn>
+                                  <span>Copy selected solution config to clipboard</span>
+                                </v-tooltip>
+                                <v-tooltip
+                                  open-delay="600"
+                                  bottom
+                                >
+                                  <v-btn
+                                    slot="activator"
+                                    fab
+                                    dark
+                                    small
+                                    color="teal darken-3"
+                                    @click="downloadSelectedSolutionConfig"
+                                  >
+                                    <v-icon dark>fa-download</v-icon>
+                                  </v-btn>
+                                  <span>Download selected solution's config as a file</span>
+                                </v-tooltip>
+                              </span>
+                            </v-flex>
+                          </v-layout>
+                        </v-container>
+                      </div>
+                    </div>
+                  </v-card-title>
+                </v-card>
+              </v-flex>
+            </v-layout>
+            <v-layout class="mt-3 mb-3">
+              <v-flex xs12>
+                <v-card>
 
+                  <v-card-title primary-title>
+                    <div>
+                      <h3 class="headline mb-0">Upload / Download / Help</h3>
+                      <div>
+                        <!-- show the nicely formatted view of the full configuration -->
+
+                        <v-tooltip
+                          open-delay="600"
+                          bottom
+                        >
+                          <v-btn
+                            slot="activator"
+                            fab
+                            dark
+                            small
+                            color="pink"
+                            @click="showUploadDialog"
+                          >
+                            <v-icon dark>cloud_upload</v-icon>
+                          </v-btn>
+                          <span>Upload an individual or full solution config</span>
+                        </v-tooltip>
+                        <v-tooltip
+                          open-delay="600"
+                          bottom
+                        >
+                          <v-btn
+                            slot="activator"
+                            fab
+                            dark
+                            small
+                            color="indigo"
+                            @click="copyWholeConfigClipboard"
+                          >
+                            <v-icon dark>fa-clipboard</v-icon>
+                          </v-btn>
+                          <span>Copy full solution config to clipboard</span>
+                        </v-tooltip>
+                        <v-tooltip
+                          open-delay="600"
+                          bottom
+                        >
+                          <v-btn
+                            slot="activator"
+                            fab
+                            dark
+                            small
+                            color="teal darken-3"
+                            @click="downloadSolutionConfig"
+                          >
+                            <v-icon dark>fa-download</v-icon>
+                          </v-btn>
+                          <span>Download all solutions configs as a file</span>
+                        </v-tooltip>
+                        <v-tooltip
+                          open-delay="600"
+                          bottom
+                        >
+                          <v-btn
+                            slot="activator"
+                            fab
+                            dark
+                            small
+                            color="deep-purple"
+                            @click="toggleDisplayOfSolutionConfig"
+                          >
+                            <v-icon dark>{{ displayFullSolutionConfig ? 'fa-eye' : 'fa-eye-slash' }}</v-icon>
+                          </v-btn>
+                          <span>Toggle display of full solution config</span>
+                        </v-tooltip>
+                        <v-tooltip
+                          open-delay="600"
+                          bottom
+                        >
+                          <v-btn
+                            fab
+                            slot="activator"
+                            dark
+                            small
+                            color="brown darken-3"
+                            href="https://jolzee.gitbook.io/leopard/"
+                            target="_blank"
+                          >
+                            <v-icon dark>fa-question-circle</v-icon>
+                          </v-btn>
+                          <span>Help / Documentation</span>
+                        </v-tooltip>
+                      </div>
+                    </div>
+                  </v-card-title>
+
+                </v-card>
+              </v-flex>
+            </v-layout>
             <v-layout class="mb-2">
 
               <!-- global snackbar -->
@@ -103,246 +356,8 @@
               >
                 {{ globalSnackbarMessage }}
               </v-snackbar>
-              <v-container fluid>
-                <v-layout
-                  row
-                  wrap
-                >
-                  <v-flex
-                    xs12
-                    sm12
-                    md6
-                    lg6
-                    v-if="hasSolutions"
-                  >
-                    <v-select
-                      style="max-width: 452px;"
-                      color="light-blue darken-1"
-                      item-avatar="userIcon"
-                      autofocus
-                      ref="selectedSolution"
-                      item-text="name"
-                      item-value="name"
-                      v-model="selectedSolution"
-                      :menu-props="{contentClass:'select-options'}"
-                      solo
-                      :items="sortedSolutions"
-                      return-object
-                      no-data-text="No Solutions"
-                      label="Select Teneo Solution"
-                      append-icon="fa-arrow-circle-down"
-                    ></v-select>
-                  </v-flex>
-                  <v-flex
-                    xs12
-                    sm9
-                    md8
-                    lg6
-                  >
-                    <v-tooltip
-                      open-delay="600"
-                      bottom
-                    >
-                      <v-btn
-                        slot="activator"
-                        fab
-                        dark
-                        color="light-blue darken-1"
-                        small
-                        @click="setActiveSolution"
-                        v-if="selectedSolution"
-                      >
-                        <v-icon dark>{{(selectedSolution && (config.activeSolution === selectedSolution.name)) ? "fa-check-square" : "fa-square"}}
-                        </v-icon>
-                      </v-btn>
-                      <span>Active/Deactive</span>
-                    </v-tooltip>
-                    <span v-if="selectedSolution">
-                      <v-tooltip
-                        open-delay="600"
-                        bottom
-                      >
-                        <v-btn
-                          slot="activator"
-                          fab
-                          dark
-                          small
-                          color="pink darken-4"
-                          @click="editSolution"
-                        >
-                          <v-icon dark>fa-cog</v-icon>
-                        </v-btn>
-                        <span>Edit</span>
-                      </v-tooltip>
-                      <v-tooltip
-                        open-delay="600"
-                        bottom
-                      >
-                        <v-btn
-                          slot="activator"
-                          fab
-                          dark
-                          small
-                          @click="cloneSolution"
-                          color="orange"
-                        >
-                          <v-icon dark>fa-clone</v-icon>
-                        </v-btn>
-                        <span>Clone</span>
-                      </v-tooltip>
-                      <v-tooltip
-                        open-delay="600"
-                        bottom
-                      >
-                        <v-btn
-                          slot="activator"
-                          fab
-                          dark
-                          small
-                          @click="deleteSolutionConfig"
-                          color="red"
-                        >
-                          <v-icon dark>fa-trash</v-icon>
-                        </v-btn>
-                        <span>Delete</span>
-                      </v-tooltip>
-                      <v-tooltip
-                        open-delay="600"
-                        bottom
-                      >
-                        <v-btn
-                          slot="activator"
-                          fab
-                          dark
-                          small
-                          color="indigo"
-                          @click="copySolutionToClipboard"
-                        >
-                          <v-icon dark>fa-clipboard</v-icon>
-                        </v-btn>
-                        <span>Copy selected solution config to clipboard</span>
-                      </v-tooltip>
-                      <v-tooltip
-                        open-delay="600"
-                        bottom
-                      >
-                        <v-btn
-                          slot="activator"
-                          fab
-                          dark
-                          small
-                          color="teal darken-3"
-                          @click="downloadSelectedSolutionConfig"
-                        >
-                          <v-icon dark>fa-download</v-icon>
-                        </v-btn>
-                        <span>Download selected solution's config as a file</span>
-                      </v-tooltip>
 
-                    </span>
-                  </v-flex>
-                </v-layout>
-              </v-container>
             </v-layout>
-
-            <!-- show the nicely formatted view of the full configuration -->
-            <v-tooltip
-              open-delay="600"
-              bottom
-            >
-              <v-btn
-                slot="activator"
-                fab
-                dark
-                small
-                @click="addSolution"
-                color="green"
-              >
-                <v-icon dark>add_circle</v-icon>
-              </v-btn>
-              <span>Create a new solution config</span>
-            </v-tooltip>
-            <v-tooltip
-              open-delay="600"
-              bottom
-            >
-              <v-btn
-                slot="activator"
-                fab
-                dark
-                small
-                color="pink"
-                @click="showUploadDialog"
-              >
-                <v-icon dark>cloud_upload</v-icon>
-              </v-btn>
-              <span>Upload an individual or full solution config</span>
-            </v-tooltip>
-            <v-tooltip
-              open-delay="600"
-              bottom
-            >
-              <v-btn
-                slot="activator"
-                fab
-                dark
-                small
-                color="indigo"
-                @click="copyWholeConfigClipboard"
-              >
-                <v-icon dark>fa-clipboard</v-icon>
-              </v-btn>
-              <span>Copy full solution config to clipboard</span>
-            </v-tooltip>
-            <v-tooltip
-              open-delay="600"
-              bottom
-            >
-              <v-btn
-                slot="activator"
-                fab
-                dark
-                small
-                color="teal darken-3"
-                @click="downloadSolutionConfig"
-              >
-                <v-icon dark>fa-download</v-icon>
-              </v-btn>
-              <span>Download all solutions configs as a file</span>
-            </v-tooltip>
-            <v-tooltip
-              open-delay="600"
-              bottom
-            >
-              <v-btn
-                slot="activator"
-                fab
-                dark
-                small
-                color="deep-purple"
-                @click="toggleDisplayOfSolutionConfig"
-              >
-                <v-icon dark>{{ displayFullSolutionConfig ? 'fa-eye' : 'fa-eye-slash' }}</v-icon>
-              </v-btn>
-              <span>Toggle display of full solution config</span>
-            </v-tooltip>
-            <v-tooltip
-              open-delay="600"
-              bottom
-            >
-              <v-btn
-                fab
-                slot="activator"
-                dark
-                small
-                color="brown darken-3"
-                href="https://jolzee.gitbook.io/leopard/"
-                target="_blank"
-              >
-                <v-icon dark>fa-question-circle</v-icon>
-              </v-btn>
-              <span>Help / Documentation</span>
-            </v-tooltip>
 
             <div v-if="displayFullSolutionConfig && !displayAddEditDialog">
               <prism language="json">{{ prettyPrintFullConfig }}</prism>
