@@ -967,12 +967,12 @@ function storeSetup(callback) {
         state.i18n.locale = lang.toLowerCase();
         Vue.i18n.set(lang);
       },
-      UPDATE_FRAME_URL(state, langurl) {
+      UPDATE_FRAME_URL(state, newUrl) {
         if (document.getElementById("site-frame")) {
-          document.getElementById("site-frame").src = langurl;
+          document.getElementById("site-frame").src = newUrl;
         }
-        state.iframe.iframeUrl = langurl;
-        state.iframe.iframeUrlBase = langurl.substring(0, langurl.lastIndexOf("/")) + "/";
+        state.iframe.iframeUrl = newUrl;
+        state.iframe.iframeUrlBase = newUrl.substring(0, newUrl.lastIndexOf("/")) + "/";
       },
       USER_INFO(state, userInfo) {
         state.auth.userInfo.user = userInfo.user;

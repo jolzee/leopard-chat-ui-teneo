@@ -585,9 +585,18 @@ export default {
       // Check to make sure this is from our v-html because
       // we don't want to handle clicks from other things in
       // the Vue
-      if (!anchor.classList.contains("sendInput")) {
-        return;
+      if (
+        !anchor.classList.contains("sendInput") &&
+        !anchor.classList.contains("openInIframe")
+      ) {
+        return; // basically treat like a normal link
+      } else if (anchor.classList.contains("openInIframe")) {
+        // open in iframe
+        event.stopPropagation();
+        event.preventDefault();
+        this.$store.commit("UPDATE_FRAME_URL", anchor.getAttribute("href"));
       } else {
+        // send input
         event.stopPropagation();
         event.preventDefault();
         if (anchor.getAttribute("data-input")) {
