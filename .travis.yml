@@ -20,6 +20,8 @@ install:
   - echo 'Build starting...'
   - echo 'Installing Dependancies...'
   - npm install
+script:
+  - npm run build
 before_deploy:
   - eval "$(ssh-agent -s)"
   - chmod 600 deploy_rsa
@@ -27,7 +29,4 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  local_dir: dist
-  script: rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after --quiet . ${SSH_USER}@${SSH_HOST}:/var/www/leopard-chat
-  on:
-    branch: master
+  script: rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after --quiet ./dist ${SSH_USER}@${SSH_HOST}:/var/www/leopard-chat
