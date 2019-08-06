@@ -23,12 +23,9 @@ install:
 after_success:
   - echo 'Building for production...'
   - npm run build
-before_deploy:
   - echo 'SFTP - Deleting existing deployment'
   - echo "${SFTP_KEY}" | base64 --decode >/tmp/sftp_rsa
-  - curl  -k "sftp://${SFTP_HOST}:22/var/www/" --key /tmp/sftp_rsa --user "${SFTP_USER}:${SFTP_PASSWORD}"
-    -Q "–RMDIR /var/www/leopard-chat" --ftp-create-dirs
-deploy:
+  - curl  -k "sftp://${SFTP_HOST}:22/var/www/" --key /tmp/sftp_rsa --user "${SFTP_USER}:${SFTP_PASSWORD}" -Q "–RMDIR /var/www/leopard-chat" --ftp-create-dirs
   - echo 'SFTP - Deploying Build'
   - curl --ftp-create-dirs -T filename --key /tmp/sftp_rsa sftp://${SFTP_USER}:${SFTP_PASSWORD}@${SFTP_HOST}:22/var/www/leopard-chat
   - echo 'Finished'
