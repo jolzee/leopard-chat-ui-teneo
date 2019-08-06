@@ -18,7 +18,7 @@ before_install:
   - tar xvf secrets.tar
 install:
   - echo 'Build starting...'
-  - echo 'Installing Dependancies...'
+  - echo 'Installing Dependencies...'
   - npm install
 script:
   - npm run build
@@ -29,4 +29,4 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after --quiet ./dist ${SSH_USER}@${SSH_HOST}:/var/www/leopard-chat
+  script: rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after --quiet ./dist/ ${SSH_USER}@${SSH_HOST}:/var/www/leopard-chat
