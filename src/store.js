@@ -164,7 +164,9 @@ function storeSetup(callback) {
         return state.ui.showButtonOnly;
       },
       customCssButtonToolbar(state) {
-        return state.activeSolution.customCssButtonToolbar ? state.activeSolution.customCssButtonToolbar : "";
+        return state.activeSolution.customCssButtonToolbar !== undefined
+          ? state.activeSolution.customCssButtonToolbar
+          : "";
       },
       timeZoneParam(state) {
         return "&timeZone=" + encodeURI(state.browser.timeZone);
@@ -550,10 +552,12 @@ function storeSetup(callback) {
         return state.knowledgeData;
       },
       settingLongResponsesInModal(state) {
-        return state.activeSolution.longResponsesInModal ? state.activeSolution.longResponsesInModal === "true" : false;
+        return state.activeSolution.longResponsesInModal !== undefined
+          ? state.activeSolution.longResponsesInModal === "true"
+          : false;
       },
       pulseButton(state) {
-        return state.activeSolution.pulseButton ? state.activeSolution.pulseButton === "true" : false;
+        return state.activeSolution.pulseButton !== undefined ? state.activeSolution.pulseButton === "true" : false;
       },
       lastItemAnswerTextCropped(_state, getters) {
         let answer = "";
