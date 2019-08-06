@@ -1,4 +1,5 @@
 language: node_js
+dist: trusty
 node_js:
   - 10
 notifications:
@@ -15,17 +16,23 @@ env:
     - secure: iMsLFljdGzoYq2ZL5+eFzZ487TAY6IJc129y6UWBW93CCHS8QfZdNq96D7L1GpNk7YtCceyNo615WwHFzR0UdK2uXwoJOC+ZN5OM6P/wIyPNIss+fsoSw8TWvunxQCG0MBhDZI0ysCzIg/Buy0xNZQYZrRGmAxV7S0hTvGtUHlFZtoPvEs9Koid+AMUld863JJsOuDDp8f1Q1rLjXRMMKooTXnkoqIyg4KSenD/22z0avjPZDdxDb/3rIr8TN1Z8CKA/v0C1+NoolSw4lPqkvOI24jd9iPTqJSuZ7xlew71err5Q9pEsjfig00OdYFVukJDm5JrUqyyaowJWJrx0NH7Oo+ENCRfnxQMHtrsWqNa40wCPFWym7ORaLzzsbITARAwHjJiR3Fr6XrgQx3m3b4Um46Bssg4LblxCyfJ+oFJqF82YrhRHK8t1YVV72UfO0JIdRCx8qijDJpIYQOtWEst84AcsiuFUVKa37m1c4XcX6ZloxOuw613FfupTTcU3WRvQMbYgnpH53gzuoVjd8LPub73bxGKYtw741C7gk5ScnwxziXCsJyCmohEQ0utwKmhHfsh7Y/jQGawvGCU6G4HEhP5PiAvOa72papuETY9IcDaQHsux8Z4/M8Sruu2uvY/hwVnWSz8RDnMtDqusvc31Rkvr3bQKiYLWxennIfE=
 before_install:
   - openssl aes-256-cbc -K $encrypted_94e0b4db9dc9_key -iv $encrypted_94e0b4db9dc9_iv
+    -in deploy_rsa.enc -out deploy_rsa -d
+  - openssl aes-256-cbc -K $encrypted_94e0b4db9dc9_key -iv $encrypted_94e0b4db9dc9_iv
     -in .env.local.enc -out .env.local -d
 install:
   - echo 'Build starting...'
   - echo 'Installing Dependancies...'
   - npm install
-after_success:
-  - echo 'Building for production...'
-  - npm run build
-  - echo 'SFTP - Deleting existing deployment'
-  - echo "${SFTP_KEY}" | base64 --decode >/tmp/sftp_rsa
-  - curl  -k "sftp://${SFTP_HOST}:22/var/www/" --key /tmp/sftp_rsa --user "${SFTP_USER}:${SFTP_PASSWORD}" -Q "–RMDIR /var/www/leopard-chat" --ftp-create-dirs
-  - echo 'SFTP - Deploying Build'
-  - curl --ftp-create-dirs -T filename --key /tmp/sftp_rsa sftp://${SFTP_USER}:${SFTP_PASSWORD}@${SFTP_HOST}:22/var/www/leopard-chat
-  - echo 'Finished'
+addons:
+  ssh_known_hosts: ${SFTP_HOST}
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_94e0b4db9dc9_key -iv $encrypted_94e0b4db9dc9_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 /tmp/deploy_rsa
+  - ssh-add /tmp/deploy_rsa
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: rsync -r --delete-after --quiet $TRAVIS_BUILD_DIR ${SFTP_USER}@${SFTP_HOST}:/var/www/leopard-chat
+  on:
+    branch: master
