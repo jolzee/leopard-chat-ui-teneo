@@ -21,7 +21,7 @@ install:
   - echo 'Installing Dependancies...'
   - npm install
 addons:
-  ssh_known_hosts: "${SSH_HOST}"
+  ssh_known_hosts: ${SSH_HOST}
 before_deploy:
   - eval "$(ssh-agent -s)"
   - chmod 600 deploy_rsa
