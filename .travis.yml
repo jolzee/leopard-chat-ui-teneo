@@ -27,6 +27,7 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after --quiet $TRAVIS_BUILD_DIR ${SSH_USER}@${SSH_HOST}:/var/www/leopard-chat
+  local_dir: dist
+  script: rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after --quiet . ${SSH_USER}@${SSH_HOST}:/var/www/leopard-chat
   on:
     branch: master
