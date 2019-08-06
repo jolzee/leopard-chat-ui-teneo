@@ -17,8 +17,6 @@ env:
 before_install:
   - openssl aes-256-cbc -K $encrypted_94e0b4db9dc9_key -iv $encrypted_94e0b4db9dc9_iv
     -in .env.local.enc -out .env.local -d
-  - openssl aes-256-cbc -K $encrypted_94e0b4db9dc9_key -iv $encrypted_94e0b4db9dc9_iv
-    -in deploy_rsa.enc -out /tmp/deploy_rsa -d
 install:
   - echo 'Build starting...'
   - echo 'Installing Dependancies...'
@@ -26,6 +24,8 @@ install:
 addons:
   ssh_known_hosts: "${SFTP_HOST}"
 before_deploy:
+  - openssl aes-256-cbc -K $encrypted_94e0b4db9dc9_key -iv $encrypted_94e0b4db9dc9_iv
+    -in deploy_rsa.enc -out /tmp/deploy_rsa -d
   - eval "$(ssh-agent -s)"
   - chmod 600 /tmp/deploy_rsa
   - ssh-add /tmp/deploy_rsa
