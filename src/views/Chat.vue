@@ -146,6 +146,7 @@
                   v-model="userInput"
                   :label="inputHelpText ? inputHelpText : askingForPassword ? $t('input.box.label.password') : askingForEmail ? $t('input.box.label.email') : $t('input.box.label')"
                   single-line
+                  data-lpignore="true"
                 ></v-text-field>
                 <span
                   v-shortkey="['esc']"
