@@ -161,7 +161,7 @@
           height="64"
           style="z-index: 3;"
           :class="{'teneo-toolbar-float' : float, 'teneo-toolbar-embed' : embed}"
-          :style="customCssButtonToolbar"
+          :style="toolbarStyle"
         >
           <v-toolbar-side-icon
             @click.stop="drawer = !drawer"
@@ -190,8 +190,7 @@
         </v-toolbar>
         <v-content
           app
-          class="
-            content-area"
+          class="content-area"
         >
           <transition
             name="page-transition"
@@ -274,6 +273,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "accentStyling",
       "authenticated",
       "chatButtonInitial",
       "chatHistory",
@@ -321,6 +321,10 @@ export default {
           }
         });
       }
+    },
+    toolbarStyle() {
+      let result = this.customCssButtonToolbar;
+      return result + this.accentStyling;
     },
     menuClass() {
       if (!this.dark) {

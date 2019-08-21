@@ -32,6 +32,7 @@
         "success": "#4CAF50",
         "warning": "#FFC107"
       },
+      "displayAccent": "true",
       "knowledgeData": ["What's your name?", "Who created you?"],
       "float": "true",
       "showChatIcons": "true",

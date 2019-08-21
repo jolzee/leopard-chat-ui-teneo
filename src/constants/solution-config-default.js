@@ -38,6 +38,7 @@ okkay | ok
     success: "#4CAF50",
     warning: "#FFC107"
   },
+  displayAccent: "true",
   url: "",
   useLocalStorage: "false",
   userIcon: "fa-comment-alt"

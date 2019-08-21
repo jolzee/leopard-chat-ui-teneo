@@ -163,6 +163,12 @@ function storeSetup(callback) {
       showButtonOnly(state) {
         return state.ui.showButtonOnly;
       },
+      accentStyling(state) {
+        if (state.activeSolution.displayAccent && state.activeSolution.displayAccent == "true") {
+          return "border-top: 2px solid" + state.ui.theme.accent + " !important;";
+        }
+        return "";
+      },
       customCssButtonToolbar(state) {
         return state.activeSolution.customCssButtonToolbar !== undefined
           ? state.activeSolution.customCssButtonToolbar
