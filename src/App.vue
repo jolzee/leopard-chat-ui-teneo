@@ -1,13 +1,12 @@
 <template>
-
   <div>
     <v-app
+      :dark="$vuetify.theme.dark"
       v-if="showButtonOnly"
       class="application-button"
     >
       <div
         id="chat-open-close-button-embed"
-        :dark="dark"
         @click="toggleEmbedButton"
       >
         <v-fab-transition>
@@ -31,8 +30,7 @@
     <v-app
       v-else
       toolbar
-      :dark="dark"
-      :class="{'elevation-4': !embed, 'application-float': float, 'application-embed': embed}"
+      :class="{'elevation-2': !embed, 'application-float': float, 'application-embed': embed}"
     >
       <div
         id="chat-open-close-button"
@@ -86,8 +84,8 @@
       </div>
       <div
         id="teneo"
-        :class="getChatState"
         v-if="showChatWindow"
+        :class="{'elevation-2': !embed, 'application-float': float, 'application-embed': embed}"
       >
         <transition
           name="menu-transition"
@@ -95,7 +93,6 @@
           leave-active-class="animated slideOutRight"
         >
           <v-navigation-drawer
-            :dark="dark"
             app
             :clipped="clipped"
             v-if="drawer"
@@ -105,28 +102,27 @@
             right
             width="250"
           >
-            <v-img
-              :src='backgroundImage()'
-              height="auto"
+            <v-row
+              align="center"
+              justify="center"
             >
-              <v-layout
-                pa-4
-                column
-                fill-height
-                class="lightbox white--text"
+              <v-img
+                :src="backgroundImage()"
+                :lazy-src="backgroundImage()"
+                aspect-ratio="1"
+                height="170px"
               >
-                <v-spacer></v-spacer>
-                <v-flex shrink>
-                  <div class="headline font-weight-medium">Artificial Solutions</div>
-                  <div class="body-2">{{ $t('about.page.content') }}</div>
-                </v-flex>
-              </v-layout>
-            </v-img>
-            <v-list
-              :dark="dark"
-              class="px-2"
-            >
-              <v-list-tile
+                <v-row class="lightbox white--text ma-4">
+                  <v-col>
+                    <div class="headline font-weight-medium">Artificial Solutions</div>
+                    <div class="body-2">{{ $t('about.page.content') }}</div>
+                  </v-col>
+                </v-row>
+              </v-img>
+            </v-row>
+
+            <v-list class="px-2">
+              <v-list-item
                 ripple
                 value="true"
                 v-for="(menuItem, i) in activeMenuItems"
@@ -134,55 +130,48 @@
                 :to="menuItem.route"
                 @click="lookForLogout(menuItem)"
               >
-                <v-list-tile-action>
+                <v-list-item-action>
                   <v-icon
                     medium
-                    :dark="dark"
                     :class="menuClass"
                   >{{menuItem.icon}}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title
                     class="subheading"
-                    :dark="dark"
                     :class="menuClassText"
-                  >{{ $t(menuItem.titleKey) }}</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+                  >{{ $t(menuItem.titleKey) }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </v-list>
           </v-navigation-drawer>
         </transition>
 
         <v-toolbar
-          :clipped-left="clipped"
           :color="toolbarColor"
-          :dark="dark"
           :flat="false"
           height="64"
           style="z-index: 3;"
           :class="{'teneo-toolbar-float' : float, 'teneo-toolbar-embed' : embed}"
           :style="toolbarStyle"
         >
-          <v-toolbar-side-icon
+          <v-app-bar-nav-icon
             @click.stop="drawer = !drawer"
-            style="flex: 0 0 auto;"
-            :color="toolbarColor"
-          ></v-toolbar-side-icon>
+            class="secondary--text"
+          ></v-app-bar-nav-icon>
           <v-toolbar-title v-text="toolbarTitle"></v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn
-            round
-            small
-            dark
+            x-small
             fab
+            ripple
             @click="toggleBrightness"
-            style="flex: 0 0 auto;"
-            :color="dark ? 'primary': 'secondary'"
+            elevation="2"
+            color="secondary"
           >
             <v-icon
               dark
-              v-text="
-            dark
+              v-text="$vuetify.theme.dark
             ? 'fa-moon'
             : 'fa-sun'"
             ></v-icon>
@@ -279,7 +268,6 @@ export default {
       "chatHistory",
       "chatTitle",
       "customCssButtonToolbar",
-      "dark",
       "embed",
       "float",
       "hideConfigMenu",
@@ -327,13 +315,13 @@ export default {
       return result + this.accentStyling;
     },
     menuClass() {
-      if (!this.dark) {
+      if (!this.$vuetify.theme.dark) {
         return "grey--text text--darken-1";
       }
       return "grey--text text--lighten-2";
     },
     menuClassText() {
-      if (!this.dark) {
+      if (!this.$vuetify.theme.dark) {
         return "grey--text text--darken-4 font-weight-bold";
       }
       return "grey--text text--lighten-2";
@@ -354,7 +342,7 @@ export default {
       }
     },
     toolbarColor() {
-      return !this.dark ? "primary white--text" : "";
+      return "primary white--text";
     },
     getChatState() {
       if (this.showChatWindow) {
@@ -488,7 +476,8 @@ export default {
       }
     },
     toggleBrightness() {
-      this.$store.commit("CHANGE_THEME");
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+      // this.$store.commit("CHANGE_THEME");
     },
     toggleChat() {
       if (
@@ -759,15 +748,27 @@ a:focus {
 }
 
 .application-float {
-  max-height: 79.5vh !important;
-  height: 79.5vh !important;
+  max-height: 80vh !important;
+  height: 80vh !important;
   right: 5% !important;
+  top: 10%;
   border-radius: 13px;
   -moz-border-radius: 13px;
   -webkit-border-radius: 13px;
+  position: fixed;
 }
 
-.application {
+.footer-float {
+  border-bottom-right-radius: 13px;
+  -moz-border-bottom-right-radius: 13px;
+  -webkit-border-bottom-right-radius: 13px;
+  border-bottom-left-radius: 13px;
+  -moz-border-bottom-left-radius: 13px;
+  -webkit-border-bottom-left-radius: 13px;
+  z-index: 1 !important;
+}
+
+.v-application {
   max-width: 360px;
   max-height: 100vh;
   height: 100vh !important;
@@ -823,7 +824,7 @@ iframe#site-frame {
     width: 100vw !important;
   }
 
-  .application {
+  .v-application {
     max-width: 100vw !important;
     max-height: 100% !important;
     /* height: 100vh !important; */
@@ -838,10 +839,20 @@ iframe#site-frame {
     -webkit-border-radius: unset;
   }
 
-  .teneo-footer {
+  .application-float {
+    max-height: 100vh !important;
+    height: 100vh !important;
+    right: 0 !important;
+    top: 0;
+    border-radius: unset;
+    -moz-border-radius: unset;
+    -webkit-border-radius: unset;
+  }
+
+  /* .teneo-footer {
     position: fixed !important;
     bottom: 10px !important;
-  }
+  } */
 
   iframe#site-frame {
     width: 0vw !important;

@@ -1,21 +1,19 @@
 <template>
-  <v-layout v-if="showCustomModal">
-    <v-flex xs12>
 
-      <v-dialog
-        v-model="items"
-        scrollable
-        persistent
-        content-class="teneo-modal"
-        hide-overlay
-        fullscreen
-      >
+  <v-dialog
+    v-if="showCustomModal"
+    v-model="items"
+    scrollable
+    persistent
+    content-class="teneo-modal"
+    hide-overlay
+    fullscreen
+  >
+    <v-row no-gutters>
+      <v-col cols="12">
         <v-toolbar
           dark
           color="primary"
-          height="64"
-          fixed
-          :class="toolbarWidth"
         >
           <v-btn
             fab
@@ -29,10 +27,11 @@
             >close</v-icon>
           </v-btn>
           <v-toolbar-title>{{ $t('more.info.title') }}</v-toolbar-title>
-          <v-spacer></v-spacer>
         </v-toolbar>
+      </v-col>
+      <v-col cols="12">
         <v-card
-          class="mb-1 pt-5 modal-height teneo-modal-card"
+          class="modal-height teneo-modal-card"
           :class="{'dark-scroll': dark, 'light-scroll': !dark}"
           tile
         >
@@ -42,7 +41,7 @@
               :key="index"
             >
               <div
-                class="modal-headline add-padding"
+                class="title add-padding"
                 v-if="item.type === 'title'"
                 v-html="item.value"
               ></div>
@@ -76,7 +75,6 @@
               <Map
                 v-if="item.type === 'map'"
                 :address="item.value"
-                class="mt-2"
               ></Map>
               <ImageAnimation
                 v-if="item.type === 'image'"
@@ -89,10 +87,9 @@
 
             </span>
           </v-container>
-          <v-layout
-            align-start
-            justify-center
-            row
+          <v-row
+            align="start"
+            justify="center"
           >
             <!-- show the close modal button -->
             <v-card-actions>
@@ -105,14 +102,14 @@
               >{{ $t('back.to.chat.button') }}
               </v-btn>
             </v-card-actions>
-          </v-layout>
+          </v-row>
 
         </v-card>
+      </v-col>
+    </v-row>
 
-      </v-dialog>
+  </v-dialog>
 
-    </v-flex>
-  </v-layout>
 </template>
 
 <script>

@@ -9,7 +9,7 @@ import Vue from "vue";
 import Vuetify from "vuetify/lib";
 import internalConfig from "../assets/default.json";
 
-import "vuetify/src/stylus/app.styl";
+// import "vuetify/src/stylus/app.styl";
 
 import { ASR_CORRECTIONS } from "../constants/asr-corrections"; // fix ASR issues before they get to Teneo
 import { LiveChat } from "../utils/live-chat";
@@ -113,13 +113,6 @@ export default class Setup {
             }
             this.THEME = theme;
 
-            Vue.use(Vuetify, {
-              iconfont: ["md", "fa", "mdi"],
-              theme: this.THEME,
-              directives: {
-                Ripple
-              }
-            });
             this.ENABLE_LIVE_CHAT = parseBool(this.activeSolution.enableLiveChat);
             this.UNIQUE_KEY =
               this.activeSolution.deepLink + (window.location.href.indexOf("mobile=true") > -1 ? "_mobile" : "");
@@ -143,7 +136,40 @@ export default class Setup {
           if (!this.EMBED && !this.SHOW_BUTTON_ONLY && document.getElementById("site-frame")) {
             document.getElementById("site-frame").src = this.IFRAME_URL;
           }
-          resolve();
+
+          Vue.use(Vuetify, {
+            directives: {
+              Ripple
+            }
+          });
+
+          // icons: {
+          //   iconfont: ["md", "fa", "mdi"]
+          // },
+          let vuetify = new Vuetify({
+            // icons: {
+            //   iconfont: ["mdi", "fa", "md"]
+            // },
+            theme: {
+              dark: false,
+              themes: {
+                light: this.THEME,
+                dark: {
+                  primary: "#212121",
+                  secondary: "#424242",
+                  accent: "#00FF00",
+                  error: "#940B0B",
+                  info: "#0048BA",
+                  success: "#086908",
+                  warning: "#9B5D09"
+                }
+              }
+            },
+            directives: {
+              Ripple
+            }
+          });
+          resolve(vuetify);
         })
         .catch(message => reject(message));
     });

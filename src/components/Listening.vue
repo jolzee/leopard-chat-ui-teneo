@@ -1,29 +1,31 @@
 <template>
-  <v-layout
-    row
-    justify-center
+  <v-row
+    justify="center"
+    no-gutters
   >
     <v-dialog
       v-model="value"
       persistent
       content
-      content-class="centered-dialog"
+      content-class="centered-dialog pa-5"
     >
-      <v-container fill-height>
-        <v-layout
-          column
-          justify-center
-          align-center
+      <v-container class="fill-height">
+        <v-row
+          justify="center"
+          align="center"
         >
           <line-scale-pulse-out-rapid-loader
             color="#D32F2F"
             size="90px"
           ></line-scale-pulse-out-rapid-loader>
-          <h1 v-if="message != null">{{message}}</h1>
-        </v-layout>
+          <h1
+            class="ml-2"
+            v-if="message != null"
+          >{{message}}</h1>
+        </v-row>
       </v-container>
     </v-dialog>
-  </v-layout>
+  </v-row>
 </template>
 <script>
 export default {

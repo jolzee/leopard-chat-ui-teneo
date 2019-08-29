@@ -9,9 +9,9 @@
       slot="items"
       slot-scope="props"
     >
-      <td class="text-xs-left">{{ props.item.date }}</td>
-      <td class="text-xs-left">{{ props.item.description }}</td>
-      <td class="text-xs-left">{{ props.item.amount }}</td>
+      <td class="text-left">{{ props.item.date }}</td>
+      <td class="text-left">{{ props.item.description }}</td>
+      <td class="text-left">{{ props.item.amount }}</td>
     </template>
     <v-alert
       slot="no-results"

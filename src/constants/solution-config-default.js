@@ -26,7 +26,7 @@ okkay | ok
   locale: "en-us-female",
   longResponsesInModal: "false",
   name: "",
-  responseIcon: "fa-robot",
+  responseIcon: "mdi-comment-account",
   sendContextParams: "login",
   showChatIcons: "true",
   theme: {
@@ -41,7 +41,7 @@ okkay | ok
   displayAccent: "true",
   url: "",
   useLocalStorage: "false",
-  userIcon: "fa-comment-alt"
+  userIcon: "mdi-message-text"
 };
 
 export const STORAGE_KEY = window.location.hostname + window.location.pathname + ":";

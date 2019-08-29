@@ -1,18 +1,18 @@
 <template>
-  <v-layout
-    row
-    wrap
-    justify-center
-    align-center
-    class="loading-ball text-xs-center mt-3"
+  <v-row
+    
+    
+    justify="center"
+    align="center"
+    class="loading-ball text-center mt-3"
   >
-    <v-flex xs12>
+    <v-col cols="12">
       <line-scale-loader
         color="#C2C2C2"
         size="60px"
       ></line-scale-loader>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

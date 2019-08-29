@@ -1,16 +1,15 @@
 <template>
   <!-- Reply -->
   <span v-if="item.type === 'reply'">
-    <v-layout
-      align-start
-      justify-start
-      row
-      fill-height
+    <v-row
       v-if="itemText !== '<p>'"
+      class="my-1"
+      no-gutters
+      justify="start"
     >
-      <v-flex
-        shrink
-        class="text-xs-left"
+      <v-col
+        cols="2"
+        class="text-center"
         v-if="showChatIcons"
       >
         <v-btn
@@ -19,31 +18,32 @@
           color="secondary"
           class="teneo-response-icon elevation-2"
           fab
+          light
           small
         >
-          <v-icon class="white--text">{{responseIcon}}</v-icon>
+          <v-icon>{{responseIcon}}</v-icon>
         </v-btn>
-      </v-flex>
-      <v-flex shrink>
+      </v-col>
+      <v-col class="text-left">
         <v-card
-          :color="dark ? '#333333' : '#FAFAFA'"
-          class="chat-card chat-card-left text-xs-left"
-          :dark="dark"
+          :color="$vuetify.theme.dark ? '#333333' : '#FAFAFA'"
+          class="chat-card chat-card-left text-left"
         >
           <span
             v-html="itemText"
             class="teneo-reply"
           ></span>
         </v-card>
-      </v-flex>
-    </v-layout>
+      </v-col>
+
+    </v-row>
     <!-- Show Inline Components -->
-    <v-layout
+    <v-row
       v-for="(extension, index) in itemExtensions(item)"
       :key="index + 'inlines' + uuid"
-      row
+      no-gutters
     >
-      <v-flex xs12>
+      <v-col cols="12">
         <YouTube
           v-if="hasInlineType(extension,'youTube')"
           :videoId="youTubeVideoId(extension)"
@@ -80,18 +80,19 @@
           :imageItems="carouselImageArray(extension)"
           class="mt-2"
         ></Carousel>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
     <!-- Additional Response Chunks -->
     <div v-if="responseHasChunks">
-      <v-layout
-        row
+      <v-row
         v-for="(chunkText, responseChunkIndex) in getChunks"
         :key="responseChunkIndex + uuid"
+        no-gutters
+        class="mb-2"
       >
-        <v-flex
-          xs2
-          class="text-xs-left"
+        <v-col
+          cols="2"
+          class="text-center"
           v-if="showChatIcons"
         >
           <v-btn
@@ -104,27 +105,26 @@
           >
             <v-icon class="white--text">{{responseIcon}}</v-icon>
           </v-btn>
-        </v-flex>
-        <v-flex>
+        </v-col>
+        <v-col>
           <v-card
-            class="chat-card chat-card-left text-xs-left"
-            :color="dark ? '#333333' : '#FAFAFA'"
-            :dark="dark"
+            class="chat-card chat-card-left text-left"
+            :color="$vuetify.theme.dark ? '#333333' : '#FAFAFA'"
           >
             <span
               v-html="chunkText"
               class="teneo-reply"
             ></span>
           </v-card>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </div>
     <DelayedResponse v-if="showDelayedResponse && (itemIndexInDialog === dialog.length - 1)"></DelayedResponse>
     <!-- show any options in the response: for example Yes, No Maybe -->
     <v-card
-      flat
+      text
       v-if="hasCollection && ((itemIndexInDialog === dialog.length - 1) || hasPermanentOptions)"
-      class="text-xs-center"
+      class="mb-3 elevation-0 text-center"
       width="320px"
     >
       <!-- Button Options -->
@@ -132,10 +132,10 @@
         class="teneo-button-options"
         v-if="!hasLongOptions"
       >
-        <h2 v-text="getOptions.title"></h2>
+        <h3 v-text="getOptions.title"></h3>
         <div
           v-if="getOptions.html"
-          class="elevation-5 mt-2"
+          class="elevation-2 mt-2"
           v-html="getOptions.items"
         >
         </div>
@@ -145,7 +145,7 @@
           :key="optionIndex + uuid"
         >
           <v-btn
-            class="option-btn"
+            class="option-btn mr-2 mt-2"
             small
             color="success"
             @click="optionClicked(option)"
@@ -154,38 +154,41 @@
         </span>
       </v-card-text>
       <!-- Line based List Options -->
-      <v-list
-        three-line
-        dense
-        subheader
-        v-else
-        class="pt-1"
-      >
-        <template v-for="(option, altOptionIndex) in getOptions.items">
-          <v-divider :key="altOptionIndex + uuid"></v-divider>
-          <v-list-tile
-            :key="altOptionIndex + 'tile' + uuid"
-            ripple
-            @click="optionClicked(option)"
-            class="options-list"
-          >
-            <v-list-tile-content>
-              <v-list-tile-sub-title class="options-list-subtile">{{option.name}}</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </template>
+
+      <v-list v-else>
+        <v-list-item-group color="primary">
+          <template v-for="(option, altOptionIndex) in getOptions.items">
+            <v-list-item
+              :key="altOptionIndex + 'tile' + uuid"
+              @click="optionClicked(option)"
+              class="text-left pl-2 pr-0"
+              style="height: 40px"
+              dense
+            >
+              <v-list-item-icon class="mr-4">
+                <v-icon>{{ getLongListIcon(altOptionIndex)}}</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content class="text-left">
+                <!-- <v-list-item-title v-html="option.name"></v-list-item-title> -->
+                <v-list-item-subtitle v-html="option.name"></v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-list-item-group>
       </v-list>
+
     </v-card>
     <!-- more info for modals & calendar picker button -->
-    <v-layout row>
-      <v-flex
-        xs12
-        class="text-xs-right"
+    <v-row no-gutters>
+      <v-col
+        cols="12"
+        class="text-right mb-2"
         v-if="(item.hasExtraData && hasModal(item) && notLiveChatTranscript) || itemHasLongResponse(item)"
       >
         <v-btn
-          class="mr-0"
           color="success"
+          class="mt-2"
+          small
           @click="showModal"
         >{{ modalButtonText }}
           <v-icon
@@ -194,40 +197,40 @@
             color="white"
           >{{ modalButtonIcon }}</v-icon>
         </v-btn>
-      </v-flex>
+      </v-col>
       <!-- Date Picker -->
-      <v-flex
-        class="text-xs-right"
-        xs12
+      <v-col
+        class="text-right"
+        cols="12"
         v-if="mustShowDate && (itemIndexInDialog === dialog.length - 1)"
       >
         <v-btn
           small
           fab
-          class="teneo-userinput-icon elevation-2"
-          color="info"
+          class="teneo-userinput-icon elevation-2 mb-2"
+          color="success"
           @click="toggleDate()"
         >
           <v-icon>fa-calendar-alt</v-icon>
         </v-btn>
-      </v-flex>
+      </v-col>
       <!-- Time Picker -->
-      <v-flex
-        class="text-xs-right"
-        xs12
+      <v-col
+        class="text-right"
+        cols="12"
         v-if="mustShowTime && (itemIndexInDialog === dialog.length - 1)"
       >
         <v-btn
           small
           fab
-          class="teneo-userinput-icon elevation-2"
-          color="info"
+          class="teneo-userinput-icon elevation-2 mb-2"
+          color="success"
           @click="toggleTime()"
         >
           <v-icon>fa-clock</v-icon>
         </v-btn>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </span>
 </template>
 
@@ -443,6 +446,13 @@ export default {
     }
   },
   methods: {
+    getLongListIcon(altOptionIndex) {
+      let iconName = "filter_none";
+      if (altOptionIndex + 1 <= 9) {
+        iconName = "filter_" + (altOptionIndex + 1);
+      }
+      return iconName;
+    },
     showModal() {
       this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals first
       this.$store.commit("SHOW_CHAT_MODAL", this.item);

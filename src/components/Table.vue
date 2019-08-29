@@ -4,17 +4,20 @@
     :headers="headers"
     :items="items"
     :search="search"
-    :rows-per-page-items='calcRowsPerPage'
+    :footer-props="{
+      itemsPerPageOptions: calcRowsPerPage
+    }"
   >
     <template
-      slot="items"
+      slot="
+    items"
       slot-scope="props"
     >
       <td
         v-for="(header, key) in headers"
         :key='
     key'
-        class="text-xs-left"
+        class="text-left"
         v-html="props.item[header.value]"
       >
 
@@ -44,9 +47,7 @@ export default {
   props: ["headers", "items", "search", "footer", "rowsPerPage"],
   computed: {
     calcRowsPerPage() {
-      let rowsPerPageArray = [
-        { text: "$vuetify.dataIterator.rowsPerPageAll", value: -1 }
-      ];
+      let rowsPerPageArray = [{ text: "All", value: -1 }];
       if (this.rowsPerPage && this.rowsPerPage.length >= 0) {
         let reversedArray = this.rowsPerPage.slice(0);
         reversedArray = reversedArray.reverse();

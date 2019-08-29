@@ -23,8 +23,9 @@ console.log("Documentation: https://jolzee.gitbook.io/leopard/");
 console.log("Code: https://github.com/jolzee/chat-teneo-vue");
 console.groupEnd();
 
-getStore(store => {
+getStore((vuetify, store) => {
   new Vue({
+    vuetify,
     router,
     store,
     render: h => h(App)

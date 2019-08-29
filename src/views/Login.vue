@@ -1,55 +1,53 @@
 <template>
-  <v-layout
-    align-start
-    justify-start
-    column
-    fill-height
-    class="mx-3"
+  <v-row
+    align="start"
+    justify="start"
+    class="mx-2 fill-height"
   >
-    <v-flex class="mt-3 px-2">
+    <v-col cols="12">
       <p class="subheading font-weight-medium">Login with one of the following methods.</p>
-    </v-flex>
-    <v-flex>
+    </v-col>
+    <v-col cols="12">
       <v-btn
         color="#375A9A"
-        class="white--text teneo-social-btn px-2 mr-0"
+        class="white--text teneo-social-btn px-1 mr-1 mb-1"
         @click="loginSocial('facebook')"
       >
         <v-icon
           left
           light
-          class="mr-2"
+          class="ml-1"
         >mdi-facebook-box</v-icon>
         Facebook
       </v-btn>
       <v-btn
         color="#EE4036"
-        class="white--text teneo-social-btn px-2 mr-0"
+        class="white--text teneo-social-btn px-1 mr-1 mb-1"
         @click="loginSocial('google')"
       >
         <v-icon
           left
           light
-          class="mr-2"
+          class="ml-1"
         >mdi-google-plus</v-icon>
         Google+
       </v-btn>
       <v-btn
         color="#464646"
-        class="white--text teneo-social-btn px-2 mr-0"
+        class="white--text teneo-social-btn px-1 mb-1 mr-0"
         @click="loginSocial('github')"
       >
         <v-icon
           left
           light
-          class="mr-2"
+          class="ml-1"
         >mdi-github-circle</v-icon>
         GitHub
       </v-btn>
-    </v-flex>
-    <v-flex class="mt-3 px-2">
+    </v-col>
+    <v-col cols="12">
       <p class="subheading font-weight-medium">Alternatively use your email and password.</p>
-    </v-flex>
+    </v-col>
     <v-form
       ref="form"
       v-model="valid"
@@ -57,23 +55,20 @@
       lazy-validation
     >
       <v-container fluid>
-        <v-layout
-          row
-          wrap
-        >
+        <v-row>
 
-          <v-flex xs12>
+          <v-col cols="12">
             <v-text-field
               v-model="email"
               :rules="[rules.emailRules]"
               label="E-mail"
               clearable
-              browser-autocomplete="off"
+              autocomplete="off"
               required
               append-icon="email"
             ></v-text-field>
-          </v-flex>
-          <v-flex xs12>
+          </v-col>
+          <v-col cols="12">
             <v-text-field
               v-model="password"
               :append-icon="showPassword ? 'visibility' : 'visibility_off'"
@@ -81,16 +76,16 @@
               :type="showPassword ? 'text' : 'password'"
               name="password"
               clearable
-              browser-autocomplete="off"
+              autocomplete="off"
               label="Password"
               hint="At least 6 characters"
               counter
               @click:append="showPassword = !showPassword"
             ></v-text-field>
-          </v-flex>
-          <v-flex
-            xs12
-            class="pl-0"
+          </v-col>
+          <v-col
+            cols="12"
+            class="ml-0"
           >
             <v-btn
               @click="loginUser"
@@ -99,10 +94,10 @@
             >
               Login
             </v-btn>
-          </v-flex>
-          <v-flex
+          </v-col>
+          <v-col
             v-if="errorMessage"
-            xs12
+            cols="12"
           >
             <v-alert
               :value="true"
@@ -111,11 +106,11 @@
               {{ errorMessage }}
             </v-alert>
 
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
       </v-container>
     </v-form>
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

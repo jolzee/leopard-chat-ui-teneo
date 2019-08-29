@@ -1,33 +1,20 @@
 <template>
-  <v-layout
-    align-start
-    justify-end
-    row
-    fill-height
+  <v-row
     v-if="item.type === 'userInput'"
+    no-gutters
   >
     <!-- user question -->
-    <v-flex shrink>
+    <v-col>
       <v-card
         color="primary white--text"
-        class="chat-card chat-card-right text-xs-right"
+        class="chat-card chat-card-right text-right pr-3 align-content-end"
       >
-        <v-container
-          fluid
-          grid-list-s
-        >
-          <v-layout row>
-            <v-flex shrink>
-              <div class="pr-2">{{item.text}}
-              </div>
-            </v-flex>
-          </v-layout>
-        </v-container>
+        {{item.text}}
       </v-card>
-    </v-flex>
-    <v-flex
-      shrink
-      class="text-xs-right"
+    </v-col>
+    <v-col
+      cols="2"
+      class="text-center"
       v-if="showChatIcons"
     >
       <v-avatar
@@ -51,13 +38,13 @@
         class="teneo-userinput-icon elevation-2"
         fab
         small
-        color="primary white--text"
+        color="white primary--text"
         @click="updateInputBox(item.text)"
       >
-        <v-icon color="white">{{userIcon}}</v-icon>
+        <v-icon>{{userIcon}}</v-icon>
       </v-btn>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

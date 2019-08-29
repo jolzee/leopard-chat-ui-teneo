@@ -1,16 +1,18 @@
 <template>
-  <v-card class="teneo-about-card elevation-0">
+  <v-card
+    class="teneo-about-card"
+    flat
+  >
     <youTube :videoId="youTubeVideoId"></youTube>
 
     <v-card-title primary-title>
       <div>
         <h3 class="headline mb-3">{{ $t('about.page.title') }}</h3>
-        <div>{{ $t('about.page.content') }}
-        </div>
       </div>
     </v-card-title>
-    <v-layout
-      justify-center
+    <v-card-text>{{ $t('about.page.content') }}</v-card-text>
+    <v-row
+      justify="center"
       class="pb-3"
     >
       <v-card-actions>
@@ -22,7 +24,7 @@
         >{{ $t('about.page.button') }}
         </v-btn>
       </v-card-actions>
-    </v-layout>
+    </v-row>
     <v-divider></v-divider>
   </v-card>
 </template>

@@ -11,22 +11,21 @@
     ></Pusher>
 
     <!-- show normal message -->
-    <v-layout>
-      <v-flex xs12>
+    <v-dialog
+      v-model="showModal"
+      leave-absolute
+      scrollable
+      persistent
+      content-class="teneo-modal"
+      hide-overlay
+      fullscreen
+    >
+      <v-row no-gutters>
+        <v-col cols="12">
 
-        <v-dialog
-          v-model="showModal"
-          leave-absolute
-          scrollable
-          persistent
-          content-class="teneo-modal"
-          hide-overlay
-          fullscreen
-        >
           <v-toolbar
             dark
             color="primary"
-            fixed
             height="64"
             :class="toolbarWidth"
           >
@@ -42,10 +41,11 @@
               >close</v-icon>
             </v-btn>
             <v-toolbar-title>{{ $t('more.info.title') }}</v-toolbar-title>
-            <v-spacer></v-spacer>
           </v-toolbar>
+        </v-col>
+        <v-col cols="12">
           <v-card
-            class="mb-1 pt-5 modal-height teneo-modal-card"
+            class="modal-height teneo-modal-card"
             :class="{'dark-scroll': dark, 'light-scroll': !dark}"
             tile
           >
@@ -69,7 +69,6 @@
             <Map
               v-if="address"
               :address="address"
-              class="mt-2"
             ></Map>
 
             <v-container class="modal-container">
@@ -81,10 +80,10 @@
               <Carousel :imageItems="images"></Carousel>
 
               <!-- display the modal title and sub-title -->
-              <v-layout
-                align-start
-                justify-start
-                column
+              <v-row
+                align="start"
+                justify="start"
+                class="mx-1"
               >
                 <v-card-title primary-title>
                   <!-- Main Title -->
@@ -100,12 +99,11 @@
                     v-html="subTitle"
                   ></span>
                 </v-card-title>
-              </v-layout>
+              </v-row>
 
-              <v-layout
-                align-start
-                justify-center
-                row
+              <v-row
+                align="start"
+                justify="center"
               >
                 <!-- show the close modal button -->
                 <v-card-actions>
@@ -118,7 +116,7 @@
                   >{{ $t('back.to.chat.button') }}
                   </v-btn>
                 </v-card-actions>
-              </v-layout>
+              </v-row>
 
               <!-- Show the body text, flight itineary, and any tables if available -->
               <div
@@ -138,26 +136,25 @@
                 ></v-card-text>
 
                 <!-- data tables -->
-                <v-layout
+                <v-row
+                  class="fill-height mx-1"
                   v-if="transactionItems.length > 0 || tableRows.length > 0"
-                  align-end
-                  justify-start
-                  fill-height
+                  align="end"
+                  justify="start"
                 >
                   <!-- table title -->
-                  <v-layout v-if="tableTitle">
-                    <v-flex
-                      xs8
-                      ml-4
-                      class=""
+                  <v-row v-if="tableTitle">
+                    <v-col
+                      cols="8"
+                      class="ml-4"
                     >
                       <h3>{{tableTitle}}</h3>
-                    </v-flex>
-                  </v-layout>
+                    </v-col>
+                  </v-row>
                   <v-spacer v-else></v-spacer>
                   <!-- show a search input box for the table -->
-                  <v-flex
-                    xs4
+                  <v-col
+                    cols="4"
                     v-if="tableEnableSearch"
                     class="mr-2"
                   >
@@ -168,8 +165,8 @@
                       single-line
                       hide-details
                     ></v-text-field>
-                  </v-flex>
-                </v-layout>
+                  </v-col>
+                </v-row>
 
                 <!-- Show the MyBank Transactions as a Table -->
                 <MyBankTransactions
@@ -192,11 +189,10 @@
             </v-container>
 
           </v-card>
+        </v-col>
+      </v-row>
+    </v-dialog>
 
-        </v-dialog>
-
-      </v-flex>
-    </v-layout>
   </span>
 </template>
 
@@ -268,14 +264,14 @@ export default {
           align: "left",
           text: "Description",
           value: "description",
-          width: "70%"
+          width: "65%"
         },
         {
-          align: "left",
+          align: "right",
           sortable: true,
           text: "Amount",
           value: "amount",
-          width: "10%"
+          width: "15%"
         }
       ],
       transactionItems: [],
@@ -670,7 +666,7 @@ export default {
 
 .modal-container {
   padding: 0px;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 
 .modal-height {
@@ -688,7 +684,7 @@ export default {
 }
 
 .modal-headline {
-  font-size: 1.2em;
+  font-size: 0.7em;
 }
 
 .cardText table {
@@ -734,12 +730,14 @@ export default {
   position: absolute !important;
   right: 0 !important;
   margin: 0 !important;
-  padding-top: 48px !important;
-  overflow-y: hidden;
+  /* padding-top: 48px !important; */
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .teneo-modal-card {
   overflow-y: auto;
+  overflow-x: hidden;
   height: auto;
 }
 

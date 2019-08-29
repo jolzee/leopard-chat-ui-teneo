@@ -1,134 +1,149 @@
 <template>
-  <v-layout>
-
-    <v-dialog
-      v-model="showModal"
-      fullscreen
-      hide-overlay
-      transition="dialog-bottom-transition"
-    >
-      <v-card>
-        <v-toolbar fixed>
-          <v-flex>
-            <v-btn
-              icon
-              dark
-              @click="refreshBrowser"
-              color="green"
-              :loading="refresh"
-            >
-              <v-icon>refresh</v-icon>
-            </v-btn>
-          </v-flex>
-          <v-toolbar-title>Configuration</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-tooltip
-            open-delay="600"
-            bottom
+  <v-dialog
+    v-model="showModal"
+    fullscreen
+    full-width
+    hide-overlay
+    light
+  >
+    <v-card style="background-color: #FAFAFA">
+      <v-toolbar
+        fixed
+        color="grey lighten-2"
+      >
+        <v-col>
+          <v-btn
+            class="mr-2"
+            fab
+            small
+            dark
+            @click="refreshBrowser"
+            color="green"
+            :loading="refresh"
           >
+            <v-icon>refresh</v-icon>
+          </v-btn>
+        </v-col>
+        <v-toolbar-title>Configuration</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-tooltip
+          open-delay="600"
+          bottom
+        >
+          <template v-slot:activator="{ on }">
             <v-btn
-              slot="activator"
+              class="mr-2"
+              v-on="on"
               dark
               fab
-              round
+              rounded
               small
-              outline
+              outlined
               color="indigo"
               :href="getActiveSolutionDeepLinkMobile"
               target="_blank"
             >
+
               <v-icon dark>fa-mobile-alt</v-icon>
             </v-btn>
-            <span>Deep Link Mobile</span>
-          </v-tooltip>
-          <v-tooltip
-            open-delay="600"
-            bottom
-          >
+          </template>
+          <span>Deep Link Mobile</span>
+
+        </v-tooltip>
+        <v-tooltip
+          open-delay="600"
+          bottom
+        >
+          <template v-slot:activator="{ on }">
             <v-btn
-              slot="activator"
+              class="mr-2"
+              v-on="on"
               fab
               dark
-              round
+              rounded
               small
-              outline
+              outlined
               color="indigo"
               :href="getActiveSolutionDeepLink"
             >
               <v-icon dark>fa-link</v-icon>
             </v-btn>
-            <span>Deep Link Desktop</span>
-          </v-tooltip>
-          <v-spacer></v-spacer>
-          <v-badge
-            left
-            overlap
-            color="blue"
-            class="mr-2"
-          >
-            <span slot="badge">{{config.solutions.length}}</span>
-            <v-icon
-              large
-              color="grey lighten-1"
-            >fa-cogs</v-icon>
-          </v-badge>
-          <v-chip
-            v-if="config.activeSolution"
-            disabled
-            color="green"
-            text-color="white"
-            class="mr-4"
-          >
-            <v-avatar class="green darken-4">
-              <v-icon>check</v-icon>
-            </v-avatar>
-            {{ config.activeSolution }}
-          </v-chip>
-        </v-toolbar>
+          </template>
+          <span>Deep Link Desktop</span>
 
-        <v-container class="mt-5 pt-5">
-          <v-flex xs12>
-            <v-layout>
-              <v-flex xs12>
-                <v-card>
-                  <v-card-title primary-title>
+        </v-tooltip>
+        <v-spacer></v-spacer>
+        <v-badge
+          left
+          overlap
+          color="blue"
+          class="mr-2"
+        >
+          <span slot="badge">{{config.solutions.length}}</span>
+          <v-icon
+            large
+            color="grey lighten-1"
+          >fa-cogs</v-icon>
+        </v-badge>
+        <v-chip
+          v-if="config.activeSolution"
+          disabled
+          color="green"
+          text-color="white"
+          class="mr-4"
+        >
+          <v-avatar class="green darken-4">
+            <v-icon>check</v-icon>
+          </v-avatar>
+          {{ config.activeSolution }}
+        </v-chip>
+      </v-toolbar>
+
+      <v-container class="mt-5 pt-5">
+        <v-col cols="12">
+          <v-row>
+            <v-col cols="12">
+              <v-card>
+                <v-card-title primary-title>
+                  <div>
+                    <h3 class="headline mb-0">Solution Config</h3>
                     <div>
-                      <h3 class="headline mb-0">Solution Config</h3>
-                      <div>
-                        <v-container fluid>
-                          <v-layout
-                            row
-                            wrap
+                      <v-container fluid>
+                        <v-row>
+                          <v-col
+                            cols="12"
+                            v-if="hasSolutions"
                           >
-                            <v-flex
-                              xs12
-                              v-if="hasSolutions"
+                            <v-select
+                              style="max-width: 452px;"
+                              color="light-blue darken-1"
+                              item-avatar="userIcon"
+                              autofocus
+                              ref="selectedSolution"
+                              item-text="name"
+                              item-value="name"
+                              v-model="selectedSolution"
+                              :menu-props="{contentClass:'select-options'}"
+                              solo
+                              :items="sortedSolutions"
+                              return-object
+                              no-data-text="No Solutions"
+                              label="Select Teneo Solution"
+                              append-icon="fa-arrow-circle-down"
+                            ></v-select>
+                          </v-col>
+                          <v-col
+                            class="ma2"
+                            cols="12"
+                          >
+                            <v-tooltip
+                              open-delay="600"
+                              bottom
                             >
-                              <v-select
-                                style="max-width: 452px;"
-                                color="light-blue darken-1"
-                                item-avatar="userIcon"
-                                autofocus
-                                ref="selectedSolution"
-                                item-text="name"
-                                item-value="name"
-                                v-model="selectedSolution"
-                                :menu-props="{contentClass:'select-options'}"
-                                solo
-                                :items="sortedSolutions"
-                                return-object
-                                no-data-text="No Solutions"
-                                label="Select Teneo Solution"
-                                append-icon="fa-arrow-circle-down"
-                              ></v-select>
-                            </v-flex>
-                            <v-flex xs12>
-                              <v-tooltip
-                                open-delay="600"
-                                bottom
-                              >
+                              <template v-slot:activator="{ on }">
                                 <v-btn
-                                  slot="activator"
+                                  class="mr-2"
+                                  v-on="on"
                                   fab
                                   dark
                                   small
@@ -137,14 +152,17 @@
                                 >
                                   <v-icon dark>add_circle</v-icon>
                                 </v-btn>
-                                <span>Create a new solution config</span>
-                              </v-tooltip>
-                              <v-tooltip
-                                open-delay="600"
-                                bottom
-                              >
+                              </template>
+                              <span>Create a new solution config</span>
+                            </v-tooltip>
+                            <v-tooltip
+                              open-delay="600"
+                              bottom
+                            >
+                              <template v-slot:activator="{ on }">
                                 <v-btn
-                                  slot="activator"
+                                  class="mr-2"
+                                  v-on="on"
                                   fab
                                   dark
                                   color="light-blue darken-1"
@@ -155,15 +173,18 @@
                                   <v-icon dark>{{(selectedSolution && (config.activeSolution === selectedSolution.name)) ? "fa-check-square" : "fa-square"}}
                                   </v-icon>
                                 </v-btn>
-                                <span>Active/Deactive</span>
-                              </v-tooltip>
-                              <span v-if="selectedSolution">
-                                <v-tooltip
-                                  open-delay="600"
-                                  bottom
-                                >
+                              </template>
+                              <span>Active/Deactive</span>
+                            </v-tooltip>
+                            <span v-if="selectedSolution">
+                              <v-tooltip
+                                open-delay="600"
+                                bottom
+                              >
+                                <template v-slot:activator="{ on }">
                                   <v-btn
-                                    slot="activator"
+                                    class="mr-2"
+                                    v-on="on"
                                     fab
                                     dark
                                     small
@@ -172,14 +193,17 @@
                                   >
                                     <v-icon dark>fa-cog</v-icon>
                                   </v-btn>
-                                  <span>Edit</span>
-                                </v-tooltip>
-                                <v-tooltip
-                                  open-delay="600"
-                                  bottom
-                                >
+                                </template>
+                                <span>Edit</span>
+                              </v-tooltip>
+                              <v-tooltip
+                                open-delay="600"
+                                bottom
+                              >
+                                <template v-slot:activator="{ on }">
                                   <v-btn
-                                    slot="activator"
+                                    class="mr-2"
+                                    v-on="on"
                                     fab
                                     dark
                                     small
@@ -188,14 +212,17 @@
                                   >
                                     <v-icon dark>fa-clone</v-icon>
                                   </v-btn>
-                                  <span>Clone</span>
-                                </v-tooltip>
-                                <v-tooltip
-                                  open-delay="600"
-                                  bottom
-                                >
+                                </template>
+                                <span>Clone</span>
+                              </v-tooltip>
+                              <v-tooltip
+                                open-delay="600"
+                                bottom
+                              >
+                                <template v-slot:activator="{ on }">
                                   <v-btn
-                                    slot="activator"
+                                    class="mr-2"
+                                    v-on="on"
                                     fab
                                     dark
                                     small
@@ -204,14 +231,17 @@
                                   >
                                     <v-icon dark>fa-trash</v-icon>
                                   </v-btn>
-                                  <span>Delete</span>
-                                </v-tooltip>
-                                <v-tooltip
-                                  open-delay="600"
-                                  bottom
-                                >
+                                </template>
+                                <span>Delete</span>
+                              </v-tooltip>
+                              <v-tooltip
+                                open-delay="600"
+                                bottom
+                              >
+                                <template v-slot:activator="{ on }">
                                   <v-btn
-                                    slot="activator"
+                                    class="mr-2"
+                                    v-on="on"
                                     fab
                                     dark
                                     small
@@ -220,14 +250,17 @@
                                   >
                                     <v-icon dark>fa-clipboard</v-icon>
                                   </v-btn>
-                                  <span>Copy selected solution config to clipboard</span>
-                                </v-tooltip>
-                                <v-tooltip
-                                  open-delay="600"
-                                  bottom
-                                >
+                                </template>
+                                <span>Copy selected solution config to clipboard</span>
+                              </v-tooltip>
+                              <v-tooltip
+                                open-delay="600"
+                                bottom
+                              >
+                                <template v-slot:activator="{ on }">
                                   <v-btn
-                                    slot="activator"
+                                    class="mr-2"
+                                    v-on="on"
                                     fab
                                     dark
                                     small
@@ -236,34 +269,37 @@
                                   >
                                     <v-icon dark>fa-download</v-icon>
                                   </v-btn>
-                                  <span>Download selected solution's config as a file</span>
-                                </v-tooltip>
-                              </span>
-                            </v-flex>
-                          </v-layout>
-                        </v-container>
-                      </div>
+                                </template>
+                                <span>Download selected solution's config as a file</span>
+                              </v-tooltip>
+                            </span>
+                          </v-col>
+                        </v-row>
+                      </v-container>
                     </div>
-                  </v-card-title>
-                </v-card>
-              </v-flex>
-            </v-layout>
-            <v-layout class="mt-3 mb-3">
-              <v-flex xs12>
-                <v-card>
+                  </div>
+                </v-card-title>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row class="mt-3 mb-3">
+            <v-col cols="12">
+              <v-card class="pb-3">
 
-                  <v-card-title primary-title>
+                <v-card-title primary-title>
+                  <div>
+                    <h3 class="headline mb-3">Upload / Download / Help</h3>
                     <div>
-                      <h3 class="headline mb-0">Upload / Download / Help</h3>
-                      <div>
-                        <!-- show the nicely formatted view of the full configuration -->
+                      <!-- show the nicely formatted view of the full configuration -->
 
-                        <v-tooltip
-                          open-delay="600"
-                          bottom
-                        >
+                      <v-tooltip
+                        open-delay="600"
+                        bottom
+                      >
+                        <template v-slot:activator="{ on }">
                           <v-btn
-                            slot="activator"
+                            class="mr-2"
+                            v-on="on"
                             fab
                             dark
                             small
@@ -272,14 +308,17 @@
                           >
                             <v-icon dark>cloud_upload</v-icon>
                           </v-btn>
-                          <span>Upload an individual or full solution config</span>
-                        </v-tooltip>
-                        <v-tooltip
-                          open-delay="600"
-                          bottom
-                        >
+                        </template>
+                        <span>Upload an individual or full solution config</span>
+                      </v-tooltip>
+                      <v-tooltip
+                        open-delay="600"
+                        bottom
+                      >
+                        <template v-slot:activator="{ on }">
                           <v-btn
-                            slot="activator"
+                            class="mr-2"
+                            v-on="on"
                             fab
                             dark
                             small
@@ -288,14 +327,17 @@
                           >
                             <v-icon dark>fa-clipboard</v-icon>
                           </v-btn>
-                          <span>Copy full solution config to clipboard</span>
-                        </v-tooltip>
-                        <v-tooltip
-                          open-delay="600"
-                          bottom
-                        >
+                        </template>
+                        <span>Copy full solution config to clipboard</span>
+                      </v-tooltip>
+                      <v-tooltip
+                        open-delay="600"
+                        bottom
+                      >
+                        <template v-slot:activator="{ on }">
                           <v-btn
-                            slot="activator"
+                            class="mr-2"
+                            v-on="on"
                             fab
                             dark
                             small
@@ -304,14 +346,17 @@
                           >
                             <v-icon dark>fa-download</v-icon>
                           </v-btn>
-                          <span>Download all solutions configs as a file</span>
-                        </v-tooltip>
-                        <v-tooltip
-                          open-delay="600"
-                          bottom
-                        >
+                        </template>
+                        <span>Download all solutions configs as a file</span>
+                      </v-tooltip>
+                      <v-tooltip
+                        open-delay="600"
+                        bottom
+                      >
+                        <template v-slot:activator="{ on }">
                           <v-btn
-                            slot="activator"
+                            class="mr-2"
+                            v-on="on"
                             fab
                             dark
                             small
@@ -320,15 +365,18 @@
                           >
                             <v-icon dark>{{ displayFullSolutionConfig ? 'fa-eye' : 'fa-eye-slash' }}</v-icon>
                           </v-btn>
-                          <span>Toggle display of full solution config</span>
-                        </v-tooltip>
-                        <v-tooltip
-                          open-delay="600"
-                          bottom
-                        >
+                        </template>
+                        <span>Toggle display of full solution config</span>
+                      </v-tooltip>
+                      <v-tooltip
+                        open-delay="600"
+                        bottom
+                      >
+                        <template v-slot:activator="{ on }">
                           <v-btn
+                            class="mr-2"
                             fab
-                            slot="activator"
+                            v-on="on"
                             dark
                             small
                             color="brown darken-3"
@@ -337,490 +385,497 @@
                           >
                             <v-icon dark>fa-question-circle</v-icon>
                           </v-btn>
-                          <span>Help / Documentation</span>
-                        </v-tooltip>
-                      </div>
+                        </template>
+                        <span>Help / Documentation</span>
+                      </v-tooltip>
                     </div>
-                  </v-card-title>
-
-                </v-card>
-              </v-flex>
-            </v-layout>
-            <v-layout class="mb-2">
-
-              <!-- global snackbar -->
-              <v-snackbar
-                :timeout="globalSnackbarTimeout"
-                :value="globalSnackbar"
-                :color="globalSnackbarColor"
-              >
-                {{ globalSnackbarMessage }}
-              </v-snackbar>
-
-            </v-layout>
-
-            <div v-if="displayFullSolutionConfig && !displayAddEditDialog">
-              <prism language="json">{{ prettyPrintFullConfig }}</prism>
-            </div>
-
-            <!-- upload new configuration -->
-            <v-dialog
-              v-model="uploadDialog"
-              scrollable
-              persistent
-              max-width="calc(1200px - 20vw)"
-            >
-
-              <v-card>
-                <v-card-title>
-                  <h3>Upload Configurations
-                    <v-progress-circular
-                      v-if="showProgressUpload"
-                      :size="30"
-                      :width="3"
-                      indeterminate
-                      color="purple"
-                    ></v-progress-circular>
-                  </h3>
+                  </div>
                 </v-card-title>
-                <v-divider></v-divider>
-                <v-card-text style="height: 90vh">
 
-                  <v-layout row>
-                    <v-flex xs12>
-                      <div class="upload-btn ml-2 mb-2">
-                        <input
-                          id="uploadFile"
-                          type="file"
-                          accept="text/*"
-                          name="uploadFile"
-                          @click="toggleLoading"
-                          @change="readConfigFile"
-                        />
-                        <label
-                          for="uploadFile"
-                          class="v-btn primary upload-btn"
-                        >
-                          Upload
-                          <v-icon
-                            dark
-                            right
-                          >publish</v-icon>
-                        </label>
-                      </div>
-                      <v-textarea
-                        v-model="getUploadConfig"
-                        :loading="uploadTextAreaLoading"
-                        ref="newConfig"
-                        box
-                        name="new-config"
-                        label="Paste in full or partial configurations"
-                        :value="getUploadConfig"
-                        auto-grow
-                        prepend-icon="fa-cog"
-                        class="coding-font"
-                      ></v-textarea>
-                    </v-flex>
-                  </v-layout>
-                </v-card-text>
-                <v-divider></v-divider>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="blue-grey lighten-5"
-                    light
-                    @click="closeUploadDialog"
-                  >Close</v-btn>
-                  <v-btn
-                    color="green"
-                    @click="saveUploadForm"
-                  >Save
-                    <v-icon
-                      right
-                      dark
-                    >fa-save</v-icon>
-                  </v-btn>
-                  <v-snackbar
-                    :timeout="globalSnackbarTimeout"
-                    v-model="globalSnackbar"
-                    absolute
-                  >
-                    {{ globalSnackbarMessage }}
-                  </v-snackbar>
-                </v-card-actions>
               </v-card>
-            </v-dialog>
+            </v-col>
+          </v-row>
+          <v-row class="mb-2">
 
-            <!-- Add Edit Dialog -->
-            <v-dialog
-              v-model="displayAddEditDialog"
-              scrollable
-              persistent
-              max-width="calc(1200px - 10vw)"
+            <!-- global snackbar -->
+            <v-snackbar
+              :timeout="globalSnackbarTimeout"
+              :value="globalSnackbar"
+              :color="globalSnackbarColor"
             >
-              <v-card>
-                <v-card-title>
-                  <h3>{{ dialogTitle }}</h3>
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-card-text
-                  style="height: 90vh"
-                  id="add-edit"
-                >
-                  <v-form ref="form">
-                    <v-btn
-                      color="light-blue darken-1"
-                      href="https://fontawesome.com/icons?d=gallery&m=free"
-                      target="_blank"
-                    >Font Awesome
-                    </v-btn>
-                    <v-btn
-                      color="light-blue darken-1"
-                      href="https://material.io/tools/icons/?icon=supervised_user_circle&style=baseline"
-                      target="_blank"
-                    >Material
-                    </v-btn>
-                    <v-btn
-                      color="light-blue darken-1"
-                      href="https://htmlcolorcodes.com/color-names/"
-                      target="_blank"
-                    >HTML Color Names
-                    </v-btn>
+              {{ globalSnackbarMessage }}
+            </v-snackbar>
 
-                    <v-container fluid>
-                      <v-layout
-                        row
-                        wrap
+          </v-row>
+
+          <div v-if="displayFullSolutionConfig && !displayAddEditDialog">
+            <prism language="json">{{ prettyPrintFullConfig }}</prism>
+          </div>
+
+          <!-- upload new configuration -->
+          <v-dialog
+            v-model="uploadDialog"
+            scrollable
+            persistent
+            light
+            max-width="calc(1200px - 20vw)"
+          >
+
+            <v-card>
+              <v-card-title>
+                <h3>Upload Configurations
+                  <v-progress-circular
+                    v-if="showProgressUpload"
+                    :size="30"
+                    :width="3"
+                    indeterminate
+                    color="purple"
+                  ></v-progress-circular>
+                </h3>
+              </v-card-title>
+              <v-divider></v-divider>
+              <v-card-text style="height: 90vh">
+
+                <v-row>
+                  <v-col cols="12">
+                    <div class="upload-btn ml-2 mb-2">
+                      <input
+                        id="uploadFile"
+                        type="file"
+                        accept="text/*"
+                        name="uploadFile"
+                        @click="toggleLoading"
+                        @change="readConfigFile"
+                      />
+                      <label
+                        for="uploadFile"
+                        class="v-btn primary upload-btn pa-2 ml-2"
                       >
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Solution Name</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-text-field
-                            color="light-blue darken-1"
-                            v-model.trim="solution.name"
-                            validate-on-blur
-                            :tabindex="getTabIndex"
-                            label="Solution Name"
-                            :rules="[ruleMustHaveValue]"
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Solution URL</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-text-field
-                            color="light-blue darken-1"
-                            v-model.trim="solution.url"
-                            validate-on-blur
-                            :tabindex="getTabIndex"
-                            label="URL to Teneo Runtime - no parameters"
-                            append-icon="link"
-                            :rules="[ruleMustHaveValue, ruleMustBeUrl]"
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>IFRAME URL</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-text-field
-                            color="light-blue darken-1"
-                            v-model.trim="solution.iframeUrl"
-                            validate-on-blur
-                            :tabindex="getTabIndex"
-                            label="Enter the IFRAME URL"
-                            append-icon="link"
-                            :rules="[ruleMustHaveValue, ruleMustBeUrl]"
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Chat Window Title</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-text-field
-                            color="light-blue darken-1"
-                            validate-on-blur
-                            v-model.trim="solution.chatTitle"
-                            :tabindex="getTabIndex"
-                            label="Chat Window Title"
-                            :rules="[ruleMustHaveValue]"
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Deep Link (?dl=[deep-link])
-                          </v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-text-field
-                            color="light-blue darken-1"
-                            v-model.trim="solution.deepLink"
-                            validate-on-blur
-                            :tabindex="getTabIndex"
-                            label="Deep links can be accessed with ?dl=<deep-link>"
-                            :rules="[ruleMustHaveValue, ruleNoSpaces, ruleDeepLinkUnique]"
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Locale</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-select
-                            :items="locales"
-                            color="light-blue darken-1"
-                            :menu-props="{contentClass:'select-options'}"
-                            outline
-                            :tabindex="getTabIndex"
-                            v-model="solution.locale"
-                            label="Specify Chat Locale"
-                            append-icon="language"
-                          ></v-select>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Response Icon</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-text-field
-                            v-model.trim="solution.responseIcon"
-                            validate-on-blur
-                            color="light-blue darken-1"
-                            :tabindex="getTabIndex"
-                            label="Response Icon - Material Icons or FontAwesome (fa-)"
-                            :append-icon="solution.responseIcon"
-                            :rules="[ruleMustHaveValue]"
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>User Icon</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-text-field
-                            v-model.trim="solution.userIcon"
-                            validate-on-blur
-                            color="light-blue darken-1"
-                            :tabindex="getTabIndex"
-                            label="User Icon - Material Icons or FontAwesome (fa-)"
-                            :append-icon="solution.userIcon"
-                            :rules="[ruleMustHaveValue]"
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Enable Live Chat (livechat.inc)</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-select
-                            :items="trueFalseOptions"
-                            validate-on-blur
-                            color="light-blue darken-1"
-                            outline
-                            hint="Enable Live Chat"
-                            label="Enable Live Chat"
-                            :menu-props="{contentClass:'select-options'}"
-                            :tabindex="getTabIndex"
-                            v-model="solution.enableLiveChat"
-                            append-icon="contact_phone"
-                          ></v-select>
-                        </v-flex>
-                        <v-divider></v-divider>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Float Chat Window</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-select
-                            :items="trueFalseOptions"
-                            validate-on-blur
-                            color="light-blue darken-1"
-                            outline
-                            hint="Float Chat Window"
-                            label="Float Chat Window"
-                            :menu-props="{contentClass:'select-options'}"
-                            :tabindex="getTabIndex"
-                            v-model="solution.float"
-                            append-icon="important_devices"
-                          ></v-select>
-                        </v-flex>
-                        <v-divider></v-divider>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Show Pulsing Chat Button</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-select
-                            :items="trueFalseOptions"
-                            validate-on-blur
-                            color="light-blue darken-1"
-                            outline
-                            hint="Show Pulse Button"
-                            label="Show Pulse Button"
-                            :menu-props="{contentClass:'select-options'}"
-                            :tabindex="getTabIndex"
-                            v-model="solution.pulseButton"
-                            append-icon="fa-sun"
-                          ></v-select>
-                        </v-flex>
-                        <v-divider></v-divider>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Show Long Teneo Responses in Modal</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-select
-                            :items="trueFalseOptions"
-                            validate-on-blur
-                            color="light-blue darken-1"
-                            outline
-                            hint="Show Long Response in Modal"
-                            label="Show Long Response in Modal"
-                            :menu-props="{contentClass:'select-options'}"
-                            :tabindex="getTabIndex"
-                            v-model="solution.longResponsesInModal"
-                            append-icon="important_devices"
-                          ></v-select>
-                        </v-flex>
-                        <v-divider></v-divider>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Show Chat Icons</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-select
-                            :items="trueFalseOptions"
-                            validate-on-blur
-                            color="light-blue darken-1"
-                            outline
-                            hint="Show Chat Icons"
-                            label="Show Chat Icons"
-                            :menu-props="{contentClass:'select-options'}"
-                            :tabindex="getTabIndex"
-                            v-model="solution.showChatIcons"
-                            append-icon="important_devices"
-                          ></v-select>
-                        </v-flex>
-                        <v-divider></v-divider>
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Show Accent in Chat UI</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-select
-                            :items="trueFalseOptions"
-                            validate-on-blur
-                            color="light-blue darken-1"
-                            outline
-                            hint="Show Accent"
-                            label="Show Accent"
-                            :menu-props="{contentClass:'select-options'}"
-                            :tabindex="getTabIndex"
-                            v-model="solution.displayAccent"
-                            append-icon="important_devices"
-                          ></v-select>
-                        </v-flex>
-                        <v-divider></v-divider>
-                        <v-flex
-                          xs12
-                          sm4
-                        >
-                          <v-subheader class="mb-2">Theme
-                            <v-tooltip
-                              open-delay="600"
-                              bottom
-                            >
+                        Upload
+                        <v-icon
+                          dark
+                          right
+                        >publish</v-icon>
+                      </label>
+                    </div>
+                    <v-textarea
+                      v-model="getUploadConfig"
+                      :loading="uploadTextAreaLoading"
+                      ref="newConfig"
+                      filled
+                      name="new-config"
+                      label="Paste in full or partial configurations"
+                      :value="getUploadConfig"
+                      auto-grow
+                      prepend-icon="fa-cog"
+                      class="coding-font"
+                    ></v-textarea>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  class="mr-2"
+                  color="blue-grey lighten-5"
+                  light
+                  @click="closeUploadDialog"
+                >Close</v-btn>
+                <v-btn
+                  class="mr-2"
+                  color="green"
+                  @click="saveUploadForm"
+                >Save
+                  <v-icon
+                    right
+                    dark
+                  >fa-save</v-icon>
+                </v-btn>
+                <v-snackbar
+                  :timeout="globalSnackbarTimeout"
+                  v-model="globalSnackbar"
+                  absolute
+                >
+                  {{ globalSnackbarMessage }}
+                </v-snackbar>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <!-- Add Edit Dialog -->
+          <v-dialog
+            v-model="displayAddEditDialog"
+            scrollable
+            persistent
+            light
+            max-width="calc(1200px - 10vw)"
+          >
+            <v-card>
+              <v-card-title>
+                <h3>{{ dialogTitle }}</h3>
+              </v-card-title>
+              <v-divider></v-divider>
+              <v-card-text
+                style="height: 90vh"
+                id="add-edit"
+              >
+                <v-form ref="form">
+                  <v-btn
+                    class="mr-2"
+                    color="light-blue darken-1"
+                    href="https://fontawesome.com/icons?d=gallery&m=free"
+                    target="_blank"
+                  >Font Awesome
+                  </v-btn>
+                  <v-btn
+                    class="mr-2"
+                    color="light-blue darken-1"
+                    href="https://material.io/tools/icons/?icon=supervised_user_circle&style=baseline"
+                    target="_blank"
+                  >Material
+                  </v-btn>
+                  <v-btn
+                    class="mr-2"
+                    color="light-blue darken-1"
+                    href="https://htmlcolorcodes.com/color-names/"
+                    target="_blank"
+                  >HTML Color Names
+                  </v-btn>
+
+                  <v-container fluid>
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Solution Name</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-text-field
+                          color="light-blue darken-1"
+                          v-model.trim="solution.name"
+                          validate-on-blur
+                          :tabindex="getTabIndex"
+                          label="Solution Name"
+                          :rules="[ruleMustHaveValue]"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Solution URL</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-text-field
+                          color="light-blue darken-1"
+                          v-model.trim="solution.url"
+                          validate-on-blur
+                          :tabindex="getTabIndex"
+                          label="URL to Teneo Runtime - no parameters"
+                          append-icon="link"
+                          :rules="[ruleMustHaveValue, ruleMustBeUrl]"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>IFRAME URL</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-text-field
+                          color="light-blue darken-1"
+                          v-model.trim="solution.iframeUrl"
+                          validate-on-blur
+                          :tabindex="getTabIndex"
+                          label="Enter the IFRAME URL"
+                          append-icon="link"
+                          :rules="[ruleMustHaveValue, ruleMustBeUrl]"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Chat Window Title</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-text-field
+                          color="light-blue darken-1"
+                          validate-on-blur
+                          v-model.trim="solution.chatTitle"
+                          :tabindex="getTabIndex"
+                          label="Chat Window Title"
+                          :rules="[ruleMustHaveValue]"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Deep Link (?dl=[deep-link])
+                        </v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-text-field
+                          color="light-blue darken-1"
+                          v-model.trim="solution.deepLink"
+                          validate-on-blur
+                          :tabindex="getTabIndex"
+                          label="Deep links can be accessed with ?dl=<deep-link>"
+                          :rules="[ruleMustHaveValue, ruleNoSpaces, ruleDeepLinkUnique]"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Locale</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-select
+                          :items="locales"
+                          color="light-blue darken-1"
+                          :menu-props="{contentClass:'select-options'}"
+                          outlined
+                          :tabindex="getTabIndex"
+                          v-model="solution.locale"
+                          label="Specify Chat Locale"
+                          append-icon="language"
+                        ></v-select>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Response Icon</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-text-field
+                          v-model.trim="solution.responseIcon"
+                          validate-on-blur
+                          color="light-blue darken-1"
+                          :tabindex="getTabIndex"
+                          label="Response Icon - Material Icons or FontAwesome (fa-)"
+                          :append-icon="solution.responseIcon"
+                          :rules="[ruleMustHaveValue]"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>User Icon</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-text-field
+                          v-model.trim="solution.userIcon"
+                          validate-on-blur
+                          color="light-blue darken-1"
+                          :tabindex="getTabIndex"
+                          label="User Icon - Material Icons or FontAwesome (fa-)"
+                          :append-icon="solution.userIcon"
+                          :rules="[ruleMustHaveValue]"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Enable Live Chat (livechat.inc)</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-select
+                          :items="trueFalseOptions"
+                          validate-on-blur
+                          color="light-blue darken-1"
+                          outlined
+                          hint="Enable Live Chat"
+                          label="Enable Live Chat"
+                          :menu-props="{contentClass:'select-options'}"
+                          :tabindex="getTabIndex"
+                          v-model="solution.enableLiveChat"
+                          append-icon="contact_phone"
+                        ></v-select>
+                      </v-col>
+                      <v-divider></v-divider>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Float Chat Window</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-select
+                          :items="trueFalseOptions"
+                          validate-on-blur
+                          color="light-blue darken-1"
+                          outlined
+                          hint="Float Chat Window"
+                          label="Float Chat Window"
+                          :menu-props="{contentClass:'select-options'}"
+                          :tabindex="getTabIndex"
+                          v-model="solution.float"
+                          append-icon="important_devices"
+                        ></v-select>
+                      </v-col>
+                      <v-divider></v-divider>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Show Pulsing Chat Button</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-select
+                          :items="trueFalseOptions"
+                          validate-on-blur
+                          color="light-blue darken-1"
+                          outlined
+                          hint="Show Pulse Button"
+                          label="Show Pulse Button"
+                          :menu-props="{contentClass:'select-options'}"
+                          :tabindex="getTabIndex"
+                          v-model="solution.pulseButton"
+                          append-icon="fa-sun"
+                        ></v-select>
+                      </v-col>
+                      <v-divider></v-divider>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Show Long Teneo Responses in Modal</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-select
+                          :items="trueFalseOptions"
+                          validate-on-blur
+                          color="light-blue darken-1"
+                          outlined
+                          hint="Show Long Response in Modal"
+                          label="Show Long Response in Modal"
+                          :menu-props="{contentClass:'select-options'}"
+                          :tabindex="getTabIndex"
+                          v-model="solution.longResponsesInModal"
+                          append-icon="important_devices"
+                        ></v-select>
+                      </v-col>
+                      <v-divider></v-divider>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Show Chat Icons</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-select
+                          :items="trueFalseOptions"
+                          validate-on-blur
+                          color="light-blue darken-1"
+                          outlined
+                          hint="Show Chat Icons"
+                          label="Show Chat Icons"
+                          :menu-props="{contentClass:'select-options'}"
+                          :tabindex="getTabIndex"
+                          v-model="solution.showChatIcons"
+                          append-icon="important_devices"
+                        ></v-select>
+                      </v-col>
+                      <v-divider></v-divider>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Show Accent in Chat UI</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-select
+                          :items="trueFalseOptions"
+                          validate-on-blur
+                          color="light-blue darken-1"
+                          outlined
+                          hint="Show Accent"
+                          label="Show Accent"
+                          :menu-props="{contentClass:'select-options'}"
+                          :tabindex="getTabIndex"
+                          v-model="solution.displayAccent"
+                          append-icon="important_devices"
+                        ></v-select>
+                      </v-col>
+                      <v-divider></v-divider>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                      >
+                        <v-subheader class="mb-2">Theme
+                          <v-tooltip
+                            open-delay="600"
+                            bottom
+                          >
+                            <template v-slot:activator="{ on }">
                               <v-btn
-                                slot="activator"
-                                fab
+                                class="mx-2"
+                                v-on="on"
+                                icon
                                 dark
                                 small
                                 @click="resetColorsToDefault"
@@ -828,473 +883,483 @@
                               >
                                 <v-icon dark>fa-undo</v-icon>
                               </v-btn>
-                              <span>Reset Colors to Default</span>
-                            </v-tooltip>
-                          </v-subheader>
+                            </template>
+                            <span>Reset Colors to Default</span>
+                          </v-tooltip>
+                        </v-subheader>
 
-                          <v-flex flex>
-                            <v-layout
-                              row
-                              wrap
-                            >
-                              <v-flex d-flex>
-                                <compact-picker
-                                  v-model="colors"
-                                  @input="updateColor"
-                                  class="mb-3"
-                                />
-                              </v-flex>
-                              <v-flex
-                                xs12
-                                d-flex
-                              >
-                                <v-chip
-                                  @click="setActiveColor('primary')"
-                                  :style="getBackGroundColor(solution.theme.primary)"
-                                  text-color="white"
-                                >
-                                  <v-avatar>
-                                    <v-icon>invert_colors</v-icon>
-                                  </v-avatar>
-                                  primary
-                                </v-chip>
-                              </v-flex>
-                              <v-flex d-flex>
-                                <v-chip
-                                  @click="setActiveColor('secondary')"
-                                  :style="getBackGroundColor(solution.theme.secondary)"
-                                  text-color="white"
-                                >
-                                  <v-avatar>
-                                    <v-icon>invert_colors</v-icon>
-                                  </v-avatar>
-                                  secondary
-                                </v-chip>
-                              </v-flex>
-                              <v-flex d-flex>
-                                <v-chip
-                                  @click="setActiveColor('accent')"
-                                  :style="getBackGroundColor(solution.theme.accent)"
-                                  text-color="white"
-                                >
-                                  <v-avatar>
-                                    <v-icon>invert_colors</v-icon>
-                                  </v-avatar>
-                                  accent
-                                </v-chip>
-                              </v-flex>
-                              <v-flex d-flex>
-                                <v-chip
-                                  @click="setActiveColor('error')"
-                                  :style="getBackGroundColor(solution.theme.error)"
-                                  text-color="white"
-                                >
-                                  <v-avatar>
-                                    <v-icon>invert_colors</v-icon>
-                                  </v-avatar>
-                                  erorr
-                                </v-chip>
-                              </v-flex>
-                              <v-flex d-flex>
-                                <v-chip
-                                  @click="setActiveColor('info')"
-                                  :style="getBackGroundColor(solution.theme.info)"
-                                  text-color="white"
-                                >
-                                  <v-avatar>
-                                    <v-icon>invert_colors</v-icon>
-                                  </v-avatar>
-                                  info
-                                </v-chip>
-                              </v-flex>
-                              <v-flex d-flex>
-                                <v-chip
-                                  @click="setActiveColor('success')"
-                                  :style="getBackGroundColor(solution.theme.success)"
-                                  text-color="white"
-                                >
-                                  <v-avatar>
-                                    <v-icon>invert_colors</v-icon>
-                                  </v-avatar>
-                                  success
-                                </v-chip>
-                              </v-flex>
-                              <v-flex d-flex>
-                                <v-chip
-                                  @click="setActiveColor('warning')"
-                                  :style="getBackGroundColor(solution.theme.warning)"
-                                  text-color="white"
-                                >
-                                  <v-avatar>
-                                    <v-icon>invert_colors</v-icon>
-                                  </v-avatar>
-                                  warning
-                                </v-chip>
-                              </v-flex>
-                            </v-layout>
-                          </v-flex>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-layout>
-                            <v-flex d-flex>
-                              <v-text-field
-                                v-model.trim="solution.theme.primary"
+                        <v-col class="flex">
+                          <v-row>
+                            <v-col cols="12">
+                              <compact-picker
+                                v-model="colors"
+                                @input="updateColor"
+                                class="mb-3"
+                              />
+                            </v-col>
+                            <v-col class="mr-2">
+                              <v-chip
+                                class="mr-1 mb-1"
                                 @click="setActiveColor('primary')"
-                                validate-on-blur
-                                color="light-blue darken-1"
-                                :value="solution.theme.primary"
-                                :tabindex="getTabIndex"
-                                label="primary"
-                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                              ></v-text-field>
-                              <v-text-field
-                                v-model.trim="solution.theme.secondary"
+                                :style="getBackGroundColor(solution.theme.primary)"
+                                text-color="white"
+                              >
+                                <v-avatar>
+                                  <v-icon>invert_colors</v-icon>
+                                </v-avatar>
+                                primary
+                              </v-chip>
+                              <v-chip
+                                class="mr-1 mb-1"
                                 @click="setActiveColor('secondary')"
-                                validate-on-blur
-                                color="light-blue darken-1"
-                                :value="solution.theme.secondary"
-                                :tabindex="getTabIndex"
-                                label="secondary"
-                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                              ></v-text-field>
-                            </v-flex>
-                          </v-layout>
-
-                          <v-layout>
-                            <v-flex d-flex>
-                              <v-text-field
-                                v-model.trim="solution.theme.accent"
+                                :style="getBackGroundColor(solution.theme.secondary)"
+                                text-color="white"
+                              >
+                                <v-avatar>
+                                  <v-icon>invert_colors</v-icon>
+                                </v-avatar>
+                                secondary
+                              </v-chip>
+                              <v-chip
+                                class="mr-1 mb-1"
                                 @click="setActiveColor('accent')"
-                                validate-on-blur
-                                color="light-blue darken-1"
-                                :value="solution.theme.accent"
-                                :tabindex="getTabIndex"
-                                label="accent"
-                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                              ></v-text-field>
-                              <v-text-field
-                                v-model.trim="solution.theme.error"
+                                :style="getBackGroundColor(solution.theme.accent)"
+                                text-color="white"
+                              >
+                                <v-avatar>
+                                  <v-icon>invert_colors</v-icon>
+                                </v-avatar>
+                                accent
+                              </v-chip>
+                              <v-chip
+                                class="mr-1 mb-1"
                                 @click="setActiveColor('error')"
-                                validate-on-blur
-                                color="light-blue darken-1"
-                                :value="solution.theme.error"
-                                :tabindex="getTabIndex"
-                                label="error"
-                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                              ></v-text-field>
-                            </v-flex>
-                          </v-layout>
-
-                          <v-layout>
-                            <v-flex d-flex>
-                              <v-text-field
-                                v-model.trim="solution.theme.info"
+                                :style="getBackGroundColor(solution.theme.error)"
+                                text-color="white"
+                              >
+                                <v-avatar>
+                                  <v-icon>invert_colors</v-icon>
+                                </v-avatar>
+                                erorr
+                              </v-chip>
+                              <v-chip
+                                class="mr-1 mb-1"
                                 @click="setActiveColor('info')"
-                                validate-on-blur
-                                color="light-blue darken-1"
-                                :value="solution.theme.info"
-                                :tabindex="getTabIndex"
-                                label="info"
-                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                              ></v-text-field>
-                              <v-text-field
-                                v-model.trim="solution.theme.success"
+                                :style="getBackGroundColor(solution.theme.info)"
+                                text-color="white"
+                              >
+                                <v-avatar>
+                                  <v-icon>invert_colors</v-icon>
+                                </v-avatar>
+                                info
+                              </v-chip>
+                              <v-chip
+                                class="mr-1 mb-1"
                                 @click="setActiveColor('success')"
-                                validate-on-blur
-                                color="light-blue darken-1"
-                                :value="solution.theme.success"
-                                :tabindex="getTabIndex"
-                                label="success"
-                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                              ></v-text-field>
-                            </v-flex>
-                          </v-layout>
-                          <v-text-field
-                            v-model.trim="solution.theme.warning"
-                            @click="setActiveColor('warning')"
-                            validate-on-blur
-                            color="light-blue darken-1"
-                            :value="solution.theme.warning"
-                            :tabindex="getTabIndex"
-                            label="warning"
-                            :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                          ></v-text-field>
-                        </v-flex>
-                        <v-divider></v-divider>
-                        <!-- ASR Corrections -->
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>Button and Toolbar Custom CSS</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-textarea
-                            outline
-                            color="light-blue darken-1"
-                            name="input-7-4"
-                            :tabindex="getTabIndex"
-                            label="Custom CSS"
-                            v-model.trim="solution.customCssButtonToolbar"
-                          ></v-textarea>
-                        </v-flex>
-                        <v-divider></v-divider>
-                        <!-- ASR Corrections -->
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>ASR Corrections</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-textarea
-                            outline
-                            color="light-blue darken-1"
-                            name="input-7-4"
-                            :tabindex="getTabIndex"
-                            label="ASR Corrections"
-                            v-model.trim="solution.asrCorrections"
-                          ></v-textarea>
-                        </v-flex>
-                        <!-- help -->
-                        <v-flex
-                          xs12
-                          sm4
-                        >
-                          <v-btn
-                            color="red"
-                            class="white--text"
-                            @click="addUserInput"
-                          >
-                            Help
-                            <v-icon
-                              right
-                              dark
-                            >add_circle</v-icon>
-                          </v-btn>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-layout
-                            v-for="(question, index) in solution.knowledgeData"
-                            v-bind:key="index"
-                            row
-                            wrap
-                          >
-                            <v-flex xs11>
-                              <v-text-field
-                                v-model.trim="solution.knowledgeData[index]"
-                                :value="question"
-                                validate-on-blur
-                                color="light-blue darken-1"
-                                :tabindex="getTabIndex"
-                                label="Example question"
-                                append-icon="fa-question-circle"
-                                :rules="[ruleMustHaveValue]"
-                              ></v-text-field>
-                            </v-flex>
-                            <v-flex
-                              xs1
-                              class="pl-2 pt-3"
-                            >
-                              <!-- <v-btn @click="solution.knowledgeData.splice(index, 1)" fab dark small color="red"> -->
-                              <v-icon
-                                @click="solution.knowledgeData.splice(index, 1)"
-                                color="red"
-                                dark
-                              >remove_circle</v-icon>
-                              <!-- </v-btn> -->
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                        <v-divider></v-divider>
-                        <!-- context parameters -->
-                        <v-flex
-                          xs12
-                          sm4
-                          class="hidden-xs-only"
-                        >
-                          <v-subheader>When to send CTX params</v-subheader>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <v-radio-group
-                            :tabindex="getTabIndex"
-                            label="When to send CTX params"
-                            v-model="solution.sendContextParams"
-                            mandatory
-                          >
-                            <v-radio
-                              label="At login"
-                              value="login"
-                            ></v-radio>
-                            <v-radio
-                              label="All requests"
-                              value="all"
-                            ></v-radio>
-                          </v-radio-group>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm4
-                        >
-                          <v-btn
-                            color="red"
-                            class="white--text"
-                            @click="addContextParam"
-                          >
-                            CTX Param
-                            <v-icon
-                              right
-                              dark
-                            >add_circle</v-icon>
-                          </v-btn>
-                        </v-flex>
-                        <v-flex
-                          xs12
-                          sm8
-                        >
-                          <!-- Itterate over all CTX parameters and their values -->
-                          <v-layout
-                            class="mb-3"
-                            align-start
-                            justify-start
-                            v-for="(contextParam, index) in solution.contextParams"
-                            v-bind:key="index"
-                            row
-                            wrap
-                          >
+                                :style="getBackGroundColor(solution.theme.success)"
+                                text-color="white"
+                              >
+                                <v-avatar>
+                                  <v-icon>invert_colors</v-icon>
+                                </v-avatar>
+                                success
+                              </v-chip>
+                              <v-chip
+                                class="mr-1 mb-1"
+                                @click="setActiveColor('warning')"
+                                :style="getBackGroundColor(solution.theme.warning)"
+                                text-color="white"
+                              >
+                                <v-avatar>
+                                  <v-icon>invert_colors</v-icon>
+                                </v-avatar>
+                                warning
+                              </v-chip>
+                            </v-col>
+                          </v-row>
+                        </v-col>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-row>
+                          <v-col cols="6">
+                            <v-text-field
+                              v-model.trim="solution.theme.primary"
+                              @click="setActiveColor('primary')"
+                              validate-on-blur
+                              color="light-blue darken-1"
+                              :value="solution.theme.primary"
+                              :background-color="solution.theme.primary"
+                              :tabindex="getTabIndex"
+                              label="primary"
+                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6">
+                            <v-text-field
+                              v-model.trim="solution.theme.secondary"
+                              @click="setActiveColor('secondary')"
+                              validate-on-blur
+                              color="light-blue darken-1"
+                              :background-color="solution.theme.secondary"
+                              :value="solution.theme.secondary"
+                              :tabindex="getTabIndex"
+                              label="secondary"
+                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
 
-                            <v-flex
-                              xs10
-                              sm11
-                            >
-                              <v-text-field
-                                v-model.trim="contextParam.name"
-                                validate-on-blur
-                                color="light-blue darken-1"
-                                :tabindex="getTabIndex"
-                                label="Parameter Name"
-                                append-icon="fa-key"
-                                :rules="[ruleMustHaveValue]"
-                              ></v-text-field>
-                            </v-flex>
-                            <v-flex
-                              xs2
-                              sm1
-                            >
-                              <v-tooltip top>
+                        <v-row>
+                          <v-col cols="6">
+                            <v-text-field
+                              v-model.trim="solution.theme.accent"
+                              @click="setActiveColor('accent')"
+                              validate-on-blur
+                              color="light-blue darken-1"
+                              :background-color="solution.theme.accent"
+                              :value="solution.theme.accent"
+                              :tabindex="getTabIndex"
+                              label="accent"
+                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6">
+                            <v-text-field
+                              v-model.trim="solution.theme.error"
+                              @click="setActiveColor('error')"
+                              validate-on-blur
+                              color="light-blue darken-1"
+                              :background-color="solution.theme.error"
+                              :value="solution.theme.error"
+                              :tabindex="getTabIndex"
+                              label="error"
+                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+
+                        <v-row>
+                          <v-col cols="6">
+                            <v-text-field
+                              v-model.trim="solution.theme.info"
+                              @click="setActiveColor('info')"
+                              validate-on-blur
+                              color="light-blue darken-1"
+                              :background-color="solution.theme.info"
+                              :value="solution.theme.info"
+                              :tabindex="getTabIndex"
+                              label="info"
+                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6">
+                            <v-text-field
+                              v-model.trim="solution.theme.success"
+                              @click="setActiveColor('success')"
+                              validate-on-blur
+                              color="light-blue darken-1"
+                              :background-color="solution.theme.success"
+                              :value="solution.theme.success"
+                              :tabindex="getTabIndex"
+                              label="success"
+                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-text-field
+                              v-model.trim="solution.theme.warning"
+                              @click="setActiveColor('warning')"
+                              validate-on-blur
+                              :background-color="solution.theme.warning"
+                              :value="solution.theme.warning"
+                              :tabindex="getTabIndex"
+                              label="warning"
+                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+
+                      </v-col>
+                      <v-divider></v-divider>
+                      <!-- ASR Corrections -->
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>Button and Toolbar Custom CSS</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-textarea
+                          outlined
+                          color="light-blue darken-1"
+                          name="input-7-4"
+                          :tabindex="getTabIndex"
+                          label="Custom CSS"
+                          v-model.trim="solution.customCssButtonToolbar"
+                        ></v-textarea>
+                      </v-col>
+                      <v-divider></v-divider>
+                      <!-- ASR Corrections -->
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>ASR Corrections</v-subheader>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-textarea
+                          outlined
+                          color="light-blue darken-1"
+                          name="input-7-4"
+                          :tabindex="getTabIndex"
+                          label="ASR Corrections"
+                          v-model.trim="solution.asrCorrections"
+                        ></v-textarea>
+                      </v-col>
+                      <!-- help -->
+                      <v-col
+                        cols="12"
+                        sm="4"
+                      >
+                        <v-btn
+                          color="red"
+                          class="white--text mr-2"
+                          @click="addUserInput"
+                        >
+                          Help
+                          <v-icon
+                            right
+                            dark
+                          >add_circle</v-icon>
+                        </v-btn>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-row
+                          v-for="(question, index) in solution.knowledgeData"
+                          v-bind:key="index"
+                        >
+                          <v-col cols="11">
+                            <v-text-field
+                              v-model.trim="solution.knowledgeData[index]"
+                              :value="question"
+                              validate-on-blur
+                              color="light-blue darken-1"
+                              :tabindex="getTabIndex"
+                              label="Example question"
+                              append-icon="fa-question-circle"
+                              :rules="[ruleMustHaveValue]"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col
+                            cols="1"
+                            class="pl-2 pt-3"
+                          >
+                            <!-- <v-btn class="mr-2" @click="solution.knowledgeData.splice(index, 1)" fab dark small color="red"> -->
+                            <v-icon
+                              @click="solution.knowledgeData.splice(index, 1)"
+                              color="red"
+                              dark
+                            >remove_circle</v-icon>
+                            <!-- </v-btn> -->
+                          </v-col>
+                        </v-row>
+                      </v-col>
+                      <v-divider></v-divider>
+                      <!-- context parameters -->
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                        <v-subheader>When to send CTX params</v-subheader>
+                      </v-col>
+
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <v-radio-group
+                          :tabindex="getTabIndex"
+                          label="When to send CTX params"
+                          v-model="solution.sendContextParams"
+                          mandatory
+                        >
+                          <v-radio
+                            label="At login"
+                            value="login"
+                          ></v-radio>
+                          <v-radio
+                            label="All requests"
+                            value="all"
+                          ></v-radio>
+                        </v-radio-group>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                      >
+                        <v-btn
+                          color="red"
+                          class="white--text mr-2"
+                          @click="addContextParam"
+                        >
+                          CTX Param
+                          <v-icon
+                            right
+                            dark
+                          >add_circle</v-icon>
+                        </v-btn>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <!-- Itterate over all CTX parameters and their values -->
+                        <v-row
+                          class="mb-4 grey lighten-5 pa-2 elevation-2"
+                          align="start"
+                          justify="start"
+                          v-for="(contextParam, index) in solution.contextParams"
+                          v-bind:key="index"
+                        >
+
+                          <v-col
+                            cols="10"
+                            sm="11"
+                          >
+                            <v-text-field
+                              v-model.trim="contextParam.name"
+                              validate-on-blur
+                              color="light-blue darken-1"
+                              :tabindex="getTabIndex"
+                              label="Parameter Name"
+                              append-icon="fa-key"
+                              :rules="[ruleMustHaveValue]"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col
+                            cols="2"
+                            sm="1"
+                          >
+                            <v-tooltip top>
+                              <template v-slot:activator="{ on }">
                                 <v-icon
-                                  slot="activator"
+                                  v-on="on"
                                   @click="solution.contextParams.splice(index, 1)"
                                   color="red"
                                   dark
                                 >remove_circle</v-icon>
-                                <span>Remove CTX Parameter</span>
-                              </v-tooltip>
-                              <v-tooltip top>
+                              </template>
+                              <span>Remove CTX Parameter</span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                              <template v-slot:activator="{ on }">
                                 <v-icon
-                                  slot="activator"
+                                  v-on="on"
                                   @click="addNewContextParameterValue(index)"
                                   color="green"
                                   dark
                                 >fa-plus</v-icon>
-                                <span>Add Parameter Value</span>
-                              </v-tooltip>
-                            </v-flex>
+                              </template>
+                              <span>Add Parameter Value</span>
+                            </v-tooltip>
+                          </v-col>
 
-                            <!-- Show each ctx parameter value -->
-                            <v-layout
-                              align-space-around
-                              justify-start
-                              row
-                              fluid
-                              v-for="(value, valueIndex) in contextParam.values"
-                              v-bind:key="valueIndex"
-                            >
-                              <v-flex class="elevation-5 pa-3 mb-2 mr-2">
-                                <v-tooltip top>
+                          <!-- Show each ctx parameter value -->
+                          <v-row
+                            v-for="(value, valueIndex) in contextParam.values"
+                            v-bind:key="valueIndex"
+                            no-gutters
+                          >
+                            <v-col class="elevation-2 pa-3 mb-2 mr-2 white">
+                              <v-tooltip top>
+                                <template v-slot:activator="{ on }">
                                   <v-icon
-                                    slot="activator"
+                                    v-on="on"
                                     @click="contextParam.values.splice(valueIndex, 1)"
                                     color="red"
                                     dark
                                   >remove_circle</v-icon>
-                                  <span>Delete Parameter Value</span>
-                                </v-tooltip>
-                                <v-tooltip top>
+                                </template>
+                                <span>Delete Parameter Value</span>
+                              </v-tooltip>
+                              <v-tooltip top>
+                                <template v-slot:activator="{ on }">
                                   <v-icon
-                                    slot="activator"
+                                    v-on="on"
                                     @click="toggleActiveContextParameterValue(value.active, index, valueIndex)"
                                     :color="value.active ? 'green' : 'blue-grey lighten-4'"
                                     dark
                                   >{{ value.active ? 'fa-check-square': 'fa-square' }}</v-icon>
-                                  <span>Enable/Disable</span>
-                                </v-tooltip>
-                                <!-- show input box for context parameter value -->
-                                <v-text-field
-                                  v-model.trim="value.text"
-                                  validate-on-blur
-                                  color="light-blue darken-1"
-                                  label="Parameter Value"
-                                  :tabindex="getTabIndex"
-                                  :rules="[ruleMustHaveValue]"
-                                ></v-text-field>
-                              </v-flex>
-                            </v-layout>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                    </v-container>
-                  </v-form>
-                </v-card-text>
-                <v-divider></v-divider>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="blue-grey lighten-5"
-                    light
-                    @click="closeAddNewSolutionDialog"
-                  >Close</v-btn>
-                  <v-btn
-                    color="green"
-                    @click="saveForm"
-                  >Save
-                    <v-icon
-                      right
-                      dark
-                    >fa-save</v-icon>
-                  </v-btn>
-                  <v-snackbar
-                    :timeout="snackbarTimeout"
-                    v-model="snackbar"
-                    class="mb-5"
-                  >
-                    🧟‍ Please fix all form validation errors.
-                  </v-snackbar>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-flex>
-        </v-container>
-      </v-card>
-    </v-dialog>
-  </v-layout>
+                                </template>
+                                <span>Enable/Disable</span>
+                              </v-tooltip>
+                              <!-- show input box for context parameter value -->
+                              <v-text-field
+                                v-model.trim="value.text"
+                                validate-on-blur
+                                color="light-blue darken-1"
+                                label="Parameter Value"
+                                :tabindex="getTabIndex"
+                                :rules="[ruleMustHaveValue]"
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  class="mr-2"
+                  color="blue-grey lighten-5"
+                  light
+                  @click="closeAddNewSolutionDialog"
+                >Close</v-btn>
+                <v-btn
+                  class="mr-2"
+                  color="green"
+                  @click="saveForm"
+                >Save
+                  <v-icon
+                    right
+                    dark
+                  >fa-save</v-icon>
+                </v-btn>
+                <v-snackbar
+                  :timeout="snackbarTimeout"
+                  v-model="snackbar"
+                  class="mb-5"
+                >
+                  🧟‍ Please fix all form validation errors.
+                </v-snackbar>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-col>
+      </v-container>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>

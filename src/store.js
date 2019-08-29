@@ -57,11 +57,11 @@ Vue.config.productionTip = false;
 export function getStore(callback) {
   config
     .init()
-    .then(() => storeSetup(callback))
+    .then(vuetify => storeSetup(vuetify, callback))
     .catch(message => console.error(message));
 }
 
-function storeSetup(callback) {
+function storeSetup(vuetify, callback) {
   store = new Vuex.Store({
     state: {
       asr: {
@@ -1474,7 +1474,7 @@ function storeSetup(callback) {
   // Setup Live Chat
   config.setupLiveChat(store);
 
-  callback(store);
+  callback(vuetify, store);
 }
 
 function stoperror() {

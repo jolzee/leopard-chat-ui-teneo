@@ -6,6 +6,7 @@
         :value="true"
         color="info"
         icon="fa-clock"
+        elevation="2"
       >
         {{item.text}}
       </v-alert>
@@ -17,6 +18,7 @@
         :value="true"
         color="info"
         icon="fa-thumbs-up"
+        elevation="2"
       >
         {{item.text}}
       </v-alert>
@@ -26,49 +28,49 @@
         :value="true"
         color="info"
         icon="fa-hand-paper"
+        elevation="2"
       >
         {{item.text}}
       </v-alert>
     </div>
     <!-- Live Chat Response -->
-    <v-layout
-      row
-      v-if="item.type === 'liveChatResponse'"
+    <!-- start -->
+    <v-row
+      v-if="item.type === 'liveChatResponse' && item.text !== '<p>'"
+      class="my-1"
+      no-gutters
+      justify="start"
     >
-      <v-flex
-        shrink
-        class="text-xs-left"
+      <v-col
+        cols="2"
+        class="text-center"
+        v-if="showChatIcons"
       >
         <v-avatar
           size="40px"
-          class="teneo-response-icon elevation-2 mt-2"
+          class="teneo-response-icon elevation-2"
         >
           <img
             :src="item.agentAvatar"
             :alt="item.agentName"
           >
         </v-avatar>
-      </v-flex>
-      <v-flex shrink>
+      </v-col>
+      <v-col class="text-left">
         <v-card
-          class="chat-card chat-card-left text-xs-left px-2"
-          :dark="dark"
-          :color="dark ? '#333333' : '#FAFAFA'"
+          :color="$vuetify.theme.dark ? '#333333' : '#FAFAFA'"
+          class="chat-card chat-card-left text-left"
         >
-
-          <v-layout row>
-            <v-flex>
-              <div>
-                <span
-                  v-html="item.text"
-                  class="teneo-reply"
-                ></span>
-              </div>
-            </v-flex>
-          </v-layout>
+          <span
+            v-html="item.text"
+            class="teneo-reply"
+          ></span>
         </v-card>
-      </v-flex>
-    </v-layout>
+      </v-col>
+
+    </v-row>
+    <!-- end -->
+
   </span>
 </template>
 
@@ -78,7 +80,7 @@ export default {
   name: "LiveChatResponse",
   props: ["item"],
   computed: {
-    ...mapGetters(["dark"])
+    ...mapGetters(["showChatIcons"])
   }
 };
 </script>

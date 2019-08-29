@@ -1,7 +1,6 @@
 <template>
   <v-container
     fluid
-    grid-list-s
     id="chat-area"
     class="chat-container"
   >
@@ -14,22 +13,21 @@
       :message="$t('listening')"
     ></teneo-listening>
 
-    <v-layout
-      align-space-between
-      justify-space-between
-      column
-      fill-height
+    <v-row
+      class="mx-0"
+      no-gutters
     >
-      <v-flex
-        xs12
+      <v-col
+        cols="12"
+        class="pa-0"
         id="teneo-chat-scroll"
-        :class="{'dark-scroll': dark, 'light-scroll': !dark, 'chat-responses-float': float, 'chat-responses': !float}"
+        :class="{'dark-scroll': $vuetify.theme.dark, 'light-scroll': !$vuetify.theme.dark, 'chat-responses-float': float, 'chat-responses': !float}"
         ref="chatContainer"
       >
         <!-- show the initial loding ball animation when first loading the chat window -->
         <ChatLoading v-if="showChatLoading"></ChatLoading>
-
-        <v-expansion-panel
+        <v-expansion-panels
+          readonly
           :value="getCurrentItem"
           class="chat-container-inner"
         >
@@ -38,19 +36,17 @@
             enter-active-class="animated fadeIn"
           >
             <!-- item && hasCollection(item) -->
-            <v-expansion-panel-content
-              class="teneo-dialog"
+            <v-expansion-panel
+              class="teneo-dialog pa-0"
               v-for="(item,i) in dialog"
               :key="i + 'itemsIter' + uuid"
-              :hide-actions="true"
-              :class="{'pb-2': (i === dialog.length - 1), 'pt-2': (i === 0)}"
+              :class="{'mt-0 pb-0': (i === dialog.length - 1), 'pt-0': (i === 0)}"
             >
-
-              <div slot="header">
-                <v-container
-                  grid-list-xs
-                  fluid
-                >
+              <v-expansion-panel-header
+                :hide-actions="true"
+                class="px-4 pt-1 pb-1"
+              >
+                <v-container fluid>
                   <ChatBroadcastMessage :item="item"></ChatBroadcastMessage>
 
                   <LiveChatResponse :item="item"></LiveChatResponse>
@@ -69,165 +65,173 @@
                     @clicked="updateInputBox"
                     @swapInputButton="swapInputButton"
                   ></ChatUserQuestion>
-
                 </v-container>
-              </div>
-            </v-expansion-panel-content>
+              </v-expansion-panel-header>
+
+            </v-expansion-panel>
           </transition-group>
 
           <!-- live chat typing -->
           <div
-            class="text-xs-center my-3"
             v-if="showLiveChatProcessing"
+            class="text-left ma-2"
+            style="background-color: transparent; align-items: left;"
           >
-            <ball-pulse-sync-loader
-              color="#C2C2C2"
-              size="10px"
-            ></ball-pulse-sync-loader>
+            <v-alert
+              min-width="100%"
+              color="info"
+              border="left"
+              elevation="2"
+              colored-border
+              icon="mdi-keyboard-settings"
+            >Agent is typing a message..
+              <ball-pulse-sync-loader
+                color="#C2C2C2"
+                size="10px"
+              ></ball-pulse-sync-loader>
+            </v-alert>
+
           </div>
 
-          <span
-            id="scroll-end"
-            ref="pageBottom"
-          ></span>
-        </v-expansion-panel>
+        </v-expansion-panels>
 
-      </v-flex>
+      </v-col>
       <!-- Chat Footer - Input Field and Buttons -->
-      <v-flex
-        xs12
-        class="teneo-footer transparent"
-      >
-        <v-progress-linear
-          :indeterminate="true"
-          :active="progressBar"
-          class="teneo-input-loading"
-          height="3"
-        ></v-progress-linear>
+      <v-progress-linear
+        :indeterminate="true"
+        :active="progressBar"
+        class="teneo-input-loading"
+        color="accent"
+        height="4"
+      ></v-progress-linear>
+    </v-row>
+    <!-- // progressBar -->
 
-        <v-container
-          fluid
-          grid-list-sm
+    <v-row
+      class="teneo-footer"
+      :class="{'footer-float': float}"
+      no-gutters
+    >
+      <v-col class="pt-2">
+        <v-form
+          v-model="valid"
+          v-on:submit.prevent
+          ref="userInputForm"
+          style="height: 50px;"
         >
-          <v-form
-            v-model="valid"
-            v-on:submit.prevent
-            ref="userInputForm"
-            style="height: 50px;"
-          >
-            <v-layout row>
-
-              <v-flex
-                xs12
-                pl-3
+          <v-row no-gutters>
+            <v-col
+              cols="10"
+              class="px-2"
+            >
+              <v-text-field
+                id="teneo-input-field"
+                v-show="!showUploadButton && !showUploadProgress"
+                :disabled="progressBar"
+                :append-icon="showAudioInput ? 'fa-angle-double-right' : ''"
+                @click:append="sendUserInput"
+                v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
+                @shortkey.native="swapInputButton"
+                :prepend-inner-icon="askingForPassword ? showPassword ? 'visibility' : 'visibility_off' : ''"
+                :type="askingForPassword ? showPassword ? 'text' : 'password' : 'text'"
+                @click:prepend-inner="showPassword = !showPassword"
+                :rules="askingForEmail ? [rules.email(userInput)] : []"
+                clearable
+                auto-grow
+                required
+                solo
+                return-masked-value
+                :mask="itemInputMask"
+                name="userInput"
+                ref="userInput"
+                autocomplete="off"
+                @keyup.enter.native="sendUserInput"
+                v-model="userInput"
+                :label="inputHelpText ? inputHelpText : askingForPassword ? $t('input.box.label.password') : askingForEmail ? $t('input.box.label.email') : $t('input.box.label')"
+                single-line
+                data-lpignore="true"
+              ></v-text-field>
+              <span
+                v-shortkey="['esc']"
+                @shortkey="stopAudioCapture"
+              ></span>
+            </v-col>
+            <v-col cols="2">
+              <upload-btn
+                icon
+                v-if="showUploadButton"
+                :fileChangedCallback="fileChanged"
+                large
+                hover
+                class="elevation-2 v-btn v-btn--contained v-btn--fab v-btn--round v-size--small primary white--text"
               >
-                <v-text-field
-                  id="teneo-input-field"
-                  v-show="!showUploadButton && !showUploadProgress"
-                  :disabled="progressBar"
-                  :append-icon="showAudioInput ? 'fa-angle-double-right' : ''"
-                  @click:append="sendUserInput"
-                  v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
-                  @shortkey.native="swapInputButton"
-                  :prepend-inner-icon="askingForPassword ? showPassword ? 'visibility' : 'visibility_off' : ''"
-                  :type="askingForPassword ? showPassword ? 'text' : 'password' : 'text'"
-                  @click:prepend-inner="showPassword = !showPassword"
-                  :rules="askingForEmail ? [rules.email(userInput)] : []"
-                  clearable
-                  auto-grow
-                  required
-                  return-masked-value
-                  :mask="itemInputMask"
-                  solo
-                  name="userInput"
-                  ref="userInput"
-                  browser-autocomplete="off"
-                  @keyup.enter.native="sendUserInput"
-                  v-model="userInput"
-                  :label="inputHelpText ? inputHelpText : askingForPassword ? $t('input.box.label.password') : askingForEmail ? $t('input.box.label.email') : $t('input.box.label')"
-                  single-line
-                  data-lpignore="true"
-                ></v-text-field>
-                <span
-                  v-shortkey="['esc']"
-                  @shortkey="stopAudioCapture"
-                ></span>
-
-              </v-flex>
-              <v-flex>
-                <upload-btn
-                  icon
-                  v-if="showUploadButton"
-                  :fileChangedCallback="fileChanged"
-                  large
-                  hover
-                  class="mx-0 px-0"
-                >
-                  <template slot="icon">
-                    <v-icon dark>mdi-paperclip</v-icon>
-                  </template>
-                </upload-btn>
-                <v-progress-circular
-                  v-if="showUploadProgress"
-                  :rotate="360"
-                  :size="40"
-                  :width="10"
-                  :value="progressValue"
-                  color="primary"
-                  class="mx-2 mt-1"
-                >
-                </v-progress-circular>
-                <template v-if="!showUploadButton && !showUploadProgress">
-                  <v-btn
-                    fab
-                    :disabled="progressBar"
-                    :loading="progressBar"
-                    v-long-press="1000"
-                    @long-press-start="swapInputButton"
-                    v-if="!showAudioInput"
-                    small
-                    color="primary"
-                    class="white--text elevation-2"
-                    @click.native="sendUserInput"
-                  >
-                    <v-icon>fa-angle-double-right</v-icon>
-                  </v-btn>
-
-                  <v-btn
-                    fab
-                    :disabled="progressBar"
-                    :loading="progressBar"
-                    v-long-press="1000"
-                    @long-press-start="swapInputButton"
-                    small
-                    v-if="showAudioInput"
-                    v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}"
-                    @shortkey.native="captureAudio"
-                    :color="audioButtonColor"
-                    :class="audioButtonClasses"
-                    class="elevation-2"
-                    @click.native="captureAudio"
-                  >
-                    <v-icon medium>fa-microphone-alt</v-icon>
-                  </v-btn>
+                <template slot="icon">
+                  <v-icon
+                    dark
+                    class="py-2"
+                  >mdi-paperclip</v-icon>
                 </template>
-              </v-flex>
-            </v-layout>
-          </v-form>
-        </v-container>
-      </v-flex>
-    </v-layout>
+              </upload-btn>
+              <v-progress-circular
+                v-if="showUploadProgress"
+                :rotate="360"
+                :size="40"
+                :width="10"
+                :value="progressValue"
+                color="accent"
+                class=""
+              >
+              </v-progress-circular>
+              <template v-if="!showUploadButton && !showUploadProgress">
+                <v-btn
+                  fab
+                  :disabled="progressBar"
+                  :loading="progressBar"
+                  v-long-press="1000"
+                  @long-press-start="swapInputButton"
+                  v-if="!showAudioInput"
+                  small
+                  color="primary"
+                  class="white--text elevation-2 mt-1"
+                  @click.native="sendUserInput"
+                >
+                  <v-icon>fa-angle-double-right</v-icon>
+                </v-btn>
+
+                <v-btn
+                  fab
+                  :disabled="progressBar"
+                  :loading="progressBar"
+                  v-long-press="1000"
+                  @long-press-start="swapInputButton"
+                  small
+                  v-if="showAudioInput"
+                  v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}"
+                  @shortkey.native="captureAudio"
+                  :color="audioButtonColor"
+                  :class="audioButtonClasses"
+                  class="elevation-2 mt-1"
+                  @click.native="captureAudio"
+                >
+                  <v-icon medium>fa-microphone-alt</v-icon>
+                </v-btn>
+              </template>
+            </v-col>
+          </v-row>
+        </v-form>
+      </v-col>
+    </v-row>
+
     <!-- end -->
     <!-- Date picker dialog -->
-    <v-flex
-      xs12
+    <v-col
+      cols="12"
       :key="'datePicker' + uuid"
     >
       <v-dialog
         ref="dialogDate"
         v-model="showDate"
         :return-value.sync="date"
-        lazy
         width="290px"
       >
         <v-date-picker
@@ -236,22 +240,22 @@
         >
           <v-spacer></v-spacer>
           <v-btn
-            flat
+            text
             color="primary"
             @click="showDate = false"
           >Cancel</v-btn>
           <v-btn
-            flat
+            text
             color="primary"
             @click="sendUserInput"
           >OK</v-btn>
         </v-date-picker>
       </v-dialog>
-    </v-flex>
+    </v-col>
 
     <!-- Time picker dialog -->
-    <v-flex
-      xs12
+    <v-col
+      cols="12"
       :key="'timePicker' + uuid"
     >
       <v-dialog
@@ -277,7 +281,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-    </v-flex>
+    </v-col>
 
   </v-container>
 
@@ -355,6 +359,11 @@ export default {
         this.mustScroll = true;
         this.oldDialogLength = newDialog.length;
       }
+    },
+    showLiveChatProcessing: function(isLiveChatPersonTyping) {
+      if (isLiveChatPersonTyping) {
+        this.mustScroll = true;
+      }
     }
   },
   computed: {
@@ -422,18 +431,15 @@ export default {
   },
   updated: function() {
     try {
-      // this should work now
       if (this.mustScroll) {
+        // oh man - Had to add a delay to reliably scroll to the bottom on dom update
         this.mustScroll = false;
-        this.srcollToBottom();
+        this.$nextTick(() => {
+          this.srcollToBottom();
+          setTimeout(this.srcollToBottom, 200);
+          setTimeout(this.srcollToBottom, 200);
+        });
       }
-
-      // this.$SmoothScroll(
-      //   this.$refs.pageBottom,
-      //   2000,
-      //   null,
-      //   this.$refs.chatContainer
-      // );
 
       if (!this.isMobileDevice) {
         const element = this.$el.querySelector("#teneo-input-field");
@@ -457,12 +463,6 @@ export default {
       document.activeElement.blur();
     }
     this.srcollToBottom();
-    // this.$SmoothScroll(
-    //   this.$refs.pageBottom,
-    //   2000,
-    //   null,
-    //   this.$refs.chatContainer
-    // );
   },
   beforeDestroy() {},
   methods: {
@@ -693,8 +693,9 @@ export default {
 
 .teneo-input-loading {
   position: relative;
-  margin: 0 !important;
-  /* bottom: 3px; */
+  top: -4px;
+  margin-bottom: -4px;
+  z-index: 1;
 }
 </style>
 <style>
@@ -702,24 +703,52 @@ div#chat-area p {
   margin-bottom: 5px;
 }
 
+div.teneo-footer .v-input__control {
+  height: 65px !important;
+}
+
 div.teneo-footer .v-input__slot {
   -webkit-box-shadow: unset !important;
   box-shadow: unset !important;
   background: transparent !important;
-  padding-left: 5px !important;
+  /* padding-left: 5px !important; */
 }
 
 div.teneo-footer .v-text-field__details {
-  position: relative !important;
-  bottom: 20px !important;
+  position: absolute;
+  margin-top: 35px;
 }
 
-div.chat-container .v-expansion-panel__header {
-  padding-left: 8px !important;
-  padding-right: 10px !important;
-  padding-top: 0px !important;
-  padding-bottom: 5px !important;
-  cursor: unset;
+div.chat-container .v-expansion-panel-header {
+  cursor: unset !important;
+  user-select: text;
+}
+
+button.v-expansion-panel-header:focus {
+  background: unset;
+  -webkit-box-shadow: unset !important;
+  box-shadow: unset !important;
+  color: transparent;
+}
+
+v-expansion-panel-header
+  div.chat-container
+  .v-expansion-panel:not(:first-child)::after {
+  border-top: unset !important;
+}
+
+.v-expansion-panel:not(:first-child)::after {
+  border-top: unset !important;
+}
+
+div.chat-container .v-expansion-panel-header--mousedown {
+  -webkit-box-shadow: unset !important;
+  box-shadow: unset !important;
+}
+
+div.chat-container .v-expansion-panel::before {
+  -webkit-box-shadow: unset !important;
+  box-shadow: unset !important;
 }
 
 .v-toolbar__title:not(:first-child) {
@@ -740,21 +769,22 @@ div.chat-container .v-expansion-panel__header {
   screen and (-ms-high-contrast: none) {
   /* IE10+ specific styles go here */
   .chat-card {
-    font-size: 16px !important;
+    font-size: 1.1em;
     font-weight: 500;
-    padding: 5px;
-    padding-left: 10px;
-    margin-top: 10px;
+    padding: 8px;
+    margin-top: 4px;
     width: 260px;
+    line-height: 1.2em;
   }
 }
 
 .chat-card {
-  font-size: 16px !important;
+  font-size: 1.1em;
   font-weight: 500;
-  padding: 5px;
-  padding-left: 10px;
-  margin-top: 10px;
+  padding: 8px;
+  margin-top: 4px;
+  line-height: 1.2em;
+  width: fit-content;
 }
 
 .chat-card-left {
@@ -767,6 +797,7 @@ div.chat-container .v-expansion-panel__header {
   border-radius: 13px 3px 13px 13px;
   -moz-border-radius: 13px 3px 13px 13px;
   -webkit-border-radius: 13px 3px 13px 13px;
+  margin-left: auto;
 }
 
 div.options-list a.v-list__tile--link {
@@ -835,10 +866,10 @@ span.teneo-reply ul {
   box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12),
     0px -2px 0px 0 rgba(0, 0, 0, 0.08), 0px -3px 0px 0px rgba(0, 0, 0, 0.04);
 
-  position: inherit;
+  position: relative;
   bottom: 0px !important;
   width: 100%;
-  height: 60px;
+  height: 65px;
   z-index: 5;
 }
 

@@ -1,8 +1,7 @@
 <template>
-  <v-layout
+  <v-row
     v-if="displayPusherMessage && pusherMessage"
-    row
-    justify-center
+    justify="center"
   >
     <v-dialog
       v-model="showPusher"
@@ -20,7 +19,7 @@
 
           <v-btn
             color="green darken-1"
-            flat="flat"
+            text
             @click="displayPusherMessage = false"
           >
             Close
@@ -28,7 +27,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-layout>
+  </v-row>
 </template>
 <script>
 export default {

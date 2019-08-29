@@ -1,28 +1,26 @@
 <template>
-  <v-layout>
-    <v-flex xs12>
-      <v-card class="elevation-1">
+  <v-row no-gutters>
+    <v-col cols="12">
+      <v-card class="elevation-0">
         <v-card-title primary-title>
-          <div>
-            <h2>{{ $t('help.page.title') }}</h2>
-          </div>
+          <h5>{{ $t('help.page.title') }}</h5>
         </v-card-title>
       </v-card>
-      <v-expansion-panel>
-        <v-expansion-panel-content
+      <v-expansion-panels>
+        <v-expansion-panel
           v-for="(item,i) in knowledgeData"
           :key="i"
-          hide-actions
-          ripple
         >
-          <div
-            slot="header"
+          <v-expansion-panel-header
             @click="sendUserInput(item)"
-          >{{ item }}</div>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-flex>
-  </v-layout>
+            :hide-actions="true"
+          >
+            {{ item }}
+          </v-expansion-panel-header>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-col>
+  </v-row>
 </template>
 <style scoped>
 </style>
