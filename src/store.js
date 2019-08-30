@@ -136,10 +136,9 @@ function storeSetup(vuetify, callback) {
         theme: config.THEME,
         userIcon: config.USER_ICON,
         showUploadButton: false,
-        showChatWindow: false,
+        showChatWindow: (config.EMBED || config.SHOW_BUTTON_ONLY) && getChatWindowStateFromSession() ? true : false,
         showChatButton: true,
-        showButtonOnly: config.SHOW_BUTTON_ONLY,
-        chatButtonInitial: !config.getUrlParam("chatopen", false)
+        showButtonOnly: config.SHOW_BUTTON_ONLY
       },
       userInput: {
         userInput: "",
@@ -150,9 +149,8 @@ function storeSetup(vuetify, callback) {
       showDelayedResponse(state) {
         return state.ui.showDelayedResponse;
       },
-      chatButtonInitial(state) {
-        // console.log(`Chat Window Open? : ${!state.ui.chatButtonInitial}`);
-        return state.ui.chatButtonInitial;
+      isChatOpen(state) {
+        return state.ui.showChatWindow;
       },
       hideConfigMenu(state) {
         return state.ui.hideConfigMenu;
@@ -618,26 +616,30 @@ function storeSetup(vuetify, callback) {
       showLiveChatProcessing(state) {
         return state.liveAgent.showLiveChatProcessing;
       },
-      chatHistory(state) {
-        if (config.USE_SESSION_STORAGE) {
-          if (state.conversation.dialog.length !== 0) {
-            let chatHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]"));
-            if (chatHistory && chatHistory.length !== 0) {
-              state.conversation.dialog.concat(chatHistory);
-            }
-          } else {
-            state.conversation.dialog = JSON.parse(
-              sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
-            );
-          }
-        } else if (config.USE_LOCAL_STORAGE) {
-          if (state.conversation.dialog.length !== 0) {
-            let chatHistory = JSON.parse(localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]"));
-            if (chatHistory && chatHistory.length !== 0) {
-              state.conversation.dialog.concat(chatHistory);
-            }
-          } else {
+      dialogs(state) {
+        if (!config.USE_SESSION_STORAGE && state.conversation.dialog.length === 0) {
+          // typically here when in production embedded state
+          // check if session expired
+          let now = new Date();
+          let lastInteractionTime = localStorage.getItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE);
+          if (!lastInteractionTime) {
             state.conversation.dialog = JSON.parse(localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]"));
+          } else {
+            var lastInteraction = new Date(lastInteractionTime);
+            var diffMs = lastInteraction - now; // milliseconds between now & Christmas
+            // var diffDays = Math.floor(diffMs / 86400000); // days
+            // var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+            var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+            if (diffMins > 30) {
+              localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now);
+              state.conversation.dialog = [];
+              localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]");
+            } else {
+              // "session" still active
+              state.conversation.dialog = JSON.parse(
+                localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
+              );
+            }
           }
         }
         if (!state.conversation.dialog) {
@@ -645,13 +647,19 @@ function storeSetup(vuetify, callback) {
         }
         return state.conversation.dialog;
       },
-      chatHistorySessionStorage(state) {
-        // TODO: Try and make the chat history in session storage unique to the deeplink
+      getLatestDialogHistory(state) {
         if (state.conversation.dialogHistory.length === 0) {
-          state.conversation.dialogHistory = JSON.parse(
-            sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY)
-          );
-          if (state.conversation.dialogHistory === null) {
+          if (config.USE_SESSION_STORAGE) {
+            state.conversation.dialogHistory = JSON.parse(
+              sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
+            );
+          } else {
+            state.conversation.dialogHistory = JSON.parse(
+              localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
+            );
+          }
+
+          if (!state.conversation.dialogHistory) {
             state.conversation.dialogHistory = [];
           }
         }
@@ -733,17 +741,19 @@ function storeSetup(vuetify, callback) {
           state.ui.showChatWindow = !state.ui.showChatWindow;
         }
         if (state.ui.showChatWindow) {
-          state.ui.chatButtonInitial = false;
+          state.ui.isChatOpened = false;
         } else {
-          state.ui.chatButtonInitial = true;
+          state.ui.isChatOpened = true;
         }
       },
       TOGGLE_CHAT_BUTTON(state) {
-        state.ui.chatButtonInitial = !state.ui.chatButtonInitial;
+        state.ui.showChatWindow = !state.ui.showChatWindow;
+        localStorage.setItem("isChatOpen", state.ui.showChatWindow ? "true" : "false");
+        sendMessageToParent(state.ui.showChatWindow ? "showLeopard" : "hideLeopard");
       },
       SHOW_CHAT_WINDOW(state) {
         state.ui.showChatWindow = true;
-        state.ui.chatButtonInitial = false;
+        state.ui.isChatOpened = false;
       },
       HIDE_CHAT_WINDOW(state) {
         state.ui.showChatWindow = false;
@@ -895,7 +905,7 @@ function storeSetup(vuetify, callback) {
         state.userInput.userInput = ""; // reset the user input to nothing
 
         // deal with persiting the chat history
-        if (config.USE_LOCAL_STORAGE) {
+        if (!config.USE_SESSION_STORAGE) {
           localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, JSON.stringify(state.conversation.dialog));
         }
         state.conversation.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY));
@@ -1191,6 +1201,9 @@ function storeSetup(vuetify, callback) {
         });
       },
       sendUserInput(context, params = "") {
+        let now = new Date();
+
+        localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
         if (typeof params !== "string") {
           params = "";
         }
@@ -1434,7 +1447,7 @@ function storeSetup(vuetify, callback) {
           };
           context.commit("PUSH_USER_INPUT_TO_DIALOG", newUserInput);
 
-          if (config.USE_LOCAL_STORAGE) {
+          if (!config.USE_SESSION_STORAGE) {
             localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, JSON.stringify(context.getters.dialog));
           }
           context.commit(
@@ -1481,15 +1494,45 @@ function stoperror() {
   return true;
 }
 
-window.addEventListener("message", function(event) {
+// Embed Functionality for Production
+
+function getChatWindowStateFromSession() {
+  let isChatOpen = localStorage.getItem("isChatOpen");
+  let result = false;
+  if (isChatOpen && isChatOpen === "true") {
+    sendMessageToParent("showLeopard");
+    console.log("Initial Chat Window State = Open");
+    result = true;
+  } else {
+    localStorage.setItem("isChatOpen", "false");
+    sendMessageToParent("hideLeopard");
+    console.log("Initial Chat Window State = Closed");
+    result = false;
+  }
+  return result;
+}
+
+function sendMessageToParent(message) {
+  if (parent) {
+    parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
+    console.log("Message from Leopard >> Embed : " + message);
+  }
+}
+
+function receiveMessageFromParent(event) {
   try {
+    // if (event.origin !== "http://example.com:8080") return;
     let messageObject = JSON.parse(event.data);
     if ("info" in messageObject && "id" in messageObject) {
       return true;
     }
+    // event.source.postMessage("This is a message sent back from Leopard to the site embedding Leopard", event.origin);
+    console.log("Recived a message from parent...");
     console.log(messageObject);
     store.state.connection.ctxParameters = messageObject;
   } catch (error) {
     stoperror();
   }
-});
+}
+
+window.addEventListener("message", receiveMessageFromParent);

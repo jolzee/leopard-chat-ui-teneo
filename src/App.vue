@@ -14,14 +14,15 @@
             fab
             dark
             color="primary"
+            elevation="2"
             v-if="showChatButton"
             class="embed-button-center"
-            :class="{ pulse: (pulseButton && chatButtonInitial)}"
+            :class="{ pulse: (pulseButton && !isChatOpen)}"
             :style="customCssButtonToolbar"
           >
             <v-icon
               dark
-              v-text="chatButtonInitial ? 'chat' : 'close'"
+              v-text="isChatOpen ? 'close' : 'chat'"
             ></v-icon>
           </v-btn>
         </v-fab-transition>
@@ -159,7 +160,10 @@
             @click.stop="drawer = !drawer"
             class="secondary--text"
           ></v-app-bar-nav-icon>
-          <v-toolbar-title v-text="toolbarTitle"></v-toolbar-title>
+          <v-toolbar-title
+            v-text="toolbarTitle"
+            class="pl-0"
+          ></v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn
             x-small
@@ -264,8 +268,8 @@ export default {
     ...mapGetters([
       "accentStyling",
       "authenticated",
-      "chatButtonInitial",
-      "chatHistory",
+      "isChatOpen",
+      "dialogs",
       "chatTitle",
       "customCssButtonToolbar",
       "embed",
@@ -459,7 +463,7 @@ export default {
           }.bind(this),
           400
         );
-        if (this.chatHistory.length === 0) {
+        if (this.dialogs.length === 0) {
           this.$store
             .dispatch("login")
             .then(() => {
@@ -581,7 +585,7 @@ export default {
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
 .application-button {
-  max-width: unset !important;
+  /* max-width: unset !important;
   max-height: unset !important;
   height: unset !important;
   overflow: unset !important;
@@ -589,8 +593,9 @@ export default {
   position: unset !important;
   top: unset !important;
   bottom: unset !important;
-  right: unset !important;
+  right: unset !important; */
   background: transparent !important;
+  width: 100%;
 }
 
 #chat-open-close-button-embed {

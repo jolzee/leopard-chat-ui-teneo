@@ -273,8 +273,8 @@ export default {
       "uuid",
       "hasInline",
       "hasInlineType",
-      "chatHistory",
-      "chatHistorySessionStorage",
+      "dialogs",
+      "getLatestDialogHistory",
       "hasModal",
       "lastItemHasLongResponse",
       "itemHasLongResponse",
@@ -372,10 +372,9 @@ export default {
     },
     dialog() {
       if (this.$route.name === "chat") {
-        return this.chatHistory;
+        return this.dialogs;
       } else {
-        // history in session storage
-        return this.chatHistorySessionStorage;
+        return this.getLatestDialogHistory;
       }
     },
     hasPermanentOptions() {

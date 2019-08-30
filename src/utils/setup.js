@@ -18,11 +18,12 @@ import { STORAGE_KEY } from "../constants/solution-config-default";
 export default class Setup {
   constructor() {
     this.TENEO_CHAT_HISTORY = "teneo-chat-history";
+    this.TENEO_LAST_INTERACTION_DATE = "teneo-last-interaction";
     this.TENEO_CHAT_DARK_THEME = "darkTheme";
     this.ASR_CORRECTIONS_MERGED;
     this.liveChat;
     this.CHAT_TITLE = "Configure Me";
-    this.EMBED = this.doesParameterExist("embed");
+    this.EMBED = this.doesParameterExist("embed") || this.doesParameterExist("button");
     this.SHOW_BUTTON_ONLY = this.doesParameterExist("button");
     this.ENABLE_LIVE_CHAT = false;
     this.mobileDetect = new MobileDetect(window.navigator.userAgent);
@@ -43,8 +44,7 @@ export default class Setup {
     this.RESPONSE_ICON = "";
     this.SEND_CTX_PARAMS = "login";
     this.TENEO_URL = "";
-    this.USE_LOCAL_STORAGE = false;
-    this.USE_SESSION_STORAGE = this.EMBED;
+    this.USE_SESSION_STORAGE = !this.EMBED;
     this.USER_ICON = "";
     this.activeSolution = null;
     this.chatConfig = null;
@@ -221,7 +221,7 @@ export default class Setup {
   }
 
   setupLiveChat(store) {
-    this.liveChat = new LiveChat(store, this.USE_LOCAL_STORAGE, STORAGE_KEY, this.TENEO_CHAT_HISTORY);
+    this.liveChat = new LiveChat(store, !this.USE_SESSION_STORAGE, STORAGE_KEY, this.TENEO_CHAT_HISTORY);
   }
 
   getMergedAsrCorrections(leopardDefaultCorrections) {

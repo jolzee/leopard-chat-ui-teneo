@@ -370,8 +370,8 @@ export default {
     ...mapGetters([
       "askingForPassword",
       "askingForEmail",
-      "chatHistory",
-      "chatHistorySessionStorage",
+      "dialogs",
+      "getLatestDialogHistory",
       "dark",
       "float",
       "inputHelpText",
@@ -417,15 +417,15 @@ export default {
       return this.$route.name === "history";
     },
     noHistory() {
-      let history = this.chatHistorySessionStorage;
+      let history = this.getLatestDialogHistory;
       return history.length === 0;
     },
     dialog() {
       if (this.$route.name === "chat") {
-        return this.chatHistory;
+        return this.dialogs;
       } else {
         // history in session storage
-        return this.chatHistorySessionStorage;
+        return this.getLatestDialogHistory;
       }
     }
   },
