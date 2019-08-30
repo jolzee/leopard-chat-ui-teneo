@@ -64,7 +64,7 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
 var leopardChatTemplate = getLeopardTemplate(function() {
   /*!
 <div
-  id="teneo-chat-widget-container" style="display:none;" class="animated rotateInUpRight"
+  id="teneo-chat-widget-container" style="display:none;"
 >
   <iframe
     src="[leopardUrl]?embed[teneoCtxParams]"
@@ -97,28 +97,55 @@ if (window.TENEOCTX) {
 
 document.body.innerHTML += leopardButtonTemplate + leopardChatTemplate;
 
-// setTimeout(function() {
-//   sendInfoToLeopard({ greetings: "callingSite" });
-// }, 3000);
+var leopardAnimations = {
+  in: "flipInY",
+  out: "zoomOutDown"
+};
 
-function receiveMessage(event) {
-  // if (event.origin !== "http://example.org:8080") return;
-  var element = document.getElementById("teneo-chat-widget-container");
-  if (event.data === "showLeopard") {
-    console.log("Back end thinks chat window should be OPEN");
-    element.style.display = "block";
-  } else if (event.data === "hideLeopard") {
-    console.log("Back end thinks chat window should be CLOSED");
-    element.style.display = "none";
+var shouldShowLeopard = false;
+
+function receiveLeopardMessage(event) {
+  // if (event.origin !== "http://example.org:8080") return; // add in production for security
+  try {
+    if (event.data === "showLeopard") {
+      shouldShowLeopard = true;
+      animateLeopard(leopardAnimations.in);
+
+      setTimeout(function() {
+        if (shouldShowLeopard) {
+          var node = document.querySelector("#teneo-chat-widget-container");
+          node.style.display = "block";
+        }
+      }, 500);
+    } else if (event.data === "hideLeopard") {
+      shouldShowLeopard = false;
+      animateLeopard(leopardAnimations.out, function() {
+        if (!shouldShowLeopard) {
+          var node = document.querySelector("#teneo-chat-widget-container");
+          node.style.display = "none";
+        }
+      });
+    }
+  } catch (err) {
+    // ignore as it's most likely another message from another source
   }
 }
 
-function sendInfoToLeopard(info) {
-  var teneoFrameWindow = window.frames.teneochatwidget;
-  if (teneoFrameWindow && info) {
-    teneoFrameWindow.postMessage(JSON.stringify(info), "*");
-    console.log("Posted message to Leopard:" + info);
+function animateLeopard(animationName, callback) {
+  const node = document.querySelector("#teneo-chat-widget-container");
+  node.classList.remove("animated", leopardAnimations.out);
+  node.classList.remove("animated", leopardAnimations.in);
+
+  node.classList.add("animated", animationName);
+
+  function handleAnimationEnd() {
+    node.classList.remove("animated", leopardAnimations.out);
+    node.classList.remove("animated", leopardAnimations.in);
+    node.removeEventListener("animationend", handleAnimationEnd);
+    if (typeof callback === "function") callback();
   }
+
+  node.addEventListener("animationend", handleAnimationEnd);
 }
 
-window.addEventListener("message", receiveMessage, false);
+window.addEventListener("message", receiveLeopardMessage, false);

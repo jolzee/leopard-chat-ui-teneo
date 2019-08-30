@@ -136,7 +136,7 @@ function storeSetup(vuetify, callback) {
         theme: config.THEME,
         userIcon: config.USER_ICON,
         showUploadButton: false,
-        showChatWindow: (config.EMBED || config.SHOW_BUTTON_ONLY) && getChatWindowStateFromSession() ? true : false,
+        showChatWindow: config.EMBED && isChatOpenLocalStorage() ? true : false,
         showChatButton: true,
         showButtonOnly: config.SHOW_BUTTON_ONLY
       },
@@ -150,6 +150,7 @@ function storeSetup(vuetify, callback) {
         return state.ui.showDelayedResponse;
       },
       isChatOpen(state) {
+        console.log("isChatOpen (state.ui.showChatWindow):" + state.ui.showChatWindow);
         return state.ui.showChatWindow;
       },
       hideConfigMenu(state) {
@@ -1496,7 +1497,7 @@ function stoperror() {
 
 // Embed Functionality for Production
 
-function getChatWindowStateFromSession() {
+function isChatOpenLocalStorage() {
   let isChatOpen = localStorage.getItem("isChatOpen");
   let result = false;
   if (isChatOpen && isChatOpen === "true") {
@@ -1509,6 +1510,7 @@ function getChatWindowStateFromSession() {
     console.log("Initial Chat Window State = Closed");
     result = false;
   }
+  console.log("isChatOpenLocalStorage: " + result);
   return result;
 }
 

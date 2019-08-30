@@ -15,7 +15,6 @@
             dark
             color="primary"
             elevation="2"
-            v-if="showChatButton"
             class="embed-button-center"
             :class="{ pulse: (pulseButton && !isChatOpen)}"
             :style="customCssButtonToolbar"
@@ -258,11 +257,13 @@ export default {
   },
   mounted() {
     // this.toggleChat(); // will automatically open the chat window on load
-    window.addEventListener("resize", this.onResizeOrEmbed);
-    if (window.innerWidth <= 480 || this.embed) {
-      this.onResizeOrEmbed();
+    if (!this.showButtonOnly) {
+      window.addEventListener("resize", this.onResizeOrEmbed);
+      if (window.innerWidth <= 480 || this.embed) {
+        this.onResizeOrEmbed();
+      }
+      this.$store.dispatch("setUserInformation");
     }
-    this.$store.dispatch("setUserInformation");
   },
   computed: {
     ...mapGetters([
