@@ -28,8 +28,8 @@ export class LiveChat {
               .then(() => {
                 // console.log("Live chat has closed");
               })
-              .catch(error => {
-                console.log(error);
+              .catch(() => {
+                // console.log(error);
               });
           }
         });

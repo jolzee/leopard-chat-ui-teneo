@@ -5,7 +5,7 @@
       <v-alert
         :value="true"
         color="info"
-        icon="fa-clock"
+        icon="access_time"
         elevation="2"
       >
         {{item.text}}
@@ -17,7 +17,7 @@
       <v-alert
         :value="true"
         color="info"
-        icon="fa-thumbs-up"
+        icon="thumb_up"
         elevation="2"
       >
         {{item.text}}
@@ -27,7 +27,7 @@
       <v-alert
         :value="true"
         color="info"
-        icon="fa-hand-paper"
+        icon="logout"
         elevation="2"
       >
         {{item.text}}

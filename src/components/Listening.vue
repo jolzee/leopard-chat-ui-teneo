@@ -14,10 +14,10 @@
           justify="center"
           align="center"
         >
-          <line-scale-pulse-out-rapid-loader
+          <vue-loaders-line-scale-pulse-out-rapid
             color="#D32F2F"
             size="90px"
-          ></line-scale-pulse-out-rapid-loader>
+          ></vue-loaders-line-scale-pulse-out-rapid>
           <h1
             class="ml-2"
             v-if="message != null"

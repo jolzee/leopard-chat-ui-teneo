@@ -211,7 +211,7 @@
           color="success"
           @click="toggleDate()"
         >
-          <v-icon>fa-calendar-alt</v-icon>
+          <v-icon>date_range</v-icon>
         </v-btn>
       </v-col>
       <!-- Time Picker -->
@@ -227,7 +227,7 @@
           color="success"
           @click="toggleTime()"
         >
-          <v-icon>fa-clock</v-icon>
+          <v-icon>access_time</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -315,27 +315,27 @@ export default {
     modalButtonIcon() {
       let extensions = this.itemExtensions(this.item);
       let countOfNonInlines = 0;
-      let iconName = "fa-angle-double-up";
+      let iconName = "keyboard_arrow_up";
       extensions.forEach(extension => {
         if (!extension.inline || this.item.teneoResponse.link.href !== "") {
           countOfNonInlines++;
         }
 
         if (extension.name.startsWith("displayVideo")) {
-          iconName = "fa-film";
+          iconName = "ondemand_video";
         } else if (extension.name.startsWith("displayImage")) {
-          iconName = "fa-image";
+          iconName = "image";
         } else if (extension.name.startsWith("displayTable")) {
-          iconName = "fa-table";
+          iconName = "table_chart";
         }
 
         if (this.item.teneoResponse.link.href !== "") {
-          iconName = "fa-link";
+          iconName = "link";
         }
       });
 
       if (countOfNonInlines > 1) {
-        return "fa-angle-double-up";
+        return "keyboard_arrow_up";
       }
 
       return iconName;

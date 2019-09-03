@@ -105,7 +105,7 @@ var leopardAnimations = {
 var shouldShowLeopard = false;
 
 function receiveLeopardMessage(event) {
-  // if (event.origin !== "http://example.org:8080") return; // add in production for security
+  /* if (event.origin !== "http://example.org:8080") return; */
   try {
     if (event.data === "showLeopard") {
       shouldShowLeopard = true;
@@ -127,7 +127,7 @@ function receiveLeopardMessage(event) {
       });
     }
   } catch (err) {
-    // ignore as it's most likely another message from another source
+    /* ignore as it's most likely another message from another source */
   }
 }
 
@@ -149,3 +149,4 @@ function animateLeopard(animationName, callback) {
 }
 
 window.addEventListener("message", receiveLeopardMessage, false);
+/* https://www.willpeavy.com/tools/minifier/ */

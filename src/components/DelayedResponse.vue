@@ -5,10 +5,10 @@
         justify="center"
         align="center"
       >
-        <line-scale-pulse-out-rapid-loader
+        <vue-loaders-line-scale-pulse-out-rapid
           color="#D7D7D7"
           size="50px"
-        ></line-scale-pulse-out-rapid-loader>
+        ></vue-loaders-line-scale-pulse-out-rapid>
       </v-row>
     </v-container>
   </v-row>

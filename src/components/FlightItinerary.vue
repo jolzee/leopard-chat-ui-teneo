@@ -19,7 +19,7 @@
         class="pt-2"
         cols="4"
       >
-        <v-icon class="orange--text">fa-plane</v-icon>
+        <v-icon class="orange--text">airplanemode_active</v-icon>
         <div
           class="info--text mt-1"
           v-html="itinerary.outbound_flight_number"
@@ -40,7 +40,7 @@
         class="pt-2"
         cols="4"
       >
-        <v-icon class="orange--text">fa-plane</v-icon>
+        <v-icon class="orange--text">airplanemode_active</v-icon>
         <div
           class="info--text mt-1"
           v-html="itinerary.inbound_flight_number"

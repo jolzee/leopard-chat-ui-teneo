@@ -1,5 +1,5 @@
 import { Ripple } from "vuetify/lib/directives";
-import axios from "axios";
+const superagent = require("superagent");
 import MobileDetect from "mobile-detect";
 import parseBool from "parseboolean";
 import PromisedLocation from "promised-location";
@@ -143,9 +143,6 @@ export default class Setup {
             }
           });
 
-          // icons: {
-          //   iconfont: ["md", "fa", "mdi"]
-          // },
           let vuetify = new Vuetify({
             // icons: {
             //   iconfont: ["mdi", "fa", "md"]
@@ -205,11 +202,12 @@ export default class Setup {
       } else {
         // look for default config on the server
         const defaultConfigUrl = `${location.protocol}//${location.host}${location.pathname}/../static/default.json`;
-        axios
+        superagent
           .get(defaultConfigUrl)
-          .then(function(response) {
+          .accept("application/json")
+          .then(res => {
             console.log("Found and loaded external default config");
-            let defaultConfig = response.data;
+            let defaultConfig = res.body;
             localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(defaultConfig));
             resolve(defaultConfig);
           })
@@ -287,7 +285,8 @@ export default class Setup {
   }
 
   isPusherEnabled() {
-    return process.env.VUE_APP_FIREBASE_API_KEY ? true : false;
+    // return process.env.VUE_APP_FIREBASE_API_KEY ? true : false;
+    return false;
   }
 
   addIframeHtml() {
@@ -327,15 +326,15 @@ export default class Setup {
   }
 
   setupPusher() {
-    if (this.isPusherEnabled()) {
-      Vue.use(require("vue-pusher"), {
-        api_key: process.env.VUE_APP_PUSHER_KEY,
-        options: {
-          cluster: "us2",
-          encrypted: true,
-          forceTLS: true
-        }
-      });
-    }
+    // if (this.isPusherEnabled()) {
+    //   Vue.use(require("vue-pusher"), {
+    //     api_key: process.env.VUE_APP_PUSHER_KEY,
+    //     options: {
+    //       cluster: "us2",
+    //       encrypted: true,
+    //       forceTLS: true
+    //     }
+    //   });
+    // }
   }
 }

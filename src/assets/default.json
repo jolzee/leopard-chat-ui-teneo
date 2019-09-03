@@ -20,7 +20,7 @@
       ],
       "chatTitle": "Speak with Leo",
       "responseIcon": "person",
-      "userIcon": "fa-comment-alt",
+      "userIcon": "comment",
       "useLocalStorage": "false",
       "enableLiveChat": "false",
       "theme": {

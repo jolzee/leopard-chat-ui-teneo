@@ -4,7 +4,7 @@
     <v-alert
       :value="true"
       color="info"
-      icon="fa-broadcast-tower"
+      icon="add_alert"
       class="mb-0 elevation-2"
     >{{item.text}}
     </v-alert>

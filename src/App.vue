@@ -175,8 +175,8 @@
             <v-icon
               dark
               v-text="$vuetify.theme.dark
-            ? 'fa-moon'
-            : 'fa-sun'"
+            ? 'brightness_4'
+            : 'brightness_5'"
             ></v-icon>
           </v-btn>
         </v-toolbar>
@@ -254,6 +254,9 @@ export default {
       miniVariant: true,
       rightDrawer: false
     };
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.onResizeOrEmbed);
   },
   mounted() {
     // this.toggleChat(); // will automatically open the chat window on load
@@ -443,7 +446,10 @@ export default {
 
         // console.log("ok smaller than 480px");
         // open the chat automatially and hide the open and close chat button
-        this.$router.push({ name: "chat" }); // make sure we show the main chat window
+        if (this.$router.currentRoute.path !== "/") {
+          this.$router.push({ name: "chat" }); // make sure we show the main chat window
+        }
+
         this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
         let isChatUiFloating = this.float;
         setTimeout(
@@ -506,7 +512,10 @@ export default {
 
       // show chat window - button clicked - login
       if (!this.showChatWindow) {
-        this.$router.push({ name: "chat" }); // make sure we show the main chat window
+        if (this.$router.currentRoute.path !== "/") {
+          this.$router.push({ name: "chat" }); // make sure we show the main chat window
+        }
+
         this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
         let isChatUiFloating = this.float;
         setTimeout(

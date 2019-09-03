@@ -3,7 +3,7 @@ import "firebase/auth";
 import "firebase/database";
 import "regenerator-runtime/runtime";
 import * as firebase from "firebase/app";
-import axios from "axios";
+const superagent = require("superagent");
 import gravatar from "gravatar";
 var stripHtml = require("string-strip-html");
 import URL from "url-parse";
@@ -12,7 +12,6 @@ import Vue from "vue";
 import VueJsonp from "vue-jsonp";
 import Vuex from "vuex";
 import vuexI18n from "vuex-i18n"; // i18n the leopard interface
-import vueSmoothScroll from "vue-smoothscroll";
 import VuePlyr from "vue-plyr";
 // const VueShortKey = require("vue-shortkey");
 // import longpress from "vue-long-press-directive";
@@ -20,12 +19,9 @@ import Listening from "./components/Listening.vue"; // component dialog that sho
 import Modal from "./components/Modal.vue";
 import Prism from "prismjs";
 // import "./plugins/vuetify";
-import {
-  BallPulseSyncLoader,
-  BallScaleRippleMultipleLoader,
-  LineScaleLoader,
-  LineScalePulseOutRapidLoader
-} from "vue-loaders";
+import VueLoadersBallPulseSync from "vue-loaders/dist/loaders/ball-pulse-sync";
+import VueLoadersLineScale from "vue-loaders/dist/loaders/line-scale";
+import VueLoadersLineScalePulseOutRapid from "vue-loaders/dist/loaders/line-scale-pulse-out-rapid";
 
 import { initializeASR, initializeTTS } from "./utils/asr-tts";
 
@@ -43,14 +39,12 @@ Vue.use(Prism);
 // Vue.use(longpress, { duration: process.env.VUE_APP_LONG_PRESS_LENGTH });
 
 Vue.use(require("vue-shortkey"));
-Vue.use(vueSmoothScroll);
 
 Vue.component("teneo-modal", Modal);
 Vue.component("teneo-listening", Listening);
-Vue.component(LineScaleLoader.name, LineScaleLoader);
-Vue.component(LineScalePulseOutRapidLoader.name, LineScalePulseOutRapidLoader);
-Vue.component(BallPulseSyncLoader.name, BallPulseSyncLoader);
-Vue.component(BallScaleRippleMultipleLoader.name, BallScaleRippleMultipleLoader);
+Vue.component(VueLoadersBallPulseSync.component.name, VueLoadersBallPulseSync.component);
+Vue.component(VueLoadersLineScale.component.name, VueLoadersLineScale.component);
+Vue.component(VueLoadersLineScalePulseOutRapid.component.name, VueLoadersLineScalePulseOutRapid.component);
 
 Vue.config.productionTip = false;
 
@@ -1292,14 +1286,15 @@ function storeSetup(vuetify, callback) {
                     } else if (process.env.VUE_APP_LOCATION_IQ_KEY) {
                       // good we have a licence key we can send all location information back
                       let locationRequestType = json.responseData.extraData.inputType;
-                      axios
+                      superagent
                         .get(
                           `https://us1.locationiq.com/v1/reverse.php?key=${process.env.VUE_APP_LOCATION_IQ_KEY}&lat=${
                             position.coords.latitude
                           }&lon=${position.coords.longitude}&format=json`
                         )
-                        .then(response => {
-                          let data = response.data;
+                        .accept("application/json")
+                        .then(res => {
+                          let data = res.body;
                           console.log(`${data.address.city}, ${data.address.state} ${data.address.postcode}`);
 
                           let queryParam = `&${locationRequestType}=`;
@@ -1330,9 +1325,7 @@ function storeSetup(vuetify, callback) {
                               );
                             });
                         })
-                        .catch(error => {
-                          console.log(error.message);
-                        });
+                        .catch(console.error);
                     } else if (
                       !process.env.VUE_APP_LOCATION_IQ_KEY &&
                       json.responseData.extraData.inputType ===

@@ -5,10 +5,10 @@
       :toolbarWidth="toolbarWidth"
     ></CustomModal>
     <!-- Display Pusher Message -->
-    <Pusher
+    <!-- <Pusher
       :displayPusherMessage="displayPusherMessage"
       :pusherMessage="pusherMessage"
-    ></Pusher>
+    ></Pusher> -->
 
     <!-- show normal message -->
     <v-dialog
@@ -203,7 +203,7 @@ import CustomModal from "./CustomModal";
 import FlightItinerary from "./FlightItinerary";
 import ImageAnimation from "./ImageAnimation";
 import MyBankTransactions from "./MyBankTransactions";
-import Pusher from "./Pusher";
+// import Pusher from "./Pusher";
 import Table from "./Table";
 import Video from "./Video";
 import Map from "./Map";
@@ -220,7 +220,7 @@ export default {
     ImageAnimation,
     MyBankTransactions,
     Map,
-    Pusher,
+    // Pusher,
     Table,
     Video,
     Vimeo,
@@ -283,21 +283,21 @@ export default {
     };
   },
   mounted() {
-    if (this.pusherEnabled) {
-      console.log("Setting up pusher");
-      this.$pusher.subscribe("web-channel");
-      console.log("Subscribed to 'web-channel'");
-      let that = this;
-      this.$pusher.bind(
-        "some-event-and-possibly-some-unique-id-for-user",
-        data => {
-          console.log("Message from Teneo: " + data.message);
-          that.pusherMessage = data.message;
-          that.displayPusherMessage = true;
-        },
-        null
-      );
-    }
+    // if (this.pusherEnabled) {
+    //   console.log("Setting up pusher");
+    //   this.$pusher.subscribe("web-channel");
+    //   console.log("Subscribed to 'web-channel'");
+    //   let that = this;
+    //   this.$pusher.bind(
+    //     "some-event-and-possibly-some-unique-id-for-user",
+    //     data => {
+    //       console.log("Message from Teneo: " + data.message);
+    //       that.pusherMessage = data.message;
+    //       that.displayPusherMessage = true;
+    //     },
+    //     null
+    //   );
+    // }
   },
   watch: {
     modalItem() {
@@ -517,9 +517,10 @@ export default {
       "itemHasLongResponse"
     ]),
     showPusher() {
-      if (this.displayPusherMessage) {
-        return true;
-      }
+      // if (this.displayPusherMessage) {
+      //   return true;
+      // }
+      // return false;
       return false;
     },
     toolbarWidth() {

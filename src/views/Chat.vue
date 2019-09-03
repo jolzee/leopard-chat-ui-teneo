@@ -85,10 +85,10 @@
               colored-border
               icon="mdi-keyboard-settings"
             >Agent is typing a message..
-              <ball-pulse-sync-loader
+              <vue-loaders-ball-pulse-sync
                 color="#C2C2C2"
-                size="10px"
-              ></ball-pulse-sync-loader>
+                size="8px"
+              ></vue-loaders-ball-pulse-sync>
             </v-alert>
 
           </div>
@@ -128,7 +128,7 @@
                 id="teneo-input-field"
                 v-show="!showUploadButton && !showUploadProgress"
                 :disabled="progressBar"
-                :append-icon="showAudioInput ? 'fa-angle-double-right' : ''"
+                :append-icon="showAudioInput ? 'double_arrow' : ''"
                 @click:append="sendUserInput"
                 v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
                 @shortkey.native="swapInputButton"
@@ -195,7 +195,7 @@
                   class="white--text elevation-2 mt-1"
                   @click.native="sendUserInput"
                 >
-                  <v-icon>fa-angle-double-right</v-icon>
+                  <v-icon>double_arrow</v-icon>
                 </v-btn>
 
                 <v-btn
@@ -213,7 +213,7 @@
                   class="elevation-2 mt-1"
                   @click.native="captureAudio"
                 >
-                  <v-icon medium>fa-microphone-alt</v-icon>
+                  <v-icon medium>mdi-microphone</v-icon>
                 </v-btn>
               </template>
             </v-col>
@@ -297,7 +297,7 @@ import ChatTeneoResponse from "../components/ChatTeneoResponse";
 import ChatUserQuestion from "../components/ChatUserQuestion";
 import LiveChatResponse from "../components/LiveChatResponse";
 import UploadButton from "vuetify-upload-button";
-import axios from "axios";
+const superagent = require("superagent");
 import { mapGetters } from "vuex";
 
 if (window.Element && !Element.prototype.closest) {
@@ -500,15 +500,11 @@ export default {
 
         let self = this;
 
-        axios({
-          method: "post",
-          url: config.postUrl,
-          data: formData,
-          config: { headers: { "Content-Type": "multipart/form-data" } }
-        })
-          .then(function(response) {
-            //handle success
-            console.log(response);
+        superagent
+          .post(config.postUrl)
+          .send(formData)
+          .then(res => {
+            console.log(res);
             if (config.reqUserInputSuccess) {
               self.$store.commit("SET_USER_INPUT", config.reqUserInputSuccess);
             }

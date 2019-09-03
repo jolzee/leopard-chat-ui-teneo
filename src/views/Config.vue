@@ -44,7 +44,7 @@
               target="_blank"
             >
 
-              <v-icon dark>fa-mobile-alt</v-icon>
+              <v-icon dark>phone_android</v-icon>
             </v-btn>
           </template>
           <span>Deep Link Mobile</span>
@@ -66,7 +66,7 @@
               color="indigo"
               :href="getActiveSolutionDeepLink"
             >
-              <v-icon dark>fa-link</v-icon>
+              <v-icon dark>desktop_windows</v-icon>
             </v-btn>
           </template>
           <span>Deep Link Desktop</span>
@@ -83,7 +83,7 @@
           <v-icon
             large
             color="grey lighten-1"
-          >fa-cogs</v-icon>
+          >settings</v-icon>
         </v-badge>
         <v-chip
           v-if="config.activeSolution"
@@ -129,7 +129,7 @@
                               return-object
                               no-data-text="No Solutions"
                               label="Select Teneo Solution"
-                              append-icon="fa-arrow-circle-down"
+                              append-icon="arrow_downward"
                             ></v-select>
                           </v-col>
                           <v-col
@@ -170,7 +170,7 @@
                                   @click="setActiveSolution"
                                   v-if="selectedSolution"
                                 >
-                                  <v-icon dark>{{(selectedSolution && (config.activeSolution === selectedSolution.name)) ? "fa-check-square" : "fa-square"}}
+                                  <v-icon dark>{{(selectedSolution && (config.activeSolution === selectedSolution.name)) ? "check_box" : "check_box_outline_blank"}}
                                   </v-icon>
                                 </v-btn>
                               </template>
@@ -191,7 +191,7 @@
                                     color="pink darken-4"
                                     @click="editSolution"
                                   >
-                                    <v-icon dark>fa-cog</v-icon>
+                                    <v-icon dark>edit</v-icon>
                                   </v-btn>
                                 </template>
                                 <span>Edit</span>
@@ -210,7 +210,7 @@
                                     @click="cloneSolution"
                                     color="orange"
                                   >
-                                    <v-icon dark>fa-clone</v-icon>
+                                    <v-icon dark>content_copy</v-icon>
                                   </v-btn>
                                 </template>
                                 <span>Clone</span>
@@ -229,7 +229,7 @@
                                     @click="deleteSolutionConfig"
                                     color="red"
                                   >
-                                    <v-icon dark>fa-trash</v-icon>
+                                    <v-icon dark>delete_forever</v-icon>
                                   </v-btn>
                                 </template>
                                 <span>Delete</span>
@@ -248,7 +248,7 @@
                                     color="indigo"
                                     @click="copySolutionToClipboard"
                                   >
-                                    <v-icon dark>fa-clipboard</v-icon>
+                                    <v-icon dark>post_add</v-icon>
                                   </v-btn>
                                 </template>
                                 <span>Copy selected solution config to clipboard</span>
@@ -267,7 +267,7 @@
                                     color="teal darken-3"
                                     @click="downloadSelectedSolutionConfig"
                                   >
-                                    <v-icon dark>fa-download</v-icon>
+                                    <v-icon dark>file_download</v-icon>
                                   </v-btn>
                                 </template>
                                 <span>Download selected solution's config as a file</span>
@@ -325,7 +325,7 @@
                             color="indigo"
                             @click="copyWholeConfigClipboard"
                           >
-                            <v-icon dark>fa-clipboard</v-icon>
+                            <v-icon dark>post_add</v-icon>
                           </v-btn>
                         </template>
                         <span>Copy full solution config to clipboard</span>
@@ -344,7 +344,7 @@
                             color="teal darken-3"
                             @click="downloadSolutionConfig"
                           >
-                            <v-icon dark>fa-download</v-icon>
+                            <v-icon dark>file_download</v-icon>
                           </v-btn>
                         </template>
                         <span>Download all solutions configs as a file</span>
@@ -363,7 +363,7 @@
                             color="deep-purple"
                             @click="toggleDisplayOfSolutionConfig"
                           >
-                            <v-icon dark>{{ displayFullSolutionConfig ? 'fa-eye' : 'fa-eye-slash' }}</v-icon>
+                            <v-icon dark>{{ displayFullSolutionConfig ? 'toggle_on' : 'toggle_off' }}</v-icon>
                           </v-btn>
                         </template>
                         <span>Toggle display of full solution config</span>
@@ -383,7 +383,7 @@
                             href="https://jolzee.gitbook.io/leopard/"
                             target="_blank"
                           >
-                            <v-icon dark>fa-question-circle</v-icon>
+                            <v-icon dark>help</v-icon>
                           </v-btn>
                         </template>
                         <span>Help / Documentation</span>
@@ -467,7 +467,7 @@
                       label="Paste in full or partial configurations"
                       :value="getUploadConfig"
                       auto-grow
-                      prepend-icon="fa-cog"
+                      prepend-icon="settings"
                       class="coding-font"
                     ></v-textarea>
                   </v-col>
@@ -490,7 +490,7 @@
                   <v-icon
                     right
                     dark
-                  >fa-save</v-icon>
+                  >save</v-icon>
                 </v-btn>
                 <v-snackbar
                   :timeout="globalSnackbarTimeout"
@@ -524,23 +524,16 @@
                   <v-btn
                     class="mr-2"
                     color="light-blue darken-1"
-                    href="https://fontawesome.com/icons?d=gallery&m=free"
+                    href="https://jossef.github.io/material-design-icons-iconfont/"
                     target="_blank"
-                  >Font Awesome
+                  >Material Design Icons (icon_name)
                   </v-btn>
                   <v-btn
                     class="mr-2"
                     color="light-blue darken-1"
-                    href="https://material.io/tools/icons/?icon=supervised_user_circle&style=baseline"
+                    href="https://materialdesignicons.com/"
                     target="_blank"
-                  >Material
-                  </v-btn>
-                  <v-btn
-                    class="mr-2"
-                    color="light-blue darken-1"
-                    href="https://htmlcolorcodes.com/color-names/"
-                    target="_blank"
-                  >HTML Color Names
+                  >MDI Icons (mdi-icon_name)
                   </v-btn>
 
                   <v-container fluid>
@@ -686,7 +679,7 @@
                           validate-on-blur
                           color="light-blue darken-1"
                           :tabindex="getTabIndex"
-                          label="Response Icon - Material Icons or FontAwesome (fa-)"
+                          label="Response Icon - Material Icons (icon_name) or MDI Icons (mdi-icon_name)"
                           :append-icon="solution.responseIcon"
                           :rules="[ruleMustHaveValue]"
                         ></v-text-field>
@@ -707,7 +700,7 @@
                           validate-on-blur
                           color="light-blue darken-1"
                           :tabindex="getTabIndex"
-                          label="User Icon - Material Icons or FontAwesome (fa-)"
+                          label="Response Icon - Material Icons (icon_name) or MDI Icons (mdi-icon_name)"
                           :append-icon="solution.userIcon"
                           :rules="[ruleMustHaveValue]"
                         ></v-text-field>
@@ -783,7 +776,7 @@
                           :menu-props="{contentClass:'select-options'}"
                           :tabindex="getTabIndex"
                           v-model="solution.pulseButton"
-                          append-icon="fa-sun"
+                          append-icon="leak_add"
                         ></v-select>
                       </v-col>
                       <v-divider></v-divider>
@@ -881,7 +874,7 @@
                                 @click="resetColorsToDefault"
                                 color="green"
                               >
-                                <v-icon dark>fa-undo</v-icon>
+                                <v-icon dark>undo</v-icon>
                               </v-btn>
                             </template>
                             <span>Reset Colors to Default</span>
@@ -1162,7 +1155,7 @@
                               color="light-blue darken-1"
                               :tabindex="getTabIndex"
                               label="Example question"
-                              append-icon="fa-question-circle"
+                              append-icon="help"
                               :rules="[ruleMustHaveValue]"
                             ></v-text-field>
                           </v-col>
@@ -1249,7 +1242,7 @@
                               color="light-blue darken-1"
                               :tabindex="getTabIndex"
                               label="Parameter Name"
-                              append-icon="fa-key"
+                              append-icon="vpn_key"
                               :rules="[ruleMustHaveValue]"
                             ></v-text-field>
                           </v-col>
@@ -1275,7 +1268,7 @@
                                   @click="addNewContextParameterValue(index)"
                                   color="green"
                                   dark
-                                >fa-plus</v-icon>
+                                >add_circle</v-icon>
                               </template>
                               <span>Add Parameter Value</span>
                             </v-tooltip>
@@ -1306,7 +1299,7 @@
                                     @click="toggleActiveContextParameterValue(value.active, index, valueIndex)"
                                     :color="value.active ? 'green' : 'blue-grey lighten-4'"
                                     dark
-                                  >{{ value.active ? 'fa-check-square': 'fa-square' }}</v-icon>
+                                  >{{ value.active ? 'check_box': 'check_box_outline_blank' }}</v-icon>
                                 </template>
                                 <span>Enable/Disable</span>
                               </v-tooltip>
@@ -1344,7 +1337,7 @@
                   <v-icon
                     right
                     dark
-                  >fa-save</v-icon>
+                  >save</v-icon>
                 </v-btn>
                 <v-snackbar
                   :timeout="snackbarTimeout"
