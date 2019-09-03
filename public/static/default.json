@@ -19,8 +19,8 @@
         }
       ],
       "chatTitle": "Speak with Leo",
-      "responseIcon": "person",
-      "userIcon": "fa-comment-alt",
+      "responseIcon": "mdi-message-bulleted",
+      "userIcon": "mdi-comment-account",
       "useLocalStorage": "false",
       "enableLiveChat": "false",
       "theme": {
