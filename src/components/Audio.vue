@@ -1,5 +1,5 @@
 <template>
-  <vue-plyr v-if="url">
+  <vue-plyr v-if="url" class="mb-2">
     <audio>
       <source
         :src="url"

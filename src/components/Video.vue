@@ -1,5 +1,5 @@
 <template>
-  <vue-plyr v-if="url && type">
+  <vue-plyr v-if="url && type" class="mb-2">
     <video
       poster="poster.png"
       src="video.mp4"

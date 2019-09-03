@@ -1,5 +1,5 @@
 <template>
-  <div class="map-responsive">
+  <div class="map-responsive mb-2">
     <iframe
       width="600"
       height="450"

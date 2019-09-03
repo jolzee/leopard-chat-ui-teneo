@@ -3,6 +3,7 @@
     :height="height"
     hide-delimiters
     v-if="imageItems && imageItems.length"
+    class="mb-2"
   >
     <v-carousel-item
       v-for="(imageUrl,i) in imageItems"

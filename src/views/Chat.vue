@@ -160,7 +160,7 @@
               <upload-btn
                 icon
                 v-if="showUploadButton"
-                :fileChangedCallback="fileChanged"
+                @file-update="fileChanged"
                 large
                 hover
                 class="elevation-2 v-btn v-btn--contained v-btn--fab v-btn--round v-size--small primary white--text"
