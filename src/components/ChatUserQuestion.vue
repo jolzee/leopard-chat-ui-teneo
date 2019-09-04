@@ -37,8 +37,9 @@
         @long-press-start="swapInputButton"
         class="teneo-userinput-icon elevation-2"
         fab
+        light
         small
-        color="white primary--text"
+        color="primary white--text"
         @click="updateInputBox(item.text)"
       >
         <v-icon>{{userIcon}}</v-icon>

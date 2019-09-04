@@ -668,6 +668,7 @@
                       <v-col
                         cols="12"
                         sm="8"
+                        class="pb-0"
                       >
                         <v-text-field
                           v-model.trim="solution.responseIcon"
@@ -684,21 +685,68 @@
                         sm="4"
                         class="hidden-xs-only"
                       >
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                        class="py-0"
+                      >
+
+                        <v-btn
+                          v-for="(icon, index) in chatIcons"
+                          :key="index + 'icons'"
+                          @click="solution.responseIcon = icon"
+                          text
+                          icon
+                          color="indigo"
+                        >
+                          <v-icon>{{icon}}</v-icon>
+                        </v-btn>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
                         <v-subheader>User Icon</v-subheader>
                       </v-col>
                       <v-col
                         cols="12"
                         sm="8"
+                        class="pb-0"
                       >
                         <v-text-field
                           v-model.trim="solution.userIcon"
                           validate-on-blur
                           color="light-blue darken-1"
                           :tabindex="getTabIndex"
-                          label="Response Icon - MDI Icons (mdi-icon-name)"
+                          label="User Icon - MDI Icons (mdi-icon-name)"
                           :append-icon="solution.userIcon"
                           :rules="[ruleMustHaveValue]"
                         ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="hidden-xs-only"
+                      >
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                        class="py-0"
+                      >
+
+                        <v-btn
+                          v-for="(icon, index) in chatIcons"
+                          :key="index + 'icons'"
+                          @click="solution.userIcon = icon"
+                          text
+                          icon
+                          color="indigo"
+                        >
+                          <v-icon>{{icon}}</v-icon>
+                        </v-btn>
                       </v-col>
                       <v-col
                         cols="12"
@@ -1402,6 +1450,38 @@ export default {
         "cn",
         "cn(hk)",
         "id"
+      ],
+      chatIcons: [
+        "mdi-message-text",
+        "mdi-message-outline",
+        "mdi-message",
+        "mdi-chat-outline",
+        "mdi-chat",
+        "mdi-message-reply",
+        "mdi-message-reply-text",
+        "mdi-android-messages",
+        "mdi-account",
+        "mdi-account-arrow-right",
+        "mdi-account-arrow-left",
+        "mdi-account-box",
+        "mdi-account-circle",
+        "mdi-account-supervisor-circle",
+        "mdi-account-tie",
+        "mdi-comment-account",
+        "mdi-tooltip-account",
+        "mdi-face",
+        "mdi-face-profile",
+        "mdi-face-profile-woman",
+        "mdi-face-woman",
+        "mdi-emoticon-outline",
+        "mdi-comment-arrow-left",
+        "mdi-comment-arrow-right",
+        "mdi-cowboy",
+        "mdi-cow",
+        "mdi-doctor",
+        "mdi-human-greeting",
+        "mdi-pirate",
+        "mdi-robot"
       ],
       displayAddEditDialog: false,
       currentModeEdit: "",
