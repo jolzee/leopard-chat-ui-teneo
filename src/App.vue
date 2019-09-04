@@ -21,7 +21,7 @@
           >
             <v-icon
               dark
-              v-text="isChatOpen ? 'close' : 'chat'"
+              v-text="isChatOpen ? 'mdi-close' : 'mdi-message-text'"
             ></v-icon>
           </v-btn>
         </v-fab-transition>
@@ -70,6 +70,7 @@
             fab
             dark
             color="primary"
+            elevation="2"
             @click="toggleChat"
             v-show="showChatButton"
             :class="{ pulse: (pulseButton && !showChatWindow)}"
@@ -77,7 +78,7 @@
           >
             <v-icon
               dark
-              v-text="showChatWindow ? 'close' : 'chat'"
+              v-text="showChatWindow ? 'mdi-close' : 'mdi-message-text'"
             ></v-icon>
           </v-btn>
         </v-fab-transition>
@@ -175,8 +176,8 @@
             <v-icon
               dark
               v-text="$vuetify.theme.dark
-            ? 'brightness_4'
-            : 'brightness_5'"
+            ? 'mdi-brightness-4'
+            : 'mdi-brightness-5'"
             ></v-icon>
           </v-btn>
         </v-toolbar>
@@ -208,27 +209,27 @@ export default {
       drawer: false,
       menuItems: [
         {
-          icon: "chat",
+          icon: "mdi-message-text",
           titleKey: "menu.chat",
           route: "/"
         },
         {
-          icon: "help_outline",
+          icon: "mdi-lifebuoy",
           titleKey: "menu.help",
           route: "help"
         },
         {
-          icon: "history",
+          icon: "mdi-history",
           titleKey: "menu.history",
           route: "history"
         },
         {
-          icon: "memory",
+          icon: "mdi-information-variant",
           titleKey: "menu.about",
           route: "about"
         },
         {
-          icon: "tune",
+          icon: "mdi-message-settings-variant",
           titleKey: "menu.config",
           route: "config"
         },

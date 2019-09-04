@@ -85,13 +85,13 @@
               clearable
               autocomplete="off"
               required
-              append-icon="email"
+              append-icon="mdi-at"
             ></v-text-field>
           </v-col>
           <v-col cols="12">
             <v-text-field
               v-model="password"
-              :append-icon="showPassword ? 'visibility' : 'visibility_off'"
+              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
               :rules="[rules.required, rules.min]"
               :type="showPassword ? 'text' : 'password'"
               name="password"

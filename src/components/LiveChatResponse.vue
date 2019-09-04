@@ -5,7 +5,7 @@
       <v-alert
         :value="true"
         color="info"
-        icon="access_time"
+        icon="mdi-counter"
         elevation="2"
       >
         {{item.text}}
@@ -17,7 +17,7 @@
       <v-alert
         :value="true"
         color="info"
-        icon="thumb_up"
+        icon="mdi-thumb_up"
         elevation="2"
       >
         {{item.text}}
@@ -27,7 +27,7 @@
       <v-alert
         :value="true"
         color="info"
-        icon="logout"
+        icon="mdi-logout-variant"
         elevation="2"
       >
         {{item.text}}

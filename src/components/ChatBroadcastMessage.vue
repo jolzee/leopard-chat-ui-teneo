@@ -4,7 +4,7 @@
     <v-alert
       :value="true"
       color="info"
-      icon="add_alert"
+      icon="mdi-alert-octagram"
       class="mb-0 elevation-2"
     >{{item.text}}
     </v-alert>

@@ -21,10 +21,10 @@
             color="green"
             :loading="refresh"
           >
-            <v-icon>refresh</v-icon>
+            <v-icon>mdi-refresh</v-icon>
           </v-btn>
         </v-col>
-        <v-toolbar-title>Configuration</v-toolbar-title>
+        <v-toolbar-title class="d-none d-sm-flex">Configuration</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-tooltip
           open-delay="600"
@@ -44,7 +44,7 @@
               target="_blank"
             >
 
-              <v-icon dark>phone_android</v-icon>
+              <v-icon dark>mdi-cellphone-android</v-icon>
             </v-btn>
           </template>
           <span>Deep Link Mobile</span>
@@ -66,7 +66,7 @@
               color="indigo"
               :href="getActiveSolutionDeepLink"
             >
-              <v-icon dark>desktop_windows</v-icon>
+              <v-icon dark>mdi-monitor</v-icon>
             </v-btn>
           </template>
           <span>Deep Link Desktop</span>
@@ -83,17 +83,17 @@
           <v-icon
             large
             color="grey lighten-1"
-          >settings</v-icon>
+          >mdi-settings</v-icon>
         </v-badge>
         <v-chip
           v-if="config.activeSolution"
           disabled
           color="green"
           text-color="white"
-          class="mr-4"
+          class="mr-4 d-none d-sm-flex"
         >
           <v-avatar class="green darken-4">
-            <v-icon>check</v-icon>
+            <v-icon>mdi-check</v-icon>
           </v-avatar>
           {{ config.activeSolution }}
         </v-chip>
@@ -129,7 +129,7 @@
                               return-object
                               no-data-text="No Solutions"
                               label="Select Teneo Solution"
-                              append-icon="arrow_downward"
+                              append-icon="mdi-chevron-double-down"
                             ></v-select>
                           </v-col>
                           <v-col
@@ -150,7 +150,7 @@
                                   @click="addSolution"
                                   color="green"
                                 >
-                                  <v-icon dark>add_circle</v-icon>
+                                  <v-icon dark>mdi-plus-circle</v-icon>
                                 </v-btn>
                               </template>
                               <span>Create a new solution config</span>
@@ -170,7 +170,7 @@
                                   @click="setActiveSolution"
                                   v-if="selectedSolution"
                                 >
-                                  <v-icon dark>{{(selectedSolution && (config.activeSolution === selectedSolution.name)) ? "check_box" : "check_box_outline_blank"}}
+                                  <v-icon dark>{{(selectedSolution && (config.activeSolution === selectedSolution.name)) ? "mdi-checkbox-marked" : "mdi-checkbox-blank-outline"}}
                                   </v-icon>
                                 </v-btn>
                               </template>
@@ -191,7 +191,7 @@
                                     color="pink darken-4"
                                     @click="editSolution"
                                   >
-                                    <v-icon dark>edit</v-icon>
+                                    <v-icon dark>mdi-pencil</v-icon>
                                   </v-btn>
                                 </template>
                                 <span>Edit</span>
@@ -210,7 +210,7 @@
                                     @click="cloneSolution"
                                     color="orange"
                                   >
-                                    <v-icon dark>content_copy</v-icon>
+                                    <v-icon dark>mdi-content-copy</v-icon>
                                   </v-btn>
                                 </template>
                                 <span>Clone</span>
@@ -229,7 +229,7 @@
                                     @click="deleteSolutionConfig"
                                     color="red"
                                   >
-                                    <v-icon dark>delete_forever</v-icon>
+                                    <v-icon dark>mdi-trash-can</v-icon>
                                   </v-btn>
                                 </template>
                                 <span>Delete</span>
@@ -248,7 +248,7 @@
                                     color="indigo"
                                     @click="copySolutionToClipboard"
                                   >
-                                    <v-icon dark>post_add</v-icon>
+                                    <v-icon dark>mdi-clipboard-arrow-up-outline</v-icon>
                                   </v-btn>
                                 </template>
                                 <span>Copy selected solution config to clipboard</span>
@@ -267,7 +267,7 @@
                                     color="teal darken-3"
                                     @click="downloadSelectedSolutionConfig"
                                   >
-                                    <v-icon dark>file_download</v-icon>
+                                    <v-icon dark>mdi-file-download</v-icon>
                                   </v-btn>
                                 </template>
                                 <span>Download selected solution's config as a file</span>
@@ -306,7 +306,7 @@
                             color="pink"
                             @click="showUploadDialog"
                           >
-                            <v-icon dark>cloud_upload</v-icon>
+                            <v-icon dark>mdi-upload</v-icon>
                           </v-btn>
                         </template>
                         <span>Upload an individual or full solution config</span>
@@ -325,7 +325,7 @@
                             color="indigo"
                             @click="copyWholeConfigClipboard"
                           >
-                            <v-icon dark>post_add</v-icon>
+                            <v-icon dark>mdi-clipboard-arrow-up-outline</v-icon>
                           </v-btn>
                         </template>
                         <span>Copy full solution config to clipboard</span>
@@ -344,7 +344,7 @@
                             color="teal darken-3"
                             @click="downloadSolutionConfig"
                           >
-                            <v-icon dark>file_download</v-icon>
+                            <v-icon dark>mdi-file-download</v-icon>
                           </v-btn>
                         </template>
                         <span>Download all solutions configs as a file</span>
@@ -363,7 +363,7 @@
                             color="deep-purple"
                             @click="toggleDisplayOfSolutionConfig"
                           >
-                            <v-icon dark>{{ displayFullSolutionConfig ? 'toggle_on' : 'toggle_off' }}</v-icon>
+                            <v-icon dark>{{ displayFullSolutionConfig ? 'mdi-eye' : 'mdi-eye-off' }}</v-icon>
                           </v-btn>
                         </template>
                         <span>Toggle display of full solution config</span>
@@ -383,7 +383,7 @@
                             href="https://jolzee.gitbook.io/leopard/"
                             target="_blank"
                           >
-                            <v-icon dark>help</v-icon>
+                            <v-icon dark>mdi-lifebuoy</v-icon>
                           </v-btn>
                         </template>
                         <span>Help / Documentation</span>
@@ -455,7 +455,7 @@
                         <v-icon
                           dark
                           right
-                        >publish</v-icon>
+                        >mdi-publish</v-icon>
                       </label>
                     </div>
                     <v-textarea
@@ -467,7 +467,7 @@
                       label="Paste in full or partial configurations"
                       :value="getUploadConfig"
                       auto-grow
-                      prepend-icon="settings"
+                      prepend-icon="mdi-settings-transfer"
                       class="coding-font"
                     ></v-textarea>
                   </v-col>
@@ -490,7 +490,7 @@
                   <v-icon
                     right
                     dark
-                  >save</v-icon>
+                  >mdi-content-save-move</v-icon>
                 </v-btn>
                 <v-snackbar
                   :timeout="globalSnackbarTimeout"
@@ -521,20 +521,15 @@
                 id="add-edit"
               >
                 <v-form ref="form">
-                  <v-btn
-                    class="mr-2"
-                    color="light-blue darken-1"
-                    href="https://jossef.github.io/material-design-icons-iconfont/"
-                    target="_blank"
-                  >Material Design Icons (icon_name)
-                  </v-btn>
-                  <v-btn
-                    class="mr-2"
-                    color="light-blue darken-1"
-                    href="https://materialdesignicons.com/"
-                    target="_blank"
-                  >MDI Icons (mdi-icon_name)
-                  </v-btn>
+                  <div class="d-none d-sm-inline-block">
+                    <v-btn
+                      class="mr-2 mt-2"
+                      color="light-blue darken-1"
+                      href="https://materialdesignicons.com/"
+                      target="_blank"
+                    >MDI Icons (mdi-icon-name)
+                    </v-btn>
+                  </div>
 
                   <v-container fluid>
                     <v-row>
@@ -575,7 +570,7 @@
                           validate-on-blur
                           :tabindex="getTabIndex"
                           label="URL to Teneo Runtime - no parameters"
-                          append-icon="link"
+                          append-icon="mdi-link-variant"
                           :rules="[ruleMustHaveValue, ruleMustBeUrl]"
                         ></v-text-field>
                       </v-col>
@@ -596,7 +591,7 @@
                           validate-on-blur
                           :tabindex="getTabIndex"
                           label="Enter the IFRAME URL"
-                          append-icon="link"
+                          append-icon="mdi-link-variant"
                           :rules="[ruleMustHaveValue, ruleMustBeUrl]"
                         ></v-text-field>
                       </v-col>
@@ -660,7 +655,7 @@
                           :tabindex="getTabIndex"
                           v-model="solution.locale"
                           label="Specify Chat Locale"
-                          append-icon="language"
+                          append-icon="mdi-translate"
                         ></v-select>
                       </v-col>
                       <v-col
@@ -679,7 +674,7 @@
                           validate-on-blur
                           color="light-blue darken-1"
                           :tabindex="getTabIndex"
-                          label="Response Icon - Material Icons (icon_name) or MDI Icons (mdi-icon_name)"
+                          label="Response Icon - MDI Icons (mdi-icon-name)"
                           :append-icon="solution.responseIcon"
                           :rules="[ruleMustHaveValue]"
                         ></v-text-field>
@@ -700,7 +695,7 @@
                           validate-on-blur
                           color="light-blue darken-1"
                           :tabindex="getTabIndex"
-                          label="Response Icon - Material Icons (icon_name) or MDI Icons (mdi-icon_name)"
+                          label="Response Icon - MDI Icons (mdi-icon-name)"
                           :append-icon="solution.userIcon"
                           :rules="[ruleMustHaveValue]"
                         ></v-text-field>
@@ -726,7 +721,7 @@
                           :menu-props="{contentClass:'select-options'}"
                           :tabindex="getTabIndex"
                           v-model="solution.enableLiveChat"
-                          append-icon="contact_phone"
+                          append-icon="mdi-face-agent"
                         ></v-select>
                       </v-col>
                       <v-divider></v-divider>
@@ -751,7 +746,7 @@
                           :menu-props="{contentClass:'select-options'}"
                           :tabindex="getTabIndex"
                           v-model="solution.float"
-                          append-icon="important_devices"
+                          append-icon="mdi-stretch-to-page-outline"
                         ></v-select>
                       </v-col>
                       <v-divider></v-divider>
@@ -776,7 +771,7 @@
                           :menu-props="{contentClass:'select-options'}"
                           :tabindex="getTabIndex"
                           v-model="solution.pulseButton"
-                          append-icon="leak_add"
+                          append-icon="mdi-pulse"
                         ></v-select>
                       </v-col>
                       <v-divider></v-divider>
@@ -801,7 +796,7 @@
                           :menu-props="{contentClass:'select-options'}"
                           :tabindex="getTabIndex"
                           v-model="solution.longResponsesInModal"
-                          append-icon="important_devices"
+                          append-icon="mdi-arrange-bring-forward"
                         ></v-select>
                       </v-col>
                       <v-divider></v-divider>
@@ -826,7 +821,7 @@
                           :menu-props="{contentClass:'select-options'}"
                           :tabindex="getTabIndex"
                           v-model="solution.showChatIcons"
-                          append-icon="important_devices"
+                          append-icon="mdi-eye-off"
                         ></v-select>
                       </v-col>
                       <v-divider></v-divider>
@@ -851,7 +846,7 @@
                           :menu-props="{contentClass:'select-options'}"
                           :tabindex="getTabIndex"
                           v-model="solution.displayAccent"
-                          append-icon="important_devices"
+                          append-icon="mdi-border-top-variant"
                         ></v-select>
                       </v-col>
                       <v-divider></v-divider>
@@ -874,7 +869,7 @@
                                 @click="resetColorsToDefault"
                                 color="green"
                               >
-                                <v-icon dark>undo</v-icon>
+                                <v-icon dark>mdi-undo-variant</v-icon>
                               </v-btn>
                             </template>
                             <span>Reset Colors to Default</span>
@@ -898,7 +893,7 @@
                                 text-color="white"
                               >
                                 <v-avatar>
-                                  <v-icon>invert_colors</v-icon>
+                                  <v-icon>mdi-invert-colors</v-icon>
                                 </v-avatar>
                                 primary
                               </v-chip>
@@ -909,7 +904,7 @@
                                 text-color="white"
                               >
                                 <v-avatar>
-                                  <v-icon>invert_colors</v-icon>
+                                  <v-icon>mdi-invert-colors</v-icon>
                                 </v-avatar>
                                 secondary
                               </v-chip>
@@ -920,7 +915,7 @@
                                 text-color="white"
                               >
                                 <v-avatar>
-                                  <v-icon>invert_colors</v-icon>
+                                  <v-icon>mdi-invert-colors</v-icon>
                                 </v-avatar>
                                 accent
                               </v-chip>
@@ -931,7 +926,7 @@
                                 text-color="white"
                               >
                                 <v-avatar>
-                                  <v-icon>invert_colors</v-icon>
+                                  <v-icon>mdi-invert-colors</v-icon>
                                 </v-avatar>
                                 erorr
                               </v-chip>
@@ -942,7 +937,7 @@
                                 text-color="white"
                               >
                                 <v-avatar>
-                                  <v-icon>invert_colors</v-icon>
+                                  <v-icon>mdi-invert-colors</v-icon>
                                 </v-avatar>
                                 info
                               </v-chip>
@@ -953,7 +948,7 @@
                                 text-color="white"
                               >
                                 <v-avatar>
-                                  <v-icon>invert_colors</v-icon>
+                                  <v-icon>mdi-invert-colors</v-icon>
                                 </v-avatar>
                                 success
                               </v-chip>
@@ -964,7 +959,7 @@
                                 text-color="white"
                               >
                                 <v-avatar>
-                                  <v-icon>invert_colors</v-icon>
+                                  <v-icon>mdi-invert-colors</v-icon>
                                 </v-avatar>
                                 warning
                               </v-chip>
@@ -1136,7 +1131,7 @@
                           <v-icon
                             right
                             dark
-                          >add_circle</v-icon>
+                          >mdi-plus-circle</v-icon>
                         </v-btn>
                       </v-col>
                       <v-col
@@ -1155,7 +1150,7 @@
                               color="light-blue darken-1"
                               :tabindex="getTabIndex"
                               label="Example question"
-                              append-icon="help"
+                              append-icon="mdi-android-messages"
                               :rules="[ruleMustHaveValue]"
                             ></v-text-field>
                           </v-col>
@@ -1168,7 +1163,7 @@
                               @click="solution.knowledgeData.splice(index, 1)"
                               color="red"
                               dark
-                            >remove_circle</v-icon>
+                            >mdi-minus-circle</v-icon>
                             <!-- </v-btn> -->
                           </v-col>
                         </v-row>
@@ -1216,7 +1211,7 @@
                           <v-icon
                             right
                             dark
-                          >add_circle</v-icon>
+                          >mdi-plus-circle</v-icon>
                         </v-btn>
                       </v-col>
                       <v-col
@@ -1242,7 +1237,7 @@
                               color="light-blue darken-1"
                               :tabindex="getTabIndex"
                               label="Parameter Name"
-                              append-icon="vpn_key"
+                              append-icon="mdi-key-variant"
                               :rules="[ruleMustHaveValue]"
                             ></v-text-field>
                           </v-col>
@@ -1257,7 +1252,7 @@
                                   @click="solution.contextParams.splice(index, 1)"
                                   color="red"
                                   dark
-                                >remove_circle</v-icon>
+                                >mdi-minus-circle</v-icon>
                               </template>
                               <span>Remove CTX Parameter</span>
                             </v-tooltip>
@@ -1268,7 +1263,7 @@
                                   @click="addNewContextParameterValue(index)"
                                   color="green"
                                   dark
-                                >add_circle</v-icon>
+                                >mdi-plus-circle</v-icon>
                               </template>
                               <span>Add Parameter Value</span>
                             </v-tooltip>
@@ -1288,7 +1283,7 @@
                                     @click="contextParam.values.splice(valueIndex, 1)"
                                     color="red"
                                     dark
-                                  >remove_circle</v-icon>
+                                  >mdi-minus-circle</v-icon>
                                 </template>
                                 <span>Delete Parameter Value</span>
                               </v-tooltip>
@@ -1299,7 +1294,7 @@
                                     @click="toggleActiveContextParameterValue(value.active, index, valueIndex)"
                                     :color="value.active ? 'green' : 'blue-grey lighten-4'"
                                     dark
-                                  >{{ value.active ? 'check_box': 'check_box_outline_blank' }}</v-icon>
+                                  >{{ value.active ? 'mdi-checkbox-marked': 'mdi-checkbox-blank-outline' }}</v-icon>
                                 </template>
                                 <span>Enable/Disable</span>
                               </v-tooltip>
@@ -1337,7 +1332,7 @@
                   <v-icon
                     right
                     dark
-                  >save</v-icon>
+                  >mdi-content-save</v-icon>
                 </v-btn>
                 <v-snackbar
                   :timeout="snackbarTimeout"

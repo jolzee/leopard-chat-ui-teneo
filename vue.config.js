@@ -1,5 +1,10 @@
 const path = require("path");
 module.exports = {
+  pluginOptions: {
+    webpackBundleAnalyzer: {
+      openAnalyzer: false
+    }
+  },
   chainWebpack: config => {
     config.module
       .rule("eslint")

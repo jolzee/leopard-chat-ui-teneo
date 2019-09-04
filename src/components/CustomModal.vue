@@ -24,7 +24,7 @@
             <v-icon
               dark
               medium
-            >close</v-icon>
+            >mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>{{ $t('more.info.title') }}</v-toolbar-title>
         </v-toolbar>
@@ -113,24 +113,24 @@
 </template>
 
 <script>
-import Audio from "./Audio";
-import Carousel from "./Carousel";
-import ImageAnimation from "./ImageAnimation";
-import Video from "./Video";
-import Map from "./Map";
-import Vimeo from "./Vimeo";
-import YouTube from "./YouTube";
+// import Audio from "./Audio";
+// import Carousel from "./Carousel";
+// import ImageAnimation from "./ImageAnimation";
+// import Video from "./Video";
+// import Map from "./Map";
+// import Vimeo from "./Vimeo";
+// import YouTube from "./YouTube";
 
 export default {
   props: ["items", "toolbarWidth"],
   components: {
-    Audio,
-    Carousel,
-    ImageAnimation,
-    Map,
-    Video,
-    Vimeo,
-    YouTube
+    Audio: () => import("./Audio"),
+    Carousel: () => import("./Carousel"),
+    ImageAnimation: () => import("./ImageAnimation"),
+    Map: () => import("./Map"),
+    Video: () => import("./Video"),
+    Vimeo: () => import("./Vimeo"),
+    YouTube: () => import("./YouTube")
   },
   data() {
     return {};

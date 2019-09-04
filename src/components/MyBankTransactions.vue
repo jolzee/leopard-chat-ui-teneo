@@ -17,7 +17,7 @@
       slot="no-results"
       :value="true"
       color="error"
-      icon="warning"
+      icon="mdi-alert-octagram"
     >
       Your search for "{{ search }}" found no results.
     </v-alert>

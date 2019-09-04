@@ -2,12 +2,15 @@
   <v-row
     justify="center"
     align="center"
-    class="loading-ball text-center mt-3"
+    class="loading-ball text-center pt-5 mt-5"
   >
-    <v-col cols="12">
+    <v-col
+      cols="12"
+      class="mt-5 pt-5"
+    >
       <vue-loaders-line-scale
         color="#C2C2C2"
-        size="60px"
+        scale="3"
       ></vue-loaders-line-scale>
     </v-col>
   </v-row>

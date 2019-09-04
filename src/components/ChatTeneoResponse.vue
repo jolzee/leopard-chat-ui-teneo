@@ -211,7 +211,7 @@
           color="success"
           @click="toggleDate()"
         >
-          <v-icon>date_range</v-icon>
+          <v-icon>mdi-calendar-clock</v-icon>
         </v-btn>
       </v-col>
       <!-- Time Picker -->
@@ -227,7 +227,7 @@
           color="success"
           @click="toggleTime()"
         >
-          <v-icon>access_time</v-icon>
+          <v-icon>mdi-clock</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -315,27 +315,27 @@ export default {
     modalButtonIcon() {
       let extensions = this.itemExtensions(this.item);
       let countOfNonInlines = 0;
-      let iconName = "keyboard_arrow_up";
+      let iconName = "mdi-arrow-top-left-thick";
       extensions.forEach(extension => {
         if (!extension.inline || this.item.teneoResponse.link.href !== "") {
           countOfNonInlines++;
         }
 
         if (extension.name.startsWith("displayVideo")) {
-          iconName = "ondemand_video";
+          iconName = "mdi-youtube";
         } else if (extension.name.startsWith("displayImage")) {
-          iconName = "image";
+          iconName = "mdi-file-image";
         } else if (extension.name.startsWith("displayTable")) {
-          iconName = "table_chart";
+          iconName = "mdi-table-large";
         }
 
         if (this.item.teneoResponse.link.href !== "") {
-          iconName = "link";
+          iconName = "mdi-link-variant";
         }
       });
 
       if (countOfNonInlines > 1) {
-        return "keyboard_arrow_up";
+        return "mdi-arrow-top-left-thick";
       }
 
       return iconName;
@@ -446,9 +446,9 @@ export default {
   },
   methods: {
     getLongListIcon(altOptionIndex) {
-      let iconName = "filter_none";
+      let iconName = "mdi-numeric-9-plus-box-outline";
       if (altOptionIndex + 1 <= 9) {
-        iconName = "filter_" + (altOptionIndex + 1);
+        iconName = "mdi-numeric-" + (altOptionIndex + 1) + "-box-outline";
       }
       return iconName;
     },

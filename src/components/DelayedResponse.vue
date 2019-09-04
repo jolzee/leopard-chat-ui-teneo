@@ -7,7 +7,7 @@
       >
         <vue-loaders-line-scale-pulse-out-rapid
           color="#D7D7D7"
-          size="50px"
+          scale="1"
         ></vue-loaders-line-scale-pulse-out-rapid>
       </v-row>
     </v-container>

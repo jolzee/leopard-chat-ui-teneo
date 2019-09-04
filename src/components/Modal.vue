@@ -38,7 +38,7 @@
               <v-icon
                 dark
                 medium
-              >close</v-icon>
+              >mdi-close</v-icon>
             </v-btn>
             <v-toolbar-title>{{ $t('more.info.title') }}</v-toolbar-title>
           </v-toolbar>
@@ -160,7 +160,7 @@
                   >
                     <v-text-field
                       v-model="search"
-                      append-icon="search"
+                      append-icon="mdi-table-search"
                       label="Search"
                       single-line
                       hide-details
@@ -197,34 +197,34 @@
 </template>
 
 <script>
-import Audio from "./Audio";
-import Carousel from "./Carousel";
-import CustomModal from "./CustomModal";
-import FlightItinerary from "./FlightItinerary";
-import ImageAnimation from "./ImageAnimation";
-import MyBankTransactions from "./MyBankTransactions";
+// import Audio from "./Audio";
+// import Carousel from "./Carousel";
+// import CustomModal from "./CustomModal";
+// import FlightItinerary from "./FlightItinerary";
+// import ImageAnimation from "./ImageAnimation";
+// import MyBankTransactions from "./MyBankTransactions";
 // import Pusher from "./Pusher";
-import Table from "./Table";
-import Video from "./Video";
-import Map from "./Map";
-import Vimeo from "./Vimeo";
-import YouTube from "./YouTube";
+// import Table from "./Table";
+// import Video from "./Video";
+// import Map from "./Map";
+// import Vimeo from "./Vimeo";
+// import YouTube from "./YouTube";
 import { mapGetters } from "vuex";
 
 export default {
   components: {
-    Audio,
-    Carousel,
-    CustomModal,
-    FlightItinerary,
-    ImageAnimation,
-    MyBankTransactions,
-    Map,
+    Audio: () => import("./Audio"),
+    Carousel: () => import("./Carousel"),
+    CustomModal: () => import("./CustomModal"),
+    FlightItinerary: () => import("./FlightItinerary"),
+    ImageAnimation: () => import("./ImageAnimation"),
+    MyBankTransactions: () => import("./MyBankTransactions"),
+    Map: () => import("./Map"),
     // Pusher,
-    Table,
-    Video,
-    Vimeo,
-    YouTube
+    Table: () => import("./Table"),
+    Video: () => import("./Video"),
+    Vimeo: () => import("./Vimeo"),
+    YouTube: () => import("./YouTube")
   },
   data() {
     return {

@@ -87,7 +87,7 @@
             >Agent is typing a message..
               <vue-loaders-ball-pulse-sync
                 color="#C2C2C2"
-                size="8px"
+                scale="0.5"
               ></vue-loaders-ball-pulse-sync>
             </v-alert>
 
@@ -128,11 +128,11 @@
                 id="teneo-input-field"
                 v-show="!showUploadButton && !showUploadProgress"
                 :disabled="progressBar"
-                :append-icon="showAudioInput ? 'double_arrow' : ''"
+                :append-icon="showAudioInput ? 'mdi-chevron-double-right' : ''"
                 @click:append="sendUserInput"
                 v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
                 @shortkey.native="swapInputButton"
-                :prepend-inner-icon="askingForPassword ? showPassword ? 'visibility' : 'visibility_off' : ''"
+                :prepend-inner-icon="askingForPassword ? showPassword ? 'mdi-eye' : 'mdi-eye-off' : ''"
                 :type="askingForPassword ? showPassword ? 'text' : 'password' : 'text'"
                 @click:prepend-inner="showPassword = !showPassword"
                 :rules="askingForEmail ? [rules.email(userInput)] : []"
@@ -195,7 +195,7 @@
                   class="white--text elevation-2 mt-1"
                   @click.native="sendUserInput"
                 >
-                  <v-icon>double_arrow</v-icon>
+                  <v-icon>mdi-chevron-double-right</v-icon>
                 </v-btn>
 
                 <v-btn
@@ -290,12 +290,12 @@
 <script>
 import dayjs from "dayjs";
 import LongPress from "vue-directive-long-press";
-import ChatBroadcastMessage from "../components/ChatBroadcastMessage";
+// import ChatBroadcastMessage from "../components/ChatBroadcastMessage";
 import ChatLoading from "../components/ChatLoading";
-import ChatNoHistory from "../components/ChatNoHistory";
+// import ChatNoHistory from "../components/ChatNoHistory";
 import ChatTeneoResponse from "../components/ChatTeneoResponse";
 import ChatUserQuestion from "../components/ChatUserQuestion";
-import LiveChatResponse from "../components/LiveChatResponse";
+// import LiveChatResponse from "../components/LiveChatResponse";
 import UploadButton from "vuetify-upload-button";
 const superagent = require("superagent");
 import { mapGetters } from "vuex";
@@ -317,12 +317,12 @@ if (window.Element && !Element.prototype.closest) {
 
 export default {
   components: {
-    ChatBroadcastMessage,
+    ChatBroadcastMessage: () => import("../components/ChatBroadcastMessage"),
     ChatLoading,
-    ChatNoHistory,
+    ChatNoHistory: () => import("../components/ChatNoHistory"),
     ChatUserQuestion,
     ChatTeneoResponse,
-    LiveChatResponse,
+    LiveChatResponse: () => import("../components/LiveChatResponse"),
     "upload-btn": UploadButton
   },
   directives: {

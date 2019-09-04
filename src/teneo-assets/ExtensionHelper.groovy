@@ -199,14 +199,14 @@ class ExtensionHelper {
             label,
             idx ->
                 def checkColor = 'grey-text'
-                def checkIcon = 'remove'
+                def checkIcon = 'mdi-checkbox-blank-outline'
                 if (idx <= step) {
                     checkColor = 'green-text text-darken-1'
-                    checkIcon = 'done'
+                    checkIcon = 'mdi-checkbox-marked-outline'
                 }
                 if (idx == failureStep) {
                     checkColor = 'red-text'
-                    checkIcon = 'clear'
+                    checkIcon = 'mdi-alert-circle-outline'
                 }
                 def stepHTML = '<li class="collection-item"><div>' + label + '<div class="secondary-content left ' + checkColor + '" style="padding-right:20px;"><i class="material-icons">' + checkIcon + '</i></div></div></li>'
                 items += stepHTML
