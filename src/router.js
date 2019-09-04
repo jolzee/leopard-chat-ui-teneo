@@ -1,42 +1,40 @@
-import About from "@/views/About";
-import Login from "@/views/Login";
-import Register from "@/views/Register";
-import Chat from "@/views/Chat";
-import Config from "@/views/Config";
-import Help from "@/views/Help";
 import Vue from "vue";
 import Router from "vue-router";
 
 Vue.use(Router);
+
+function loadView(view) {
+  return () => import(/* webpackChunkName: "view-[request]" */ `@/views/${view}.vue`);
+}
 
 export default new Router({
   routes: [
     {
       path: "/",
       name: "chat",
-      component: Chat
+      component: loadView("Chat")
     },
     {
       path: "/about",
       name: "about",
-      component: About
+      component: loadView("About")
     },
     {
       path: "/login",
       name: "login",
-      component: Login
+      component: loadView("Login")
     },
     {
       path: "/register",
       name: "register",
-      component: Register
+      component: loadView("Register")
     },
     {
       path: "/config",
       name: "config",
-      component: Config,
+      component: loadView("Config"),
       beforeEnter: (to, from, next) => {
-        if (process.env.VUE_APP_HIDE_CONFIG_MENU === 'true') {
+        if (process.env.VUE_APP_HIDE_CONFIG_MENU === "true") {
           next(false);
         } else {
           next();
@@ -46,12 +44,12 @@ export default new Router({
     {
       path: "/help",
       name: "help",
-      component: Help
+      component: loadView("Help")
     },
     {
       path: "/history",
       name: "history",
-      component: Chat
+      component: loadView("Chat")
     }
   ]
 });

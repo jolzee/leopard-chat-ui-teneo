@@ -41,7 +41,9 @@ export default {
         this.$store.commit("SHOW_PROGRESS_BAR");
         this.$store.dispatch("sendUserInput");
       }
-      this.$router.push("/");
+      if (this.$router.currentRoute.path !== "/") {
+        this.$router.push("/"); // make sure we show the main chat window
+      }
     }
   }
 };

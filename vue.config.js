@@ -11,6 +11,6 @@ module.exports = {
   },
   publicPath: process.env.NODE_ENV === "production" ? "./" : "/",
   assetsDir: "./assets/",
-  productionSourceMap: true,
-  transpileDependencies: ['vuetify', "replace-string", "url-regex", "string-strip-html", "vue-long-press-directive"]
+  productionSourceMap: false,
+  transpileDependencies: ["vuetify", "replace-string", "url-regex", "string-strip-html", "vue-long-press-directive"]
 };

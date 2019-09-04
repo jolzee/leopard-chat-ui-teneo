@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
+import "regenerator-runtime/runtime";
+import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
-import "regenerator-runtime/runtime";
-import * as firebase from "firebase/app";
 const superagent = require("superagent");
 import gravatar from "gravatar";
 var stripHtml = require("string-strip-html");
@@ -1086,6 +1086,8 @@ function storeSetup(vuetify, callback) {
         });
       },
       registerUserWithUsernameEmailPassword({ commit, getters }, registrationInfo) {
+        // import(/* webpackChunkName: "dep-firebase-database" */ "firebase/database");
+
         return new Promise((resolve, reject) => {
           registrationInfo.photoURL = getters.profileImageFromEmail(registrationInfo.email);
           getters.firebase
@@ -1093,6 +1095,8 @@ function storeSetup(vuetify, callback) {
             .createUserWithEmailAndPassword(registrationInfo.email, registrationInfo.password)
             .then(user => {
               let currentUser = getters.firebase.auth().currentUser;
+              console.log(registrationInfo.displayName);
+              console.log(registrationInfo.photoURL);
               currentUser
                 .updateProfile({
                   displayName: registrationInfo.displayName,
@@ -1108,6 +1112,7 @@ function storeSetup(vuetify, callback) {
               resolve();
             })
             .catch(function(error) {
+              console.log(error);
               reject(error.message);
             });
         });
@@ -1426,6 +1431,11 @@ function storeSetup(vuetify, callback) {
               if (err.status && err.status === 408) {
                 console.log("Oh dear - Request Timed Out");
                 context.commit("SHOW_MESSAGE_IN_CHAT", "I'm sorry but the request timed out - Please try again.");
+              } else if (err.status && err.status === 400) {
+                context.commit(
+                  "SHOW_MESSAGE_IN_CHAT",
+                  "I'm sorry, I wasn't able to communicate with the virtual assitant. Please check your internet connection."
+                );
               } else {
                 context.commit("SHOW_MESSAGE_IN_CHAT", err.message);
               }

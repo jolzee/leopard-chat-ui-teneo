@@ -166,7 +166,9 @@ export default {
       this.$store
         .dispatch("loginSocial", socialProvider)
         .then(() => {
-          this.$router.push("/");
+          if (this.$router.currentRoute.path !== "/") {
+            this.$router.push("/"); // make sure we show the main chat window
+          }
         })
         .catch(message => {
           this.errorMessage = message;
@@ -182,7 +184,9 @@ export default {
             password: this.password
           })
           .then(() => {
-            this.$router.push("/");
+            if (this.$router.currentRoute.path !== "/") {
+              this.$router.push("/"); // make sure we show the main chat window
+            }
           })
           .catch(message => {
             this.errorMessage = message;
