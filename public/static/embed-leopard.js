@@ -125,6 +125,9 @@ function receiveLeopardMessage(event) {
           node.style.display = "none";
         }
       });
+    } else if (event.data.startsWith("runLeopardScript")) {
+      var results = event.data.split("|");
+      eval(results[1]);
     }
   } catch (err) {
     /* ignore as it's most likely another message from another source */

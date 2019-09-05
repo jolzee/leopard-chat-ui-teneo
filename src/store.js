@@ -1231,6 +1231,11 @@ function storeSetup(vuetify, callback) {
                 console.log("Session is stale.. keep chat open and continue with the new session");
               }
 
+              if (json.responseData.extraData.hasOwnProperty("script")) {
+                let theScript = decodeURIComponent(json.responseData.extraData.script);
+                sendMessageToParent("runLeopardScript|" + theScript);
+              }
+
               // Start of delay logic
               if (
                 json.responseData.extraData.hasOwnProperty("command") &&
