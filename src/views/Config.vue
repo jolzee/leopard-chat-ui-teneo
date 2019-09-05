@@ -11,67 +11,71 @@
         fixed
         color="grey lighten-2"
       >
-        <v-col>
-          <v-btn
-            class="mr-2"
-            fab
-            small
-            dark
-            @click="refreshBrowser"
-            color="green"
-            :loading="refresh"
+        <v-col cols="8">
+          <v-row
+            align="center"
+            justify="start"
           >
-            <v-icon>mdi-refresh</v-icon>
-          </v-btn>
+            <v-btn
+              class="mr-2"
+              fab
+              small
+              dark
+              @click="refreshBrowser"
+              color="green"
+              :loading="refresh"
+            >
+              <v-icon>mdi-refresh</v-icon>
+            </v-btn>
+            <v-tooltip
+              open-delay="600"
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  class="mr-2"
+                  v-on="on"
+                  dark
+                  fab
+                  rounded
+                  small
+                  outlined
+                  color="indigo"
+                  :href="getActiveSolutionDeepLinkMobile"
+                  target="_blank"
+                >
+
+                  <v-icon dark>mdi-cellphone-android</v-icon>
+                </v-btn>
+              </template>
+              <span>Deep Link Mobile</span>
+            </v-tooltip>
+            <v-tooltip
+              open-delay="600"
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  class="mr-2"
+                  v-on="on"
+                  fab
+                  dark
+                  rounded
+                  small
+                  outlined
+                  color="indigo"
+                  :href="getActiveSolutionDeepLink"
+                >
+                  <v-icon dark>mdi-monitor</v-icon>
+                </v-btn>
+              </template>
+              <span>Deep Link Desktop</span>
+
+            </v-tooltip>
+            <v-toolbar-title class="d-none d-sm-flex text-left">Configuration</v-toolbar-title>
+          </v-row>
         </v-col>
-        <v-toolbar-title class="d-none d-sm-flex">Configuration</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-tooltip
-          open-delay="600"
-          bottom
-        >
-          <template v-slot:activator="{ on }">
-            <v-btn
-              class="mr-2"
-              v-on="on"
-              dark
-              fab
-              rounded
-              small
-              outlined
-              color="indigo"
-              :href="getActiveSolutionDeepLinkMobile"
-              target="_blank"
-            >
 
-              <v-icon dark>mdi-cellphone-android</v-icon>
-            </v-btn>
-          </template>
-          <span>Deep Link Mobile</span>
-
-        </v-tooltip>
-        <v-tooltip
-          open-delay="600"
-          bottom
-        >
-          <template v-slot:activator="{ on }">
-            <v-btn
-              class="mr-2"
-              v-on="on"
-              fab
-              dark
-              rounded
-              small
-              outlined
-              color="indigo"
-              :href="getActiveSolutionDeepLink"
-            >
-              <v-icon dark>mdi-monitor</v-icon>
-            </v-btn>
-          </template>
-          <span>Deep Link Desktop</span>
-
-        </v-tooltip>
         <v-spacer></v-spacer>
         <v-badge
           left

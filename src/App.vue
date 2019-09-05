@@ -30,7 +30,7 @@
     <v-app
       v-else
       toolbar
-      :class="{'elevation-2': !embed, 'application-float': float, 'application-embed': embed}"
+      :class="{'elevation-2': !embed, 'application-float': shouldFloat, 'application-embed': embed}"
     >
       <div
         id="chat-open-close-button"
@@ -361,6 +361,13 @@ export default {
     }
   },
   methods: {
+    shouldFloat() {
+      if (this.float && this.$router.currentRoute.path !== "/config") {
+        return true;
+      } else {
+        return false;
+      }
+    },
     toggleEmbedButton() {
       this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY");
       this.$store.commit("TOGGLE_CHAT_BUTTON");
