@@ -3,9 +3,11 @@ import "regenerator-runtime/runtime";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
+import { markdown } from "markdown";
 const superagent = require("superagent");
 import gravatar from "gravatar";
-var stripHtml = require("string-strip-html");
+var stripHtml = require("striptags");
+var mobile = require("is-mobile");
 import URL from "url-parse";
 import uuidv1 from "uuid/v1";
 import Vue from "vue";
@@ -70,7 +72,7 @@ function storeSetup(vuetify, callback) {
         teneoUrl: config.TENEO_URL
       },
       browser: {
-        isMobile: config.mobileDetector.mobile() || config.mobileDetector.tablet() ? true : false,
+        isMobile: mobile(),
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       },
       auth: {
@@ -1174,8 +1176,10 @@ function storeSetup(vuetify, callback) {
               }
               const response = {
                 type: "reply",
-                text: config.markDownConvertor.makeHtml(
-                  decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
+                text: decodeHTML(
+                  markdown.toHTML(
+                    decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
+                  )
                 ),
                 bodyText: "",
                 teneoResponse: json.responseData,
@@ -1356,8 +1360,10 @@ function storeSetup(vuetify, callback) {
               // console.log(decodeURIComponent(json.responseData.answer))
               const response = {
                 userInput: currentUserInput,
-                teneoAnswer: config.markDownConvertor.makeHtml(
-                  decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
+                teneoAnswer: decodeHTML(
+                  markdown.toHTML(
+                    decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
+                  )
                 ),
                 teneoResponse: json.responseData
               };
@@ -1527,6 +1533,12 @@ function sendMessageToParent(message) {
     parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
     console.log("Message from Leopard >> Embed : " + message);
   }
+}
+
+function decodeHTML(html) {
+  var txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
 }
 
 function receiveMessageFromParent(event) {

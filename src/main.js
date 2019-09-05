@@ -1,8 +1,8 @@
 import "babel-polyfill";
 import "custom-event-polyfill";
 import "element-matches";
-import smoothscroll from "smoothscroll-polyfill";
-smoothscroll.polyfill();
+// import smoothscroll from "smoothscroll-polyfill";
+// smoothscroll.polyfill();
 import Vue from "vue";
 
 import "@mdi/font/css/materialdesignicons.css";

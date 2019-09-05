@@ -1,10 +1,8 @@
 import { Ripple } from "vuetify/lib/directives";
 const superagent = require("superagent");
-import MobileDetect from "mobile-detect";
-import parseBool from "parseboolean";
 import PromisedLocation from "promised-location";
-import showdown from "showdown";
-import toHex from "colornames"; // can convert html color names to hex equivalent
+
+import { COLOR_NAMES } from "../constants/color-names.js";
 import Vue from "vue";
 import Vuetify from "vuetify/lib";
 import internalConfig from "../assets/default.json";
@@ -26,7 +24,6 @@ export default class Setup {
     this.EMBED = this.doesParameterExist("embed") || this.doesParameterExist("button");
     this.SHOW_BUTTON_ONLY = this.doesParameterExist("button");
     this.ENABLE_LIVE_CHAT = false;
-    this.mobileDetect = new MobileDetect(window.navigator.userAgent);
     this.FLOAT = false;
     this.THEME = {
       primary: "#3277D5",
@@ -48,7 +45,6 @@ export default class Setup {
     this.USER_ICON = "";
     this.activeSolution = null;
     this.chatConfig = null;
-    this.converter = new showdown.Converter();
     this.firebaseConfig = {
       apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
       authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
@@ -58,7 +54,7 @@ export default class Setup {
       messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID
     };
     // Get the dark theme setting from local storage
-    if (parseBool(localStorage.getItem(STORAGE_KEY + "darkTheme")) === null) {
+    if ((localStorage.getItem(STORAGE_KEY + "darkTheme") === "true") === null) {
       localStorage.setItem(STORAGE_KEY + "darkTheme", "false");
     }
   }
@@ -109,11 +105,11 @@ export default class Setup {
             let theme = this.activeSolution.theme;
             // convert color names to their #hex equivalent
             for (const key in theme) {
-              if (theme[key].charAt(0) !== "#") theme[key] = toHex(theme[key]);
+              if (theme[key].charAt(0) !== "#") theme[key] = COLOR_NAMES[theme[key]];
             }
             this.THEME = theme;
 
-            this.ENABLE_LIVE_CHAT = parseBool(this.activeSolution.enableLiveChat);
+            this.ENABLE_LIVE_CHAT = this.activeSolution.enableLiveChat === "true";
             this.UNIQUE_KEY =
               this.activeSolution.deepLink + (window.location.href.indexOf("mobile=true") > -1 ? "_mobile" : "");
             document.title = this.activeSolution.name;
@@ -276,13 +272,9 @@ export default class Setup {
     return locator;
   }
 
-  get markDownConvertor() {
-    return this.converter;
-  }
-
-  get mobileDetector() {
-    return this.mobileDetect;
-  }
+  // get markDownConvertor() {
+  //   return this.converter;
+  // }
 
   isPusherEnabled() {
     // return process.env.VUE_APP_FIREBASE_API_KEY ? true : false;

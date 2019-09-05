@@ -929,93 +929,23 @@
                         </v-subheader>
 
                         <v-col class="flex">
-                          <v-row>
-                            <v-col cols="12">
-                              <compact-picker
-                                v-model="colors"
+                          <v-row no-gutters>
+                            <v-col
+                              cols="12"
+                              class="pt-0"
+                            >
+                              <v-color-picker
+                                class="pt-0 mt-0"
+                                :hide-canvas="false"
+                                :hide-inputs="true"
+                                :hide-mode-switch="true"
+                                :show-swatches="true"
+                                swatches-max-height="120"
+                                v-model="color"
                                 @input="updateColor"
-                                class="mb-3"
-                              />
+                              ></v-color-picker>
                             </v-col>
-                            <v-col class="mr-2">
-                              <v-chip
-                                class="mr-1 mb-1"
-                                @click="setActiveColor('primary')"
-                                :style="getBackGroundColor(solution.theme.primary)"
-                                text-color="white"
-                              >
-                                <v-avatar>
-                                  <v-icon>mdi-invert-colors</v-icon>
-                                </v-avatar>
-                                primary
-                              </v-chip>
-                              <v-chip
-                                class="mr-1 mb-1"
-                                @click="setActiveColor('secondary')"
-                                :style="getBackGroundColor(solution.theme.secondary)"
-                                text-color="white"
-                              >
-                                <v-avatar>
-                                  <v-icon>mdi-invert-colors</v-icon>
-                                </v-avatar>
-                                secondary
-                              </v-chip>
-                              <v-chip
-                                class="mr-1 mb-1"
-                                @click="setActiveColor('accent')"
-                                :style="getBackGroundColor(solution.theme.accent)"
-                                text-color="white"
-                              >
-                                <v-avatar>
-                                  <v-icon>mdi-invert-colors</v-icon>
-                                </v-avatar>
-                                accent
-                              </v-chip>
-                              <v-chip
-                                class="mr-1 mb-1"
-                                @click="setActiveColor('error')"
-                                :style="getBackGroundColor(solution.theme.error)"
-                                text-color="white"
-                              >
-                                <v-avatar>
-                                  <v-icon>mdi-invert-colors</v-icon>
-                                </v-avatar>
-                                erorr
-                              </v-chip>
-                              <v-chip
-                                class="mr-1 mb-1"
-                                @click="setActiveColor('info')"
-                                :style="getBackGroundColor(solution.theme.info)"
-                                text-color="white"
-                              >
-                                <v-avatar>
-                                  <v-icon>mdi-invert-colors</v-icon>
-                                </v-avatar>
-                                info
-                              </v-chip>
-                              <v-chip
-                                class="mr-1 mb-1"
-                                @click="setActiveColor('success')"
-                                :style="getBackGroundColor(solution.theme.success)"
-                                text-color="white"
-                              >
-                                <v-avatar>
-                                  <v-icon>mdi-invert-colors</v-icon>
-                                </v-avatar>
-                                success
-                              </v-chip>
-                              <v-chip
-                                class="mr-1 mb-1"
-                                @click="setActiveColor('warning')"
-                                :style="getBackGroundColor(solution.theme.warning)"
-                                text-color="white"
-                              >
-                                <v-avatar>
-                                  <v-icon>mdi-invert-colors</v-icon>
-                                </v-avatar>
-                                warning
-                              </v-chip>
-                            </v-col>
+
                           </v-row>
                         </v-col>
                       </v-col>
@@ -1025,102 +955,188 @@
                       >
                         <v-row>
                           <v-col cols="6">
-                            <v-text-field
-                              v-model.trim="solution.theme.primary"
-                              @click="setActiveColor('primary')"
-                              validate-on-blur
-                              color="light-blue darken-1"
-                              :value="solution.theme.primary"
-                              :background-color="solution.theme.primary"
-                              :tabindex="getTabIndex"
-                              label="primary"
-                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                            ></v-text-field>
+                            <v-row>
+                              <v-btn
+                                class="mx-2"
+                                fab
+                                dark
+                                small
+                                elevation="2"
+                                @click="setActiveColor('primary')"
+                                :color="solution.theme.primary"
+                              >
+                                <v-icon v-if="activeColor === 'primary'">mdi-star</v-icon>
+                              </v-btn>
+                              <v-text-field
+                                v-model.trim="solution.theme.primary"
+                                @click="setActiveColor('primary')"
+                                validate-on-blur
+                                color="light-blue darken-1"
+                                :value="solution.theme.primary"
+                                :tabindex="getTabIndex"
+                                label="primary"
+                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                              ></v-text-field>
+
+                            </v-row>
+
                           </v-col>
                           <v-col cols="6">
-                            <v-text-field
-                              v-model.trim="solution.theme.secondary"
-                              @click="setActiveColor('secondary')"
-                              validate-on-blur
-                              color="light-blue darken-1"
-                              :background-color="solution.theme.secondary"
-                              :value="solution.theme.secondary"
-                              :tabindex="getTabIndex"
-                              label="secondary"
-                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                            ></v-text-field>
+                            <v-row>
+                              <v-btn
+                                class="mx-2"
+                                fab
+                                dark
+                                small
+                                elevation="2"
+                                @click="setActiveColor('secondary')"
+                                :color="solution.theme.secondary"
+                              >
+                                <v-icon v-if="activeColor === 'secondary'">mdi-star</v-icon>
+                              </v-btn>
+                              <v-text-field
+                                v-model.trim="solution.theme.secondary"
+                                @click="setActiveColor('secondary')"
+                                validate-on-blur
+                                color="light-blue darken-1"
+                                :value="solution.theme.secondary"
+                                :tabindex="getTabIndex"
+                                label="secondary"
+                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                              ></v-text-field>
+                            </v-row>
                           </v-col>
                         </v-row>
 
                         <v-row>
                           <v-col cols="6">
-                            <v-text-field
-                              v-model.trim="solution.theme.accent"
-                              @click="setActiveColor('accent')"
-                              validate-on-blur
-                              color="light-blue darken-1"
-                              :background-color="solution.theme.accent"
-                              :value="solution.theme.accent"
-                              :tabindex="getTabIndex"
-                              label="accent"
-                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                            ></v-text-field>
+                            <v-row>
+                              <v-btn
+                                class="mx-2"
+                                fab
+                                dark
+                                small
+                                elevation="2"
+                                @click="setActiveColor('accent')"
+                                :color="solution.theme.accent"
+                              >
+                                <v-icon v-if="activeColor === 'accent'">mdi-star</v-icon>
+                              </v-btn>
+                              <v-text-field
+                                v-model.trim="solution.theme.accent"
+                                @click="setActiveColor('accent')"
+                                validate-on-blur
+                                color="light-blue darken-1"
+                                :value="solution.theme.accent"
+                                :tabindex="getTabIndex"
+                                label="accent"
+                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                              ></v-text-field>
+                            </v-row>
                           </v-col>
                           <v-col cols="6">
-                            <v-text-field
-                              v-model.trim="solution.theme.error"
-                              @click="setActiveColor('error')"
-                              validate-on-blur
-                              color="light-blue darken-1"
-                              :background-color="solution.theme.error"
-                              :value="solution.theme.error"
-                              :tabindex="getTabIndex"
-                              label="error"
-                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                            ></v-text-field>
+                            <v-row>
+                              <v-btn
+                                class="mx-2"
+                                fab
+                                dark
+                                small
+                                elevation="2"
+                                @click="setActiveColor('error')"
+                                :color="solution.theme.error"
+                              >
+                                <v-icon v-if="activeColor === 'error'">mdi-star</v-icon>
+                              </v-btn>
+                              <v-text-field
+                                v-model.trim="solution.theme.error"
+                                @click="setActiveColor('error')"
+                                validate-on-blur
+                                color="light-blue darken-1"
+                                :value="solution.theme.error"
+                                :tabindex="getTabIndex"
+                                label="error"
+                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                              ></v-text-field>
+                            </v-row>
                           </v-col>
                         </v-row>
 
                         <v-row>
                           <v-col cols="6">
-                            <v-text-field
-                              v-model.trim="solution.theme.info"
-                              @click="setActiveColor('info')"
-                              validate-on-blur
-                              color="light-blue darken-1"
-                              :background-color="solution.theme.info"
-                              :value="solution.theme.info"
-                              :tabindex="getTabIndex"
-                              label="info"
-                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                            ></v-text-field>
+                            <v-row>
+                              <v-btn
+                                class="mx-2"
+                                fab
+                                dark
+                                small
+                                elevation="2"
+                                @click="setActiveColor('info')"
+                                :color="solution.theme.info"
+                              >
+                                <v-icon v-if="activeColor === 'info'">mdi-star</v-icon>
+                              </v-btn>
+                              <v-text-field
+                                v-model.trim="solution.theme.info"
+                                @click="setActiveColor('info')"
+                                validate-on-blur
+                                color="light-blue darken-1"
+                                :value="solution.theme.info"
+                                :tabindex="getTabIndex"
+                                label="info"
+                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                              ></v-text-field>
+                            </v-row>
                           </v-col>
                           <v-col cols="6">
-                            <v-text-field
-                              v-model.trim="solution.theme.success"
-                              @click="setActiveColor('success')"
-                              validate-on-blur
-                              color="light-blue darken-1"
-                              :background-color="solution.theme.success"
-                              :value="solution.theme.success"
-                              :tabindex="getTabIndex"
-                              label="success"
-                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                            ></v-text-field>
+                            <v-row>
+                              <v-btn
+                                class="mx-2"
+                                fab
+                                dark
+                                small
+                                elevation="2"
+                                @click="setActiveColor('success')"
+                                :color="solution.theme.success"
+                              >
+                                <v-icon v-if="activeColor === 'success'">mdi-star</v-icon>
+                              </v-btn>
+                              <v-text-field
+                                v-model.trim="solution.theme.success"
+                                @click="setActiveColor('success')"
+                                validate-on-blur
+                                color="light-blue darken-1"
+                                :value="solution.theme.success"
+                                :tabindex="getTabIndex"
+                                label="success"
+                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                              ></v-text-field>
+                            </v-row>
                           </v-col>
                         </v-row>
                         <v-row>
                           <v-col>
-                            <v-text-field
-                              v-model.trim="solution.theme.warning"
-                              @click="setActiveColor('warning')"
-                              validate-on-blur
-                              :background-color="solution.theme.warning"
-                              :value="solution.theme.warning"
-                              :tabindex="getTabIndex"
-                              label="warning"
-                              :rules="[ruleMustHaveValue, ruleMustHaveColor]"
-                            ></v-text-field>
+                            <v-row>
+                              <v-btn
+                                class="mx-2"
+                                fab
+                                dark
+                                small
+                                elevation="2"
+                                @click="setActiveColor('warning')"
+                                :color="solution.theme.warning"
+                              >
+                                <v-icon v-if="activeColor === 'warning'">mdi-star</v-icon>
+                              </v-btn>
+                              <v-text-field
+                                v-model.trim="solution.theme.warning"
+                                @click="setActiveColor('warning')"
+                                validate-on-blur
+                                :value="solution.theme.warning"
+                                :tabindex="getTabIndex"
+                                label="warning"
+                                :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                              ></v-text-field>
+                            </v-row>
                           </v-col>
                         </v-row>
 
@@ -1405,7 +1421,6 @@
 <script>
 import dayjs from "dayjs";
 import copy from "copy-to-clipboard";
-import { Compact } from "vue-color";
 import urlRegex from "url-regex";
 import { COLOR_NAMES } from "../constants/color-names.js";
 import {
@@ -1419,14 +1434,13 @@ import Prism from "vue-prism-component";
 
 export default {
   components: {
-    "compact-picker": Compact,
     Prism
   },
   data() {
     return {
       refresh: false,
       snackbar: false,
-      colors: "#D60270",
+      color: "#D60270",
       snackbarTimeout: 3000,
       globalSnackbarMessage: "",
       globalSnackbar: false,
@@ -1594,11 +1608,12 @@ export default {
     },
     setActiveColor(activeTheme) {
       this.activeColor = activeTheme;
+      this.color = this.solution.theme[activeTheme];
       console.log(this.activeColor);
     },
     updateColor() {
       if (this.activeColor) {
-        this.solution.theme[this.activeColor] = this.colors.hex;
+        this.solution.theme[this.activeColor] = this.color;
       }
     },
     toggleLoading() {
@@ -1941,10 +1956,11 @@ export default {
           [3, 4, 6, 8].indexOf(color.length) > -1 && !isNaN(parseInt(color, 16))
         );
       } else if (color) {
-        const resultIndex = COLOR_NAMES.findIndex(
-          item => color.toLowerCase() === item.toLowerCase()
-        );
-        return resultIndex !== -1;
+        if (color.toLowerCase() in COLOR_NAMES) {
+          return true;
+        } else {
+          return false;
+        }
       }
     },
     getTabIndex() {
