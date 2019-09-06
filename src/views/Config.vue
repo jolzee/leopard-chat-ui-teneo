@@ -589,7 +589,12 @@
                         cols="12"
                         sm="8"
                       >
+                        <v-switch
+                          v-model="solution.useInProduction"
+                          label="Use in production"
+                        ></v-switch>
                         <v-text-field
+                          v-if="'useInProduction' in solution && !solution.useInProduction || !('useInProduction' in solution)"
                           color="light-blue darken-1"
                           v-model.trim="solution.iframeUrl"
                           validate-on-blur

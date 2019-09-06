@@ -41,7 +41,8 @@ okkay | ok
   displayAccent: "true",
   url: "",
   useLocalStorage: "false",
-  userIcon: "mdi-message-text"
+  userIcon: "mdi-message-text",
+  useInProduction: false
 };
 
 export const STORAGE_KEY = window.location.hostname + window.location.pathname + ":";
