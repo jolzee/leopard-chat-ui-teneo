@@ -1,5 +1,24 @@
 const path = require("path");
+var BrotliGzipPlugin = require("brotli-gzip-webpack-plugin");
 module.exports = {
+  configureWebpack: {
+    plugins: [
+      new BrotliGzipPlugin({
+        asset: "[path].br[query]",
+        algorithm: "brotli",
+        test: /\.(js|css|html|svg)$/,
+        threshold: 10240,
+        minRatio: 0.8
+      }),
+      new BrotliGzipPlugin({
+        asset: "[path].gz[query]",
+        algorithm: "gzip",
+        test: /\.(js|css|html|svg)$/,
+        threshold: 10240,
+        minRatio: 0.8
+      })
+    ]
+  },
   pluginOptions: {
     webpackBundleAnalyzer: {
       openAnalyzer: false
@@ -17,5 +36,5 @@ module.exports = {
   publicPath: process.env.NODE_ENV === "production" ? "./" : "/",
   assetsDir: "./assets/",
   productionSourceMap: false,
-  transpileDependencies: ["vuetify", "replace-string", "url-regex", "string-strip-html", "vue-long-press-directive"]
+  transpileDependencies: ["vuetify", "replace-string", "url-regex", "vue-long-press-directive"]
 };
