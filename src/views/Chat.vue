@@ -764,14 +764,15 @@ div.chat-container .v-expansion-panel::before {
 @media screen and (-ms-high-contrast: active),
   screen and (-ms-high-contrast: none) {
   /* IE10+ specific styles go here */
-  .chat-card {
+  /* .chat-card {
     font-size: 1.1em;
     font-weight: 500;
     padding: 8px;
     margin-top: 4px;
     width: 260px;
     line-height: 1.2em;
-  }
+    display: table;
+  } */
 }
 
 .chat-card {
@@ -781,6 +782,7 @@ div.chat-container .v-expansion-panel::before {
   margin-top: 4px;
   line-height: 1.2em;
   width: fit-content;
+  display: table;
 }
 
 .chat-card-left {
@@ -830,11 +832,8 @@ div.options-list a.v-list__tile--link {
 
 .chat-responses {
   min-height: calc(100vh - 130px);
-  /* min-height: calc(var(--vh, 1vh) * 100 - 130px); */
   max-height: calc(100vh - 130px);
-  /* max-height: calc(var(--vh, 1vh) * 100 - 130px); */
   height: calc(100vh - 130px);
-  /* height: calc(var(--vh, 1vh) * 100 - 130px); */
   overflow-y: auto;
   overflow-x: hidden;
 }

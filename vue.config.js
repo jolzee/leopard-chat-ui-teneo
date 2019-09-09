@@ -1,23 +1,29 @@
 const path = require("path");
-var BrotliGzipPlugin = require("brotli-gzip-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
+var BrotliPlugin = require("brotli-webpack-plugin");
+
 module.exports = {
   configureWebpack: {
-    plugins: [
-      new BrotliGzipPlugin({
-        asset: "[path].br[query]",
-        algorithm: "brotli",
-        test: /\.(js|css|html|svg)$/,
-        threshold: 10240,
-        minRatio: 0.8
-      }),
-      new BrotliGzipPlugin({
-        asset: "[path].gz[query]",
-        algorithm: "gzip",
-        test: /\.(js|css|html|svg)$/,
-        threshold: 10240,
-        minRatio: 0.8
-      })
-    ]
+    optimization: {
+      minimize: true,
+      minimizer: [new TerserPlugin()]
+    },
+    plugins:
+      process.env.NODE_ENV === "production"
+        ? [
+            new CompressionPlugin({
+              test: /\.js$|\.css$|\.html$/,
+              threshold: 8192
+            }),
+            new BrotliPlugin({
+              asset: "[path].br[query]",
+              test: /\.(js|css|html|svg)$/,
+              threshold: 10240,
+              minRatio: 0.8
+            })
+          ]
+        : []
   },
   pluginOptions: {
     webpackBundleAnalyzer: {

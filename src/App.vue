@@ -288,6 +288,15 @@ export default {
       "showChatWindow",
       "socialAuthEnabled"
     ]),
+    shouldFloat() {
+      console.log(this.float);
+      console.log(this.$router.currentRoute.path !== "/config");
+      if (this.float && this.$router.currentRoute.path !== "/config") {
+        return true;
+      } else {
+        return false;
+      }
+    },
     activeMenuItems() {
       if (this.authenticated) {
         return this.menuItems.filter(menuItem => {
@@ -361,13 +370,6 @@ export default {
     }
   },
   methods: {
-    shouldFloat() {
-      if (this.float && this.$router.currentRoute.path !== "/config") {
-        return true;
-      } else {
-        return false;
-      }
-    },
     toggleEmbedButton() {
       this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY");
       this.$store.commit("TOGGLE_CHAT_BUTTON");
