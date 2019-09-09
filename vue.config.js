@@ -1,14 +1,14 @@
 const path = require("path");
-const TerserPlugin = require("terser-webpack-plugin");
+// const TerserPlugin = require("terser-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 var BrotliPlugin = require("brotli-webpack-plugin");
 
 module.exports = {
   configureWebpack: {
-    optimization: {
-      minimize: true,
-      minimizer: [new TerserPlugin()]
-    },
+    // optimization: {
+    //   minimize: true,
+    //   minimizer: [new TerserPlugin()]
+    // },
     plugins:
       process.env.NODE_ENV === "production"
         ? [
