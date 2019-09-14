@@ -3,27 +3,34 @@ const path = require("path");
 const CompressionPlugin = require("compression-webpack-plugin");
 var BrotliPlugin = require("brotli-webpack-plugin");
 
+var prod = process.env.NODE_ENV === "production";
+
 module.exports = {
   configureWebpack: {
     // optimization: {
     //   minimize: true,
-    //   minimizer: [new TerserPlugin()]
+    //   minimizer: [new TerserPlugin({
+    // terserOptions: {
+    //   compress: {
+    //     drop_console: true,
+    //   },
     // },
-    plugins:
-      process.env.NODE_ENV === "production"
-        ? [
-            new CompressionPlugin({
-              test: /\.js$|\.css$|\.html$/,
-              threshold: 8192
-            }),
-            new BrotliPlugin({
-              asset: "[path].br[query]",
-              test: /\.(js|css|html|svg)$/,
-              threshold: 10240,
-              minRatio: 0.8
-            })
-          ]
-        : []
+    // })]
+    // },
+    plugins: prod
+      ? [
+          new CompressionPlugin({
+            test: /\.js$|\.css$|\.html$/,
+            threshold: 8192
+          }),
+          new BrotliPlugin({
+            asset: "[path].br[query]",
+            test: /\.(js|css|html|svg)$/,
+            threshold: 10240,
+            minRatio: 0.8
+          })
+        ]
+      : []
   },
   pluginOptions: {
     webpackBundleAnalyzer: {
@@ -39,7 +46,7 @@ module.exports = {
         return options;
       });
   },
-  publicPath: process.env.NODE_ENV === "production" ? "./" : "/",
+  publicPath: prod ? "./" : "/",
   assetsDir: "./assets/",
   productionSourceMap: false,
   transpileDependencies: ["vuetify", "replace-string", "url-regex", "vue-long-press-directive"]

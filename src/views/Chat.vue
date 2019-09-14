@@ -695,6 +695,18 @@ export default {
 }
 </style>
 <style>
+button.v-expansion-panel-header:active {
+  border-style: none !important;
+}
+
+button.v-expansion-panel-header:focus {
+  background: unset;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+  color: transparent;
+}
+
 div#chat-area p {
   margin-bottom: 5px;
 }
@@ -704,8 +716,8 @@ div.teneo-footer .v-input__control {
 }
 
 div.teneo-footer .v-input__slot {
-  -webkit-box-shadow: unset !important;
-  box-shadow: unset !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
   background: transparent !important;
   /* padding-left: 5px !important; */
 }
@@ -717,34 +729,27 @@ div.teneo-footer .v-text-field__details {
 
 div.chat-container .v-expansion-panel-header {
   cursor: unset !important;
-  user-select: text;
-}
-
-button.v-expansion-panel-header:focus {
-  background: unset;
-  -webkit-box-shadow: unset !important;
-  box-shadow: unset !important;
-  color: transparent;
+  user-select: text !important;
 }
 
 v-expansion-panel-header
   div.chat-container
   .v-expansion-panel:not(:first-child)::after {
-  border-top: unset !important;
+  border-top: none !important;
 }
 
 .v-expansion-panel:not(:first-child)::after {
-  border-top: unset !important;
+  border-top: none !important;
 }
 
 div.chat-container .v-expansion-panel-header--mousedown {
-  -webkit-box-shadow: unset !important;
-  box-shadow: unset !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 div.chat-container .v-expansion-panel::before {
-  -webkit-box-shadow: unset !important;
-  box-shadow: unset !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 .v-toolbar__title:not(:first-child) {
@@ -776,11 +781,11 @@ div.chat-container .v-expansion-panel::before {
 }
 
 .chat-card {
-  font-size: 1.1em;
+  /* font-size: 1.1em; */
   font-weight: 500;
-  padding: 8px;
+  padding: 8px !important;
   margin-top: 4px;
-  line-height: 1.2em;
+  line-height: 1.4em;
   width: fit-content;
   display: table;
 }
@@ -789,6 +794,7 @@ div.chat-container .v-expansion-panel::before {
   border-radius: 3px 13px 13px 13px;
   -moz-border-radius: 3px 13px 13px 13px;
   -webkit-border-radius: 3px 13px 13px 13px;
+  padding-bottom: 3px !important;
 }
 
 .chat-card-right {
@@ -825,7 +831,7 @@ div.options-list a.v-list__tile--link {
   min-height: calc(80vh - 130px);
   max-height: calc(80vh - 130px);
   height: calc(80vh - 130px);
-  /* height: calc(var(--vh, 1vh) * 80 - 130px); */
+  height: calc(var(--vh, 1vh) * 80 - 130px);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -879,7 +885,7 @@ span.teneo-reply ul {
   .chat-responses,
   .chat-responses-float {
     min-height: calc(100vh - 125px);
-    /* min-height: calc(var(--vh, 1vh) * 100 - 125px); */
+    min-height: calc(var(--vh, 1vh) * 100 - 125px);
   }
 }
 </style>

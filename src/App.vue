@@ -86,7 +86,7 @@
       <div
         id="teneo"
         v-if="showChatWindow"
-        :class="{'elevation-2': !embed, 'application-float': float, 'application-embed': embed}"
+        :class="{'elevation-2': !embed, 'application-float': float, 'application-embed': embed, 'teneo-light-bg': !$vuetify.theme.dark, 'teneo-dark-bg': $vuetify.theme.dark}"
       >
         <transition
           name="menu-transition"
@@ -605,15 +605,6 @@ export default {
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
 .application-button {
-  /* max-width: unset !important;
-  max-height: unset !important;
-  height: unset !important;
-  overflow: unset !important;
-  margin: unset !important;
-  position: unset !important;
-  top: unset !important;
-  bottom: unset !important;
-  right: unset !important; */
   background: transparent !important;
   width: 100%;
 }
@@ -625,6 +616,14 @@ export default {
   align-items: center;
   text-align: center;
   min-height: 100vh;
+}
+
+.teneo-light-bg {
+  background-color: #fafafa;
+}
+
+.teneo-dark-bg {
+  background-color: #313131;
 }
 
 hr {
@@ -836,12 +835,6 @@ iframe#site-frame {
   padding-right: 1.5em;
 }
 
-/* @media only screen and (max-height: 250px) {
-  .application {
-    display: none !important;
-  }
-} */
-
 @media only screen and (max-width: 480px) {
   #teneo,
   .v-toolbar,
@@ -873,11 +866,6 @@ iframe#site-frame {
     -moz-border-radius: unset;
     -webkit-border-radius: unset;
   }
-
-  /* .teneo-footer {
-    position: fixed !important;
-    bottom: 10px !important;
-  } */
 
   iframe#site-frame {
     width: 0vw !important;
