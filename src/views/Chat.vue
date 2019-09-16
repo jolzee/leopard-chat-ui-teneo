@@ -771,7 +771,7 @@ div.chat-container .v-expansion-panel::before {
   /* IE10+ specific styles go here */
   /* .chat-card {
     font-size: 1.1em;
-    font-weight: 500;
+    font-weight: 400;
     padding: 8px;
     margin-top: 4px;
     width: 260px;
@@ -782,7 +782,7 @@ div.chat-container .v-expansion-panel::before {
 
 .chat-card {
   /* font-size: 1.1em; */
-  font-weight: 500;
+  font-weight: 400;
   padding: 8px !important;
   margin-top: 4px;
   line-height: 1.4em;
