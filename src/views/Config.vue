@@ -762,149 +762,51 @@
                         sm="4"
                         class="hidden-xs-only"
                       >
-                        <v-subheader>Enable Live Chat (livechat.inc)</v-subheader>
+                        <v-subheader>Features</v-subheader>
                       </v-col>
                       <v-col
                         cols="12"
                         sm="8"
                       >
-                        <v-select
-                          :items="trueFalseOptions"
-                          validate-on-blur
-                          color="light-blue darken-1"
-                          outlined
-                          hint="Enable Live Chat"
-                          label="Enable Live Chat"
-                          :menu-props="{contentClass:'select-options'}"
-                          :tabindex="getTabIndex"
-                          v-model="solution.enableLiveChat"
-                          append-icon="mdi-face-agent"
-                        ></v-select>
-                      </v-col>
-                      <v-divider></v-divider>
-                      <v-col
-                        cols="12"
-                        sm="4"
-                        class="hidden-xs-only"
-                      >
-                        <v-subheader>Float Chat Window</v-subheader>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="8"
-                      >
-                        <v-select
-                          :items="trueFalseOptions"
-                          validate-on-blur
-                          color="light-blue darken-1"
-                          outlined
-                          hint="Float Chat Window"
-                          label="Float Chat Window"
-                          :menu-props="{contentClass:'select-options'}"
-                          :tabindex="getTabIndex"
-                          v-model="solution.float"
-                          append-icon="mdi-stretch-to-page-outline"
-                        ></v-select>
-                      </v-col>
-                      <v-divider></v-divider>
-                      <v-col
-                        cols="12"
-                        sm="4"
-                        class="hidden-xs-only"
-                      >
-                        <v-subheader>Show Pulsing Chat Button</v-subheader>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="8"
-                      >
-                        <v-select
-                          :items="trueFalseOptions"
-                          validate-on-blur
-                          color="light-blue darken-1"
-                          outlined
-                          hint="Show Pulse Button"
-                          label="Show Pulse Button"
-                          :menu-props="{contentClass:'select-options'}"
-                          :tabindex="getTabIndex"
-                          v-model="solution.pulseButton"
-                          append-icon="mdi-pulse"
-                        ></v-select>
-                      </v-col>
-                      <v-divider></v-divider>
-                      <v-col
-                        cols="12"
-                        sm="4"
-                        class="hidden-xs-only"
-                      >
-                        <v-subheader>Show Long Teneo Responses in Modal</v-subheader>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="8"
-                      >
-                        <v-select
-                          :items="trueFalseOptions"
-                          validate-on-blur
-                          color="light-blue darken-1"
-                          outlined
-                          hint="Show Long Response in Modal"
-                          label="Show Long Response in Modal"
-                          :menu-props="{contentClass:'select-options'}"
-                          :tabindex="getTabIndex"
-                          v-model="solution.longResponsesInModal"
-                          append-icon="mdi-arrange-bring-forward"
-                        ></v-select>
-                      </v-col>
-                      <v-divider></v-divider>
-                      <v-col
-                        cols="12"
-                        sm="4"
-                        class="hidden-xs-only"
-                      >
-                        <v-subheader>Show Chat Icons</v-subheader>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="8"
-                      >
-                        <v-select
-                          :items="trueFalseOptions"
-                          validate-on-blur
-                          color="light-blue darken-1"
-                          outlined
-                          hint="Show Chat Icons"
-                          label="Show Chat Icons"
-                          :menu-props="{contentClass:'select-options'}"
-                          :tabindex="getTabIndex"
-                          v-model="solution.showChatIcons"
-                          append-icon="mdi-eye-off"
-                        ></v-select>
-                      </v-col>
-                      <v-divider></v-divider>
-                      <v-col
-                        cols="12"
-                        sm="4"
-                        class="hidden-xs-only"
-                      >
-                        <v-subheader>Show Accent in Chat UI</v-subheader>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="8"
-                      >
-                        <v-select
-                          :items="trueFalseOptions"
-                          validate-on-blur
-                          color="light-blue darken-1"
-                          outlined
-                          hint="Show Accent"
-                          label="Show Accent"
-                          :menu-props="{contentClass:'select-options'}"
-                          :tabindex="getTabIndex"
-                          v-model="solution.displayAccent"
-                          append-icon="mdi-border-top-variant"
-                        ></v-select>
+                        <v-row no-gutters>
+                          <v-col cols="4">
+                            <v-switch
+                              v-model="solution.enableLiveChat"
+                              label="Live Chat"
+                            ></v-switch>
+                          </v-col>
+                          <v-col cols="4">
+                            <v-switch
+                              v-model="solution.float"
+                              label="Float UI"
+                            ></v-switch>
+                          </v-col>
+                          <v-col cols="4">
+                            <v-switch
+                              v-model="solution.pulseButton"
+                              label="Pulse Button"
+                            ></v-switch>
+                          </v-col>
+                          <v-col cols="4">
+                            <v-switch
+                              v-model="solution.longResponsesInModal"
+                              label="Long Answers in Modal"
+                            ></v-switch>
+                          </v-col>
+                          <v-col cols="4">
+                            <v-switch
+                              v-model="solution.showChatIcons"
+                              label="Chat Icons"
+                            ></v-switch>
+                          </v-col>
+                          <v-col cols="4">
+                            <v-switch
+                              v-model="solution.displayAccent"
+                              label="Show Accent"
+                            ></v-switch>
+                          </v-col>
+                        </v-row>
+
                       </v-col>
                       <v-divider></v-divider>
                       <v-col
@@ -1680,12 +1582,12 @@ export default {
     },
     copyWholeConfigClipboard() {
       copy(JSON.stringify(this.config, null, 2));
-      this.displaySnackBar("📋 Copied to clipboard");
+      this.displaySnackBar("📋 Copied All Solution Configs to Clipboard");
       this.snackbarClipboard = true;
     },
     copySolutionToClipboard() {
       copy(JSON.stringify(this.selectedSolution, null, 2));
-      this.displaySnackBar("📋 Copied to clipboard");
+      this.displaySnackBar("📋 Copied Solution Config to Clipboard");
     },
     setActiveSolutionAsSelected() {
       // pre select the solution active in the browser

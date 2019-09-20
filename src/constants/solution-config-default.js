@@ -18,17 +18,17 @@ okkay | ok
     }
   ],
   deepLink: "",
-  enableLiveChat: "true",
-  float: "true",
-  pulseButton: "true",
+  enableLiveChat: true,
+  float: true,
+  pulseButton: true,
   iframeUrl: "",
   knowledgeData: ["What's your name?", "Who created you?"],
   locale: "en-us-female",
-  longResponsesInModal: "false",
+  longResponsesInModal: false,
   name: "",
   responseIcon: "mdi-comment-account",
   sendContextParams: "login",
-  showChatIcons: "true",
+  showChatIcons: true,
   theme: {
     accent: "#4CAF50",
     error: "#FF5252",
@@ -38,9 +38,9 @@ okkay | ok
     success: "#4CAF50",
     warning: "#FFC107"
   },
-  displayAccent: "true",
+  displayAccent: true,
   url: "",
-  useLocalStorage: "false",
+  useLocalStorage: false,
   userIcon: "mdi-message-text",
   useInProduction: false
 };

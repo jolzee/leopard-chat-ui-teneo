@@ -159,7 +159,7 @@ function storeSetup(vuetify, callback) {
         return state.ui.showButtonOnly;
       },
       accentStyling(state) {
-        if (state.activeSolution.displayAccent && state.activeSolution.displayAccent == "true") {
+        if (state.activeSolution.displayAccent) {
           return "border-top: 2px solid" + state.ui.theme.accent + " !important;";
         }
         return "";
@@ -553,12 +553,10 @@ function storeSetup(vuetify, callback) {
         return state.knowledgeData;
       },
       settingLongResponsesInModal(state) {
-        return state.activeSolution.longResponsesInModal !== undefined
-          ? state.activeSolution.longResponsesInModal === "true"
-          : false;
+        return state.activeSolution.longResponsesInModal;
       },
       pulseButton(state) {
-        return state.activeSolution.pulseButton !== undefined ? state.activeSolution.pulseButton === "true" : false;
+        return state.activeSolution.pulseButton;
       },
       lastItemAnswerTextCropped(_state, getters) {
         let answer = "";
@@ -711,7 +709,7 @@ function storeSetup(vuetify, callback) {
         return state.ui.chatTitle;
       },
       showChatIcons(state) {
-        return state.activeSolution.showChatIcons !== undefined ? state.activeSolution.showChatIcons === "true" : true;
+        return state.activeSolution.showChatIcons;
       },
       showUploadButton(state) {
         return state.ui.showUploadButton;

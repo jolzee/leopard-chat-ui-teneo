@@ -1,4 +1,5 @@
 import { Ripple } from "vuetify/lib/directives";
+import replaceString from "replace-string";
 const superagent = require("superagent");
 import PromisedLocation from "promised-location";
 
@@ -63,6 +64,7 @@ export default class Setup {
     return new Promise((resolve, reject) => {
       this.getSolutionConfig()
         .then(() => {
+          this.addressBooleans();
           if (!this.EMBED && !this.SHOW_BUTTON_ONLY) {
             this.addIframeHtml();
           }
@@ -94,7 +96,7 @@ export default class Setup {
             this.IFRAME_URL = this.activeSolution.iframeUrl;
             this.KNOWLEDGE_DATA = this.activeSolution.knowledgeData;
             this.LOCALE = this.activeSolution.locale;
-            this.FLOAT = this.activeSolution.float ? this.activeSolution.float == "true" : false;
+            this.FLOAT = this.activeSolution.float;
             this.RESPONSE_ICON = this.activeSolution.responseIcon;
             this.SEND_CTX_PARAMS = this.activeSolution.sendContextParams
               ? this.activeSolution.sendContextParams
@@ -109,7 +111,7 @@ export default class Setup {
             }
             this.THEME = theme;
 
-            this.ENABLE_LIVE_CHAT = this.activeSolution.enableLiveChat === "true";
+            this.ENABLE_LIVE_CHAT = this.activeSolution.enableLiveChat;
             this.UNIQUE_KEY =
               this.activeSolution.deepLink + (window.location.href.indexOf("mobile=true") > -1 ? "_mobile" : "");
             document.title = this.activeSolution.name;
@@ -166,6 +168,13 @@ export default class Setup {
         })
         .catch(message => reject(message));
     });
+  }
+
+  addressBooleans() {
+    let origChatConfig = JSON.stringify(this.chatConfig);
+    origChatConfig = replaceString(origChatConfig, '"true"', "true");
+    origChatConfig = replaceString(origChatConfig, '"false"', "false");
+    this.chatConfig = JSON.parse(origChatConfig);
   }
 
   getSolutionConfig() {
