@@ -160,7 +160,7 @@ function storeSetup(vuetify, callback) {
       },
       accentStyling(state) {
         if (state.activeSolution.displayAccent) {
-          return "border-top: 2px solid" + state.ui.theme.accent + " !important;";
+          return "border-top: 3px solid" + state.ui.theme.accent + " !important;";
         }
         return "";
       },

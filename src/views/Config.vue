@@ -769,37 +769,61 @@
                         sm="8"
                       >
                         <v-row no-gutters>
-                          <v-col cols="4">
+                          <v-col
+                            cols="12"
+                            :lg="4"
+                            :sm="6"
+                          >
                             <v-switch
                               v-model="solution.enableLiveChat"
                               label="Live Chat"
                             ></v-switch>
                           </v-col>
-                          <v-col cols="4">
+                          <v-col
+                            cols="12"
+                            :lg="4"
+                            :sm="6"
+                          >
                             <v-switch
                               v-model="solution.float"
                               label="Float UI"
                             ></v-switch>
                           </v-col>
-                          <v-col cols="4">
+                          <v-col
+                            cols="12"
+                            :lg="4"
+                            :sm="6"
+                          >
                             <v-switch
                               v-model="solution.pulseButton"
                               label="Pulse Button"
                             ></v-switch>
                           </v-col>
-                          <v-col cols="4">
+                          <v-col
+                            cols="12"
+                            :lg="4"
+                            :sm="6"
+                          >
                             <v-switch
                               v-model="solution.longResponsesInModal"
                               label="Long Answers in Modal"
                             ></v-switch>
                           </v-col>
-                          <v-col cols="4">
+                          <v-col
+                            cols="12"
+                            :lg="4"
+                            :sm="6"
+                          >
                             <v-switch
                               v-model="solution.showChatIcons"
                               label="Chat Icons"
                             ></v-switch>
                           </v-col>
-                          <v-col cols="4">
+                          <v-col
+                            cols="12"
+                            :lg="4"
+                            :sm="6"
+                          >
                             <v-switch
                               v-model="solution.displayAccent"
                               label="Show Accent"
@@ -861,10 +885,10 @@
                         sm="8"
                       >
                         <v-row>
-                          <v-col cols="6">
+                          <v-col cols="4">
                             <v-row>
                               <v-btn
-                                class="mx-2"
+                                class="mr-2"
                                 fab
                                 dark
                                 small
@@ -888,10 +912,10 @@
                             </v-row>
 
                           </v-col>
-                          <v-col cols="6">
+                          <v-col cols="4">
                             <v-row>
                               <v-btn
-                                class="mx-2"
+                                class="mr-2"
                                 fab
                                 dark
                                 small
@@ -913,13 +937,10 @@
                               ></v-text-field>
                             </v-row>
                           </v-col>
-                        </v-row>
-
-                        <v-row>
-                          <v-col cols="6">
+                          <v-col cols="4">
                             <v-row>
                               <v-btn
-                                class="mx-2"
+                                class="mr-2"
                                 fab
                                 dark
                                 small
@@ -941,10 +962,10 @@
                               ></v-text-field>
                             </v-row>
                           </v-col>
-                          <v-col cols="6">
+                          <v-col cols="4">
                             <v-row>
                               <v-btn
-                                class="mx-2"
+                                class="mr-2"
                                 fab
                                 dark
                                 small
@@ -966,13 +987,10 @@
                               ></v-text-field>
                             </v-row>
                           </v-col>
-                        </v-row>
-
-                        <v-row>
-                          <v-col cols="6">
+                          <v-col cols="4">
                             <v-row>
                               <v-btn
-                                class="mx-2"
+                                class="mr-2"
                                 fab
                                 dark
                                 small
@@ -994,10 +1012,10 @@
                               ></v-text-field>
                             </v-row>
                           </v-col>
-                          <v-col cols="6">
+                          <v-col cols="4">
                             <v-row>
                               <v-btn
-                                class="mx-2"
+                                class="mr-2"
                                 fab
                                 dark
                                 small
@@ -1021,10 +1039,10 @@
                           </v-col>
                         </v-row>
                         <v-row>
-                          <v-col>
+                          <v-col cols="4">
                             <v-row>
                               <v-btn
-                                class="mx-2"
+                                class="mr-2"
                                 fab
                                 dark
                                 small
@@ -1385,6 +1403,7 @@ export default {
         "mdi-message-reply",
         "mdi-message-reply-text",
         "mdi-android-messages",
+        "mdi-assistant",
         "mdi-account",
         "mdi-account-arrow-right",
         "mdi-account-arrow-left",
@@ -1406,7 +1425,12 @@ export default {
         "mdi-doctor",
         "mdi-human-greeting",
         "mdi-pirate",
-        "mdi-robot"
+        "mdi-robot",
+        "mdi-alien",
+        "mdi-space-invaders",
+        "mdi-teach",
+        "mdi-ninja",
+        "mdi-owl"
       ],
       displayAddEditDialog: false,
       currentModeEdit: "",
