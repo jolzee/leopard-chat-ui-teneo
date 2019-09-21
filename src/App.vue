@@ -860,6 +860,7 @@ iframe#site-frame {
   .application-float {
     max-height: 100vh !important;
     height: 100vh !important;
+    height: calc(var(--vh, 1vh) * 100) !important;
     right: 0 !important;
     top: 0;
     border-radius: unset;
