@@ -158,16 +158,16 @@ function storeSetup(vuetify, callback) {
       showButtonOnly(state) {
         return state.ui.showButtonOnly;
       },
-      getAnimatedIn(state) {
+      getAnimatedIn(state, getters) {
         let animation = "";
-        if ("animations" in state.activeSolution) {
+        if ("animations" in state.activeSolution && !getters.embed) {
           animation = "animated " + state.activeSolution.animations.in;
         }
         return animation;
       },
-      getAnimatedOut(state) {
+      getAnimatedOut(state, getters) {
         let animation = "";
-        if ("animations" in state.activeSolution) {
+        if ("animations" in state.activeSolution && !getters.embed) {
           animation = "animated " + state.activeSolution.animations.out;
         }
         return animation;
