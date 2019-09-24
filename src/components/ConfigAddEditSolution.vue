@@ -17,6 +17,7 @@
         <v-form ref="form">
           <div class="d-none d-sm-inline-block">
             <v-btn
+              aria-label="Open Marterial Design Icons in a new window"
               class="mr-2 mt-2"
               color="light-blue darken-1"
               href="https://materialdesignicons.com/"
@@ -231,8 +232,9 @@
 
                 <v-btn
                   v-for="(icon, index) in chatIcons"
-                  :key="index + 'icons'"
+                  :key="index + 'response-icons'"
                   @click="solution.responseIcon = icon"
+                  :aria-label="`Set the virtual assistant icon to ${icon}`"
                   text
                   icon
                   color="indigo"
@@ -257,6 +259,7 @@
                   validate-on-blur
                   color="light-blue darken-1"
                   label="User Icon - MDI Icons (mdi-icon-name)"
+                  :aria-label="`Set the icon representing the customer in the chat UI`"
                   :append-icon="solution.userIcon"
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
@@ -275,7 +278,8 @@
 
                 <v-btn
                   v-for="(icon, index) in chatIcons"
-                  :key="index + 'icons'"
+                  :key="index + 'user-icons'"
+                  :aria-label="`Set the icon representing the customer to ${icon}`"
                   @click="solution.userIcon = icon"
                   text
                   icon
@@ -372,6 +376,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         class="mx-2"
+                        :aria-label="`Reset theme colors to default`"
                         v-bind="attrs"
                         v-on="on"
                         icon
@@ -420,6 +425,7 @@
                   >
                     <v-btn
                       class="mr-2"
+                      :aria-label="`Set the active color for editing to ${color}`"
                       fab
                       dark
                       small
@@ -490,6 +496,7 @@
               >
                 <v-btn
                   color="red"
+                  :aria-label="`Add a help question`"
                   class="white--text mr-2"
                   @click="addUserInput"
                 >
@@ -566,6 +573,7 @@
               >
                 <v-btn
                   color="red"
+                  :aria-label="`Add a new context parameter`"
                   class="white--text mr-2"
                   @click="addContextParam"
                 >
@@ -684,6 +692,7 @@
         <v-spacer></v-spacer>
         <v-btn
           class="mr-2"
+          :aria-label="`Close the solution editing dialog`"
           color="blue-grey lighten-5"
           light
           @click="closeAddNewSolutionDialog"
@@ -691,6 +700,7 @@
         <v-btn
           class="mr-2"
           color="green"
+          :aria-label="`Save edits to the solution`"
           @click="saveForm"
         >Save
           <v-icon
