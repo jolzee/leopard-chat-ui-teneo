@@ -126,7 +126,7 @@
             >
               <v-text-field
                 id="teneo-input-field"
-                aria-label="Enter your question for assitance here"
+                aria-label="Enter your question for assistance here"
                 v-show="!showUploadButton && !showUploadProgress"
                 :disabled="progressBar"
                 :append-icon="showAudioInput ? 'mdi-chevron-double-right' : ''"
@@ -191,7 +191,7 @@
                   :loading="progressBar"
                   v-long-press="1000"
                   @long-press-start="swapInputButton"
-                  aria-label="Send your question to the assitant"
+                  aria-label="Send your question to the assistant"
                   v-if="!showAudioInput"
                   small
                   color="primary"
@@ -203,7 +203,7 @@
 
                 <v-btn
                   fab
-                  aria-label="Send your question to the assitant"
+                  aria-label="Send your question to the assistant."
                   :disabled="progressBar"
                   :loading="progressBar"
                   v-long-press="1000"
