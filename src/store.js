@@ -158,6 +158,20 @@ function storeSetup(vuetify, callback) {
       showButtonOnly(state) {
         return state.ui.showButtonOnly;
       },
+      getAnimatedIn(state) {
+        let animation = "";
+        if ("animations" in state.activeSolution) {
+          animation = "animated " + state.activeSolution.animations.in;
+        }
+        return animation;
+      },
+      getAnimatedOut(state) {
+        let animation = "";
+        if ("animations" in state.activeSolution) {
+          animation = "animated " + state.activeSolution.animations.out;
+        }
+        return animation;
+      },
       accentStyling(state) {
         if (state.activeSolution.displayAccent) {
           return "border-top: 3px solid" + state.ui.theme.accent + " !important;";

@@ -83,118 +83,125 @@
           </v-btn>
         </v-fab-transition>
       </div>
-      <div
-        id="teneo"
-        v-if="showChatWindow"
-        :class="{'elevation-2': !embed, 'application-float': float, 'application-embed': embed, 'teneo-light-bg': !$vuetify.theme.dark, 'teneo-dark-bg': $vuetify.theme.dark}"
+      <transition
+        name="menu-transition"
+        :enter-active-class="getAnimatedIn"
+        :leave-active-class="getAnimatedOut"
       >
-        <transition
-          name="menu-transition"
-          enter-active-class="animated slideInRight"
-          leave-active-class="animated slideOutRight"
-        >
-          <v-navigation-drawer
-            app
-            :clipped="clipped"
-            v-if="drawer"
-            v-model="drawer"
-            enable-resize-watcher
-            temporary
-            right
-            width="250"
-          >
-            <v-row
-              align="center"
-              justify="center"
-            >
-              <v-img
-                :src="backgroundImage()"
-                :lazy-src="backgroundImage()"
-                aspect-ratio="1"
-                height="170px"
-              >
-                <v-row class="lightbox white--text ma-4">
-                  <v-col>
-                    <div class="headline font-weight-medium">Artificial Solutions</div>
-                    <div class="body-2">{{ $t('about.page.content') }}</div>
-                  </v-col>
-                </v-row>
-              </v-img>
-            </v-row>
-
-            <v-list class="px-2">
-              <v-list-item
-                ripple
-                value="true"
-                v-for="(menuItem, i) in activeMenuItems"
-                :key="i"
-                :to="menuItem.route"
-                @click="lookForLogout(menuItem)"
-              >
-                <v-list-item-action>
-                  <v-icon
-                    medium
-                    :class="menuClass"
-                  >{{menuItem.icon}}</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title
-                    class="subheading"
-                    :class="menuClassText"
-                  >{{ $t(menuItem.titleKey) }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-navigation-drawer>
-        </transition>
-
-        <v-toolbar
-          :color="toolbarColor"
-          :flat="false"
-          height="64"
-          style="z-index: 3;"
-          :class="{'teneo-toolbar-float' : float, 'teneo-toolbar-embed' : embed}"
-          :style="toolbarStyle"
-        >
-          <v-app-bar-nav-icon
-            @click.stop="drawer = !drawer"
-            class="secondary--text"
-          ></v-app-bar-nav-icon>
-          <v-toolbar-title
-            v-text="toolbarTitle"
-            class="pl-0"
-          ></v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn
-            x-small
-            fab
-            ripple
-            @click="toggleBrightness"
-            elevation="2"
-            color="secondary"
-          >
-            <v-icon
-              dark
-              v-text="$vuetify.theme.dark
-            ? 'mdi-brightness-4'
-            : 'mdi-brightness-5'"
-            ></v-icon>
-          </v-btn>
-        </v-toolbar>
-        <v-content
-          app
-          class="content-area"
+        <div
+          id="teneo"
+          v-if="showChatWindow"
+          :class="{'elevation-2': !embed, 'application-float': float, 'application-embed': embed, 'teneo-light-bg': !$vuetify.theme.dark, 'teneo-dark-bg': $vuetify.theme.dark}"
         >
           <transition
-            name="page-transition"
-            enter-active-class="animation fadeIn"
+            name="menu-transition"
+            enter-active-class="animated slideInRight"
+            leave-active-class="animated slideOutRight"
           >
-            <router-view />
-          </transition>
-          <teneo-modal></teneo-modal>
-        </v-content>
+            <v-navigation-drawer
+              app
+              :clipped="clipped"
+              v-if="drawer"
+              v-model="drawer"
+              enable-resize-watcher
+              temporary
+              right
+              width="250"
+            >
+              <v-row
+                align="center"
+                justify="center"
+              >
+                <v-img
+                  :src="backgroundImage()"
+                  :lazy-src="backgroundImage()"
+                  aspect-ratio="1"
+                  height="170px"
+                >
+                  <v-row class="lightbox white--text ma-4">
+                    <v-col>
+                      <div class="headline font-weight-medium">Artificial Solutions</div>
+                      <div class="body-2">{{ $t('about.page.content') }}</div>
+                    </v-col>
+                  </v-row>
+                </v-img>
+              </v-row>
 
-      </div>
+              <v-list class="px-2">
+                <v-list-item
+                  ripple
+                  value="true"
+                  v-for="(menuItem, i) in activeMenuItems"
+                  :key="i"
+                  :to="menuItem.route"
+                  @click="lookForLogout(menuItem)"
+                >
+                  <v-list-item-action>
+                    <v-icon
+                      medium
+                      :class="menuClass"
+                    >{{menuItem.icon}}</v-icon>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      class="subheading"
+                      :class="menuClassText"
+                    >{{ $t(menuItem.titleKey) }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-navigation-drawer>
+          </transition>
+
+          <div>
+            <v-toolbar
+              :color="toolbarColor"
+              :flat="false"
+              height="64"
+              style="z-index: 3;"
+              :class="{'teneo-toolbar-float' : float, 'teneo-toolbar-embed' : embed}"
+              :style="toolbarStyle"
+            >
+              <v-app-bar-nav-icon
+                @click.stop="drawer = !drawer"
+                class="secondary--text"
+              ></v-app-bar-nav-icon>
+              <v-toolbar-title
+                v-text="toolbarTitle"
+                class="pl-0"
+              ></v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn
+                x-small
+                fab
+                ripple
+                @click="toggleBrightness"
+                elevation="2"
+                color="secondary"
+              >
+                <v-icon
+                  dark
+                  v-text="$vuetify.theme.dark
+            ? 'mdi-brightness-4'
+            : 'mdi-brightness-5'"
+                ></v-icon>
+              </v-btn>
+            </v-toolbar>
+            <v-content
+              app
+              class="content-area"
+            >
+              <transition
+                name="page-transition"
+                enter-active-class="animation fadeIn"
+              >
+                <router-view />
+              </transition>
+              <teneo-modal></teneo-modal>
+            </v-content>
+          </div>
+        </div>
+      </transition>
     </v-app>
   </div>
 </template>
@@ -277,6 +284,8 @@ export default {
       "dialogs",
       "chatTitle",
       "customCssButtonToolbar",
+      "getAnimatedIn",
+      "getAnimatedOut",
       "embed",
       "float",
       "hideConfigMenu",
@@ -543,7 +552,9 @@ export default {
             }
 
             if (!this.embed && !this.overlayChat && siteFrame) {
-              siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+              setTimeout(function() {
+                siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+              }, 1000);
             }
           }.bind(this),
           400
@@ -606,6 +617,10 @@ export default {
 
 .v-overlay--active {
   border-radius: 0px !important;
+}
+
+#app {
+  background-color: transparent;
 }
 
 .application-button {

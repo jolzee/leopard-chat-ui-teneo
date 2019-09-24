@@ -524,7 +524,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import dayjs from "dayjs";
 import copy from "copy-to-clipboard";
 import {
@@ -572,29 +571,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      "dark",
-      "itemAnswerTextCropped",
-      "showChatIcons",
-      "itemExtensions",
-      "imageUrl",
-      "carouselImageArray",
-      "responseIcon",
-      "uuid",
-      "hasInline",
-      "hasInlineType",
-      "dialogs",
-      "getLatestDialogHistory",
-      "hasModal",
-      "lastItemHasLongResponse",
-      "itemHasLongResponse",
-      "showDelayedResponse",
-      "vimeoId",
-      "audioInfo",
-      "videoInfo",
-      "mapInfo",
-      "youTubeVideoId"
-    ]),
     sortedSolutions() {
       return this.config.solutions.slice().sort(this.compareSolutions);
     },
@@ -632,7 +608,13 @@ export default {
   },
   updated: function() {},
   created() {
+    this.config.solutions.forEach(solution => {
+      if (!("animations" in solution)) {
+        solution.animations = SOLUTION_DEFAULT.animations;
+      }
+    });
     this.setActiveSolutionAsSelected();
+    this.saveToLocalStorage();
   },
   methods: {
     closeAddNewSolutionDialog(result) {

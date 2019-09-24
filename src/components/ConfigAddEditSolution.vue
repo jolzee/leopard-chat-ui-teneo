@@ -157,6 +157,53 @@
                   append-icon="mdi-translate"
                 ></v-select>
               </v-col>
+
+              <v-col
+                cols="12"
+                sm="4"
+                class="hidden-xs-only"
+              >
+                <v-subheader>Enter Animation</v-subheader>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="8"
+              >
+                <v-select
+                  :items="animations.in"
+                  color="light-blue darken-1"
+                  :menu-props="{contentClass:'select-options'}"
+                  outlined
+                  :tabindex="getTabIndex"
+                  v-model="solution.animations.in"
+                  label="Specify Enter Animation"
+                  append-icon="mdi-expand-all"
+                ></v-select>
+              </v-col>
+
+              <v-col
+                cols="12"
+                sm="4"
+                class="hidden-xs-only"
+              >
+                <v-subheader>Exit Animation</v-subheader>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="8"
+              >
+                <v-select
+                  :items="animations.out"
+                  color="light-blue darken-1"
+                  :menu-props="{contentClass:'select-options'}"
+                  outlined
+                  :tabindex="getTabIndex"
+                  v-model="solution.animations.out"
+                  label="Specify Exit Animation"
+                  append-icon="mdi-collapse-all"
+                ></v-select>
+              </v-col>
+
               <v-col
                 cols="12"
                 sm="4"
@@ -694,6 +741,104 @@ export default {
         this.currentModeEdit === "edit"
           ? this.cloneObject(this.selectedSolution)
           : Object.assign({}, SOLUTION_DEFAULT),
+      animations: {
+        in: [
+          "none",
+          "bounce",
+          "flash",
+          "pulse",
+          "rubberBand",
+          "shake",
+          "headShake",
+          "swing",
+          "tada",
+          "wobble",
+          "jello",
+          "bounceIn",
+          "bounceInDown",
+          "bounceInLeft",
+          "bounceInRight",
+          "bounceInUp",
+          "fadeIn",
+          "fadeInDown",
+          "fadeInDownBig",
+          "fadeInLeft",
+          "fadeInLeftBig",
+          "fadeInRight",
+          "fadeInRightBig",
+          "fadeInUp",
+          "fadeInUpBig",
+          "flipInX",
+          "flipInY",
+          "lightSpeedIn",
+          "rotateIn",
+          "rotateInDownLeft",
+          "rotateInDownRight",
+          "rotateInUpLeft",
+          "rotateInUpRight",
+          "hinge",
+          "jackInTheBox",
+          "rollIn",
+          "zoomIn",
+          "zoomInDown",
+          "zoomInLeft",
+          "zoomInRight",
+          "zoomInUp",
+          "slideInDown",
+          "slideInLeft",
+          "slideInRight",
+          "slideInUp",
+          "heartBeat"
+        ],
+        out: [
+          "none",
+          "bounce",
+          "flash",
+          "pulse",
+          "rubberBand",
+          "shake",
+          "headShake",
+          "swing",
+          "tada",
+          "wobble",
+          "jello",
+          "bounceOut",
+          "bounceOutDown",
+          "bounceOutLeft",
+          "bounceOutRight",
+          "bounceOutUp",
+          "fadeOut",
+          "fadeOutDown",
+          "fadeOutDownBig",
+          "fadeOutLeft",
+          "fadeOutLeftBig",
+          "fadeOutRight",
+          "fadeOutRightBig",
+          "fadeOutUp",
+          "fadeOutUpBig",
+          "flipOutX",
+          "flipOutY",
+          "lightSpeedOut",
+          "rotateOut",
+          "rotateOutDownLeft",
+          "rotateOutDownRight",
+          "rotateOutUpLeft",
+          "rotateOutUpRight",
+          "hinge",
+          "jackInTheBox",
+          "rollOut",
+          "zoomOut",
+          "zoomOutDown",
+          "zoomOutLeft",
+          "zoomOutRight",
+          "zoomOutUp",
+          "slideOutDown",
+          "slideOutLeft",
+          "slideOutRight",
+          "slideOutUp",
+          "heartBeat"
+        ]
+      },
       snackbar: false,
       showDialog: true,
       snackbarTimeout: 3000,

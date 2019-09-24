@@ -17,6 +17,10 @@ okkay | ok
       ]
     }
   ],
+  animations: {
+    in: "rotateInUpRight",
+    out: "zoomOutDown"
+  },
   deepLink: "",
   enableLiveChat: true,
   float: true,

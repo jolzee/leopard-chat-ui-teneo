@@ -18,6 +18,10 @@
           ]
         }
       ],
+      "animations": {
+        "in": "rotateInUpRight",
+        "out": "zoomOutDown"
+      },
       "chatTitle": "Speak with Leo",
       "responseIcon": "mdi-message-bulleted",
       "userIcon": "mdi-comment-account",
