@@ -146,7 +146,7 @@ function storeSetup(vuetify, callback) {
         return state.ui.showDelayedResponse;
       },
       isChatOpen(state) {
-        console.log("isChatOpen (state.ui.showChatWindow):" + state.ui.showChatWindow);
+        // console.log("isChatOpen (state.ui.showChatWindow):" + state.ui.showChatWindow);
         return state.ui.showChatWindow;
       },
       hideConfigMenu(state) {

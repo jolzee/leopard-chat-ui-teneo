@@ -289,8 +289,8 @@ export default {
       "socialAuthEnabled"
     ]),
     shouldFloat() {
-      console.log(this.float);
-      console.log(this.$router.currentRoute.path !== "/config");
+      // console.log(this.float);
+      // console.log(this.$router.currentRoute.path !== "/config");
       if (this.float && this.$router.currentRoute.path !== "/config") {
         return true;
       } else {
@@ -603,6 +603,10 @@ export default {
 
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
+
+.v-overlay--active {
+  border-radius: 0px !important;
+}
 
 .application-button {
   background: transparent !important;
