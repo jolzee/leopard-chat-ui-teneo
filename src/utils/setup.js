@@ -293,7 +293,7 @@ export default class Setup {
   addIframeHtml() {
     let iframeHtml = this.getFunctionHTMLTemplate(function() {
       /*!
-      <iframe id="site-frame" src="" frameborder="0"></iframe>
+      <iframe id="site-frame" src="" frameborder="0" title="Demonstration Page"></iframe>
       */
     });
     document.body.innerHTML += iframeHtml;

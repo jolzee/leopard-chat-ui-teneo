@@ -33,6 +33,7 @@
       </v-avatar>
       <v-btn
         v-else
+        aria-label="Chat icon representing you"
         v-long-press="1000"
         @long-press-start="swapInputButton"
         class="teneo-userinput-icon elevation-2"
@@ -71,7 +72,6 @@ export default {
       "authenticated",
       "userProfileImage",
       "displayName",
-      "userIcon",
       "userIcon"
     ])
   }

@@ -14,6 +14,7 @@
       >
         <v-btn
           v-long-press="1000"
+          aria-label="Chat icon representing the virtual assitant"
           @long-press-start="swapInputButton"
           color="secondary"
           class="teneo-response-icon elevation-2"

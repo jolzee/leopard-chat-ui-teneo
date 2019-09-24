@@ -15,6 +15,7 @@
             dark
             color="primary"
             elevation="2"
+            :aria-label="isChatOpen ? 'Close Chat' : 'Open Chat'"
             class="embed-button-center"
             :class="{ pulse: (pulseButton && !isChatOpen)}"
             :style="customCssButtonToolbar"
@@ -70,6 +71,7 @@
             fab
             dark
             color="primary"
+            :aria-label="showChatWindow ? 'Close Chat' : 'Open Chat'"
             elevation="2"
             @click="toggleChat"
             v-show="showChatButton"
@@ -132,7 +134,7 @@
                   ripple
                   value="true"
                   v-for="(menuItem, i) in activeMenuItems"
-                  :key="i"
+                  :key="i + 'menuItem'"
                   :to="menuItem.route"
                   @click="lookForLogout(menuItem)"
                 >
@@ -163,6 +165,7 @@
               :style="toolbarStyle"
             >
               <v-app-bar-nav-icon
+                :aria-label="drawer ? 'Hide the chat menu' : 'Show the chat menu'"
                 @click.stop="drawer = !drawer"
                 class="secondary--text"
               ></v-app-bar-nav-icon>
@@ -173,6 +176,7 @@
               <v-spacer></v-spacer>
               <v-btn
                 x-small
+                :aria-label="$vuetify.theme.dark ? 'Change interface to light mode' : 'Change interfce to dark mode'"
                 fab
                 ripple
                 @click="toggleBrightness"
@@ -674,8 +678,8 @@ blockquote p {
 div.v-input__slot:focus,
 button:focus,
 a:focus {
-  -webkit-box-shadow: 0 0 0 3px rgba(116, 116, 116, 0.5) !important;
-  box-shadow: 0 0 0 3px rgba(116, 116, 116, 0.5) !important;
+  -webkit-box-shadow: 0 0 0 2px rgba(118, 11, 180, 1) !important;
+  box-shadow: 0 0 0 2px rgba(118, 11, 180, 1) !important;
   outline: 0;
 }
 

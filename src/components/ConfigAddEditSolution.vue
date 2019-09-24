@@ -42,7 +42,6 @@
                   color="light-blue darken-1"
                   v-model.trim="solution.name"
                   validate-on-blur
-                  :tabindex="getTabIndex"
                   label="Solution Name"
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
@@ -62,7 +61,6 @@
                   color="light-blue darken-1"
                   v-model.trim="solution.url"
                   validate-on-blur
-                  :tabindex="getTabIndex"
                   label="URL to Teneo Runtime - no parameters"
                   append-icon="mdi-link-variant"
                   :rules="[ruleMustHaveValue, ruleMustBeUrl]"
@@ -88,7 +86,6 @@
                   color="light-blue darken-1"
                   v-model.trim="solution.iframeUrl"
                   validate-on-blur
-                  :tabindex="getTabIndex"
                   label="Enter the IFRAME URL"
                   append-icon="mdi-link-variant"
                   :rules="[ruleMustHaveValue, ruleMustBeUrl]"
@@ -109,7 +106,6 @@
                   color="light-blue darken-1"
                   validate-on-blur
                   v-model.trim="solution.chatTitle"
-                  :tabindex="getTabIndex"
                   label="Chat Window Title"
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
@@ -130,7 +126,6 @@
                   color="light-blue darken-1"
                   v-model.trim="solution.deepLink"
                   validate-on-blur
-                  :tabindex="getTabIndex"
                   label="Deep links can be accessed with ?dl=<deep-link>"
                   :rules="[ruleMustHaveValue, ruleNoSpaces, ruleDeepLinkUnique]"
                 ></v-text-field>
@@ -151,7 +146,6 @@
                   color="light-blue darken-1"
                   :menu-props="{contentClass:'select-options'}"
                   outlined
-                  :tabindex="getTabIndex"
                   v-model="solution.locale"
                   label="Specify Chat Locale"
                   append-icon="mdi-translate"
@@ -174,7 +168,6 @@
                   color="light-blue darken-1"
                   :menu-props="{contentClass:'select-options'}"
                   outlined
-                  :tabindex="getTabIndex"
                   v-model="solution.animations.in"
                   label="Specify Enter Animation"
                   append-icon="mdi-expand-all"
@@ -197,7 +190,6 @@
                   color="light-blue darken-1"
                   :menu-props="{contentClass:'select-options'}"
                   outlined
-                  :tabindex="getTabIndex"
                   v-model="solution.animations.out"
                   label="Specify Exit Animation"
                   append-icon="mdi-collapse-all"
@@ -220,7 +212,6 @@
                   v-model.trim="solution.responseIcon"
                   validate-on-blur
                   color="light-blue darken-1"
-                  :tabindex="getTabIndex"
                   label="Response Icon - MDI Icons (mdi-icon-name)"
                   :append-icon="solution.responseIcon"
                   :rules="[ruleMustHaveValue]"
@@ -265,7 +256,6 @@
                   v-model.trim="solution.userIcon"
                   validate-on-blur
                   color="light-blue darken-1"
-                  :tabindex="getTabIndex"
                   label="User Icon - MDI Icons (mdi-icon-name)"
                   :append-icon="solution.userIcon"
                   :rules="[ruleMustHaveValue]"
@@ -379,9 +369,10 @@
                     open-delay="600"
                     bottom
                   >
-                    <template v-slot:activator="{ on }">
+                    <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         class="mx-2"
+                        v-bind="attrs"
                         v-on="on"
                         icon
                         dark
@@ -432,7 +423,6 @@
                       fab
                       dark
                       small
-                      elevation="2"
                       @click="setActiveColor(color)"
                       :color="solution.theme[color]"
                     >
@@ -444,7 +434,6 @@
                       validate-on-blur
                       color="light-blue darken-1"
                       :value="solution.theme[color]"
-                      :tabindex="getTabIndex"
                       :label="color"
                       :rules="[ruleMustHaveValue, ruleMustHaveColor]"
                     ></v-text-field>
@@ -469,7 +458,6 @@
                   outlined
                   color="light-blue darken-1"
                   name="input-7-4"
-                  :tabindex="getTabIndex"
                   label="Custom CSS"
                   v-model.trim="solution.customCssButtonToolbar"
                 ></v-textarea>
@@ -491,7 +479,6 @@
                   outlined
                   color="light-blue darken-1"
                   name="input-7-4"
-                  :tabindex="getTabIndex"
                   label="ASR Corrections"
                   v-model.trim="solution.asrCorrections"
                 ></v-textarea>
@@ -527,7 +514,6 @@
                       :value="question"
                       validate-on-blur
                       color="light-blue darken-1"
-                      :tabindex="getTabIndex"
                       label="Example question"
                       append-icon="mdi-android-messages"
                       :rules="[ruleMustHaveValue]"
@@ -560,7 +546,6 @@
                 sm="8"
               >
                 <v-radio-group
-                  :tabindex="getTabIndex"
                   label="When to send CTX params"
                   v-model="solution.sendContextParams"
                   mandatory
@@ -612,7 +597,6 @@
                       v-model.trim="contextParam.name"
                       validate-on-blur
                       color="light-blue darken-1"
-                      :tabindex="getTabIndex"
                       label="Parameter Name"
                       append-icon="mdi-key-variant"
                       :rules="[ruleMustHaveValue]"
@@ -623,8 +607,9 @@
                     sm="1"
                   >
                     <v-tooltip top>
-                      <template v-slot:activator="{ on }">
+                      <template v-slot:activator="{ on, attrs }">
                         <v-icon
+                          v-bind="attrs"
                           v-on="on"
                           @click="solution.contextParams.splice(index, 1)"
                           color="red"
@@ -634,8 +619,9 @@
                       <span>Remove CTX Parameter</span>
                     </v-tooltip>
                     <v-tooltip top>
-                      <template v-slot:activator="{ on }">
+                      <template v-slot:activator="{ on, attrs }">
                         <v-icon
+                          v-bind="attrs"
                           v-on="on"
                           @click="addNewContextParameterValue(index)"
                           color="green"
@@ -654,8 +640,9 @@
                   >
                     <v-col class="elevation-2 pa-3 mb-2 mr-2 white">
                       <v-tooltip top>
-                        <template v-slot:activator="{ on }">
+                        <template v-slot:activator="{ on, attrs }">
                           <v-icon
+                            v-bind="attrs"
                             v-on="on"
                             @click="contextParam.values.splice(valueIndex, 1)"
                             color="red"
@@ -665,8 +652,9 @@
                         <span>Delete Parameter Value</span>
                       </v-tooltip>
                       <v-tooltip top>
-                        <template v-slot:activator="{ on }">
+                        <template v-slot:activator="{ on, attrs }">
                           <v-icon
+                            v-bind="attrs"
                             v-on="on"
                             @click="toggleActiveContextParameterValue(value.active, index, valueIndex)"
                             :color="value.active ? 'green' : 'blue-grey lighten-4'"
@@ -681,7 +669,6 @@
                         validate-on-blur
                         color="light-blue darken-1"
                         label="Parameter Value"
-                        :tabindex="getTabIndex"
                         :rules="[ruleMustHaveValue]"
                       ></v-text-field>
                     </v-col>

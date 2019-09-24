@@ -126,6 +126,7 @@
             >
               <v-text-field
                 id="teneo-input-field"
+                aria-label="Enter your question for assitance here"
                 v-show="!showUploadButton && !showUploadProgress"
                 :disabled="progressBar"
                 :append-icon="showAudioInput ? 'mdi-chevron-double-right' : ''"
@@ -159,6 +160,7 @@
             <v-col cols="2">
               <upload-btn
                 icon
+                aria-label="Select file for upload"
                 v-if="showUploadButton"
                 @file-update="fileChanged"
                 large
@@ -189,6 +191,7 @@
                   :loading="progressBar"
                   v-long-press="1000"
                   @long-press-start="swapInputButton"
+                  aria-label="Send your question to the assitant"
                   v-if="!showAudioInput"
                   small
                   color="primary"
@@ -200,6 +203,7 @@
 
                 <v-btn
                   fab
+                  aria-label="Send your question to the assitant"
                   :disabled="progressBar"
                   :loading="progressBar"
                   v-long-press="1000"
@@ -382,8 +386,6 @@ export default {
       "showUploadButton",
       "showLiveChatProcessing",
       "userInputReadyForSending",
-      "responseIcon",
-      "userIcon",
       "userProfileImage",
       "uuid",
       "displayName",

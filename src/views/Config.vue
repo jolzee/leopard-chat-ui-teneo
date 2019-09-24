@@ -24,6 +24,7 @@
                 small
                 dark
                 @click="refreshBrowser"
+                aria-label="Refresh browser taking into account current selected solution"
                 color="green"
                 :loading="refresh"
               >
@@ -33,10 +34,12 @@
                 open-delay="600"
                 bottom
               >
-                <template v-slot:activator="{ on }">
+                <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     class="mr-2"
+                    v-bind="attrs"
                     v-on="on"
+                    aria-label="Open a new window showing the current selected solution embedded in a mobile view"
                     dark
                     fab
                     rounded
@@ -56,10 +59,12 @@
                 open-delay="600"
                 bottom
               >
-                <template v-slot:activator="{ on }">
+                <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     class="mr-2"
+                    v-bind="attrs"
                     v-on="on"
+                    aria-label="Refresh the browser to a deep link of the selected solution"
                     fab
                     dark
                     rounded
@@ -82,10 +87,14 @@
           <v-badge
             left
             overlap
-            color="blue"
+            color="#4051B1"
+            :aria-label="`There are ${config.solutions.length} known teneo solutions`"
             class="mr-2"
           >
-            <span slot="badge">{{config.solutions.length}}</span>
+            <span
+              slot="badge"
+              style="background-color: #4051B1"
+            >{{config.solutions.length}}</span>
             <v-icon
               large
               color="grey lighten-1"
@@ -134,7 +143,8 @@
                                 :items="sortedSolutions"
                                 return-object
                                 no-data-text="No Solutions"
-                                label="Select Teneo Solution"
+                                label="Select a Teneo Solution"
+                                aria-label="Select a Teneo solution"
                                 append-icon="mdi-chevron-double-down"
                               ></v-select>
                             </v-col>
@@ -146,9 +156,11 @@
                                 open-delay="600"
                                 bottom
                               >
-                                <template v-slot:activator="{ on }">
+                                <template v-slot:activator="{ on, attrs }">
                                   <v-btn
+                                    aria-label="Add a new solution"
                                     class="mr-2"
+                                    v-bind="attrs"
                                     v-on="on"
                                     fab
                                     dark
@@ -165,9 +177,11 @@
                                 open-delay="600"
                                 bottom
                               >
-                                <template v-slot:activator="{ on }">
+                                <template v-slot:activator="{ on, attrs }">
                                   <v-btn
+                                    aria-label="Make the selected solution the active solution"
                                     class="mr-2"
+                                    v-bind="attrs"
                                     v-on="on"
                                     fab
                                     dark
@@ -187,9 +201,11 @@
                                   open-delay="600"
                                   bottom
                                 >
-                                  <template v-slot:activator="{ on }">
+                                  <template v-slot:activator="{ on, attrs }">
                                     <v-btn
+                                      aria-label="Edit the selected solution"
                                       class="mr-2"
+                                      v-bind="attrs"
                                       v-on="on"
                                       fab
                                       dark
@@ -206,9 +222,11 @@
                                   open-delay="600"
                                   bottom
                                 >
-                                  <template v-slot:activator="{ on }">
+                                  <template v-slot:activator="{ on, attrs }">
                                     <v-btn
+                                      aria-label="Clone the currently selected solution"
                                       class="mr-2"
+                                      v-bind="attrs"
                                       v-on="on"
                                       fab
                                       dark
@@ -225,9 +243,11 @@
                                   open-delay="600"
                                   bottom
                                 >
-                                  <template v-slot:activator="{ on }">
+                                  <template v-slot:activator="{ on, attrs }">
                                     <v-btn
+                                      aria-label="Delete the currently selected solution"
                                       class="mr-2"
+                                      v-bind="attrs"
                                       v-on="on"
                                       fab
                                       dark
@@ -244,9 +264,11 @@
                                   open-delay="600"
                                   bottom
                                 >
-                                  <template v-slot:activator="{ on }">
+                                  <template v-slot:activator="{ on, attrs }">
                                     <v-btn
+                                      aria-label="Copy the selected solution configuration to the clipboard"
                                       class="mr-2"
+                                      v-bind="attrs"
                                       v-on="on"
                                       fab
                                       dark
@@ -263,9 +285,11 @@
                                   open-delay="600"
                                   bottom
                                 >
-                                  <template v-slot:activator="{ on }">
+                                  <template v-slot:activator="{ on, attrs }">
                                     <v-btn
+                                      aria-label="Download the selected solution's configuration as a file"
                                       class="mr-2"
+                                      v-bind="attrs"
                                       v-on="on"
                                       fab
                                       dark
@@ -302,9 +326,11 @@
                           open-delay="600"
                           bottom
                         >
-                          <template v-slot:activator="{ on }">
+                          <template v-slot:activator="{ on, attrs }">
                             <v-btn
+                              aria-label="Upload new or additional solution configurations"
                               class="mr-2"
+                              v-bind="attrs"
                               v-on="on"
                               fab
                               dark
@@ -321,9 +347,11 @@
                           open-delay="600"
                           bottom
                         >
-                          <template v-slot:activator="{ on }">
+                          <template v-slot:activator="{ on, attrs }">
                             <v-btn
+                              aria-label="Copy all solution configurations to the clipboard"
                               class="mr-2"
+                              v-bind="attrs"
                               v-on="on"
                               fab
                               dark
@@ -340,9 +368,11 @@
                           open-delay="600"
                           bottom
                         >
-                          <template v-slot:activator="{ on }">
+                          <template v-slot:activator="{ on, attrs }">
                             <v-btn
+                              aria-label="Download all solution configurations as a JSON file"
                               class="mr-2"
+                              v-bind="attrs"
                               v-on="on"
                               fab
                               dark
@@ -359,9 +389,11 @@
                           open-delay="600"
                           bottom
                         >
-                          <template v-slot:activator="{ on }">
+                          <template v-slot:activator="{ on, attrs }">
                             <v-btn
+                              aria-label="Toggle a visual display of all solution configurations as JSON"
                               class="mr-2"
+                              v-bind="attrs"
                               v-on="on"
                               fab
                               dark
@@ -378,10 +410,12 @@
                           open-delay="600"
                           bottom
                         >
-                          <template v-slot:activator="{ on }">
+                          <template v-slot:activator="{ on, attrs }">
                             <v-btn
+                              aria-label="Open documentation for Leopard's Chat UI"
                               class="mr-2"
                               fab
+                              v-bind="attrs"
                               v-on="on"
                               dark
                               small
@@ -940,9 +974,25 @@ export default {
 };
 </script>
 
-
+<style>
+div.v-input__slot:focus,
+button:focus,
+a:focus {
+  -webkit-box-shadow: 0 0 0 2px rgba(118, 11, 180, 1) !important;
+  box-shadow: 0 0 0 2px rgba(118, 11, 180, 1) !important;
+  outline: 0;
+}
+</style>
 
 <style scoped>
+div.v-input__slot:focus,
+button:focus,
+a:focus {
+  -webkit-box-shadow: 0 0 0 2px rgba(118, 11, 180, 1) !important;
+  box-shadow: 0 0 0 2px rgba(118, 11, 180, 1) !important;
+  outline: 0;
+}
+
 #app {
   border-radius: 0px !important;
 }
