@@ -308,7 +308,7 @@
                                 >
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-btn
-                                      aria-label="Generate Share Link for Team Memebers"
+                                      aria-label="Generate sharable link for team members"
                                       class="mr-2"
                                       v-bind="attrs"
                                       v-on="on"
@@ -321,7 +321,7 @@
                                       <v-icon dark>mdi-link-plus</v-icon>
                                     </v-btn>
                                   </template>
-                                  <span>Generate Share Link for Team Memebers</span>
+                                  <span>Generate sharable link for team members</span>
                                 </v-tooltip>
                               </span>
                             </v-col>
