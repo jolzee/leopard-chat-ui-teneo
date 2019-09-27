@@ -5,7 +5,7 @@
     :persistent="true"
     max-width="calc(1200px - 10vw)"
   >
-    <v-card style="z-index: 500">
+    <v-card>
       <v-card-title>
         <h3>{{ dialogTitle }}</h3>
       </v-card-title>
@@ -13,6 +13,7 @@
       <v-card-text
         style="height: 90vh"
         id="add-edit"
+        class="teneo-hide-scroll-x"
       >
         <v-form ref="form">
           <div class="d-none d-sm-inline-block">
@@ -151,6 +152,38 @@
                   label="Specify Chat Locale"
                   append-icon="mdi-translate"
                 ></v-select>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="4"
+                class="hidden-xs-only"
+              >
+                <v-subheader>Demo Animation</v-subheader>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="8"
+              >
+                <v-row
+                  align="center"
+                  justify="center"
+                  style="min-height: 300px; height: 300px;"
+                >
+                  <transition
+                    name="leoaprd-transition"
+                    :enter-active-class="'animated ' + solution.animations.in"
+                    :leave-active-class="'animated ' + solution.animations.out"
+                  >
+                    <v-img
+                      v-if="showLeopardAnimationImage"
+                      src="../../public/static/leopard-small.webp"
+                      lazy-src="../../public/static/leopard-small.webp"
+                      max-height="300"
+                      @click="toggleDisplayAnimationImage()"
+                      contain
+                    ></v-img>
+                  </transition>
+                </v-row>
               </v-col>
 
               <v-col
@@ -730,6 +763,7 @@ export default {
   props: ["config", "currentModeEdit", "selectedSolution"],
   data() {
     return {
+      showLeopardAnimationImage: true,
       dialogTitle:
         this.currentModeEdit === "edit"
           ? "Editing Solution"
@@ -922,6 +956,13 @@ export default {
     }, 100);
   },
   methods: {
+    toggleDisplayAnimationImage() {
+      this.showLeopardAnimationImage = false;
+      let that = this;
+      setTimeout(function() {
+        that.showLeopardAnimationImage = true;
+      }, 1500);
+    },
     displaySnackBar(message, timeout = 2000, color = "") {
       this.globalSnackbarMessage = message;
       this.globalSnackbar = true;
@@ -1114,4 +1155,7 @@ export default {
 </script>
 
 <style scoped>
+.teneo-hide-scroll-x {
+  overflow-x: hidden;
+}
 </style>
