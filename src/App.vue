@@ -206,16 +206,68 @@
           </div>
         </div>
       </transition>
+      <v-row justify="center">
+        <v-dialog
+          v-model="importDialog"
+          persistent
+          max-width="600"
+        >
+          <v-card>
+            <v-card-title class="headline">Solution Import</v-card-title>
+            <v-card-text>{{importDialogMessages.message}}<br /><br />
+              <v-simple-table>
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th class="text-left">Name</th>
+                      <th class="text-left">Deep Link</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{importDialogMessages.name}}</td>
+                      <td>{{importDialogMessages.deepLink}}</td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table><br />
+              <v-alert
+                border="top"
+                colored-border
+                type="warning"
+                elevation="2"
+              >
+                Accepting will overwrite other solutions with the same name or deep link.
+              </v-alert>
+            </v-card-text>
+            <v-card-actions>
+              <div class="flex-grow-1"></div>
+              <v-btn
+                color="grey lighten-5"
+                @click="importDialog = false"
+              >Cancel</v-btn>
+              <v-btn
+                color="green lighten-2"
+                @click="importSolutionFromUrl"
+              >OK</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
     </v-app>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { STORAGE_KEY } from "./constants/solution-config-default.js";
 
 export default {
   data() {
     return {
+      importDialog: false,
+      importedSolution: {},
+      importDialogMessages: {},
       clipped: false,
       drawer: false,
       menuItems: [
@@ -267,10 +319,17 @@ export default {
       rightDrawer: false
     };
   },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.onResizeOrEmbed);
-  },
   mounted() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const solConfig = urlParams.get("import");
+    if (solConfig) {
+      this.importedSolution = JSON.parse(solConfig);
+      this.importDialogMessages.message = `Do you want to import this solution?`;
+      this.importDialogMessages.name = this.importedSolution.name;
+      this.importDialogMessages.deepLink = this.importedSolution.deepLink;
+      // console.log(solConfig);
+      this.importDialog = true;
+    }
     // this.toggleChat(); // will automatically open the chat window on load
     if (!this.showButtonOnly) {
       window.addEventListener("resize", this.onResizeOrEmbed);
@@ -280,10 +339,14 @@ export default {
       this.$store.dispatch("setUserInformation");
     }
   },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.onResizeOrEmbed);
+  },
   computed: {
     ...mapGetters([
       "accentStyling",
       "authenticated",
+      "config",
       "isChatOpen",
       "dialogs",
       "chatTitle",
@@ -383,6 +446,39 @@ export default {
     }
   },
   methods: {
+    importSolutionFromUrl() {
+      this.importDialog = false;
+
+      let existingSolutionsWithName = this.config.solutions.findIndex(
+        solution => solution.name === this.importedSolution.name
+      );
+      let existingSolutionsWithDeepLink = this.config.solutions.findIndex(
+        solution => solution.deepLink === this.importedSolution.deepLink
+      );
+
+      if (existingSolutionsWithName < 0 && existingSolutionsWithDeepLink < 0) {
+        // no clashes in name or deep link
+        this.config.solutions.push(this.importedSolution); // no conflicts
+      } else if (
+        existingSolutionsWithName >= 0 ||
+        existingSolutionsWithDeepLink >= 0
+      ) {
+        // name and deep link clash - replace
+        this.config.solutions.splice(existingSolutionsWithDeepLink, 1);
+        existingSolutionsWithName = this.config.solutions.findIndex(
+          solution => solution.name === this.importedSolution.name
+        );
+        if (existingSolutionsWithName > 0) {
+          this.config.solutions.splice(existingSolutionsWithName, 1);
+        }
+        this.config.solutions.push(this.importedSolution);
+      }
+      this.config.activeSolution = this.importedSolution.name;
+      let deepLinkUrl = `${location.protocol}//${location.host}${location.pathname}?dl=${this.importedSolution.deepLink}`;
+      localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
+      console.log(deepLinkUrl);
+      window.location.href = deepLinkUrl;
+    },
     toggleEmbedButton() {
       this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY");
       this.$store.commit("TOGGLE_CHAT_BUTTON");

@@ -142,6 +142,9 @@ function storeSetup(vuetify, callback) {
       }
     },
     getters: {
+      config(state) {
+        return state.chatConfig;
+      },
       showDelayedResponse(state) {
         return state.ui.showDelayedResponse;
       },

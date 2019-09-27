@@ -302,6 +302,27 @@
                                   </template>
                                   <span>Download selected solution's config as a file</span>
                                 </v-tooltip>
+                                <v-tooltip
+                                  open-delay="600"
+                                  bottom
+                                >
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                      aria-label="Generate Share Link for Team Memebers"
+                                      class="mr-2"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      fab
+                                      dark
+                                      small
+                                      color="red darken-3"
+                                      @click="createShareLinkForSolution"
+                                    >
+                                      <v-icon dark>mdi-link-plus</v-icon>
+                                    </v-btn>
+                                  </template>
+                                  <span>Generate Share Link for Team Memebers</span>
+                                </v-tooltip>
                               </span>
                             </v-col>
                           </v-row>
@@ -435,18 +456,6 @@
                 </v-card>
               </v-col>
             </v-row>
-            <v-row class="mb-2">
-
-              <!-- global snackbar -->
-              <v-snackbar
-                :timeout="globalSnackbarTimeout"
-                :value="globalSnackbar"
-                :color="globalSnackbarColor"
-              >
-                {{ globalSnackbarMessage }}
-              </v-snackbar>
-
-            </v-row>
 
             <div v-if="displayFullSolutionConfig && !displayAddEditDialog">
               <prism language="json">{{ prettyPrintFullConfig }}</prism>
@@ -554,6 +563,17 @@
       :selectedSolution="selectedSolution"
       key="configAddEditSolution"
     ></ConfigAddEditSolution>
+    <v-row class="mb-2">
+      <!-- global snackbar -->
+      <v-snackbar
+        :timeout="globalSnackbarTimeout"
+        v-model="globalSnackbar"
+        :color="globalSnackbarColor"
+      >
+        {{ globalSnackbarMessage }}
+      </v-snackbar>
+
+    </v-row>
   </div>
 </template>
 
@@ -651,6 +671,17 @@ export default {
     this.saveToLocalStorage();
   },
   methods: {
+    createShareLinkForSolution() {
+      let configValue = encodeURIComponent(
+        JSON.stringify(this.selectedSolution, null, 2)
+      );
+      const sharableLink = `${location.protocol}//${location.host}${location.pathname}?import=${configValue}`;
+      copy(sharableLink);
+      this.displaySnackBar(
+        "📋 Copied Solution Sharable Import Link to Clipboard 🔗"
+      );
+      this.snackbarClipboard = true;
+    },
     closeAddNewSolutionDialog(result) {
       this.displayAddEditDialog = false;
 
@@ -853,6 +884,7 @@ export default {
       this.saveToLocalStorage();
     },
     displaySnackBar(message, timeout = 2000, color = "") {
+      this.globalSnackbar = false;
       this.globalSnackbarMessage = message;
       this.globalSnackbar = true;
       this.globalSnackbarTimeout = timeout;
