@@ -261,6 +261,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "./constants/solution-config-default.js";
+import jsonpack from "jsonpack/main";
 
 export default {
   data() {
@@ -323,7 +324,7 @@ export default {
     const urlParams = new URLSearchParams(window.location.search);
     const solConfig = urlParams.get("import");
     if (solConfig) {
-      this.importedSolution = JSON.parse(solConfig);
+      this.importedSolution = jsonpack.unpack(solConfig);
       this.importDialogMessages.message = `Do you want to import this solution?`;
       this.importDialogMessages.name = this.importedSolution.name;
       this.importDialogMessages.deepLink = this.importedSolution.deepLink;

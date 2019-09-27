@@ -589,6 +589,7 @@ import "prismjs/themes/prism-funky.css";
 import "prismjs/components/prism-json.min.js";
 import ConfigAddEditSolution from "../components/ConfigAddEditSolution";
 import Prism from "vue-prism-component";
+import jsonpack from "jsonpack/main";
 
 export default {
   name: "ConfigView",
@@ -672,9 +673,14 @@ export default {
   },
   methods: {
     createShareLinkForSolution() {
+      // let configValue = encodeURIComponent(
+      //   JSON.stringify(this.selectedSolution)
+      // );
+
       let configValue = encodeURIComponent(
-        JSON.stringify(this.selectedSolution, null, 2)
+        jsonpack.pack(this.selectedSolution)
       );
+
       const sharableLink = `${location.protocol}//${location.host}${location.pathname}?import=${configValue}`;
       copy(sharableLink);
       this.displaySnackBar(
