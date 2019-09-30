@@ -804,6 +804,7 @@ function storeSetup(vuetify, callback) {
         state.conversation.dialog.push(liveChatStatus);
       },
       SHOW_MESSAGE_IN_CHAT(state, message) {
+        state.progress.showChatLoading = false;
         let miscMessage = {
           type: "miscMessage",
           text: message,
