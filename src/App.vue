@@ -142,7 +142,7 @@
                 class="secondary--text"
               ></v-app-bar-nav-icon>
               <v-toolbar-title
-                v-text="toolbarTitle + parentHeight"
+                v-text="toolbarTitle"
                 class="pl-0"
               ></v-toolbar-title>
               <v-spacer></v-spacer>
