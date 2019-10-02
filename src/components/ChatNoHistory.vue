@@ -45,7 +45,7 @@
 export default {
   computed: {
     noHistoryImage() {
-      return require("../assets/history.png");
+      return require("../assets/history.webp");
     }
   }
 };

@@ -560,7 +560,7 @@ export default {
       } //
     },
     backgroundImage() {
-      return require("./assets/purple.jpg");
+      return require("./assets/purple.webp");
     },
     calculateMobileHeight() {
       if (this.isMobileDevice) {
