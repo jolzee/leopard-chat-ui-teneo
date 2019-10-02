@@ -1016,8 +1016,8 @@ export default {
 div.v-input__slot:focus,
 button:focus,
 a:focus {
-  -webkit-box-shadow: 0 0 0 2px rgba(118, 11, 180, 1) !important;
-  box-shadow: 0 0 0 2px rgba(118, 11, 180, 1) !important;
+  -webkit-box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
+  box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
   outline: 0;
 }
 </style>
@@ -1026,8 +1026,8 @@ a:focus {
 div.v-input__slot:focus,
 button:focus,
 a:focus {
-  -webkit-box-shadow: 0 0 0 2px rgba(118, 11, 180, 1) !important;
-  box-shadow: 0 0 0 2px rgba(118, 11, 180, 1) !important;
+  -webkit-box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
+  box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
   outline: 0;
 }
 
