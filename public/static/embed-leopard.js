@@ -1,4 +1,4 @@
-var leopardUrl = "http://192.168.1.112:8080/";
+var leopardUrl = "http://127.0.0.1:8080/";
 
 function getLeopardTemplate(f) {
   return f
