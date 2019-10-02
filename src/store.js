@@ -38,7 +38,19 @@ Vue.use(Vuex);
 
 Vue.use(VuePlyr);
 Vue.use(Prism);
-// Vue.use(longpress, { duration: process.env.VUE_APP_LONG_PRESS_LENGTH });
+
+if (!config.EMBED) {
+  console.groupCollapsed(
+    `%c Powered by %c Leopard Chat UI 💬 %c`,
+    "background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",
+    "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
+    "background:transparent"
+  );
+  console.log("Author: Peter Joles - peter.joles@artificial-solutions.com");
+  console.log("Documentation: https://jolzee.gitbook.io/leopard/");
+  console.log("Code: https://github.com/jolzee/chat-teneo-vue");
+  console.groupEnd();
+}
 
 Vue.use(require("vue-shortkey"));
 
@@ -131,8 +143,9 @@ function storeSetup(vuetify, callback) {
         responseIcon: config.RESPONSE_ICON,
         theme: config.THEME,
         userIcon: config.USER_ICON,
+        parent: {},
         showUploadButton: false,
-        showChatWindow: config.EMBED && isChatOpenLocalStorage() ? true : false,
+        showChatWindow: false,
         showChatButton: true,
         showButtonOnly: config.SHOW_BUTTON_ONLY
       },
@@ -149,7 +162,7 @@ function storeSetup(vuetify, callback) {
         return state.ui.showDelayedResponse;
       },
       isChatOpen(state) {
-        // console.log("isChatOpen (state.ui.showChatWindow):" + state.ui.showChatWindow);
+        console.log(`store:getters:isChatOpen: ${state.ui.showChatWindow}`);
         return state.ui.showChatWindow;
       },
       hideConfigMenu(state) {
@@ -159,7 +172,12 @@ function storeSetup(vuetify, callback) {
         return uuidv1();
       },
       showButtonOnly(state) {
+        console.log(`store: showButtonOnly: ${state.ui.showButtonOnly}`);
         return state.ui.showButtonOnly;
+      },
+      parentIframeWindowHeight(_state) {
+        let parentHeight = sessionStorage.getItem(STORAGE_KEY + "parentHeight");
+        return parentHeight;
       },
       getAnimatedIn(state, getters) {
         let animation = "";
@@ -188,9 +206,6 @@ function storeSetup(vuetify, callback) {
       },
       timeZoneParam(state) {
         return "&timeZone=" + encodeURI(state.browser.timeZone);
-      },
-      showChatWindow(state) {
-        return state.ui.showChatWindow;
       },
       showChatButton(state) {
         return state.ui.showChatButton;
@@ -629,21 +644,24 @@ function storeSetup(vuetify, callback) {
         return state.liveAgent.showLiveChatProcessing;
       },
       dialogs(state) {
+        // console.log(`Session Storage? ${config.USE_SESSION_STORAGE} Dialog Length ${state.conversation.dialog.length}`);
         if (!config.USE_SESSION_STORAGE && state.conversation.dialog.length === 0) {
+          // console.log("Checking for stale session - embed");
           // typically here when in production embedded state
           // check if session expired
           let now = new Date();
           let lastInteractionTime = localStorage.getItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE);
           if (!lastInteractionTime) {
+            // console.log("No previous interaction time...");
             state.conversation.dialog = JSON.parse(localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]"));
           } else {
-            var lastInteraction = new Date(lastInteractionTime);
-            var diffMs = lastInteraction - now; // milliseconds between now & Christmas
-            // var diffDays = Math.floor(diffMs / 86400000); // days
-            // var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
-            var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
-            if (diffMins > 30) {
-              localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now);
+            // console.log(`found last interaction time: ${lastInteractionTime}`);
+            var diff = (now.getTime() - lastInteractionTime) / 1000;
+            diff /= 60;
+            let diffMins = Math.abs(Math.round(diff));
+            // console.log(`Minutes Difference: ${diffMins}`);
+            if (diffMins > 0) {
+              localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
               state.conversation.dialog = [];
               localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]");
             } else {
@@ -748,26 +766,23 @@ function storeSetup(vuetify, callback) {
       HIDE_CUSTOM_MODAL(state) {
         state.modals.showCustomModal = false;
       },
-      TOGGLE_CHAT_WINDOW_DISPLAY(state) {
-        if (!state.ui.showButtonOnly) {
-          state.ui.showChatWindow = !state.ui.showChatWindow;
-        }
-        if (state.ui.showChatWindow) {
-          state.ui.isChatOpened = false;
-        } else {
-          state.ui.isChatOpened = true;
-        }
-      },
-      TOGGLE_CHAT_BUTTON(state) {
+      TOGGLE_CHAT_WINDOW_DISPLAY(state, getters) {
         state.ui.showChatWindow = !state.ui.showChatWindow;
-        localStorage.setItem("isChatOpen", state.ui.showChatWindow ? "true" : "false");
-        sendMessageToParent(state.ui.showChatWindow ? "showLeopard" : "hideLeopard");
+        console.log(
+          `store: TOGGLE_CHAT_WINDOW_DISPLAY:  state.ui.showChatWindow has toggled to: ${state.ui.showChatWindow}`
+        );
+        if (state.ui.embed) {
+          localStorage.setItem("isChatOpen", state.ui.showChatWindow);
+          console.log(`store: TOGGLE_CHAT_WINDOW_DISPLAY: sending message to parent to ${state.ui.showChatWindow}`);
+          sendMessageToParent(state.ui.showChatWindow ? "showLeopard" : "hideLeopard");
+        }
       },
       SHOW_CHAT_WINDOW(state) {
+        console.log(`store: SHOW_CHAT_WINDOW`);
         state.ui.showChatWindow = true;
-        state.ui.isChatOpened = false;
       },
       HIDE_CHAT_WINDOW(state) {
+        console.log(`store: HIDE_CHAT_WINDOW`);
         state.ui.showChatWindow = false;
       },
       HIDE_CHAT_BUTTON(state) {
@@ -775,9 +790,6 @@ function storeSetup(vuetify, callback) {
       },
       SHOW_CHAT_BUTTON(state) {
         state.ui.showChatButton = true;
-      },
-      TOGGLE_CHAT_BUTTON_DISPLAY(state) {
-        state.ui.showChatButton = !state.ui.showChatButton;
       },
       SHOW_CUSTOM_MODAL(state) {
         state.modals.showCustomModal = true;
@@ -803,11 +815,26 @@ function storeSetup(vuetify, callback) {
       PUSH_LIVE_CHAT_STATUS_TO_DIALOG(state, liveChatStatus) {
         state.conversation.dialog.push(liveChatStatus);
       },
-      SHOW_MESSAGE_IN_CHAT(state, message) {
+      SHOW_MESSAGE_IN_CHAT(
+        state,
+        message,
+        type = "info",
+        color = "info",
+        prominent = false,
+        outlined = false,
+        icon = undefined,
+        borderPosition = "top"
+      ) {
         state.progress.showChatLoading = false;
         let miscMessage = {
           type: "miscMessage",
-          text: message,
+          alertText: message,
+          alertBorderPosition: borderPosition,
+          alertType: type,
+          alertColor: color,
+          alertProminent: prominent,
+          alertOutlined: outlined,
+          alertIcon: icon,
           bodyText: "",
           hasExtraData: false
         };
@@ -1161,7 +1188,10 @@ function storeSetup(vuetify, callback) {
               : ""
             : "");
 
-        Vue.jsonp(endSessionUrl, {}).then(console.log("Session Ended"));
+        Vue.jsonp(endSessionUrl, {}).then(() => {
+          context.commit("HIDE_CHAT_LOADING");
+          console.log("Session Ended");
+        });
       },
       login(context) {
         // get the greeting message if we haven't done so for this session
@@ -1222,7 +1252,7 @@ function storeSetup(vuetify, callback) {
       },
       sendUserInput(context, params = "") {
         let now = new Date();
-
+        // console.log("Updating last interaction time in localstorage");
         localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
         if (typeof params !== "string") {
           params = "";
@@ -1247,8 +1277,13 @@ function storeSetup(vuetify, callback) {
             }
           )
             .then(json => {
+              context.commit("HIDE_CHAT_LOADING");
               if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
-                console.log("Session is stale.. keep chat open and continue with the new session");
+                // console.log("Session is stale.. keep chat open and continue with the new session");
+                context.commit(
+                  "SHOW_MESSAGE_IN_CHAT",
+                  "You have been away for an extended period of time. A new session with the virtual assitant has been created."
+                );
               }
 
               if (json.responseData.extraData.hasOwnProperty("script")) {
@@ -1525,29 +1560,41 @@ function stoperror() {
   return true;
 }
 
-// Embed Functionality for Production
+// function isChatOpenLocalStorage() {
+//   console.log(`store: isChatOpenLocalStorage`);
+//   let isChatOpen = localStorage.getItem("isChatOpen");
 
-function isChatOpenLocalStorage() {
-  let isChatOpen = localStorage.getItem("isChatOpen");
-  let result = false;
-  if (isChatOpen && isChatOpen === "true") {
-    sendMessageToParent("showLeopard");
-    console.log("Initial Chat Window State = Open");
-    result = true;
-  } else {
-    localStorage.setItem("isChatOpen", "false");
-    sendMessageToParent("hideLeopard");
-    console.log("Initial Chat Window State = Closed");
-    result = false;
-  }
-  console.log("isChatOpenLocalStorage: " + result);
-  return result;
-}
+//   if (isChatOpen === null) {
+//     isChatOpen = false;
+//   } else {
+//     isChatOpen = JSON.parse(isChatOpen);
+//   }
+
+//   console.log(isChatOpen);
+//   let result = false;
+
+//   if (isChatOpen) {
+//     console.log(`store: isChatOpenLocalStorage: send message to parent: OPEN`);
+//     sendMessageToParent("showLeopard");
+//     // console.log("Initial Chat Window State = Open");
+//     result = true;
+//   } else {
+//     localStorage.setItem("isChatOpen", "false");
+//     console.log(`store: isChatOpenLocalStorage: send message to parent: CLOSE`);
+//     sendMessageToParent("hideLeopard");
+//     // console.log("Initial Chat Window State = Closed");
+//     result = false;
+//   }
+//   // console.log("isChatOpenLocalStorage: " + result);
+//   console.log(`Local Storage Finally Thinks "isChatOpenLocalStorage": ${result}`);
+//   return result;
+// }
 
 function sendMessageToParent(message) {
+  console.log(`store: sendMessageToParent: ${message}`);
   if (parent) {
     parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
-    console.log("Message from Leopard >> Embed : " + message);
+    // console.log("Message from Leopard >> Embed : " + message);
   }
 }
 
@@ -1560,14 +1607,30 @@ function decodeHTML(html) {
 function receiveMessageFromParent(event) {
   try {
     // if (event.origin !== "http://example.com:8080") return;
-    let messageObject = JSON.parse(event.data);
-    if ("info" in messageObject && "id" in messageObject) {
-      return true;
+    if (event.data) {
+      let messageObject = JSON.parse(event.data);
+      if ("info" in messageObject && "id" in messageObject) {
+        return true;
+      }
+
+      // console.log("Recived a message from parent...");
+      // console.log(messageObject);
+      // event.source.postMessage("This is a message sent back from Leopard to the site embedding Leopard", event.origin);
+
+      if ("frameHeight" in messageObject) {
+        store.state.ui.parent = {
+          frameHeight: messageObject.frameHeight
+        };
+        localStorage.setItem(STORAGE_KEY + "parentHeight", messageObject.frameHeight);
+        console.log(`receiveMessageFromParent: parentHeight = ${messageObject.frameHeight}`);
+        // trigger a resize event
+        let evt = window.document.createEvent("UIEvents");
+        evt.initUIEvent("resize", true, false, window, 0);
+        window.dispatchEvent(evt);
+      } else {
+        store.state.connection.ctxParameters = messageObject;
+      }
     }
-    // event.source.postMessage("This is a message sent back from Leopard to the site embedding Leopard", event.origin);
-    console.log("Recived a message from parent...");
-    console.log(messageObject);
-    store.state.connection.ctxParameters = messageObject;
   } catch (error) {
     stoperror();
   }

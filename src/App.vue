@@ -11,18 +11,19 @@
       >
         <v-fab-transition>
           <v-btn
+            v-show="showChatButton"
             fab
             dark
             color="primary"
             elevation="2"
-            :aria-label="isChatOpen ? 'Close Chat' : 'Open Chat'"
+            :aria-label="isChatOpenLocalStorage() ? 'Close Chat' : 'Open Chat'"
             class="embed-button-center"
             :class="{ pulse: (pulseButton && !isChatOpen)}"
             :style="customCssButtonToolbar"
           >
             <v-icon
               dark
-              v-text="isChatOpen ? 'mdi-close' : 'mdi-message-text'"
+              v-text="isChatOpenLocalStorage() ? 'mdi-close' : 'mdi-message-text'"
             ></v-icon>
           </v-btn>
         </v-fab-transition>
@@ -31,56 +32,27 @@
     <v-app
       v-else
       toolbar
-      :class="{'elevation-2': !embed, 'application-float': shouldFloat, 'application-embed': embed}"
+      :class="{'elevation-2': !embed, 'application-float': shouldFloat, 'application-embed': embed, 'application-mobile': isMobileDevice}"
     >
       <div
         id="chat-open-close-button"
         v-if="!embed"
       >
-        <!-- <v-badge
-        overlap
-        color="#282A2E"
-      >
-        <template v-slot:badge>
-          <v-icon
-            dark
-            small
-            color="#1CB51C"
-          >
-            mdi-checkbox-multiple-blank-circle
-          </v-icon>
-        </template>
-        <v-hover>
-          <v-avatar
-            slot-scope="{ hover }"
-            size="66"
-            :class="`elevation-${hover ? 6 : 2}`"
-            @click="toggleChat"
-            v-show="showChatButton"
-          >
-            <img
-              :src="hover ? 'https://lh3.googleusercontent.com/-l34qOEimV5o/AAAAAAAAAAI/AAAAAAADJFg/Qu4IolfMLzc/photo.jpg?sz=150' : 'https://avatars0.githubusercontent.com/u/36912049?s=460&v=4'"
-              alt="Peter"
-            >
-          </v-avatar>
-        </v-hover>
-      </v-badge> -->
-
         <v-fab-transition>
           <v-btn
             fab
             dark
             color="primary"
-            :aria-label="showChatWindow ? 'Close Chat' : 'Open Chat'"
+            :aria-label="isChatOpen ? 'Close Chat' : 'Open Chat'"
             elevation="2"
             @click="toggleChat"
             v-show="showChatButton"
-            :class="{ pulse: (pulseButton && !showChatWindow)}"
+            :class="{ pulse: (pulseButton && !isChatOpen)}"
             :style="customCssButtonToolbar"
           >
             <v-icon
               dark
-              v-text="showChatWindow ? 'mdi-close' : 'mdi-message-text'"
+              v-text="isChatOpen ? 'mdi-close' : 'mdi-message-text'"
             ></v-icon>
           </v-btn>
         </v-fab-transition>
@@ -92,8 +64,8 @@
       >
         <div
           id="teneo"
-          v-if="showChatWindow"
-          :class="{'elevation-2': !embed, 'application-float': float, 'application-embed': embed, 'teneo-light-bg': !$vuetify.theme.dark, 'teneo-dark-bg': $vuetify.theme.dark}"
+          v-if="isChatOpen"
+          :class="{'elevation-2': !embed, 'application-float': float, 'application-embed': embed, 'teneo-light-bg': !$vuetify.theme.dark, 'teneo-dark-bg': $vuetify.theme.dark, 'application-mobile': isMobileDevice}"
         >
           <transition
             name="menu-transition"
@@ -170,7 +142,7 @@
                 class="secondary--text"
               ></v-app-bar-nav-icon>
               <v-toolbar-title
-                v-text="toolbarTitle"
+                v-text="toolbarTitle + parentHeight"
                 class="pl-0"
               ></v-toolbar-title>
               <v-spacer></v-spacer>
@@ -267,6 +239,8 @@ export default {
   data() {
     return {
       importDialog: false,
+      parentHeight: "",
+      loginPerformed: false,
       importedSolution: {},
       importDialogMessages: {},
       clipped: false,
@@ -321,6 +295,15 @@ export default {
     };
   },
   mounted() {
+    // if (top !== self) {
+    //   // we are in the iframe
+    //   console.log("In Iframe!!!");
+    // } else {
+    //   // not an iframe
+    //   console.log("Not in iframe");
+    // }
+    window.addEventListener("resize", this.onResizeOrEmbed);
+    // deal with import of solution
     const urlParams = new URLSearchParams(window.location.search);
     const solConfig = urlParams.get("import");
     if (solConfig) {
@@ -333,7 +316,6 @@ export default {
     }
     // this.toggleChat(); // will automatically open the chat window on load
     if (!this.showButtonOnly) {
-      window.addEventListener("resize", this.onResizeOrEmbed);
       if (window.innerWidth <= 480 || this.embed) {
         this.onResizeOrEmbed();
       }
@@ -348,9 +330,10 @@ export default {
       "accentStyling",
       "authenticated",
       "config",
-      "isChatOpen",
+      "isMobileDevice",
       "dialogs",
       "chatTitle",
+      "parentIframeWindowHeight",
       "customCssButtonToolbar",
       "getAnimatedIn",
       "getAnimatedOut",
@@ -362,7 +345,7 @@ export default {
       "pulseButton",
       "showButtonOnly",
       "showChatButton",
-      "showChatWindow",
+      "isChatOpen",
       "socialAuthEnabled"
     ]),
     shouldFloat() {
@@ -438,15 +421,50 @@ export default {
     },
     toolbarColor() {
       return "primary white--text";
-    },
-    getChatState() {
-      if (this.showChatWindow) {
-        return "show-the-chat";
-      }
-      return "";
     }
   },
   methods: {
+    isChatOpenLocalStorage() {
+      let isChatOpen = localStorage.getItem("isChatOpen");
+      if (isChatOpen === null) {
+        isChatOpen = false;
+      } else {
+        isChatOpen = JSON.parse(isChatOpen);
+      }
+
+      let result = false;
+      console.log(`App.vue:isChatOpenLocalStorage: ${isChatOpen}`);
+      if (isChatOpen) {
+        this.$store.commit("SHOW_CHAT_WINDOW");
+        this.$store.commit("HIDE_CHAT_LOADING");
+        this.sendMessageToParent("showLeopard");
+        console.log(
+          "App.vue:isChatOpenLocalStorage: Sent Parent Message to OPEN"
+        );
+        result = true;
+      } else {
+        this.$store.commit("HIDE_CHAT_WINDOW");
+        localStorage.setItem("isChatOpen", "false");
+        this.sendMessageToParent("hideLeopard");
+        console.log(
+          "App.vue:isChatOpenLocalStorage: Sent Parent Message to HIDE"
+        );
+        result = false;
+      }
+      // console.log("isChatOpenLocalStorage: " + result);
+      console.log(
+        `App.vue:isChatOpenLocalStorage:Local Storage Thinks "isChatOpenLocalStorage": ${result}`
+      );
+      return result;
+    },
+    sendMessageToParent(message) {
+      console.log(`App.vue: sendMessageToParent: ${message}`);
+      if (parent) {
+        parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
+        // console.log("Message from Leopard >> Embed : " + message);
+      }
+      return true;
+    },
     importSolutionFromUrl() {
       this.importDialog = false;
 
@@ -481,11 +499,13 @@ export default {
       window.location.href = deepLinkUrl;
     },
     toggleEmbedButton() {
-      this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY");
-      this.$store.commit("TOGGLE_CHAT_BUTTON");
+      this.calculateMobileHeight(); // only called on mobile devices
+      console.log("toggleEmbedButton");
+      this.$store.commit("HIDE_CHAT_BUTTON");
+      this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY");
       setTimeout(
         function() {
-          this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // only show the open chat button once the session has ended
+          this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
         }.bind(this),
         2000
       );
@@ -542,15 +562,78 @@ export default {
     backgroundImage() {
       return require("./assets/purple.jpg");
     },
+    calculateMobileHeight() {
+      if (this.isMobileDevice) {
+        // on mobile devices open the chat window automatically
+        // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+        // console.log("Calculating the View Height in JS");
+        let vh = null;
+        // console.log(this.parentIframeWindowHeight);
+        console.log(`App.vue: onResizeOrEmbed`);
+        if (this.embed && parent) {
+          var parentHeight = parent.getLeopardElementHeight();
+          // let parentHeight = localStorage.getItem(STORAGE_KEY + "parentHeight");
+          // console.log(`onResizeOrEmbed >>> Frame Height: ${parentHeight}`);
+          vh = parentHeight * 0.01;
+          this.parentHeight = parentHeight;
+          console.log(`Parent Height: ${parentHeight}`);
+        } else {
+          vh = window.innerHeight * 0.01;
+        }
+
+        // let vh = 640 * 0.01;
+        // Then we set the value in the --vh custom property to the root of the document
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      }
+    },
     onResizeOrEmbed() {
-      // on mobile devices open the chat window automatically
+      this.calculateMobileHeight();
+
+      if (this.dialogs.length > 0) {
+        this.loginPerformed = true;
+      }
+
       if (
         (window.innerWidth <= 480 &&
-          !this.showChatWindow &&
-          !this.showButtonOnly) ||
-        (this.embed && !this.showChatWindow)
+          !this.loginPerformed &&
+          !this.embed &&
+          this.dialogs.length === 0) ||
+        (!this.showButtonOnly &&
+          this.embed &&
+          this.isChatOpenLocalStorage() &&
+          !this.loginPerformed &&
+          this.dialogs.length === 0)
       ) {
-        this.$store.commit("HIDE_CHAT_BUTTON");
+        console.log("onResizeOrEmbed: Send Login");
+        console.log(
+          `onResizeOrEmbed: Has Login Been Performed? ${this.loginPerformed}`
+        );
+        this.loginPerformed = true;
+        let that = this;
+        this.$store
+          .dispatch("login")
+          .then(() => {
+            that.loginPerformed = true;
+            console.log("Successfully logged into chat");
+          })
+          .catch(err => {
+            console.log("ERROR LOGGING IN TO CHAT: ", err.message);
+          });
+      } else {
+        this.$store.commit("HIDE_CHAT_LOADING");
+      }
+      // console.log(
+      //   `onResizeOrEmbed: AGAIN Has Login Been Performed? ${this.loginPerformed}`
+      // );
+
+      if (
+        (window.innerWidth <= 480 && !this.embed) ||
+        (this.embed && this.isChatOpenLocalStorage())
+      ) {
+        console.log(
+          `App.vue:onResizeOrEmbed:window.innerWidth <= 480 && !this.embed`
+        );
+        // this.$store.commit("HIDE_CHAT_BUTTON");
         this.$store.commit("SHOW_CHAT_WINDOW"); // show the chat window
         //animate the IFrame
         let siteFrame;
@@ -559,18 +642,11 @@ export default {
         }
         let chatButton = document.getElementById("chat-open-close-button");
 
-        // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
-        let vh = window.innerHeight * 0.01;
-        // Then we set the value in the --vh custom property to the root of the document
-        document.documentElement.style.setProperty("--vh", `${vh}px`);
-
-        // console.log("ok smaller than 480px");
-        // open the chat automatially and hide the open and close chat button
         if (this.$router.currentRoute.path !== "/") {
           this.$router.push({ name: "chat" }); // make sure we show the main chat window
         }
 
-        this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
+        // this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
         let isChatUiFloating = this.float;
         setTimeout(
           function() {
@@ -590,19 +666,7 @@ export default {
           }.bind(this),
           400
         );
-        if (this.dialogs.length === 0) {
-          this.$store
-            .dispatch("login")
-            .then(() => {
-              console.log("Successfully logged into chat");
-            })
-            .catch(err => {
-              console.log("ERROR LOGGING IN TO CHAT: ", err.message);
-            });
-        } else {
-          this.$store.commit("HIDE_CHAT_LOADING");
-        }
-      } else if (window.innerWidth > 480 && this.showChatWindow) {
+      } else if (window.innerWidth > 480 && this.isChatOpen) {
         this.$store.commit("SHOW_CHAT_BUTTON");
       }
     },
@@ -620,7 +684,7 @@ export default {
         return;
       }
 
-      this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // toggle the chat button visibility
+      this.$store.commit("HIDE_CHAT_BUTTON"); // toggle the chat button visibility
       this.$store.commit("STOP_TTS"); // always reset audio to not speak when chat button is clicked
       let siteFrame;
       //animate the IFrame
@@ -631,7 +695,7 @@ export default {
       let chatButton = document.getElementById("chat-open-close-button");
 
       // show chat window - button clicked - login
-      if (!this.showChatWindow) {
+      if (!this.isChatOpen) {
         if (this.$router.currentRoute.path !== "/") {
           this.$router.push({ name: "chat" }); // make sure we show the main chat window
         }
@@ -660,12 +724,17 @@ export default {
           }.bind(this),
           400
         );
-
+        console.log("Toggle Chat: Send Login");
         this.$store
           .dispatch("login")
           .then(() => {
             console.log("Successfully logged into chat");
-            this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // only show the chat button after a successful login
+            setTimeout(
+              function() {
+                this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
+              }.bind(this),
+              1500
+            ); // only show the chat button after a successful login
           })
           .catch(err => {
             console.log("ERROR LOGGING IN TO CHAT: ", err.message);
@@ -702,7 +771,7 @@ export default {
 
           setTimeout(
             function() {
-              this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // only show the open chat button once the session has ended
+              this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
             }.bind(this),
             1500
           );
@@ -775,8 +844,8 @@ blockquote p {
 div.v-input__slot:focus,
 button:focus,
 a:focus {
-  -webkit-box-shadow: 0 0 0 2px rgba(118, 11, 180, 1) !important;
-  box-shadow: 0 0 0 2px rgba(118, 11, 180, 1) !important;
+  -webkit-box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
+  box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
   outline: 0;
 }
 
@@ -965,7 +1034,6 @@ iframe#site-frame {
   .v-application {
     max-width: 100vw !important;
     max-height: 100% !important;
-    /* height: 100vh !important; */
     height: 100% !important;
     margin: auto;
     position: fixed;
@@ -980,12 +1048,16 @@ iframe#site-frame {
   .application-float {
     max-height: 100vh !important;
     height: 100vh !important;
-    height: calc(var(--vh, 1vh) * 100) !important;
     right: 0 !important;
     top: 0;
     border-radius: unset;
     -moz-border-radius: unset;
     -webkit-border-radius: unset;
+  }
+
+  .application-mobile {
+    min-height: calc(var(--vh, 1vh) * 100) !important;
+    height: calc(var(--vh, 1vh) * 100) !important;
   }
 
   iframe#site-frame {

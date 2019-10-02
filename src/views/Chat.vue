@@ -21,7 +21,7 @@
         cols="12"
         class="pa-0"
         id="teneo-chat-scroll"
-        :class="{'dark-scroll': $vuetify.theme.dark, 'light-scroll': !$vuetify.theme.dark, 'chat-responses-float': float, 'chat-responses': !float}"
+        :class="{'dark-scroll': $vuetify.theme.dark, 'light-scroll': !$vuetify.theme.dark, 'chat-responses-float': float, 'chat-responses': !float, 'chat-responses-float-mobile': isMobileDevice}"
         ref="chatContainer"
       >
         <!-- show the initial loding ball animation when first loading the chat window -->
@@ -397,6 +397,13 @@ export default {
       "lastItemHasLongResponse",
       "itemHasLongResponse"
     ]),
+    getNarrowMobile() {
+      if (window.innerWidth <= 480) {
+        return "min-height: calc(var(--vh, 1vh) * 80 - 130px);";
+      } else {
+        return "";
+      }
+    },
     userInput: {
       get: function() {
         if (this.date !== "") {
@@ -833,9 +840,13 @@ div.options-list a.v-list__tile--link {
   min-height: calc(80vh - 130px);
   max-height: calc(80vh - 130px);
   height: calc(80vh - 130px);
-  height: calc(var(--vh, 1vh) * 80 - 130px);
+  /* height: calc(var(--vh, 1vh) * 80 - 130px); */
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.chat-responses-float-mobile {
+  height: calc(var(--vh, 1vh) * 80 - 130px) !important;
 }
 
 .chat-responses {
@@ -886,8 +897,12 @@ span.teneo-reply ul {
 
   .chat-responses,
   .chat-responses-float {
-    min-height: calc(100vh - 125px);
-    min-height: calc(var(--vh, 1vh) * 100 - 125px);
+    min-height: calc(100vh - 130px);
+  }
+
+  .chat-responses-float-mobile {
+    min-height: calc(var(--vh, 1vh) * 100 - 130px);
+    height: calc(var(--vh, 1vh) * 100 - 130px);
   }
 }
 </style>

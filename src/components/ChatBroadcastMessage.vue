@@ -2,11 +2,15 @@
   <!-- Misc Message -->
   <div v-if="item.type === 'miscMessage'">
     <v-alert
+      :border="item.alertBorderPosition"
       :value="true"
-      color="info"
-      icon="mdi-alert-octagram"
+      :prominent="item.alertProminent"
+      :outlined="item.alertOutlined"
+      :type="item.alertType"
+      :color="item.alertColor"
+      :icon="item.alertIcon"
       class="mb-0 elevation-2"
-    >{{item.text}}
+    >{{ item.alertText }}
     </v-alert>
   </div>
 </template>

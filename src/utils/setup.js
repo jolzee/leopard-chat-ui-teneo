@@ -98,6 +98,7 @@ export default class Setup {
             this.LOCALE = this.activeSolution.locale;
             this.FLOAT = this.activeSolution.float;
             this.RESPONSE_ICON = this.activeSolution.responseIcon;
+            // this.DIALOG = this.retrievePastDialog();
             this.SEND_CTX_PARAMS = this.activeSolution.sendContextParams
               ? this.activeSolution.sendContextParams
               : "login";

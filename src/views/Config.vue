@@ -159,7 +159,7 @@
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
                                     aria-label="Add a new solution"
-                                    class="mr-2"
+                                    class="mr-2 mb-2"
                                     v-bind="attrs"
                                     v-on="on"
                                     fab
@@ -180,7 +180,7 @@
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
                                     aria-label="Make the selected solution the active solution"
-                                    class="mr-2"
+                                    class="mr-2 mb-2"
                                     v-bind="attrs"
                                     v-on="on"
                                     fab
@@ -204,7 +204,7 @@
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-btn
                                       aria-label="Edit the selected solution"
-                                      class="mr-2"
+                                      class="mr-2 mb-2"
                                       v-bind="attrs"
                                       v-on="on"
                                       fab
@@ -225,7 +225,7 @@
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-btn
                                       aria-label="Clone the currently selected solution"
-                                      class="mr-2"
+                                      class="mr-2 mb-2"
                                       v-bind="attrs"
                                       v-on="on"
                                       fab
@@ -246,7 +246,7 @@
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-btn
                                       aria-label="Delete the currently selected solution"
-                                      class="mr-2"
+                                      class="mr-2 mb-2"
                                       v-bind="attrs"
                                       v-on="on"
                                       fab
@@ -267,7 +267,7 @@
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-btn
                                       aria-label="Copy the selected solution configuration to the clipboard"
-                                      class="mr-2"
+                                      class="mr-2 mb-2"
                                       v-bind="attrs"
                                       v-on="on"
                                       fab
@@ -288,7 +288,7 @@
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-btn
                                       aria-label="Download the selected solution's configuration as a file"
-                                      class="mr-2"
+                                      class="mr-2 mb-2"
                                       v-bind="attrs"
                                       v-on="on"
                                       fab
@@ -309,7 +309,7 @@
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-btn
                                       aria-label="Generate sharable link for team members"
-                                      class="mr-2"
+                                      class="mr-2 mb-2"
                                       v-bind="attrs"
                                       v-on="on"
                                       fab
