@@ -175,10 +175,6 @@ function storeSetup(vuetify, callback) {
         console.log(`store: showButtonOnly: ${state.ui.showButtonOnly}`);
         return state.ui.showButtonOnly;
       },
-      parentIframeWindowHeight(_state) {
-        let parentHeight = sessionStorage.getItem(STORAGE_KEY + "parentHeight");
-        return parentHeight;
-      },
       getAnimatedIn(state, getters) {
         let animation = "";
         if ("animations" in state.activeSolution && !getters.embed) {
@@ -1030,6 +1026,8 @@ function storeSetup(vuetify, callback) {
       UPDATE_FRAME_URL(state, newUrl) {
         if (document.getElementById("site-frame")) {
           document.getElementById("site-frame").src = newUrl;
+        } else if (state.ui.embed) {
+          sendMessageToParent(`runLeopardScript|window.location.href = '${newUrl}';`);
         }
         state.iframe.iframeUrl = newUrl;
         state.iframe.iframeUrlBase = newUrl.substring(0, newUrl.lastIndexOf("/")) + "/";

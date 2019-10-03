@@ -323,13 +323,13 @@ export default {
         }
         // send URL's to the I-FRAME
         let outputUrl = this.outputLink(item);
-        if (outputUrl !== "" && !this.embed && !this.showButtonOnly) {
+        if (outputUrl !== "" && !this.showButtonOnly) {
           if (outputUrl.startsWith("./")) {
             let currentIframeUrl =
               this.iFrameUrlBase + outputUrl.substring(2, outputUrl.length);
-            document.getElementById("site-frame").src = currentIframeUrl;
+            this.$store.commit("UPDATE_FRAME_URL", currentIframeUrl);
           } else {
-            document.getElementById("site-frame").src = outputUrl;
+            this.$store.commit("UPDATE_FRAME_URL", outputUrl);
           }
         }
 
