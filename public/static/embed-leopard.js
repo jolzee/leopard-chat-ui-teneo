@@ -187,7 +187,7 @@ function receiveLeopardMessage(event) {
 }
 
 function animateLeopard(animationName, callback) {
-  const node = document.querySelector("#teneo-chat-widget-container");
+  var node = document.querySelector("#teneo-chat-widget-container");
   node.classList.remove("animated", leopardAnimations.out);
   node.classList.remove("animated", leopardAnimations.in);
 
