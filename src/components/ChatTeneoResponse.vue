@@ -184,6 +184,25 @@
       <v-col
         cols="12"
         class="text-right mb-2"
+        v-if="hasFeedbackForm(item) && (itemIndexInDialog === dialog.length - 1)"
+      >
+        <v-btn
+          color="secondary"
+          class="mt-2"
+          small
+          @click="displayFeedbackForm"
+        >{{ getFeedbackFormConfig.label ? getFeedbackFormConfig.label : "Leave Feedback" }}
+          <v-icon
+            right
+            small
+            color="white"
+          >mdi-thumbs-up-down</v-icon>
+        </v-btn>
+      </v-col>
+
+      <v-col
+        cols="12"
+        class="text-right mb-2"
         v-if="(item.hasExtraData && hasModal(item) && notLiveChatTranscript) || itemHasLongResponse(item)"
       >
         <v-btn
@@ -268,15 +287,18 @@ export default {
       "itemAnswerTextCropped",
       "showChatIcons",
       "itemExtensions",
+      "getFeedbackFormConfig",
       "imageUrl",
       "carouselImageArray",
       "responseIcon",
       "uuid",
       "hasInline",
       "hasInlineType",
+      "showFeedbackForm",
       "dialogs",
       "getLatestDialogHistory",
       "hasModal",
+      "hasFeedbackForm",
       "lastItemHasLongResponse",
       "itemHasLongResponse",
       "showDelayedResponse",
@@ -456,6 +478,9 @@ export default {
     showModal() {
       this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals first
       this.$store.commit("SHOW_CHAT_MODAL", this.item);
+    },
+    displayFeedbackForm() {
+      this.$emit("showFeedback");
     },
     toggleDate() {
       this.$emit("toggleDate");

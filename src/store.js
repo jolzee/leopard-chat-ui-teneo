@@ -97,7 +97,8 @@ function storeSetup(vuetify, callback) {
       },
       conversation: {
         dialog: [],
-        dialogHistory: []
+        dialogHistory: [],
+        feedbackFormConfig: null
       },
       iframe: {
         iframeUrl: config.IFRAME_URL,
@@ -428,6 +429,13 @@ function storeSetup(vuetify, callback) {
         }
         return "";
       },
+      hasFeedbackForm: () => item => {
+        if (item.teneoResponse.extraData && item.teneoResponse.extraData.offerFeedbackForm) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       hasModal: (_state, getters) => item => {
         let extensions = getters.itemExtensions(item);
         let hasModal = false;
@@ -693,6 +701,16 @@ function storeSetup(vuetify, callback) {
       },
       userInput(state) {
         return state.userInput.userInput;
+      },
+      showFeedbackForm(state) {
+        if (state.conversation.feedbackFormConfig !== null) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      getFeedbackFormConfig(state) {
+        return state.conversation.feedbackFormConfig;
       },
       embed(state) {
         return state.ui.embed;
@@ -991,6 +1009,12 @@ function storeSetup(vuetify, callback) {
           state.asr.asr.start();
         }
       },
+      ADD_FEEDBACK_FORM(state, feedbackFormConfig) {
+        state.conversation.feedbackFormConfig = feedbackFormConfig;
+      },
+      CLEAR_FEEDBACK_FORM(state) {
+        state.conversation.feedbackFormConfig = null;
+      },
       HIDE_CHAT_MODAL(state) {
         // console.log("hiding modal");
         state.userInput.userInputReadyForSending = false;
@@ -1044,6 +1068,22 @@ function storeSetup(vuetify, callback) {
       }
     },
     actions: {
+      sendFeedback(context, feedback) {
+        Vue.jsonp(
+          config.TENEO_URL +
+            config.REQUEST_PARAMETERS +
+            context.getters.userInformationParams +
+            context.getters.timeZoneParam +
+            context.getters.ctxParameters,
+          {
+            command: "feedback",
+            feedback: JSON.stringify(feedback)
+            // userInput: ""
+          }
+        ).then(() => {
+          console.log("Feedback sent to Teneo");
+        });
+      },
       setUserInformation({ commit, getters }) {
         if (getters.firebase) {
           getters.firebase.auth().onAuthStateChanged(function(user) {
@@ -1276,6 +1316,13 @@ function storeSetup(vuetify, callback) {
           )
             .then(json => {
               context.commit("HIDE_CHAT_LOADING");
+
+              if (json.responseData.extraData.offerFeedbackForm) {
+                const feedbackConfig = JSON.parse(decodeURIComponent(json.responseData.extraData.offerFeedbackForm));
+                context.commit("ADD_FEEDBACK_FORM", feedbackConfig);
+              } else {
+                context.commit("CLEAR_FEEDBACK_FORM");
+              }
               if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
                 // console.log("Session is stale.. keep chat open and continue with the new session");
                 context.commit(
@@ -1351,9 +1398,7 @@ function storeSetup(vuetify, callback) {
                       let locationRequestType = json.responseData.extraData.inputType;
                       superagent
                         .get(
-                          `https://us1.locationiq.com/v1/reverse.php?key=${process.env.VUE_APP_LOCATION_IQ_KEY}&lat=${
-                            position.coords.latitude
-                          }&lon=${position.coords.longitude}&format=json`
+                          `https://us1.locationiq.com/v1/reverse.php?key=${process.env.VUE_APP_LOCATION_IQ_KEY}&lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`
                         )
                         .accept("application/json")
                         .then(res => {
@@ -1375,9 +1420,7 @@ function storeSetup(vuetify, callback) {
                             .dispatch("sendUserInput", queryParam)
                             .then(
                               console.log(
-                                `Sent user's location information: ${data.address.city}, ${data.address.state} ${
-                                  data.address.postcode
-                                }`
+                                `Sent user's location information: ${data.address.city}, ${data.address.state} ${data.address.postcode}`
                               )
                             )
                             .catch(err => {

@@ -26,6 +26,12 @@
       >
         <!-- show the initial loding ball animation when first loading the chat window -->
         <ChatLoading v-if="showChatLoading"></ChatLoading>
+        <Feedback
+          v-if="showFeedback"
+          :feedbackConfig="getFeedbackFormConfig"
+          @showFeedback="showFeedback = true"
+          @hideFeedback="showFeedback = false"
+        />
         <v-expansion-panels
           readonly
           :value="getCurrentItem"
@@ -58,6 +64,7 @@
                     @handleFocus="handleFocus"
                     @toggleDate="showDate = !showDate"
                     @toggleTime="showTime = !showTime"
+                    @showFeedback="showFeedback = true"
                   ></ChatTeneoResponse>
 
                   <ChatUserQuestion
@@ -326,6 +333,7 @@ export default {
     ChatNoHistory: () => import("../components/ChatNoHistory"),
     ChatUserQuestion,
     ChatTeneoResponse,
+    Feedback: () => import("../components/Feedback"),
     LiveChatResponse: () => import("../components/LiveChatResponse"),
     "upload-btn": UploadButton
   },
@@ -344,6 +352,7 @@ export default {
       showPassword: false,
       showTime: false,
       showUploadProgress: false,
+      showFeedback: false,
       progressValue: 0,
       date: "",
       rules: {
@@ -385,6 +394,8 @@ export default {
       "showChatLoading",
       "showUploadButton",
       "showLiveChatProcessing",
+      "showFeedbackForm",
+      "getFeedbackFormConfig",
       "userInputReadyForSending",
       "userProfileImage",
       "uuid",

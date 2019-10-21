@@ -146,22 +146,51 @@
                 class="pl-0"
               ></v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn
-                x-small
-                :aria-label="$vuetify.theme.dark ? 'Change interface to light mode' : 'Change interfce to dark mode'"
-                fab
-                ripple
-                @click="toggleBrightness"
-                elevation="2"
-                color="secondary"
-              >
-                <v-icon
-                  dark
-                  v-text="$vuetify.theme.dark
+              <template v-if="embed">
+                <div
+                  id="chat-open-close-button-embed"
+                  @click="toggleEmbedButton"
+                >
+                  <v-fab-transition>
+                    <v-btn
+                      v-show="showChatButton"
+                      fab
+                      dark
+                      small
+                      color="secondary"
+                      elevation="2"
+                      :aria-label="isChatOpenLocalStorage() ? 'Close Chat' : 'Open Chat'"
+                      class="embed-button-center"
+                      :class="{ pulse: (pulseButton && !isChatOpen)}"
+                      :style="customCssButtonToolbar"
+                    >
+                      <v-icon
+                        dark
+                        v-text="isChatOpenLocalStorage() ? 'mdi-close' : 'mdi-message-text'"
+                      ></v-icon>
+                    </v-btn>
+                  </v-fab-transition>
+                </div>
+              </template>
+              <template v-else>
+                <v-btn
+                  x-small
+                  :aria-label="$vuetify.theme.dark ? 'Change interface to light mode' : 'Change interfce to dark mode'"
+                  fab
+                  ripple
+                  @click="toggleBrightness"
+                  elevation="2"
+                  color="secondary"
+                >
+                  <v-icon
+                    dark
+                    v-text="$vuetify.theme.dark
             ? 'mdi-brightness-4'
             : 'mdi-brightness-5'"
-                ></v-icon>
-              </v-btn>
+                  ></v-icon>
+                </v-btn>
+              </template>
+
             </v-toolbar>
             <v-content
               app
@@ -333,7 +362,6 @@ export default {
       "isMobileDevice",
       "dialogs",
       "chatTitle",
-      "parentIframeWindowHeight",
       "customCssButtonToolbar",
       "getAnimatedIn",
       "getAnimatedOut",
@@ -500,7 +528,7 @@ export default {
     },
     toggleEmbedButton() {
       this.calculateMobileHeight(); // only called on mobile devices
-      console.log("toggleEmbedButton");
+      console.log("App.vue: toggleEmbedButton");
       this.$store.commit("HIDE_CHAT_BUTTON");
       this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY");
       setTimeout(
@@ -568,7 +596,6 @@ export default {
         // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
         // console.log("Calculating the View Height in JS");
         let vh = null;
-        // console.log(this.parentIframeWindowHeight);
         console.log(`App.vue: onResizeOrEmbed`);
         if (this.embed && parent) {
           var parentHeight = parent.getLeopardElementHeight();
