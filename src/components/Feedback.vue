@@ -3,11 +3,18 @@
     <v-dialog
       v-model="dialog"
       scrollable
-      max-width="320px"
+      max-width="400px"
     >
       <v-card>
-        <v-card-title>Feedback</v-card-title>
-        <v-divider></v-divider>
+        <v-app-bar
+          dark
+          color="primary"
+        >
+          <v-toolbar-title>Feedback</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-icon>mdi-message-processing-outline</v-icon>
+        </v-app-bar>
+
         <v-card-text style="height: 360px;">
 
           <v-container fluid>
@@ -60,15 +67,17 @@
 
         </v-card-text>
         <v-divider></v-divider>
-        <v-card-actions class="justify-space-between">
+        <v-card-actions>
+          <v-spacer></v-spacer>
           <v-btn
-            color="blue darken-1"
+            small
+            color="error"
             text
             @click="hideFeedback"
           >Close</v-btn>
           <v-btn
-            color="blue darken-1"
-            text
+            small
+            color="success"
             @click="sendFeedback"
           >Send</v-btn>
         </v-card-actions>
