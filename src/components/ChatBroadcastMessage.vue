@@ -1,6 +1,9 @@
 <template>
   <!-- Misc Message -->
-  <div v-if="item.type === 'miscMessage'">
+  <div
+    v-if="item.type === 'miscMessage'"
+    class="mb-2"
+  >
     <v-alert
       :border="item.alertBorderPosition"
       :value="true"

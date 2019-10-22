@@ -3,7 +3,6 @@
     <v-dialog
       v-model="showModal"
       fullscreen
-      full-width
       :persistent="true"
       :hide-overlay="true"
       light
