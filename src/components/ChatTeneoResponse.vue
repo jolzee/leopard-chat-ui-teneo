@@ -38,6 +38,8 @@
       </v-col>
 
     </v-row>
+
+    <Card v-if="hasCard(item) && (itemIndexInDialog === dialog.length - 1)" :item="item" class="mb-2"/>
     <!-- Show Inline Components -->
     <v-row
       v-for="(extension, index) in itemExtensions(item)"
@@ -263,6 +265,7 @@ import DelayedResponse from "./DelayedResponse";
 import Video from "./Video";
 import Map from "./Map";
 import Vimeo from "./Vimeo";
+import Card from "./Card";
 import YouTube from "./YouTube";
 import { mapGetters } from "vuex";
 export default {
@@ -273,6 +276,7 @@ export default {
   components: {
     Audio,
     Carousel,
+    Card,
     ImageAnimation,
     DelayedResponse,
     Map,
@@ -468,6 +472,13 @@ export default {
     }
   },
   methods: {
+    hasCard(item) {
+      if (item.teneoResponse.extraData && item.teneoResponse.extraData.displayCard) {
+          return true;
+        } else {
+          return false;
+        }
+    },
     getLongListIcon(altOptionIndex) {
       let iconName = "mdi-numeric-9-plus-box-outline";
       if (altOptionIndex + 1 <= 9) {
