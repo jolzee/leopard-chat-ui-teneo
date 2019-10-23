@@ -4,7 +4,10 @@ import replaceString from "replace-string";
 export function initializeTTS(locale) {
   let tts = null;
   // Artyom Speech Recognition and TTS
-  if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
+  if (
+    Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
+    Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
+  ) {
     tts = new Artyom();
 
     if (locale === "en-us-male") {

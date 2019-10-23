@@ -1501,7 +1501,10 @@ function storeSetup(vuetify, callback) {
                 }
 
                 // check if this browser supports the Web Speech API
-                if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
+                if (
+                  Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
+                  Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
+                ) {
                   if (context.getters.tts && context.getters.speakBackResponses) {
                     context.getters.tts.say(ttsText);
                   }

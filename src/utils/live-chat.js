@@ -122,7 +122,10 @@ export class LiveChat {
                 hasExtraData: false
               };
               this.store.commit("PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG", liveChatResponse); // push the getting message onto the dialog
-              if (window.hasOwnProperty("webkitSpeechRecognition") && window.hasOwnProperty("speechSynthesis")) {
+              if (
+                Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
+                Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
+              ) {
                 if (this.tts && this.store.getters.speakBackResponses) {
                   this.tts.say(stripHtml(newMessage.text));
                 }
