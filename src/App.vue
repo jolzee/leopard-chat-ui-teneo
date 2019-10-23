@@ -323,6 +323,9 @@ export default {
       rightDrawer: false
     };
   },
+  updated() {
+    this.handlePromptTriggerPolling();
+  },
   mounted() {
     // if (top !== self) {
     //   // we are in the iframe
@@ -358,8 +361,11 @@ export default {
     ...mapGetters([
       "accentStyling",
       "authenticated",
+      "isPromptPollingActive",
+      "getPromptPollingIntervalInMilliseconds",
       "config",
       "isMobileDevice",
+      "getActivePromptInterval",
       "dialogs",
       "chatTitle",
       "customCssButtonToolbar",
@@ -452,6 +458,21 @@ export default {
     }
   },
   methods: {
+    handlePromptTriggerPolling() {
+        if (this.isPromptPollingActive) {
+          if (!this.showButtonOnly && this.isChatOpen && this.getActivePromptInterval === null) {
+              // console.log("Setting up Prompt Trigger Polling");
+              let that = this;
+              let interval = setInterval(function(){
+                that.$store.dispatch("sendUserInput", "&command=prompt");
+              }, this.getPromptPollingIntervalInMilliseconds);
+              this.$store.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
+          } else if (!this.isChatOpen) {
+            // console.log(`Stop prompt trigger polling`);
+            this.$store.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
+          }
+        }
+    },
     isChatOpenLocalStorage() {
       let isChatOpen = localStorage.getItem("isChatOpen");
       if (isChatOpen === null) {
@@ -751,11 +772,11 @@ export default {
           }.bind(this),
           400
         );
-        console.log("Toggle Chat: Send Login");
+        // console.log("Toggle Chat: Send Login");
         this.$store
           .dispatch("login")
           .then(() => {
-            console.log("Successfully logged into chat");
+            // console.log("Successfully logged into chat");
             setTimeout(
               function() {
                 this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended

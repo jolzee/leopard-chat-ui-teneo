@@ -662,15 +662,22 @@ export default {
   },
   updated: function() {},
   created() {
+    // add new JSON config if missing
     this.config.solutions.forEach(solution => {
-      if (!("animations" in solution)) {
-        solution.animations = SOLUTION_DEFAULT.animations;
-      }
+      this.fixSolution(solution);
     });
     this.setActiveSolutionAsSelected();
     this.saveToLocalStorage();
   },
   methods: {
+    fixSolution(solution) {
+      if (!("animations" in solution)) {
+        solution.animations = SOLUTION_DEFAULT.animations;
+      }
+      if (!("promptTriggers" in solution)) {
+        solution.promptTriggers = SOLUTION_DEFAULT.promptTriggers;
+      }
+    },
     createShareLinkForSolution() {
       // let configValue = encodeURIComponent(
       //   JSON.stringify(this.selectedSolution)
@@ -707,6 +714,7 @@ export default {
       this.displayFullSolutionConfig = !this.displayFullSolutionConfig;
     },
     importSolution(newSolution) {
+      this.fixSolution(newSolution);
       let existingSolutionsWithName = this.config.solutions.findIndex(
         solution => solution.name === newSolution.name
       );

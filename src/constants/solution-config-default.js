@@ -25,6 +25,10 @@ okkay | ok
   enableLiveChat: true,
   float: true,
   pulseButton: true,
+  promptTriggers: {
+    enabled: false,
+    pollSeconds: "5"
+  },
   iframeUrl: "",
   knowledgeData: ["What's your name?", "Who created you?"],
   locale: "en-us-female",

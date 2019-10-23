@@ -42,6 +42,10 @@
       "showChatIcons": true,
       "asrCorrections": "pizza | Peter\nthiss | that",
       "pulseButton": true,
+      "promptTriggers": {
+        "enabled": false,
+        "pollSeconds": "5"
+      },
       "customCssButtonToolbar": "",
       "locale": "en-us-female",
       "longResponsesInModal": false

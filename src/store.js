@@ -106,6 +106,7 @@ function storeSetup(vuetify, callback) {
           ? config.IFRAME_URL.substring(0, config.IFRAME_URL.lastIndexOf("/")) + "/"
           : config.IFRAME_URL
       },
+      promptTriggerInterval: null,
       knowledgeData: config.KNOWLEDGE_DATA,
       liveAgent: {
         agentAvatar: null,
@@ -159,11 +160,23 @@ function storeSetup(vuetify, callback) {
       config(state) {
         return state.chatConfig;
       },
+      isPromptPollingActive(state) {
+        if ("promptTriggers" in state.activeSolution && state.activeSolution.promptTriggers.enabled) {
+          return true;
+        }
+        return false;
+      },
+      getPromptPollingIntervalInMilliseconds(state) {
+        if ("promptTriggers" in state.activeSolution && state.activeSolution.promptTriggers.pollSeconds) {
+          return parseInt(state.activeSolution.promptTriggers.pollSeconds) * 1000;
+        }
+        return 10000; // default to 10 seconds
+      },
       showDelayedResponse(state) {
         return state.ui.showDelayedResponse;
       },
       isChatOpen(state) {
-        console.log(`store:getters:isChatOpen: ${state.ui.showChatWindow}`);
+        // console.log(`store:getters:isChatOpen: ${state.ui.showChatWindow}`);
         return state.ui.showChatWindow;
       },
       hideConfigMenu(state) {
@@ -173,7 +186,7 @@ function storeSetup(vuetify, callback) {
         return uuidv1();
       },
       showButtonOnly(state) {
-        console.log(`store: showButtonOnly: ${state.ui.showButtonOnly}`);
+        // console.log(`store: showButtonOnly: ${state.ui.showButtonOnly}`);
         return state.ui.showButtonOnly;
       },
       getAnimatedIn(state, getters) {
@@ -512,6 +525,9 @@ function storeSetup(vuetify, callback) {
 
         return "";
       },
+      getActivePromptInterval(state) {
+        return state.promptTriggerInterval;
+      },
       audioInfo: (_state, getters) => extension => {
         if (extension && extension.name === "displayVideo") {
           let url = extension.parameters.video_url;
@@ -782,21 +798,21 @@ function storeSetup(vuetify, callback) {
       },
       TOGGLE_CHAT_WINDOW_DISPLAY(state, getters) {
         state.ui.showChatWindow = !state.ui.showChatWindow;
-        console.log(
-          `store: TOGGLE_CHAT_WINDOW_DISPLAY:  state.ui.showChatWindow has toggled to: ${state.ui.showChatWindow}`
-        );
+        // console.log(
+        //   `store: TOGGLE_CHAT_WINDOW_DISPLAY:  state.ui.showChatWindow has toggled to: ${state.ui.showChatWindow}`
+        // );
         if (state.ui.embed) {
           localStorage.setItem("isChatOpen", state.ui.showChatWindow);
-          console.log(`store: TOGGLE_CHAT_WINDOW_DISPLAY: sending message to parent to ${state.ui.showChatWindow}`);
+          // console.log(`store: TOGGLE_CHAT_WINDOW_DISPLAY: sending message to parent to ${state.ui.showChatWindow}`);
           sendMessageToParent(state.ui.showChatWindow ? "showLeopard" : "hideLeopard");
         }
       },
       SHOW_CHAT_WINDOW(state) {
-        console.log(`store: SHOW_CHAT_WINDOW`);
+        // console.log(`store: SHOW_CHAT_WINDOW`);
         state.ui.showChatWindow = true;
       },
       HIDE_CHAT_WINDOW(state) {
-        console.log(`store: HIDE_CHAT_WINDOW`);
+        // console.log(`store: HIDE_CHAT_WINDOW`);
         state.ui.showChatWindow = false;
       },
       HIDE_CHAT_BUTTON(state) {
@@ -1046,6 +1062,13 @@ function storeSetup(vuetify, callback) {
       UPDATE_UI_LOCALE(state, lang) {
         state.i18n.locale = lang.toLowerCase();
         Vue.i18n.set(lang);
+      },
+      SET_PROMPT_TRIGGER_INTERVAL(state, newInterval) {
+        state.promptTriggerInterval = newInterval;
+      },
+      CLEAR_PROMPT_TRIGGER_INTERVAL(state) {
+        clearInterval(state.promptTriggerInterval);
+        state.promptTriggerInterval = null;
       },
       UPDATE_FRAME_URL(state, newUrl) {
         if (document.getElementById("site-frame")) {
@@ -1315,6 +1338,17 @@ function storeSetup(vuetify, callback) {
             }
           )
             .then(json => {
+              if (params.indexOf("command=prompt" !== -1) && json.responseData.answer.trim() === "") {
+                // console.log(`Poll returned nothing..`);
+                return;
+              } else if (
+                params !== "" &&
+                params.indexOf("command=prompt" >= 0) &&
+                json.responseData.answer.trim() !== ""
+              ) {
+                var audio = new Audio(require("./assets/notification.mp3"));
+                audio.play();
+              }
               context.commit("HIDE_CHAT_LOADING");
 
               if (json.responseData.extraData.offerFeedbackForm) {
@@ -1352,7 +1386,7 @@ function storeSetup(vuetify, callback) {
                   });
               }
 
-              if (params.indexOf("command=continue") != -1) {
+              if (params.indexOf("command=continue") !== -1) {
                 context.commit("HIDE_RESPONSE_DELAY");
               }
               // end of delay logic

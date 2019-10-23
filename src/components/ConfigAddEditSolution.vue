@@ -93,6 +93,34 @@
                   :rules="[ruleMustHaveValue, ruleMustBeUrl]"
                 ></v-text-field>
               </v-col>
+
+              <v-col
+                cols="12"
+                sm="4"
+                class="hidden-xs-only"
+              >
+                <v-subheader>Prompt Triggers</v-subheader>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="8"
+              >
+                <v-switch
+                  v-model="solution.promptTriggers.enabled"
+                  label="Poll for Prompt Triggers"
+                ></v-switch>
+                <v-text-field
+                  v-if="solution.promptTriggers.enabled"
+                  color="light-blue darken-1"
+                  v-model.trim="solution.promptTriggers.pollSeconds"
+                  validate-on-blur
+                  label="How often should Leopard poll in seconds?"
+                  append-icon="mdi-repeat"
+                  :rules="[ruleMustHaveValue, ruleMustBeInteger]"
+                ></v-text-field>
+              </v-col>
+
+
               <v-col
                 cols="12"
                 sm="4"
@@ -1103,6 +1131,14 @@ export default {
         } else {
           return true;
         }
+      }
+    },
+    ruleMustBeInteger(value) {
+      console.log(`The value is ${Number(value)}`);
+      if (Number.isInteger(Number(value))) {
+        return true;
+      } else {
+        return "Value must be an integer";
       }
     },
     ruleMustBeUrl(value) {
