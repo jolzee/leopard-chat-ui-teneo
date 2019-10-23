@@ -809,17 +809,17 @@ div.chat-container .v-expansion-panel::before {
 }
 
 .chat-card-left {
-  border-radius: 3px 13px 13px 13px;
-  -moz-border-radius: 3px 13px 13px 13px;
-  -webkit-border-radius: 3px 13px 13px 13px;
+  border-radius: 3px 13px 13px 13px !important;
+  -moz-border-radius: 3px 13px 13px 13px !important;
+  -webkit-border-radius: 3px 13px 13px 13px !important;
   padding-bottom: 3px !important;
 }
 
 .chat-card-right {
-  border-radius: 13px 3px 13px 13px;
-  -moz-border-radius: 13px 3px 13px 13px;
-  -webkit-border-radius: 13px 3px 13px 13px;
-  margin-left: auto;
+  border-radius: 13px 3px 13px 13px !important;
+  -moz-border-radius: 13px 3px 13px 13px !important;
+  -webkit-border-radius: 13px 3px 13px 13px !important;
+  margin-left: auto !important;
 }
 
 div.options-list a.v-list__tile--link {

@@ -130,9 +130,8 @@
           <div>
             <v-toolbar
               :color="toolbarColor"
-              :flat="false"
               height="64"
-              style="z-index: 3;"
+              class="teneo-leopard-header"
               :class="{'teneo-toolbar-float' : float, 'teneo-toolbar-embed' : embed}"
               :style="toolbarStyle"
             >
@@ -835,6 +834,11 @@ export default {
 
 .v-overlay--active {
   border-radius: 0px !important;
+}
+
+.teneo-leopard-header {
+  z-index: 3;
+  position: relative;
 }
 
 #app {
