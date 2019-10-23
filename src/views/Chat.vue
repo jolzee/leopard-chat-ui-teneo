@@ -667,10 +667,8 @@ export default {
     },
 
     captureAudio() {
-      if (
-        window.hasOwnProperty("webkitSpeechRecognition") &&
-        window.hasOwnProperty("speechSynthesis")
-      ) {
+
+      if (Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") && Object.prototype.hasOwnProperty.call(window, "speechSynthesis")) {
         this.$store.commit("HIDE_CHAT_MODAL");
         this.audioButtonColor = "error";
         this.audioButtonClasses = "white--text";
