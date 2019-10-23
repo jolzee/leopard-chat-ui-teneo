@@ -10,13 +10,8 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve --open",
-    "dev": "vue-cli-service serve --open",
-    "build:modern": "vue-cli-service build --modern",
-    "build:modern:prod": "vue-cli-service build --mode production --modern",
-    "build:modern:dev": "vue-cli-service build --mode development --modern",
     "build": "vue-cli-service build",
-    "build:prod": "vue-cli-service build --mode production",
-    "build:dev": "vue-cli-service build --mode development",
+    "build:modern": "vue-cli-service build --modern",
     "lint": "vue-cli-service lint --fix"
   },
   "dependencies": {
