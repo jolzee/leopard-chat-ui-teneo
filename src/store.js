@@ -1365,16 +1365,13 @@ function storeSetup(vuetify, callback) {
                 );
               }
 
-              if (json.responseData.extraData.hasOwnProperty("script")) {
+              if ("script" in json.responseData.extraData) {
                 let theScript = decodeURIComponent(json.responseData.extraData.script);
                 sendMessageToParent("runLeopardScript|" + theScript);
               }
 
               // Start of delay logic
-              if (
-                json.responseData.extraData.hasOwnProperty("command") &&
-                json.responseData.extraData.command === "delay"
-              ) {
+              if ("command" in json.responseData.extraData && json.responseData.extraData.command === "delay") {
                 context.commit("SHOW_RESPONSE_DELAY");
                 context.commit("SET_USER_INPUT", "");
                 context
@@ -1391,16 +1388,13 @@ function storeSetup(vuetify, callback) {
               }
               // end of delay logic
 
-              if (
-                json.responseData.extraData.hasOwnProperty("inputType") &&
-                json.responseData.extraData.inputType === "upload"
-              ) {
+              if ("inputType" in json.responseData.extraData && json.responseData.extraData.inputType === "upload") {
                 context.commit("SHOW_UPLOAD_BUTTON");
               }
 
               // look for request for location information in the response
               if (
-                json.responseData.extraData.hasOwnProperty("inputType") &&
+                "inputType" in json.responseData.extraData &&
                 json.responseData.extraData.inputType.startsWith("location")
               ) {
                 config
