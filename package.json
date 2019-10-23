@@ -53,7 +53,6 @@
     "vuex-i18n": "^1.13.1"
   },
   "devDependencies": {
-    "@mdi/font": "^4.2.95",
     "@vue/cli-plugin-babel": "^3.11.0",
     "@vue/cli-plugin-eslint": "^3.11.0",
     "@vue/cli-service": "^3.11.0",

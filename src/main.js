@@ -5,8 +5,7 @@ import smoothscroll from "smoothscroll-polyfill";
 smoothscroll.polyfill();
 import Vue from "vue";
 
-import "@mdi/font/css/materialdesignicons.css";
-// import "material-design-icons-iconfont/dist/material-design-icons.css";
+// import "@mdi/font/css/materialdesignicons.css";
 import "vue-loaders/dist/vue-loaders.css";
 import "vue-plyr/dist/vue-plyr.css";
 import "vue2-animate/dist/vue2-animate.min.css";
