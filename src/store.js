@@ -1373,7 +1373,6 @@ function storeSetup(vuetify, callback) {
                 let theScript = decodeURIComponent(json.responseData.extraData.script);
                 sendMessageToParent("runLeopardScript|" + theScript);
               }
-
               // Start of delay logic
               if ("command" in json.responseData.extraData && json.responseData.extraData.command === "delay") {
                 context.commit("SHOW_RESPONSE_DELAY");
