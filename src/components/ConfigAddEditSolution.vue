@@ -204,8 +204,8 @@
                   >
                     <v-img
                       v-if="showLeopardAnimationImage"
-                      src="../../public/static/leopard-small.webp"
-                      lazy-src="../../public/static/leopard-small.webp"
+                      src="../../public/static/leopard-small.png"
+                      lazy-src="../../public/static/leopard-small.png"
                       max-height="300"
                       @click="toggleDisplayAnimationImage()"
                       contain

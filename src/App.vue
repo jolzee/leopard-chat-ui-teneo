@@ -82,26 +82,18 @@
               right
               width="250"
             >
-              <v-row
-                align="center"
-                justify="center"
-              >
-                <v-img
-                  :src="backgroundImage()"
-                  :lazy-src="backgroundImage()"
-                  aspect-ratio="1"
-                  height="170px"
-                >
-                  <v-row class="lightbox white--text ma-4">
-                    <v-col>
-                      <div class="headline font-weight-medium">Artificial Solutions</div>
-                      <div class="body-2">{{ $t('about.page.content') }}</div>
-                    </v-col>
-                  </v-row>
-                </v-img>
-              </v-row>
 
-              <v-list class="px-2">
+              <v-row>
+                <v-col class="pa-0 ma-0 elevation-2">
+                  <div class="secondary darken-1 text-center pa-2">
+                    <div class="headline white--text font-weight-medium">Artificial Solutions</div>
+                  </div>
+                  <div class="primary darken-1 text-center py-2 px-4">
+                    <div class="white--text body-2 pa-1">{{ $t('about.page.content') }}</div>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-list class="px-2 mt-1">
                 <v-list-item
                   ripple
                   value="true"
@@ -458,19 +450,23 @@ export default {
   },
   methods: {
     handlePromptTriggerPolling() {
-        if (this.isPromptPollingActive) {
-          if (!this.showButtonOnly && this.isChatOpen && this.getActivePromptInterval === null) {
-              // console.log("Setting up Prompt Trigger Polling");
-              let that = this;
-              let interval = setInterval(function(){
-                that.$store.dispatch("sendUserInput", "&command=prompt");
-              }, this.getPromptPollingIntervalInMilliseconds);
-              this.$store.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
-          } else if (!this.isChatOpen) {
-            // console.log(`Stop prompt trigger polling`);
-            this.$store.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
-          }
+      if (this.isPromptPollingActive) {
+        if (
+          !this.showButtonOnly &&
+          this.isChatOpen &&
+          this.getActivePromptInterval === null
+        ) {
+          // console.log("Setting up Prompt Trigger Polling");
+          let that = this;
+          let interval = setInterval(function() {
+            that.$store.dispatch("sendUserInput", "&command=prompt");
+          }, this.getPromptPollingIntervalInMilliseconds);
+          this.$store.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
+        } else if (!this.isChatOpen) {
+          // console.log(`Stop prompt trigger polling`);
+          this.$store.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
         }
+      }
     },
     isChatOpenLocalStorage() {
       let isChatOpen = localStorage.getItem("isChatOpen");
@@ -606,9 +602,6 @@ export default {
           );
         });
       } //
-    },
-    backgroundImage() {
-      return require("./assets/purple.webp");
     },
     calculateMobileHeight() {
       if (this.isMobileDevice) {
