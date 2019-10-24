@@ -972,7 +972,7 @@ function storeSetup(vuetify, callback) {
           state.modals.showModal = true;
         }
 
-        state.userInput.userInput = ""; // reset the user input to nothing
+        //state.userInput.userInput = ""; // reset the user input to nothing
 
         // deal with persiting the chat history
         if (!config.USE_SESSION_STORAGE) {
@@ -1312,19 +1312,23 @@ function storeSetup(vuetify, callback) {
         });
       },
       sendUserInput(context, params = "") {
-        let now = new Date();
-        // console.log("Updating last interaction time in localstorage");
-        localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
         if (typeof params !== "string") {
           params = "";
         }
-        let currentUserInput = stripHtml(context.getters.userInput);
-        context.commit("CLEAR_USER_INPUT");
-        // send user input to Teneo when a live chat has not begun
-        if (context.getters.tts && context.getters.tts.isSpeaking()) {
-          // tts is speaking something. Let's shut it up
-          context.getters.tts.shutUp();
+        let now = new Date();
+        let currentUserInput = "";
+        if (params.indexOf("command=prompt") === -1) {
+          // console.log("Updating last interaction time in localstorage");
+          localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
+          currentUserInput = stripHtml(context.getters.userInput);
+          context.commit("CLEAR_USER_INPUT");
+          // send user input to Teneo when a live chat has not begun
+          if (context.getters.tts && context.getters.tts.isSpeaking()) {
+            // tts is speaking something. Let's shut it up
+            context.getters.tts.shutUp();
+          }
         }
+
         if (!context.getters.isLiveChat) {
           // normal Teneo request needs to be made
           Vue.jsonp(
@@ -1338,12 +1342,12 @@ function storeSetup(vuetify, callback) {
             }
           )
             .then(json => {
-              if (params.indexOf("command=prompt" !== -1) && json.responseData.answer.trim() === "") {
+              if (params.indexOf("command=prompt") !== -1 && json.responseData.answer.trim() === "") {
                 // console.log(`Poll returned nothing..`);
                 return;
               } else if (
                 params !== "" &&
-                params.indexOf("command=prompt" >= 0) &&
+                params.indexOf("command=prompt") !== -1 &&
                 json.responseData.answer.trim() !== ""
               ) {
                 var audio = new Audio(require("./assets/notification.mp3"));

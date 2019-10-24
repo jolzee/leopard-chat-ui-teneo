@@ -421,6 +421,7 @@ export default {
           this.updateInputBox(dayjs(this.date).format("D MMMM YYYY"));
         }
         if (this.userInputReadyForSending) {
+          console.log(`hnkdsnfdskfn`);
           this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals
           this.sendUserInput();
         }
@@ -667,8 +668,13 @@ export default {
     },
 
     captureAudio() {
-
-      if (Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") && Object.prototype.hasOwnProperty.call(window, "speechSynthesis")) {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          window,
+          "webkitSpeechRecognition"
+        ) &&
+        Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
+      ) {
         this.$store.commit("HIDE_CHAT_MODAL");
         this.audioButtonColor = "error";
         this.audioButtonClasses = "white--text";
