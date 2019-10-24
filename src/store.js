@@ -1394,8 +1394,8 @@ function storeSetup(vuetify, callback) {
               if ("inputType" in json.responseData.extraData && json.responseData.extraData.inputType === "upload") {
                 context.commit("SHOW_UPLOAD_BUTTON");
               }
-
               // look for request for location information in the response
+
               if (
                 "inputType" in json.responseData.extraData &&
                 json.responseData.extraData.inputType.startsWith("location")
@@ -1429,12 +1429,13 @@ function storeSetup(vuetify, callback) {
                       let locationRequestType = json.responseData.extraData.inputType;
                       superagent
                         .get(
-                          `https://us1.locationiq.com/v1/reverse.php?key=${process.env.VUE_APP_LOCATION_IQ_KEY}&lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`
+                          `https://us1.locationiq.com/v1/reverse.php?key=${process.env.VUE_APP_LOCATION_IQ_KEY}&lat=${
+                            position.coords.latitude
+                          }&lon=${position.coords.longitude}&format=json&normalizecity=1&t=${new Date().valueOf()}`
                         )
                         .accept("application/json")
                         .then(res => {
                           let data = res.body;
-                          console.log(`${data.address.city}, ${data.address.state} ${data.address.postcode}`);
 
                           let queryParam = `&${locationRequestType}=`;
                           if (locationRequestType === "locationJson") {
