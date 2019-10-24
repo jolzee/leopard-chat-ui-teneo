@@ -1269,6 +1269,40 @@ function storeSetup(vuetify, callback) {
             }
           )
             .then(json => {
+              if ("numActiveFlows" in json.responseData.extraData) {
+                let numActiveFlows = parseInt(json.responseData.extraData.numActiveFlows);
+                if (numActiveFlows > 0) {
+                  // mid dialog stop polling
+                  context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
+                  console.log("Stop polling - there active dialogs");
+                } else if (context.getters.isPromptPollingActive) {
+                  // setup the polling again if needed
+                  if (
+                    !context.getters.showButtonOnly &&
+                    context.getters.isChatOpen &&
+                    context.getters.getActivePromptInterval === null
+                  ) {
+                    console.log("Start up Prompt Trigger Polling");
+                    let interval = setInterval(function() {
+                      context.dispatch("sendUserInput", "&command=prompt");
+                    }, context.getters.getPromptPollingIntervalInMilliseconds);
+                    context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
+                  } else if (!context.getters.isChatOpen) {
+                    console.log(`Stop prompt trigger polling - chat is closed`);
+                    context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
+                  }
+                }
+              } else if (!("numActiveFlows" in json.responseData.extraData) && context.getters.isPromptPollingActive) {
+                console.groupCollapsed(
+                  `%c Config Error!! ⚠ %c Leopard Chat UI 💬 %c`,
+                  "background:#C60909 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",
+                  "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
+                  "background:transparent"
+                );
+                console.log("Prompt polling is active but you are not returning the numActiveFlows from Teneo");
+                console.log("Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling");
+                console.groupEnd();
+              }
               context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
               // console.log(decodeURIComponent(json.responseData.answer))
               let hasExtraData = false;
@@ -1312,6 +1346,7 @@ function storeSetup(vuetify, callback) {
         });
       },
       sendUserInput(context, params = "") {
+        // important because sometimes some weird object gets injected from chrome browser extensions
         if (typeof params !== "string") {
           params = "";
         }
@@ -1342,6 +1377,41 @@ function storeSetup(vuetify, callback) {
             }
           )
             .then(json => {
+              // deal with polling
+              if ("numActiveFlows" in json.responseData.extraData) {
+                let numActiveFlows = parseInt(json.responseData.extraData.numActiveFlows);
+                if (numActiveFlows > 0) {
+                  // mid dialog stop polling
+                  context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
+                  console.log("Stop polling - there active dialogs");
+                } else if (context.getters.isPromptPollingActive) {
+                  // setup the polling again if needed
+                  if (
+                    !context.getters.showButtonOnly &&
+                    context.getters.isChatOpen &&
+                    context.getters.getActivePromptInterval === null
+                  ) {
+                    console.log("Start up Prompt Trigger Polling");
+                    let interval = setInterval(function() {
+                      context.dispatch("sendUserInput", "&command=prompt");
+                    }, context.getters.getPromptPollingIntervalInMilliseconds);
+                    context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
+                  } else if (!context.getters.isChatOpen) {
+                    console.log(`Stop prompt trigger polling - chat is closed`);
+                    context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
+                  }
+                }
+              } else if (!("numActiveFlows" in json.responseData.extraData) && context.getters.isPromptPollingActive) {
+                console.groupCollapsed(
+                  `%c Config Error!! ⚠ %c Leopard Chat UI 💬 %c`,
+                  "background:#C60909 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",
+                  "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
+                  "background:transparent"
+                );
+                console.log("Prompt polling is active but you are not returning the numActiveFlows from Teneo");
+                console.log("Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling");
+                console.groupEnd();
+              }
               if (params.indexOf("command=prompt") !== -1 && json.responseData.answer.trim() === "") {
                 // console.log(`Poll returned nothing..`);
                 return;

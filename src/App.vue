@@ -314,17 +314,8 @@ export default {
       rightDrawer: false
     };
   },
-  updated() {
-    this.handlePromptTriggerPolling();
-  },
+  updated() {},
   mounted() {
-    // if (top !== self) {
-    //   // we are in the iframe
-    //   console.log("In Iframe!!!");
-    // } else {
-    //   // not an iframe
-    //   console.log("Not in iframe");
-    // }
     window.addEventListener("resize", this.onResizeOrEmbed);
     // deal with import of solution
     const urlParams = new URLSearchParams(window.location.search);
@@ -449,25 +440,6 @@ export default {
     }
   },
   methods: {
-    handlePromptTriggerPolling() {
-      if (this.isPromptPollingActive) {
-        if (
-          !this.showButtonOnly &&
-          this.isChatOpen &&
-          this.getActivePromptInterval === null
-        ) {
-          // console.log("Setting up Prompt Trigger Polling");
-          let that = this;
-          let interval = setInterval(function() {
-            that.$store.dispatch("sendUserInput", "&command=prompt");
-          }, this.getPromptPollingIntervalInMilliseconds);
-          this.$store.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
-        } else if (!this.isChatOpen) {
-          // console.log(`Stop prompt trigger polling`);
-          this.$store.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
-        }
-      }
-    },
     isChatOpenLocalStorage() {
       let isChatOpen = localStorage.getItem("isChatOpen");
       if (isChatOpen === null) {

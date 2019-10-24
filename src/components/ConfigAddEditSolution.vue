@@ -109,6 +109,18 @@
                   v-model="solution.promptTriggers.enabled"
                   label="Poll for Prompt Triggers"
                 ></v-switch>
+                <v-alert
+                  border="top"
+                  colored-border
+                  type="info"
+                  elevation="2"
+                  v-if="solution.promptTriggers.enabled"
+                >
+                  You must return the number of active flows from Teneo in each response. <a
+                    target="_blank"
+                    href="https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
+                  >Leopard Documentation</a>
+                </v-alert>
                 <v-text-field
                   v-if="solution.promptTriggers.enabled"
                   color="light-blue darken-1"
@@ -118,8 +130,8 @@
                   append-icon="mdi-repeat"
                   :rules="[ruleMustHaveValue, ruleMustBeInteger]"
                 ></v-text-field>
-              </v-col>
 
+              </v-col>
 
               <v-col
                 cols="12"
