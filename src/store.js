@@ -1277,19 +1277,12 @@ function storeSetup(vuetify, callback) {
                   console.log("Stop polling - there active dialogs");
                 } else if (context.getters.isPromptPollingActive) {
                   // setup the polling again if needed
-                  if (
-                    !context.getters.showButtonOnly &&
-                    context.getters.isChatOpen &&
-                    context.getters.getActivePromptInterval === null
-                  ) {
+                  if (!context.getters.showButtonOnly && context.getters.getActivePromptInterval === null) {
                     console.log("Start up Prompt Trigger Polling");
                     let interval = setInterval(function() {
                       context.dispatch("sendUserInput", "&command=prompt");
                     }, context.getters.getPromptPollingIntervalInMilliseconds);
                     context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
-                  } else if (!context.getters.isChatOpen) {
-                    console.log(`Stop prompt trigger polling - chat is closed`);
-                    context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
                   }
                 }
               } else if (!("numActiveFlows" in json.responseData.extraData) && context.getters.isPromptPollingActive) {
