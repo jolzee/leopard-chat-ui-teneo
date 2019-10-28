@@ -4,6 +4,7 @@ import "element-matches";
 import smoothscroll from "smoothscroll-polyfill";
 smoothscroll.polyfill();
 import Vue from "vue";
+import "./utils/vee-validate";
 
 // import "@mdi/font/css/materialdesignicons.css";
 import "vue-loaders/dist/vue-loaders.css";

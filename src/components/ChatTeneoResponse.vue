@@ -39,7 +39,11 @@
 
     </v-row>
 
-    <Card v-if="hasCard(item) && (itemIndexInDialog === dialog.length - 1)" :item="item" class="mb-2"/>
+    <Card
+      v-if="hasCard(item) && (itemIndexInDialog === dialog.length - 1)"
+      :item="item"
+      class="mb-2"
+    />
     <!-- Show Inline Components -->
     <v-row
       v-for="(extension, index) in itemExtensions(item)"
@@ -205,6 +209,34 @@
       <v-col
         cols="12"
         class="text-right mb-2"
+        v-if="!completedForm && hasForm()"
+      >
+        <Form
+          v-if="mustShowForm()"
+          :formConfig="getFormConfig()"
+          @showForm="showForm()"
+          @hideForm="hideForm()"
+          @completed="completed()"
+          @handleFocus="handleFocus()"
+        />
+
+        <v-btn
+          color="success"
+          class="mt-2"
+          small
+          @click="showForm()"
+        >{{ getFormConfig && getFormConfig.openFormButtonText ? getFormConfig.openFormButtonText : "Form" }}
+          <v-icon
+            right
+            small
+            color="white"
+          >mdi-file-document-edit-outline</v-icon>
+        </v-btn>
+      </v-col>
+
+      <v-col
+        cols="12"
+        class="text-right mb-2"
         v-if="(item.hasExtraData && hasModal(item) && notLiveChatTranscript) || itemHasLongResponse(item)"
       >
         <v-btn
@@ -268,6 +300,7 @@ import Vimeo from "./Vimeo";
 import Card from "./Card";
 import YouTube from "./YouTube";
 import { mapGetters } from "vuex";
+
 export default {
   name: "ChatTeneoResponse",
   directives: {
@@ -282,9 +315,17 @@ export default {
     Map,
     Video,
     Vimeo,
-    YouTube
+    YouTube,
+    Form: () => import("./Form")
   },
   props: ["item", "itemIndexInDialog"],
+  data() {
+    return {
+      displayForm: false,
+      hasFormAutomaticallyDisplayed: false,
+      completedForm: false
+    };
+  },
   computed: {
     ...mapGetters([
       "dark",
@@ -472,12 +513,73 @@ export default {
     }
   },
   methods: {
-    hasCard(item) {
-      if (item.teneoResponse.extraData && item.teneoResponse.extraData.displayCard) {
+    isLastInDialog() {
+      return this.itemIndexInDialog === this.dialog.length - 1;
+    },
+    handleFocus() {
+      this.$emit("handleFocus");
+    },
+    mustShowForm() {
+      if (this.displayForm) {
+        return true;
+      } else {
+        let formConfig = this.getFormConfig();
+
+        if (
+          this.isLastInDialog() &&
+          !this.hasFormAutomaticallyDisplayed &&
+          formConfig &&
+          formConfig.openAutomatically
+        ) {
+          this.hasFormAutomaticallyDisplayed = true;
+          this.displayForm = true;
           return true;
-        } else {
-          return false;
         }
+      }
+      return false;
+    },
+    completed() {
+      this.hideForm();
+      this.completedForm = true;
+      this.$store.commit("REMOVE_FORM_CONFIG", this.item.id);
+    },
+    showForm() {
+      this.displayForm = true;
+    },
+    hideForm() {
+      this.displayForm = false;
+    },
+    hasForm() {
+      if (
+        this.item.teneoResponse &&
+        this.item.teneoResponse.extraData &&
+        this.item.teneoResponse.extraData.formConfig
+      ) {
+        return true;
+      }
+      return false;
+    },
+    getFormConfig() {
+      if (
+        this.item.teneoResponse &&
+        this.item.teneoResponse.extraData &&
+        this.item.teneoResponse.extraData.formConfig
+      ) {
+        return JSON.parse(
+          decodeURIComponent(this.item.teneoResponse.extraData.formConfig)
+        );
+      }
+      return null;
+    },
+    hasCard(item) {
+      if (
+        item.teneoResponse.extraData &&
+        item.teneoResponse.extraData.displayCard
+      ) {
+        return true;
+      } else {
+        return false;
+      }
     },
     getLongListIcon(altOptionIndex) {
       let iconName = "mdi-numeric-9-plus-box-outline";

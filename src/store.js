@@ -959,6 +959,7 @@ function storeSetup(vuetify, callback) {
 
         let newReply = {
           type: "reply",
+          id: uuidv1(),
           text: payload.response.teneoAnswer,
           bodyText: "",
           teneoResponse: payload.response.teneoResponse,
@@ -989,6 +990,33 @@ function storeSetup(vuetify, callback) {
           state.conversation.dialogHistory.push(newReply);
         }
         // save the dislaog history in session storage
+        sessionStorage.setItem(
+          STORAGE_KEY + config.TENEO_CHAT_HISTORY,
+          JSON.stringify(state.conversation.dialogHistory)
+        );
+      },
+      REMOVE_FORM_CONFIG(state, itemId) {
+        let foundHistory = state.conversation.dialogHistory.find(function(item) {
+          return item.id === itemId;
+        });
+
+        let found = state.conversation.dialog.find(function(item) {
+          return item.id === itemId;
+        });
+
+        if (found && found.teneoResponse && found.teneoResponse.extraData && found.teneoResponse.extraData.formConfig) {
+          delete found.teneoResponse.extraData.formConfig;
+        }
+
+        if (
+          foundHistory &&
+          foundHistory.teneoResponse &&
+          foundHistory.teneoResponse.extraData &&
+          foundHistory.teneoResponse.extraData.formConfig
+        ) {
+          delete foundHistory.teneoResponse.extraData.formConfig;
+        }
+
         sessionStorage.setItem(
           STORAGE_KEY + config.TENEO_CHAT_HISTORY,
           JSON.stringify(state.conversation.dialogHistory)
@@ -1310,6 +1338,7 @@ function storeSetup(vuetify, callback) {
               }
               const response = {
                 type: "reply",
+                id: uuidv1(),
                 text: decodeHTML(
                   markdown.toHTML(
                     decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
@@ -1547,6 +1576,7 @@ function storeSetup(vuetify, callback) {
               // console.log(decodeURIComponent(json.responseData.answer))
               const response = {
                 userInput: currentUserInput,
+                id: uuidv1(),
                 teneoAnswer: decodeHTML(
                   markdown.toHTML(
                     decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')

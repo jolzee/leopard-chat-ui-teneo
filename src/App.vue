@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <v-app
       :dark="$vuetify.theme.dark"
       v-if="showButtonOnly"
@@ -256,6 +257,7 @@ import { STORAGE_KEY } from "./constants/solution-config-default.js";
 import jsonpack from "jsonpack/main";
 
 export default {
+  components: {},
   data() {
     return {
       importDialog: false,

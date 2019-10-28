@@ -32,6 +32,7 @@
           @showFeedback="showFeedback = true"
           @hideFeedback="showFeedback = false"
         />
+
         <v-expansion-panels
           readonly
           :value="getCurrentItem"
@@ -306,6 +307,7 @@ import ChatLoading from "../components/ChatLoading";
 // import ChatNoHistory from "../components/ChatNoHistory";
 import ChatTeneoResponse from "../components/ChatTeneoResponse";
 import ChatUserQuestion from "../components/ChatUserQuestion";
+
 // import LiveChatResponse from "../components/LiveChatResponse";
 import UploadButton from "vuetify-upload-button";
 const superagent = require("superagent");
