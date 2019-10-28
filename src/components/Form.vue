@@ -16,8 +16,8 @@
           <v-fade-transition>
             <v-overlay
               absolute
+              opacity="0.7"
               :value="overlay"
-              color="primary"
             >
 
               <v-alert
@@ -72,11 +72,24 @@
                   <v-img
                     v-if="field.fieldType === 'image'"
                     :src="field.src"
-                    aspect-ratio="1"
+                    contain
                     :max-width="field.maxWidth ? field.maxWidth : '100%'"
                     :max-height="field.maxHeight ? field.maxHeight : '600'"
                     :alt="field.alt ? field.alt : 'Random Picture'"
-                  ></v-img>
+                  >
+                    <template v-slot:placeholder>
+                      <v-row
+                        class="fill-height ma-0"
+                        align="center"
+                        justify="center"
+                      >
+                        <v-progress-circular
+                          indeterminate
+                          color="grey lighten-5"
+                        ></v-progress-circular>
+                      </v-row>
+                    </template>
+                  </v-img>
 
                   <div
                     v-if="field.fieldType === 'html'"
@@ -116,6 +129,7 @@
                   >
                     <v-text-field
                       v-model="formData[field.name]"
+                      :name="field.name"
                       :label="field.label ? field.label : ''"
                       :success="valid"
                       :error-messages="errors"
@@ -146,6 +160,7 @@
                   >
                     <v-textarea
                       v-model="formData[field.name]"
+                      :name="field.name"
                       :success="valid"
                       :error-messages="errors"
                       :auto-grow="field.autoGrow ? field.autoGrow : true"
@@ -211,6 +226,7 @@
                   >
                     <v-select
                       v-model="formData[field.name]"
+                      :name="field.name"
                       :success="valid"
                       :error-messages="errors"
                       :items="field.items ? field.items : []"
@@ -240,6 +256,7 @@
                   >
                     <v-checkbox
                       v-model="formData[field.name]"
+                      :name="field.name"
                       :error-messages="errors"
                       :label="field.label ? field.label : ''"
                       :hint="field.hint ? field.hint : ''"
@@ -256,6 +273,7 @@
                   >
                     <v-switch
                       v-model="formData[field.name]"
+                      :name="field.name"
                       :error-messages="errors"
                       :color="field.color ? field.color : 'success'"
                       :label="field.label ? field.label : ''"
@@ -275,7 +293,7 @@
                     <v-radio-group
                       v-model="formData[field.name]"
                       :error-messages="errors"
-                      :name="field.name ? field.name : 'radioGroup'"
+                      :name="field.name"
                       :label="field.label ? field.label : 'dfdgdfhdfgdfhfgh'"
                       :hint="field.hint ? field.hint : ''"
                       :persistent-hint="field.persistantHint ? field.persistantHint : true"
