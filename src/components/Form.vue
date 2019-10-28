@@ -3,7 +3,10 @@
     ref="observer"
     v-slot="{ invalid, validated, passes, validate }"
   >
-    <v-row justify="center">
+    <v-row
+      align="start"
+      justify="start"
+    >
       <v-dialog
         v-model="dialog"
         persistent
@@ -59,8 +62,8 @@
 
             <v-container fluid>
               <v-row
-                align="center"
-                justify="center"
+                align="start"
+                justify="start"
               >
                 <v-col
                   v-for="(field, index) in formConfig.fields"
@@ -68,7 +71,6 @@
                   cols="12"
                   class="pa-2"
                 >
-
                   <v-img
                     v-if="field.fieldType === 'image'"
                     :src="field.src"
