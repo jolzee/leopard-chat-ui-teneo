@@ -871,6 +871,7 @@ function storeSetup(vuetify, callback) {
         state.conversation.dialog.push(miscMessage);
       },
       PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG(state, liveChatResponse) {
+        console.log(liveChatResponse);
         state.conversation.dialog.push(liveChatResponse);
       },
       CLEAR_USER_INPUT(state) {
@@ -1672,7 +1673,7 @@ function storeSetup(vuetify, callback) {
               }
               context.commit("HIDE_PROGRESS_BAR");
             });
-        } else {
+        } else if (context.getters.isLiveChat && params.indexOf("command=prompt") === -1) {
           // send the input to live chat agent and save user input to history
           let newUserInput = {
             type: "userInput",
