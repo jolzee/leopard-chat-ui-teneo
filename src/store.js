@@ -1458,7 +1458,7 @@ function storeSetup(vuetify, callback) {
                 // console.log("Session is stale.. keep chat open and continue with the new session");
                 context.commit(
                   "SHOW_MESSAGE_IN_CHAT",
-                  "You have been away for an extended period of time. A new session with the virtual assitant has been created."
+                  "You have been away for an extended period of time. A new session with the virtual assistant has been created."
                 );
               }
 
