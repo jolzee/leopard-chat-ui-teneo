@@ -1,0 +1,587 @@
+---
+required:
+  - "title"
+  - "fields"
+properties:
+  title:
+    type: "string"
+    example: "My Custom Form"
+  validationFailedMessage:
+    type: "string"
+    example: "There are some required fields you still haven't completed."
+  openAutomatically:
+    type: "boolean"
+    example: true
+  openFormButtonText:
+    type: "string"
+    example: "Fill Form"
+  postback:
+    properties:
+      formDataUrlParam:
+        type: "string"
+        example: "formData"
+      userInput:
+        type: "string"
+        example: "Thanks, I've completed the form"
+      confirmationAlert:
+        type: "string"
+        example: "Thanks we have received your form"
+    type: "object"
+  button:
+    properties:
+      text:
+        type: "string"
+        example: "Send"
+      icon:
+        type: "string"
+        example: "send-circle"
+      color:
+        type: "string"
+        example: "secondary"
+      clearButtonText:
+        type: "string"
+        example: "Clear"
+    type: "object"
+  alert:
+    required:
+      - "text"
+    properties:
+      text:
+        type: "string"
+        example: "Donec elit libero, sodales nec, volutpat a, suscipit non, turpis. In auctor lobortis lacus."
+      type:
+        type: "string"
+        example: "success"
+      border:
+        type: "string"
+        example: "left"
+      elevation:
+        type: "number"
+        example: 2
+      coloredBorder:
+        type: "boolean"
+        example: true
+      dense:
+        type: "boolean"
+        example: false
+      prominent:
+        type: "boolean"
+        example: false
+      outlined:
+        type: "boolean"
+        example: false
+      tile:
+        type: "boolean"
+        example: false
+      mdiIcon:
+        type: "string"
+        example: "account-edit"
+    type: "object"
+  header:
+    required:
+      - "label"
+    properties:
+      label:
+        type: "string"
+        example: "Rugby Time"
+      classes:
+        type: "array"
+        items:
+          type: "string"
+        example:
+          - "headline"
+          - "font-weight-bold"
+    type: "object"
+  textInput:
+    required:
+      - "name"
+      - "label"
+    properties:
+      name:
+        type: "string"
+        example: "username"
+      label:
+        type: "string"
+        example: "Email"
+      hint:
+        type: "string"
+        example: "Just the username part please"
+      initialValue:
+        type: "string"
+        example: "jolzee"
+      placeHolder:
+        type: "string"
+        example: "username"
+      style:
+        properties:
+          solo:
+            type: "boolean"
+            example: true
+          outlined:
+            type: "boolean"
+            example: false
+          flat:
+            type: "boolean"
+            example: false
+          filled:
+            type: "boolean"
+            example: false
+          rounded:
+            type: "boolean"
+            example: false
+          shaped:
+            type: "boolean"
+            example: false
+          soloInverted:
+            type: "boolean"
+            example: false
+        type: "object"
+      clearable:
+        type: "boolean"
+        example: true
+      persistentHint:
+        type: "boolean"
+        example: true
+      dense:
+        type: "boolean"
+        example: false
+      counter:
+        type: "number"
+        example: 12
+      icons:
+        properties:
+          prepend:
+            type: "string"
+            example: ""
+          prependInner:
+            type: "string"
+            example: ""
+          append:
+            type: "string"
+            example: ""
+          appendOuter:
+            type: "string"
+            example: "email-edit"
+        type: "object"
+      prefix:
+        type: "string"
+        example: ""
+      suffix:
+        type: "string"
+        example: "@gmail.com"
+      validations:
+        type: "string"
+        example: "required"
+    type: "object"
+  textarea:
+    required:
+      - "name"
+      - "label"
+    properties:
+      name:
+        type: "string"
+        example: "bio"
+      label:
+        type: "string"
+        example: "Write a bio for yourself"
+      hint:
+        type: "string"
+        example: "Keep it brief and to the point"
+      initialValue:
+        type: "string"
+        example: "Bacon ipsum dolor amet rump ham hock sirloin doner fatback beef kielbasa picanha leberkas sausage buffalo capicola. Shoulder tail pancetta tenderloin. "
+      autoGrow:
+        type: "boolean"
+        example: true
+      placeHolder:
+        type: "string"
+        example: "Peter Joles is a Sales Engineer at Artificial Solutions..."
+      style:
+        properties:
+          solo:
+            type: "boolean"
+            example: true
+          outlined:
+            type: "boolean"
+            example: false
+          flat:
+            type: "boolean"
+            example: false
+          filled:
+            type: "boolean"
+            example: false
+          rounded:
+            type: "boolean"
+            example: false
+          shaped:
+            type: "boolean"
+            example: false
+          soloInverted:
+            type: "boolean"
+            example: false
+        type: "object"
+      clearable:
+        type: "boolean"
+        example: true
+      persistentHint:
+        type: "boolean"
+        example: true
+      rows:
+        type: "number"
+        example: 5
+      dense:
+        type: "boolean"
+        example: false
+      counter:
+        type: "number"
+        example: 12
+      prefix:
+        type: "string"
+        example: ""
+      suffix:
+        type: "string"
+        example: ""
+      icons:
+        properties:
+          prepend:
+            type: "string"
+            example: ""
+          prependInner:
+            type: "string"
+            example: ""
+          append:
+            type: "string"
+            example: ""
+          appendOuter:
+            type: "string"
+            example: "file-document-edit"
+        type: "object"
+      validations:
+        type: "string"
+        example: "required"
+    type: "object"
+  comboBox:
+    required:
+      - "name"
+      - "label"
+    properties:
+      name:
+        type: "string"
+        example: "skills"
+      label:
+        type: "string"
+        example: "What programming skill do you have?"
+      hint:
+        type: "string"
+        example: "Don't worry if we don't have a skill listed"
+      chips:
+        type: "boolean"
+        example: true
+      multiple:
+        type: "boolean"
+        example: true
+      hideSelected:
+        type: "boolean"
+        example: false
+      deletableChips:
+        type: "boolean"
+        example: true
+      clearable:
+        type: "boolean"
+        example: true
+      dense:
+        type: "boolean"
+        example: false
+      items:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            text:
+              type: "string"
+              example: "Java"
+            value:
+              type: "string"
+              example: "java"
+      style:
+        properties:
+          solo:
+            type: "boolean"
+            example: true
+          outlined:
+            type: "boolean"
+            example: false
+          flat:
+            type: "boolean"
+            example: false
+          filled:
+            type: "boolean"
+            example: false
+          rounded:
+            type: "boolean"
+            example: false
+          shaped:
+            type: "boolean"
+            example: false
+          soloInverted:
+            type: "boolean"
+            example: false
+        type: "object"
+      openOnClear:
+        type: "boolean"
+        example: false
+      icons:
+        properties:
+          prepend:
+            type: "string"
+            example: ""
+          prependInner:
+            type: "string"
+            example: ""
+          append:
+            type: "string"
+            example: ""
+          appendOuter:
+            type: "string"
+            example: "code-braces"
+        type: "object"
+      validations:
+        type: "string"
+        example: "required"
+    type: "object"
+  html:
+    required:
+      - "label"
+    properties:
+      label:
+        type: "string"
+        example: "<p>To install Vuetify, type <kbd>npm install vuetify</kbd> into your console. Once complete, type <kbd>cd <code>&lt;project name&gt;</code></kbd> and run <kbd>npm install</kbd></p>"
+      classes:
+        type: "array"
+        items:
+          type: "string"
+        example:
+          - "body-2"
+          - "font-weight-regular"
+    type: "object"
+  select:
+    required:
+      - "name"
+      - "label"
+    properties:
+      name:
+        type: "string"
+        example: "favoriteRugbyTeam"
+      label:
+        type: "string"
+        example: "What's your favorite Rugby Team"
+      hint:
+        type: "string"
+        example: "Go with the Green and Gold"
+      initialValue:
+        type: "array"
+        items:
+          type: "string"
+        example:
+          - "South Africa"
+      chips:
+        type: "boolean"
+        example: true
+      deletableChips:
+        type: "boolean"
+        example: false
+      persistentHint:
+        type: "boolean"
+        example: true
+      clearable:
+        type: "boolean"
+        example: true
+      multiple:
+        type: "boolean"
+        example: false
+      dense:
+        type: "boolean"
+        example: false
+      hideSelected:
+        type: "boolean"
+        example: true
+      items:
+        type: "array"
+        items:
+          type: "string"
+        example:
+          - "England"
+          - "South Africa"
+          - "New Zealand"
+      style:
+        properties:
+          solo:
+            type: "boolean"
+            example: true
+          outlined:
+            type: "boolean"
+            example: false
+          flat:
+            type: "boolean"
+            example: false
+          filled:
+            type: "boolean"
+            example: false
+          rounded:
+            type: "boolean"
+            example: false
+          shaped:
+            type: "boolean"
+            example: false
+          soloInverted:
+            type: "boolean"
+            example: false
+        type: "object"
+      icons:
+        properties:
+          prepend:
+            type: "string"
+            example: ""
+          prependInner:
+            type: "string"
+            example: ""
+          append:
+            type: "string"
+            example: ""
+          appendOuter:
+            type: "string"
+            example: "football-australian"
+        type: "object"
+      validations:
+        type: "string"
+        example: "required"
+    type: "object"
+  switch:
+    required:
+      - "name"
+      - "label"
+    properties:
+      name:
+        type: "string"
+        example: "newsLetter"
+      label:
+        type: "string"
+        example: "Do you want to receive our monthly newsletter?"
+      persistentHint:
+        type: "boolean"
+        example: false
+      dense:
+        type: "boolean"
+        example: false
+      hint:
+        type: "string"
+        example: "We won't spam - ever!"
+      initialValue:
+        type: "boolean"
+        example: true
+      inset:
+        type: "boolean"
+        example: false
+    type: "object"
+  radio:
+    required:
+      - "name"
+      - "label"
+    properties:
+      name:
+        type: "string"
+        example: "ageRange"
+      label:
+        type: "string"
+        example: "What's you age range?"
+      dense:
+        type: "boolean"
+        example: false
+      hint:
+        type: "string"
+        example: "Please don't lie 😁"
+      persistentHint:
+        type: "boolean"
+        example: true
+      mandatory:
+        type: "boolean"
+        example: true
+      multiple:
+        type: "boolean"
+        example: false
+      row:
+        type: "boolean"
+        example: false
+      items:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            label:
+              type: "string"
+              example: "18-25"
+            value:
+              type: "string"
+              example: "18to25"
+      icons:
+        properties:
+          prepend:
+            type: "string"
+            example: "gesture-tap-hold"
+          append:
+            type: "string"
+            example: ""
+        type: "object"
+    type: "object"
+  image:
+    required:
+      - "alt"
+      - "src"
+      - "maxWidth"
+      - "maxHeight"
+    properties:
+      alt:
+        type: "string"
+        example: "RWC 2019"
+      src:
+        type: "string"
+        example: "http://sportforbusiness.com/wp-content/uploads/JP-Rugby-worldcup-01.jpg"
+      maxWidth:
+        type: "string"
+        example: "100%"
+      maxHeight:
+        type: "string"
+        example: "600"
+    type: "object"
+  checkbox:
+    required:
+      - "name"
+      - "label"
+    properties:
+      name:
+        type: "string"
+        example: "agreedToTerms"
+      label:
+        type: "string"
+        example: "Do you agree to our terms and conditions?"
+      hint:
+        type: "string"
+        example: "You have to agree before submitting this form"
+      persistentHint:
+        type: "boolean"
+        example: true
+      dense:
+        type: "boolean"
+        example: false
+      initialValue:
+        type: "boolean"
+        example: false
+      validations:
+        type: "string"
+        example: "required"
+    type: "object"
+  fields:
+    type: "array"
+    items:
+      type: "object"
+      properties: {}

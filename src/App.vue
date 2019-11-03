@@ -166,6 +166,7 @@
               </template>
               <template v-else>
                 <v-btn
+                  v-if="!($vuetify.breakpoint.sm)"
                   x-small
                   :aria-label="$vuetify.theme.dark ? 'Change interface to light mode' : 'Change interfce to dark mode'"
                   fab
@@ -644,9 +645,9 @@ export default {
         (window.innerWidth <= 480 && !this.embed) ||
         (this.embed && this.isChatOpenLocalStorage())
       ) {
-        console.log(
-          `App.vue:onResizeOrEmbed:window.innerWidth <= 480 && !this.embed`
-        );
+        // console.log(
+        //   `App.vue:onResizeOrEmbed:window.innerWidth <= 480 && !this.embed`
+        // );
         // this.$store.commit("HIDE_CHAT_BUTTON");
         this.$store.commit("SHOW_CHAT_WINDOW"); // show the chat window
         //animate the IFrame

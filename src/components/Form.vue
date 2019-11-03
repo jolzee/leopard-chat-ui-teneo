@@ -11,9 +11,9 @@
         v-model="dialog"
         persistent
         scrollable
-        :fullscreen="fullscreen"
+        :fullscreen="fullscreen || $vuetify.breakpoint.xs || $vuetify.breakpoint.sm || $vuetify.breakpoint.md"
         :max-width="formConfig.maxWidth ? formConfig.maxWidth : 600"
-        content-class="teneo-form"
+        content-class="teneo-form resizable"
       >
         <v-card class="mx-auto">
           <v-fade-transition>
@@ -37,6 +37,7 @@
           </v-fade-transition>
           <v-system-bar
             color="primary darken-2"
+            :class="{ 'popup-header': !fullscreen }"
             dark
           >
             <v-spacer></v-spacer>
@@ -71,252 +72,348 @@
                   cols="12"
                   class="pa-2"
                 >
-                  <v-img
-                    v-if="field.fieldType === 'image'"
-                    :src="field.src"
-                    contain
-                    :max-width="field.maxWidth ? field.maxWidth : '100%'"
-                    :max-height="field.maxHeight ? field.maxHeight : '600'"
-                    :alt="field.alt ? field.alt : 'Random Picture'"
-                  >
-                    <template v-slot:placeholder>
-                      <v-row
-                        class="fill-height ma-0"
-                        align="center"
-                        justify="center"
+                  <v-row class="mx-1">
+                    <v-col
+                      v-if="hasColumnDescription(field)"
+                      cols="12"
+                      :sm="hasColumnDescription(field) ? 4 : 12"
+                      class="pl-0"
+                    >
+                      <v-subheader
+                        v-html="getColumnDescription(field)"
+                        class="pa-0"
+                      ></v-subheader>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      :sm="hasColumnDescription(field) ? 8 : 12"
+                      class="pa-0"
+                    >
+                      <v-img
+                        v-if="field.image"
+                        :src="field.image.src"
+                        contain
+                        :max-width="field.image.maxWidth ? field.image.maxWidth : '100%'"
+                        :max-height="field.image.maxHeight ? field.image.maxHeight : '600'"
+                        :alt="field.image.alt ? field.image.alt : 'Random Picture'"
                       >
-                        <v-progress-circular
-                          indeterminate
-                          color="grey lighten-5"
-                        ></v-progress-circular>
-                      </v-row>
-                    </template>
-                  </v-img>
+                        <template v-slot:placeholder>
+                          <v-row
+                            class="fill-height ma-0"
+                            align="center"
+                            justify="center"
+                          >
+                            <v-progress-circular
+                              indeterminate
+                              color="grey lighten-5"
+                            ></v-progress-circular>
+                          </v-row>
+                        </template>
+                      </v-img>
 
-                  <div
-                    v-if="field.fieldType === 'html'"
-                    v-html="field.label"
-                    :class="field.classes ? field.classes.join(' ') : ''"
-                  ></div>
+                      <div
+                        v-if="field.html"
+                        v-html="field.html.label"
+                        :class="field.html.classes ? field.html.classes.join(' ') : ''"
+                      ></div>
 
-                  <header
-                    v-if="field.fieldType === 'header'"
-                    v-html="field.label"
-                    :class="field.classes ? field.classes.join(' ') : ''"
-                  ></header>
+                      <header
+                        v-if="field.header"
+                        v-html="field.header.label"
+                        :class="field.header.classes ? field.header.classes.join(' ') : ''"
+                      ></header>
 
-                  <hr v-if="field.fieldType === 'divider'" />
+                      <hr v-if="field.divider" />
 
-                  <v-alert
-                    v-if="field.fieldType === 'alert'"
-                    :v-model="true"
-                    :type="field.type ? field.type : 'info'"
-                    :border="field.border ? field.border : 'left'"
-                    :elevation="field.elevation ? field.elevation : 2"
-                    :colored-border="field.coloredBorder ? field.coloredBorder : true"
-                    :icon="field.mdiIcon ? 'mdi-' + field.mdiIcon : false"
-                    :dense="field.dense ? field.dense : false"
-                    :prominent="field.prominent ? field.prominent : false"
-                    :tile="field.tile ? field.tile : false"
-                    :outlined="field.outlined ? field.outlined : false"
-                    class="mb-0"
-                  >
-                    {{ field.text }}
-                  </v-alert>
+                      <v-alert
+                        v-if="field.alert"
+                        :v-model="true"
+                        :type="field.alert.type ? field.alert.type : 'info'"
+                        :border="field.alert.border ? field.alert.border : 'left'"
+                        :elevation="field.alert.elevation ? field.alert.elevation : 2"
+                        :colored-border="field.alert.coloredBorder ? field.alert.coloredBorder : true"
+                        :icon="field.alert.icon ? 'mdi-' + field.alert.icon : 'mdi-information'"
+                        :dense="field.alert.dense ? field.alert.dense : false"
+                        :prominent="field.alert.prominent ? field.alert.prominent : false"
+                        :tile="field.alert.tile ? field.alert.tile : false"
+                        :outlined="field.alert.outlined ? field.alert.outlined : false"
+                        class="mb-0"
+                      >
+                        {{ field.alert.text }}
+                      </v-alert>
 
-                  <ValidationProvider
-                    v-if="field.fieldType === 'text'"
-                    :rules="field.validations ? field.validations : ''"
-                    v-slot="{ errors, valid }"
-                  >
-                    <v-text-field
-                      v-model="formData[field.name]"
-                      :name="field.name"
-                      :label="field.label ? field.label : ''"
-                      :success="valid"
-                      :error-messages="errors"
-                      :hint="field.hint ? field.hint : ''"
-                      :placeholder="field.placeholder ? field.placeholder : ''"
-                      :value="field.initialValue ? field.initialValue : ''"
-                      :solo="field.type && field.type === 'solo' ? true : false"
-                      :filled="field.type && field.type === 'filled' ? true : false"
-                      :outlined="field.type && field.type === 'outlined' ? true : false"
-                      :clearable="field.clearable ? field.clearable : false"
-                      :persistent-hint="field.persistantHint ? field.persistantHint : false"
-                      :dense="field.dense ? field.dense : false"
-                      :counter="field.counter ? field.counter : false"
-                      :append-icon="field.icons && field.icons.append ? 'mdi-' + field.icons.append : ''"
-                      :append-outer-icon="field.icons && field.icons.appendOuter ? 'mdi-' + field.icons.appendOuter : ''"
-                      :prepend-icon="field.icons && field.icons.prepend ? 'mdi-' + field.icons.prepend : ''"
-                      :prepend-inner-icon="field.icons && field.icons.prependInner ? 'mdi-' + field.icons.prependInner : ''"
-                      :mask="field.mask ? field.mask : 100"
-                      :prefix="field.prefix ? field.prefix : ''"
-                      :suffix="field.suffix ? field.suffix : ''"
-                    ></v-text-field>
-                  </ValidationProvider>
+                      <ValidationProvider
+                        v-if="field.textInput"
+                        :rules="field.textInput.validations ? field.textInput.validations : ''"
+                        v-slot="{ errors, valid }"
+                      >
+                        <v-text-field
+                          v-model="formData[field.textInput.name]"
+                          :name="field.textInput.name"
+                          :label="field.textInput.label ? field.textInput.label : ''"
+                          :success="valid"
+                          :error-messages="errors"
+                          :hint="field.textInput.hint ? field.textInput.hint : ''"
+                          :placeholder="field.textInput.placeholder ? field.textInput.placeholder : ''"
+                          :value="field.textInput.initialValue ? field.textInput.initialValue : ''"
+                          :solo="field.textInput.style && field.textInput.style.solo ? true : false"
+                          :filled="field.textInput.style && field.textInput.style.filled ? true : false"
+                          :outlined="field.textInput.style && field.textInput.style.outlined ? true : false"
+                          :flat="field.textInput.style && field.textInput.style.flat ? true : false"
+                          :rounded="field.textInput.style && field.textInput.style.rounded ? true : false"
+                          :shaped="field.textInput.style && field.textInput.style.shaped ? true : false"
+                          :solo-inverted="field.textInput.style && field.textInput.style.soloInverted ? true : false"
+                          :clearable="field.textInput.clearable ? field.textInput.clearable : false"
+                          :persistent-hint="field.textInput.persistentHint ? field.textInput.persistentHint : false"
+                          :dense="field.textInput.dense ? field.textInput.dense : false"
+                          :counter="field.textInput.counter ? field.textInput.counter : false"
+                          :append-icon="field.textInput.icons && field.textInput.icons.append ? 'mdi-' + field.textInput.icons.append : ''"
+                          :append-outer-icon="field.textInput.icons && field.textInput.icons.appendOuter ? 'mdi-' + field.textInput.icons.appendOuter : ''"
+                          :prepend-icon="field.textInput.icons && field.textInput.icons.prepend ? 'mdi-' + field.textInput.icons.prepend : ''"
+                          :prepend-inner-icon="field.textInput.icons && field.textInput.icons.prependInner ? 'mdi-' + field.textInput.icons.prependInner : ''"
+                          :mask="field.textInput.mask ? field.textInput.mask : 100"
+                          :prefix="field.textInput.prefix ? field.textInput.prefix : ''"
+                          :suffix="field.textInput.suffix ? field.textInput.suffix : ''"
+                        ></v-text-field>
+                      </ValidationProvider>
 
-                  <ValidationProvider
-                    v-if="field.fieldType === 'textarea'"
-                    :rules="field.validations ? field.validations : ''"
-                    v-slot="{ errors, valid }"
-                  >
-                    <v-textarea
-                      v-model="formData[field.name]"
-                      :name="field.name"
-                      :success="valid"
-                      :error-messages="errors"
-                      :auto-grow="field.autoGrow ? field.autoGrow : true"
-                      :label="field.label ? field.label : ''"
-                      :placeholder="field.placeholder ? field.placeholder : ''"
-                      :value="field.initialValue ? field.initialValue : ''"
-                      :hint="field.hint ? field.hint : ''"
-                      :solo="field.type && field.type === 'solo' ? true : false"
-                      :filled="field.type && field.type === 'filled' ? true : false"
-                      :outlined="field.type && field.type === 'outlined' ? true : false"
-                      :clearable="field.clearable ? field.clearable : false"
-                      :persistent-hint="field.persistantHint ? field.persistantHint : false"
-                      :dense="field.dense ? field.dense : false"
-                      :rows="field.rows ? field.rows : false"
-                      :counter="field.counter ? field.counter : false"
-                      :append-icon="field.icons && field.icons.append ? 'mdi-' + field.icons.append : ''"
-                      :append-outer-icon="field.icons && field.icons.appendOuter ? 'mdi-' + field.icons.appendOuter : ''"
-                      :prepend-icon="field.icons && field.icons.prepend ? 'mdi-' + field.icons.prepend : ''"
-                      :prepend-inner-icon="field.icons && field.icons.prependInner ? 'mdi-' + field.icons.prependInner : ''"
-                      :mask="field.mask ? field.mask : 100"
-                      :prefix="field.prefix ? field.prefix : ''"
-                      :suffix="field.suffix ? field.suffix : ''"
-                    ></v-textarea>
-                  </ValidationProvider>
+                      <ValidationProvider
+                        v-if="field.textarea"
+                        :rules="field.textarea.validations ? field.textarea.validations : ''"
+                        v-slot="{ errors, valid }"
+                      >
+                        <v-textarea
+                          v-model="formData[field.textarea.name]"
+                          :name="field.textarea.name"
+                          :success="valid"
+                          :error-messages="errors"
+                          :auto-grow="field.textarea.autoGrow ? field.textarea.autoGrow : true"
+                          :label="field.textarea.label ? field.textarea.label : ''"
+                          :placeholder="field.textarea.placeholder ? field.textarea.placeholder : ''"
+                          :value="field.textarea.initialValue ? field.textarea.initialValue : ''"
+                          :hint="field.textarea.hint ? field.textarea.hint : ''"
+                          :solo="field.textarea.style && field.textarea.style.solo ? true : false"
+                          :filled="field.textarea.style && field.textarea.style.filled ? true : false"
+                          :outlined="field.textarea.style && field.textarea.style.outlined ? true : false"
+                          :flat="field.textarea.style && field.textarea.style.flat ? true : false"
+                          :rounded="field.textarea.style && field.textarea.style.rounded ? true : false"
+                          :shaped="field.textarea.style && field.textarea.style.shaped ? true : false"
+                          :solo-inverted="field.textarea.style && field.textarea.style.soloInverted ? true : false"
+                          :clearable="field.textarea.clearable ? field.textarea.clearable : false"
+                          :persistent-hint="field.textarea.persistentHint ? field.textarea.persistentHint : false"
+                          :dense="field.textarea.dense ? field.textarea.dense : false"
+                          :rows="field.textarea.rows ? field.textarea.rows : 5"
+                          :counter="field.textarea.counter ? field.textarea.counter : false"
+                          :append-icon="field.textarea.icons && field.textarea.icons.append ? 'mdi-' + field.textarea.icons.append : ''"
+                          :append-outer-icon="field.textarea.icons && field.textarea.icons.appendOuter ? 'mdi-' + field.textarea.icons.appendOuter : ''"
+                          :prepend-icon="field.textarea.icons && field.textarea.icons.prepend ? 'mdi-' + field.textarea.icons.prepend : ''"
+                          :prepend-inner-icon="field.textarea.icons && field.textarea.icons.prependInner ? 'mdi-' + field.textarea.icons.prependInner : ''"
+                          :mask="field.textarea.mask ? field.textarea.mask : 100"
+                          :prefix="field.textarea.prefix ? field.textarea.prefix : ''"
+                          :suffix="field.textarea.suffix ? field.textarea.suffix : ''"
+                        ></v-textarea>
+                      </ValidationProvider>
 
-                  <ValidationProvider
-                    v-if="field.fieldType === 'comboBox'"
-                    :rules="field.validations ? field.validations : ''"
-                    v-slot="{ errors, valid }"
-                  >
-                    <v-autocomplete
-                      v-model="formData[field.name]"
-                      :name="field.name"
-                      :success="valid"
-                      :error-messages="errors"
-                      :items="field.items ? field.items : []"
-                      :chips="field.chips ? field.chips : false"
-                      :label="field.label ? field.label : ''"
-                      :hint="field.hint ? field.hint : ''"
-                      :value="field.initialValue ? field.initialValue : ''"
-                      :multiple="field.multiple ? field.multiple : true"
-                      :hide-selected="field.hideSelected ? field.hideSelected : true"
-                      :clearable="field.clearable ? field.clearable : true"
-                      :dense="field.dense ? field.dense : false"
-                      :deletable-chips="field.deletableChips ? field.deletableChips : true"
-                      :persistent-hint="field.persistantHint ? field.persistantHint : true"
-                      :solo="field.type && field.type === 'solo' ? true : false"
-                      :filled="field.type && field.type === 'filled' ? true : false"
-                      :outlined="field.type && field.type === 'outlined' ? true : false"
-                      :open-on-clear="field.openOnClear ? field.openOnClear : true"
-                      :append-icon="field.icons && field.icons.append ? 'mdi-' + field.icons.append : ''"
-                      :append-outer-icon="field.icons && field.icons.appendOuter ? 'mdi-' + field.icons.appendOuter : ''"
-                      :prepend-icon="field.icons && field.icons.prepend ? 'mdi-' + field.icons.prepend : ''"
-                      :prepend-inner-icon="field.icons && field.icons.prependInner ? 'mdi-' + field.icons.prependInner : ''"
-                    >
-                    </v-autocomplete>
-                  </ValidationProvider>
+                      <ValidationProvider
+                        v-if="field.comboBox"
+                        :rules="field.comboBox.validations ? field.comboBox.validations : ''"
+                        v-slot="{ errors, valid }"
+                      >
+                        <v-autocomplete
+                          v-model="formData[field.comboBox.name]"
+                          :name="field.comboBox.name"
+                          :success="valid"
+                          :error-messages="errors"
+                          :items="field.comboBox.items ? field.comboBox.items : []"
+                          :chips="field.comboBox.chips ? field.comboBox.chips : false"
+                          :label="field.comboBox.label ? field.comboBox.label : ''"
+                          :hint="field.comboBox.hint ? field.comboBox.hint : ''"
+                          :value="field.comboBox.initialValue ? field.comboBox.initialValue : ''"
+                          :multiple="field.comboBox.multiple ? field.comboBox.multiple : true"
+                          :hide-selected="field.comboBox.hideSelected ? field.comboBox.hideSelected : true"
+                          :clearable="field.comboBox.clearable ? field.comboBox.clearable : true"
+                          :dense="field.comboBox.dense ? field.comboBox.dense : false"
+                          :deletable-chips="field.comboBox.deletableChips ? field.comboBox.deletableChips : true"
+                          :persistent-hint="field.comboBox.persistentHint ? field.comboBox.persistentHint : true"
+                          :solo="field.comboBox.style && field.comboBox.style.solo ? true : false"
+                          :filled="field.comboBox.style && field.comboBox.style.filled ? true : false"
+                          :outlined="field.comboBox.style && field.comboBox.style.outlined ? true : false"
+                          :flat="field.comboBox.style && field.comboBox.style.flat ? true : false"
+                          :rounded="field.comboBox.style && field.comboBox.style.rounded ? true : false"
+                          :shaped="field.comboBox.style && field.comboBox.style.shaped ? true : false"
+                          :solo-inverted="field.comboBox.style && field.comboBox.style.soloInverted ? true : false"
+                          :open-on-clear="field.comboBox.openOnClear ? field.comboBox.openOnClear : false"
+                          :append-icon="field.comboBox.icons && field.comboBox.icons.append ? 'mdi-' + field.comboBox.icons.append : ''"
+                          :append-outer-icon="field.comboBox.icons && field.comboBox.icons.appendOuter ? 'mdi-' + field.comboBox.icons.appendOuter : ''"
+                          :prepend-icon="field.comboBox.icons && field.comboBox.icons.prepend ? 'mdi-' + field.comboBox.icons.prepend : ''"
+                          :prepend-inner-icon="field.comboBox.icons && field.comboBox.icons.prependInner ? 'mdi-' + field.comboBox.icons.prependInner : ''"
+                        >
+                        </v-autocomplete>
+                      </ValidationProvider>
 
-                  <ValidationProvider
-                    v-if="field.fieldType === 'select'"
-                    :rules="field.validations ? field.validations : ''"
-                    v-slot="{ errors, valid }"
-                  >
-                    <v-select
-                      v-model="formData[field.name]"
-                      :name="field.name"
-                      :success="valid"
-                      :error-messages="errors"
-                      :items="field.items ? field.items : []"
-                      :label="field.label ? field.label : ''"
-                      :value="field.initialValue ? field.initialValue : ''"
-                      :hint="field.hint ? field.hint : ''"
-                      :chips="field.chips ? field.chips : false"
-                      :multiple="field.multiple ? field.multiple : false"
-                      :clearable="field.clearable ? field.clearable : true"
-                      :deletable-chips="field.deletableChips ? field.deletableChips : true"
-                      :persistent-hint="field.persistantHint ? field.persistantHint : true"
-                      :dense="field.dense ? field.dense : false"
-                      :solo="field.type && field.type === 'solo' ? true : false"
-                      :filled="field.type && field.type === 'filled' ? true : false"
-                      :outlined="field.type && field.type === 'outlined' ? true : false"
-                      :append-icon="field.icons && field.icons.append ? 'mdi-' + field.icons.append : ''"
-                      :append-outer-icon="field.icons && field.icons.appendOuter ? 'mdi-' + field.icons.appendOuter : ''"
-                      :prepend-icon="field.icons && field.icons.prepend ? 'mdi-' + field.icons.prepend : ''"
-                      :prepend-inner-icon="field.icons && field.icons.prependInner ? 'mdi-' + field.icons.prependInner : ''"
-                    ></v-select>
-                  </ValidationProvider>
+                      <ValidationProvider
+                        v-if="field.select"
+                        :rules="field.select.validations ? field.select.validations : ''"
+                        v-slot="{ errors, valid }"
+                      >
+                        <v-select
+                          v-model="formData[field.select.name]"
+                          :name="field.select.name"
+                          :success="valid"
+                          :error-messages="errors"
+                          :items="field.select.items ? field.select.items : []"
+                          :label="field.select.label ? field.select.label : ''"
+                          :value="field.select.initialValue ? field.select.initialValue : ''"
+                          :hint="field.select.hint ? field.select.hint : ''"
+                          :chips="field.select.chips ? field.select.chips : false"
+                          :multiple="field.select.multiple ? field.select.multiple : false"
+                          :clearable="field.select.clearable ? field.select.clearable : true"
+                          :deletable-chips="field.select.deletableChips ? field.select.deletableChips : true"
+                          :persistent-hint="field.select.persistentHint ? field.select.persistentHint : true"
+                          :dense="field.select.dense ? field.select.dense : false"
+                          :solo="field.select.style && field.select.style.solo ? true : false"
+                          :filled="field.select.style && field.select.style.filled ? true : false"
+                          :outlined="field.select.style && field.select.style.outlined ? true : false"
+                          :flat="field.select.style && field.select.style.flat ? true : false"
+                          :rounded="field.select.style && field.select.style.rounded ? true : false"
+                          :shaped="field.select.style && field.select.style.shaped ? true : false"
+                          :hide-selected="field.select.hideSelected ? field.select.hideSelected : true"
+                          :solo-inverted="field.select.style && field.select.style.soloInverted ? true : false"
+                          :append-icon="field.select.icons && field.select.icons.append ? 'mdi-' + field.select.icons.append : ''"
+                          :append-outer-icon="field.select.icons && field.select.icons.appendOuter ? 'mdi-' + field.select.icons.appendOuter : ''"
+                          :prepend-icon="field.select.icons && field.select.icons.prepend ? 'mdi-' + field.select.icons.prepend : ''"
+                          :prepend-inner-icon="field.select.icons && field.select.icons.prependInner ? 'mdi-' + field.select.icons.prependInner : ''"
+                        ></v-select>
+                      </ValidationProvider>
 
-                  <ValidationProvider
-                    v-if="field.fieldType === 'checkbox'"
-                    :rules="field.validations ? field.validations : ''"
-                    v-slot="{ errors, valid }"
-                  >
-                    <v-checkbox
-                      v-model="formData[field.name]"
-                      :name="field.name"
-                      :error-messages="errors"
-                      :label="field.label ? field.label : ''"
-                      :hint="field.hint ? field.hint : ''"
-                      :dense="field.dense ? field.dense : false"
-                      :persistent-hint="field.persistantHint ? field.persistantHint : true"
-                      ripple
-                    ></v-checkbox>
-                  </ValidationProvider>
+                      <ValidationProvider
+                        v-if="field.checkbox"
+                        :rules="field.checkbox.validations ? field.checkbox.validations : ''"
+                        v-slot="{ errors, valid }"
+                      >
+                        <v-checkbox
+                          v-model="formData[field.checkbox.name]"
+                          :name="field.checkbox.name"
+                          :error-messages="errors"
+                          :label="field.checkbox.label ? field.checkbox.label : ''"
+                          :hint="field.checkbox.hint ? field.checkbox.hint : ''"
+                          :dense="field.checkbox.dense ? field.checkbox.dense : false"
+                          :persistent-hint="field.checkbox.persistentHint ? field.checkbox.persistentHint : true"
+                          :color="field.checkbox.color ? field.checkbox.color : 'success'"
+                          ripple
+                        ></v-checkbox>
+                      </ValidationProvider>
 
-                  <ValidationProvider
-                    v-if="field.fieldType === 'switch'"
-                    :rules="field.validations ? field.validations : ''"
-                    v-slot="{ errors, valid }"
-                  >
-                    <v-switch
-                      v-model="formData[field.name]"
-                      :name="field.name"
-                      :error-messages="errors"
-                      :color="field.color ? field.color : 'success'"
-                      :label="field.label ? field.label : ''"
-                      :hint="field.hint ? field.hint : ''"
-                      :dense="field.dense ? field.dense : false"
-                      :inset="field.inset ? field.inset : false"
-                      :persistent-hint="field.persistantHint ? field.persistantHint : true"
-                      ripple
-                    ></v-switch>
-                  </ValidationProvider>
+                      <ValidationProvider
+                        v-if="field.switch"
+                        :rules="field.switch.validations ? field.switch.validations : ''"
+                        v-slot="{ errors, valid }"
+                      >
+                        <v-switch
+                          v-model="formData[field.switch.name]"
+                          :name="field.switch.name"
+                          :error-messages="errors"
+                          :color="field.switch.color ? field.switch.color : 'success'"
+                          :label="field.switch.label ? field.switch.label : ''"
+                          :hint="field.switch.hint ? field.switch.hint : ''"
+                          :dense="field.switch.dense ? field.switch.dense : false"
+                          :inset="field.switch.inset ? field.switch.inset : false"
+                          :persistent-hint="field.switch.persistentHint ? field.switch.persistentHint : true"
+                          ripple
+                        ></v-switch>
+                      </ValidationProvider>
 
-                  <ValidationProvider
-                    v-if="field.fieldType === 'radio'"
-                    :rules="field.validations ? field.validations : ''"
-                    v-slot="{ errors, valid }"
-                  >
-                    <v-radio-group
-                      v-model="formData[field.name]"
-                      :error-messages="errors"
-                      :name="field.name"
-                      :label="field.label ? field.label : 'dfdgdfhdfgdfhfgh'"
-                      :hint="field.hint ? field.hint : ''"
-                      :persistent-hint="field.persistantHint ? field.persistantHint : true"
-                      :dense="field.dense ? field.dense : false"
-                      :column="field.row && field.row === true ? false : true"
-                      :row="field.row && field.row === true ? field.row : false"
-                      :mandatory="field.mandatory ? field.mandatory : false"
-                      :multiple="field.multiple ? field.multiple : false"
-                      :append-icon="field.icons && field.icons.append ? 'mdi-' + field.icons.append : ''"
-                      :prepend-icon="field.icons && field.icons.prepend ? 'mdi-' + field.icons.prepend : ''"
-                    >
+                      <ValidationProvider
+                        v-if="field.radio"
+                        :rules="field.radio.validations ? field.radio.validations : ''"
+                        v-slot="{ errors, valid }"
+                      >
+                        <v-radio-group
+                          v-model="formData[field.radio.name]"
+                          :error-messages="errors"
+                          :name="field.radio.name"
+                          :label="field.radio.label ? field.radio.label : ''"
+                          :hint="field.radio.hint ? field.radio.hint : ''"
+                          :persistent-hint="field.radio.persistentHint ? field.radio.persistentHint : true"
+                          :dense="field.radio.dense ? field.radio.dense : false"
+                          :column="field.radio.row && field.radio.row === true ? false : true"
+                          :row="field.radio.row && field.radio.row === true ? field.radio.row : false"
+                          :mandatory="field.radio.mandatory ? field.radio.mandatory : false"
+                          :multiple="field.radio.multiple ? field.radio.multiple : false"
+                          :append-icon="field.radio.icons && field.radio.icons.append ? 'mdi-' + field.radio.icons.append : ''"
+                          :prepend-icon="field.radio.icons && field.radio.icons.prepend ? 'mdi-' + field.radio.icons.prepend : ''"
+                        >
 
-                      <v-radio
-                        v-for="(item, index) in field.items"
-                        :key="uuid + index"
-                        :label="item.label"
-                        :value="item.value"
-                      ></v-radio>
+                          <v-radio
+                            v-for="(item, index) in field.radio.items"
+                            :key="uuid + index"
+                            :label="item.label"
+                            :value="item.value"
+                            :color="field.radio.color ? field.radio.color : 'success'"
+                          ></v-radio>
 
-                    </v-radio-group>
-                  </ValidationProvider>
+                        </v-radio-group>
+                      </ValidationProvider>
+
+                      <ValidationProvider
+                        v-if="field.slider"
+                        :rules="field.slider.validations ? field.slider.validations : ''"
+                        v-slot="{ errors, valid }"
+                      >
+                        <v-slider
+                          v-if="!field.slider.range"
+                          v-model="formData[field.slider.name]"
+                          :name="field.slider.name"
+                          :error-messages="errors"
+                          :label="field.slider.label ? field.slider.label : ''"
+                          :hint="field.slider.hint ? field.slider.hint : ''"
+                          :dense="field.slider.dense ? field.slider.dense : false"
+                          :persistent-hint="field.slider.persistentHint ? field.slider.persistentHint : true"
+                          :color="field.slider.color ? field.slider.color : 'success'"
+                          :append-icon="field.slider.appendIcon && field.slider.appendIcon ? 'mdi-' + field.slider.appendIcon : ''"
+                          :prepend-icon="field.slider.prependIcon && field.slider.prependIcon ? 'mdi-' + field.slider.prependIcon : ''"
+                          :max="field.slider.max ? field.slider.max : 100"
+                          :min="field.slider.min ? field.slider.min : 0"
+                          :step="field.slider.step ? field.slider.step : 1"
+                          :thumb-color="field.slider.thumbColor ? field.slider.thumbColor : undefined"
+                          :thumb-label="field.slider.thumbLabel ? field.slider.thumbLabel : true"
+                          :thumb-size="field.slider.thumbSize ? field.slider.thumbSize : 32"
+                          :tick-labels="field.slider.tickLabels ? field.slider.tickLabels : []"
+                          :tick-size="field.slider.tickSize ? field.slider.tickSize : 2"
+                          :ticks="field.slider.ticks ? field.slider.ticks : false"
+                          :track-color="field.slider.trackColor ? field.slider.trackColor : undefined"
+                          :track-fill-color="field.slider.trackFillColor ? field.slider.trackFillColor : undefined"
+                          :value="field.slider.initialValue ? field.slider.initialValue : undefined"
+                        ></v-slider>
+                        <v-range-slider
+                          v-else
+                          v-model="formData[field.slider.name]"
+                          :name="field.slider.name"
+                          :error-messages="errors"
+                          :label="field.slider.label ? field.slider.label : ''"
+                          :hint="field.slider.hint ? field.slider.hint : ''"
+                          :dense="field.slider.dense ? field.slider.dense : false"
+                          :persistent-hint="field.slider.persistentHint ? field.slider.persistentHint : true"
+                          :color="field.slider.color ? field.slider.color : 'success'"
+                          :append-icon="field.slider.appendIcon && field.slider.appendIcon ? 'mdi-' + field.slider.appendIcon : ''"
+                          :prepend-icon="field.slider.prependIcon && field.slider.prependIcon ? 'mdi-' + field.slider.prependIcon : ''"
+                          :max="field.slider.max ? field.slider.max : 100"
+                          :min="field.slider.min ? field.slider.min : 0"
+                          :step="field.slider.step ? field.slider.step : 1"
+                          :thumb-color="field.slider.thumbColor ? field.slider.thumbColor : undefined"
+                          :thumb-label="field.slider.thumbLabel ? field.slider.thumbLabel : true"
+                          :thumb-size="field.slider.thumbSize ? field.slider.thumbSize : 32"
+                          :tick-labels="field.slider.tickLabels ? field.slider.tickLabels : []"
+                          :tick-size="field.slider.tickSize ? field.slider.tickSize : 2"
+                          :ticks="field.slider.ticks ? field.slider.ticks : false"
+                          :track-color="field.slider.trackColor ? field.slider.trackColor : undefined"
+                          :track-fill-color="field.slider.trackFillColor ? field.slider.trackFillColor : undefined"
+                          :value="field.slider.initialValue ? field.slider.initialValue : undefined"
+                        ></v-range-slider>
+                      </ValidationProvider>
+
+                    </v-col>
+                  </v-row>
                 </v-col>
               </v-row>
             </v-container>
@@ -337,7 +434,7 @@
                 v-if="formConfig.button.icon"
                 right
                 dark
-              >{{ `mdi-${formConfig.button.icon}`}}</v-icon>
+              >{{ formConfig.button.icon ? `mdi-${formConfig.button.icon}` : ''}}</v-icon>
             </v-btn>
             <v-btn
               v-else
@@ -347,7 +444,7 @@
             >Submit</v-btn>
           </v-card-actions>
         </v-card>
-
+        <!--div class='resizer'></div-->
       </v-dialog>
 
     </v-row>
@@ -357,6 +454,7 @@
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { mask } from "vue-the-mask";
 import { mapGetters } from "vuex";
+
 export default {
   name: "Form",
   directives: { mask },
@@ -380,13 +478,28 @@ export default {
     };
   },
   methods: {
+    getColumnDescription(field) {
+      let fieldInfo = field[Object.keys(field)[0]];
+      if (fieldInfo && fieldInfo.description) {
+        return fieldInfo.description;
+      }
+      return "";
+    },
+    hasColumnDescription(field) {
+      let fieldInfo = field[Object.keys(field)[0]];
+      if (fieldInfo && fieldInfo.description) {
+        return true;
+      }
+      return false;
+    },
     setDefaults() {
       this.formConfig.fields.forEach(field => {
-        if (
-          (field.fieldType === "switch" || field.fieldType === "checkbox") &&
-          "initialValue" in field
-        ) {
-          this.formData[field.name] = field.initialValue;
+        if (field.switch || field.checkbox || field.slider) {
+          let fieldInfo = field[Object.keys(field)[0]];
+          if ("initialValue" in fieldInfo) {
+            // console.log(`Setting default for field [${fieldInfo.name}] `);
+            this.formData[fieldInfo.name] = fieldInfo.initialValue;
+          }
         }
       });
     },
@@ -453,5 +566,13 @@ export default {
 <style>
 .teneo-form {
   overflow-x: hidden;
+}
+
+.v-dialog.v-dialog--active .popup-header {
+  cursor: grab;
+}
+
+.v-dialog.v-dialog--active .popup-header:active {
+  cursor: grabbing;
 }
 </style>

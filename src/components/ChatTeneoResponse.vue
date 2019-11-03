@@ -9,8 +9,8 @@
     >
       <v-col
         cols="2"
-        class="text-center"
-        v-if="showChatIcons"
+        class="text-center d-none d-sm-block"
+        v-if="showChatIcons && !this.$vuetify.breakpoint.xs"
       >
         <v-btn
           v-long-press="1000"

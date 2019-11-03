@@ -146,6 +146,15 @@ export default class Setup {
             // icons: {
             //   iconfont: ["mdi", "fa", "md"]
             // },
+            breakpoint: {
+              thresholds: {
+                xs: 0,
+                sm: 300,
+                md: 480,
+                lg: 1000,
+                xl: 1300
+              }
+            },
             theme: {
               dark: false,
               themes: {

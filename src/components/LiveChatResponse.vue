@@ -43,8 +43,8 @@
     >
       <v-col
         cols="2"
-        class="text-center"
-        v-if="showChatIcons"
+        class="text-center d-none d-sm-block"
+        v-if="showChatIcons && !this.$vuetify.breakpoint.xs"
       >
         <v-avatar
           size="40px"
