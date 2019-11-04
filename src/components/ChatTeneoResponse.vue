@@ -132,7 +132,7 @@
       text
       v-if="hasCollection && ((itemIndexInDialog === dialog.length - 1) || hasPermanentOptions)"
       class="mb-3 elevation-0 text-center"
-      width="320px"
+      width="100%"
     >
       <!-- Button Options -->
       <v-card-text
