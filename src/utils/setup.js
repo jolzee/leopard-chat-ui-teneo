@@ -160,8 +160,8 @@ export default class Setup {
               themes: {
                 light: this.THEME,
                 dark: {
-                  primary: "#212121",
-                  secondary: "#424242",
+                  primary: "#161616",
+                  secondary: "#4A4A4A",
                   accent: "#00FF00",
                   error: "#FF4B4B",
                   info: "#0048BA",
