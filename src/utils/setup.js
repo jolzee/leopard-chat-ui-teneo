@@ -163,9 +163,9 @@ export default class Setup {
                   primary: "#212121",
                   secondary: "#424242",
                   accent: "#00FF00",
-                  error: "#940B0B",
+                  error: "#FF4B4B",
                   info: "#0048BA",
-                  success: "#086908",
+                  success: "#46A352",
                   warning: "#9B5D09"
                 }
               }
