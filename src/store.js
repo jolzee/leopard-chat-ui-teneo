@@ -3,7 +3,25 @@ import "regenerator-runtime/runtime";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
-import { markdown } from "markdown";
+var md = require("markdown-it")({
+  html: true, // Enable HTML tags in source
+  xhtmlOut: true, // Use '/' to close single tags (<br />).
+  // This is only for full CommonMark compatibility.
+  breaks: true, // Convert '\n' in paragraphs into <br>
+  langPrefix: "language-", // CSS language prefix for fenced blocks. Can be
+  // useful for external highlighters.
+  linkify: true, // Autoconvert URL-like text to links
+
+  // Enable some language-neutral replacement + quotes beautification
+  typographer: true,
+
+  // Double + single quotes replacement pairs, when typographer enabled,
+  // and smartquotes on. Could be either a String or an Array.
+  //
+  // For example, you can use '«»„“' for Russian, '„“‚‘' for German,
+  // and ['«\xA0', '\xA0»', '‹\xA0', '\xA0›'] for French (including nbsp).
+  quotes: "“”‘’"
+});
 const superagent = require("superagent");
 import gravatar from "gravatar";
 var stripHtml = require("striptags");
@@ -1340,10 +1358,8 @@ function storeSetup(vuetify, callback) {
               const response = {
                 type: "reply",
                 id: uuidv1(),
-                text: decodeHTML(
-                  markdown.toHTML(
-                    decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
-                  )
+                text: md.render(
+                  decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
                 ),
                 bodyText: "",
                 teneoResponse: json.responseData,
@@ -1578,10 +1594,8 @@ function storeSetup(vuetify, callback) {
               const response = {
                 userInput: currentUserInput,
                 id: uuidv1(),
-                teneoAnswer: decodeHTML(
-                  markdown.toHTML(
-                    decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
-                  )
+                teneoAnswer: md.render(
+                  decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
                 ),
                 teneoResponse: json.responseData
               };
@@ -1770,7 +1784,9 @@ function sendMessageToParent(message) {
 
 function decodeHTML(html) {
   var txt = document.createElement("textarea");
+  console.log(html);
   txt.innerHTML = html;
+  console.log(txt.value);
   return txt.value;
 }
 
