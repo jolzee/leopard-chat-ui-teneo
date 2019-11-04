@@ -59,6 +59,7 @@
           <v-card-text
             style="height: 80%;"
             class="px-3 py-0"
+            :class="{'dark-scroll': dark, 'light-scroll': !dark}"
           >
 
             <v-container fluid>
@@ -464,7 +465,7 @@ export default {
   },
   props: ["formConfig"],
   computed: {
-    ...mapGetters(["uuid"])
+    ...mapGetters(["uuid", "dark"])
   },
   mounted() {
     this.setDefaults();
