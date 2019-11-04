@@ -495,12 +495,12 @@ export default {
     },
     setDefaults() {
       this.formConfig.fields.forEach(field => {
-        if (field.switch || field.checkbox || field.slider) {
-          let fieldInfo = field[Object.keys(field)[0]];
-          if ("initialValue" in fieldInfo) {
-            // console.log(`Setting default for field [${fieldInfo.name}] `);
-            this.formData[fieldInfo.name] = fieldInfo.initialValue;
-          }
+        let fieldInfo = field[Object.keys(field)[0]];
+        if (fieldInfo.initialValue) {
+          console.log(
+            `Setting default for field [${fieldInfo.name} : ${fieldInfo.initialValue}] `
+          );
+          this.formData[fieldInfo.name] = fieldInfo.initialValue;
         }
       });
     },
