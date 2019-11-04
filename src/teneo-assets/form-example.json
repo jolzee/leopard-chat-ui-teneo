@@ -290,7 +290,7 @@
         "persistentHint": true,
         "dense": false,
         "initialValue": false,
-        "validations": "required"
+        "mustBeChecked": true
       }
     }
   ]

@@ -288,7 +288,7 @@
 
                       <ValidationProvider
                         v-if="field.checkbox"
-                        :rules="field.checkbox.validations ? field.checkbox.validations : ''"
+                        :rules="field.checkbox.mustBeChecked ? { required: { allowFalse: false } } : ''"
                         v-slot="{ errors, valid }"
                       >
                         <v-checkbox
