@@ -149,7 +149,7 @@
                             </v-col>
                             <v-col
                               class="ma2"
-                              cols="12"
+                              :cols="12"
                             >
                               <v-tooltip
                                 open-delay="600"

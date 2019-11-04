@@ -4,6 +4,7 @@
     scrollable
     :persistent="true"
     max-width="calc(1200px - 10vw)"
+    :fullscreen="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm || $vuetify.breakpoint.md"
   >
     <v-card>
       <v-card-title>
@@ -30,15 +31,14 @@
           <v-container fluid>
             <v-row>
               <v-col
-                cols="12"
-                sm="4"
-                class="hidden-xs-only"
+                cols="4"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>Solution Name</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-text-field
                   color="light-blue darken-1"
@@ -51,13 +51,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>Solution URL</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-text-field
                   color="light-blue darken-1"
@@ -71,13 +71,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>IFRAME URL</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-switch
                   v-model="solution.useInProduction"
@@ -97,13 +97,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>Prompt Triggers</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-switch
                   v-model="solution.promptTriggers.enabled"
@@ -136,13 +136,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>Chat Window Title</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-text-field
                   color="light-blue darken-1"
@@ -155,14 +155,14 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>Deep Link (?dl=[deep-link])
                 </v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-text-field
                   color="light-blue darken-1"
@@ -175,13 +175,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>Locale</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-select
                   :items="locales"
@@ -196,13 +196,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>Demo Animation</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-row
                   align="center"
@@ -229,13 +229,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>Enter Animation</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-select
                   :items="animations.in"
@@ -251,13 +251,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>Exit Animation</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-select
                   :items="animations.out"
@@ -273,13 +273,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>Response Icon</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
                 class="pb-0"
               >
                 <v-text-field
@@ -294,12 +294,12 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
                 class="py-0"
               >
 
@@ -318,13 +318,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>User Icon</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
                 class="pb-0"
               >
                 <v-text-field
@@ -340,12 +340,12 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
                 class="py-0"
               >
 
@@ -364,13 +364,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>Features</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-row no-gutters>
                   <v-col
@@ -438,8 +438,8 @@
               </v-col>
               <v-divider></v-divider>
               <v-col
-                cols="12"
-                sm="4"
+                :cols="12"
+                :lg="4"
               >
                 <v-subheader class="mb-2">Theme
                   <v-tooltip
@@ -487,12 +487,15 @@
                 </v-col>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :lg="8"
               >
                 <v-row>
                   <v-col
-                    cols="4"
+                    :cols="12"
+                    :sm="6"
+                    :md="4"
+                    :lg="3"
                     v-for="color in themeColors"
                     :key="color"
                   >
@@ -525,13 +528,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>Button and Toolbar Custom CSS</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-textarea
                   outlined
@@ -546,13 +549,13 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>ASR Corrections</v-subheader>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-textarea
                   outlined
@@ -581,8 +584,8 @@
                 </v-btn>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-row
                   v-for="(question, index) in solution.knowledgeData"
@@ -616,14 +619,14 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="hidden-xs-only"
+                class="d-sm-none d-md-block"
               >
                 <v-subheader>When to send CTX params</v-subheader>
               </v-col>
 
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :md="8"
               >
                 <v-radio-group
                   label="When to send CTX params"
@@ -641,8 +644,8 @@
                 </v-radio-group>
               </v-col>
               <v-col
-                cols="12"
-                sm="4"
+                :cols="12"
+                :lg="4"
               >
                 <v-btn
                   color="red"
@@ -658,8 +661,8 @@
                 </v-btn>
               </v-col>
               <v-col
-                cols="12"
-                sm="8"
+                :cols="12"
+                :lg="8"
               >
                 <!-- Itterate over all CTX parameters and their values -->
                 <v-row
@@ -670,10 +673,7 @@
                   v-bind:key="index"
                 >
 
-                  <v-col
-                    cols="10"
-                    sm="11"
-                  >
+                  <v-col :cols="10">
                     <v-text-field
                       v-model.trim="contextParam.name"
                       validate-on-blur
@@ -683,10 +683,7 @@
                       :rules="[ruleMustHaveValue]"
                     ></v-text-field>
                   </v-col>
-                  <v-col
-                    cols="2"
-                    sm="1"
-                  >
+                  <v-col :cols="2">
                     <v-tooltip top>
                       <template v-slot:activator="{ on, attrs }">
                         <v-icon

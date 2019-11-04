@@ -640,7 +640,9 @@ export default {
       // console.log(
       //   `onResizeOrEmbed: AGAIN Has Login Been Performed? ${this.loginPerformed}`
       // );
-
+      if (this.$router.currentRoute.path === "/config") {
+        return;
+      }
       if (
         (window.innerWidth <= 480 && !this.embed) ||
         (this.embed && this.isChatOpenLocalStorage())
