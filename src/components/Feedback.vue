@@ -4,18 +4,23 @@
       v-model="dialog"
       scrollable
       max-width="400px"
+      :fullscreen="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm || $vuetify.breakpoint.md"
     >
       <v-card>
         <v-app-bar
           dark
           color="primary"
+          max-height="64"
         >
           <v-toolbar-title>Feedback</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-icon>mdi-message-processing-outline</v-icon>
         </v-app-bar>
 
-        <v-card-text style="height: 360px;">
+        <v-card-text
+          style="height: 360px;"
+          class="px-2"
+        >
 
           <v-container fluid>
             <v-row>
@@ -26,9 +31,12 @@
                 <div class="text-center">
                   <v-rating
                     v-model="rating"
-                    color="yellow darken-3"
-                    background-color="grey darken-1"
+                    color="primary"
+                    background-color="secondary lighten-5"
                     empty-icon="$ratingFull"
+                    :x-large="$vuetify.breakpoint.lg ||$vuetify.breakpoint.xl"
+                    :large="$vuetify.breakpoint.md"
+                    :x-small="$vuetify.breakpoint.xs"
                   ></v-rating>
                 </div>
               </v-col>
@@ -41,7 +49,12 @@
                   v-model="reasons"
                   :items="items"
                   label="Reasons"
+                  color="primary"
+                  append-icon="mdi-bookmark-plus"
+                  clearable
+                  solo
                   deletable-chips
+                  :item-color="secondary"
                   hide-selected
                   small-chips
                   chips
@@ -57,8 +70,15 @@
                 <v-textarea
                   outlined
                   v-model="comment"
+                  clearable
+                  color="primary"
+                  solo
                   name="feedbackComment"
+                  append-icon="mdi-comment-processing-outline"
                   label="Additional Feedback"
+                  hint="All feedback is welcome."
+                  rows="5"
+                  auto-grow
                   :value="comment"
                 ></v-textarea>
               </v-col>
