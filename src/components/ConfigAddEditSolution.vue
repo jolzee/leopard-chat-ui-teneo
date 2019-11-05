@@ -220,6 +220,7 @@
                       lazy-src="../../public/static/leopard-small.png"
                       max-height="300"
                       @click="toggleDisplayAnimationImage()"
+                      style="z-index: 20"
                       contain
                     ></v-img>
                   </transition>
