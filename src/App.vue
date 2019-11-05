@@ -47,7 +47,7 @@
             :aria-label="isChatOpen ? 'Close Chat' : 'Open Chat'"
             elevation="2"
             @click="toggleChat"
-            v-show="showChatButton"
+            v-show="showChatButton && !isChatOpen"
             :class="{ pulse: (pulseButton && !isChatOpen)}"
             :style="customCssButtonToolbar"
           >
@@ -95,6 +95,28 @@
                 </v-col>
               </v-row>
               <v-list class="px-2 mt-1">
+                <v-list-item
+                  ripple
+                  value="true"
+                  key="menuItemTheme"
+                  @click="toggleBrightness"
+                >
+                  <v-list-item-action>
+                    <v-icon
+                      medium
+                      :class="menuClass"
+                      v-text="$vuetify.theme.dark
+            ? 'mdi-brightness-5'
+            : 'mdi-brightness-4'"
+                    ></v-icon>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      class="subheading"
+                      :class="menuClassText"
+                    >{{ $vuetify.theme.dark ? 'Light Mode' : 'Dark Mode' }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
                 <v-list-item
                   ripple
                   value="true"
@@ -165,23 +187,19 @@
                 </div>
               </template>
               <template v-else>
-                <v-btn
-                  v-if="!($vuetify.breakpoint.sm)"
-                  x-small
-                  :aria-label="$vuetify.theme.dark ? 'Change interface to light mode' : 'Change interfce to dark mode'"
-                  fab
-                  ripple
-                  @click="toggleBrightness"
-                  elevation="2"
-                  color="secondary"
-                >
-                  <v-icon
-                    dark
-                    v-text="$vuetify.theme.dark
-            ? 'mdi-brightness-4'
-            : 'mdi-brightness-5'"
-                  ></v-icon>
-                </v-btn>
+                <v-fab-transition>
+                  <v-btn
+                    icon
+                    ripple
+                    color="secondary"
+                    aria-label="Close Chat"
+                    class="embed-button-center"
+                    :style="customCssButtonToolbar"
+                    @click="toggleChat"
+                  >
+                    <v-icon dark>mdi-close</v-icon>
+                  </v-btn>
+                </v-fab-transition>
               </template>
 
             </v-toolbar>
