@@ -782,30 +782,31 @@ export default {
           siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
         }
 
-        setTimeout(
-          function() {
-            this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // close the chat window - i want the iframe to resize first and then the chat window to close
-            if (chatButton) {
-              chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
-            }
-          }.bind(this),
-          1000
-        );
+        // setTimeout(
+        //   function() {
+        this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // close the chat window - i want the iframe to resize first and then the chat window to close
+        if (chatButton) {
+          chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
+        }
+        //   }.bind(this),
+        //   100
+        // );
 
         // now end the Teneo Session - user clicked the close button - intention is clear
         this.$store.dispatch("endSession").then(() => {
           this.$store.commit("CLEAR_CHAT_HISTORY"); // clear the dialogs once we have successfully ended the session
-
           // show the loading gif as the window is closing. Although delay a bit
           setTimeout(
             function() {
               this.$store.commit("SHOW_CHAT_LOADING");
             }.bind(this),
-            400
+            100
           );
 
           setTimeout(
             function() {
+              let appElement = document.getElementById("app");
+              appElement.setAttribute("style", "");
               this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
             }.bind(this),
             1500
@@ -831,6 +832,10 @@ export default {
 
 #app {
   background-color: transparent;
+}
+
+#app input {
+  caret-color: auto;
 }
 
 .application-button {
