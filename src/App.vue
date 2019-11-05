@@ -1069,6 +1069,50 @@ iframe#site-frame {
   padding-right: 1.5em;
 }
 
+@media only screen and (max-height: 480px) {
+  .v-application {
+    max-width: 360px !important;
+    max-height: 100% !important;
+    height: 100% !important;
+    border-radius: unset;
+    -moz-border-radius: unset;
+    -webkit-border-radius: unset;
+  }
+
+  .application-float {
+    max-height: 100vh !important;
+    height: 100vh !important;
+    top: 0;
+    right: 5% !important;
+    border-radius: unset;
+    -moz-border-radius: unset;
+    -webkit-border-radius: unset;
+  }
+
+  .application-mobile {
+    min-height: calc(var(--vh, 1vh) * 100) !important;
+    height: calc(var(--vh, 1vh) * 100) !important;
+  }
+
+  .application-embed {
+    border-radius: 13px !important;
+    -moz-border-radius: 13px !important;
+    -webkit-border-radius: 13px !important;
+  }
+
+  .teneo-toolbar-embed {
+    border-radius: 13px 13px 0 0 !important;
+    -moz-border-radius: 13px 13px 0 0 !important;
+    -webkit-border-radius: 13px 13px 0 0 !important;
+  }
+
+  .teneo-toolbar-float {
+    border-radius: unset;
+    -moz-border-radius: unset;
+    -webkit-border-radius: unset;
+  }
+}
+
 @media only screen and (max-width: 480px) {
   #teneo,
   .v-toolbar,
@@ -1103,15 +1147,6 @@ iframe#site-frame {
   .application-mobile {
     min-height: calc(var(--vh, 1vh) * 100) !important;
     height: calc(var(--vh, 1vh) * 100) !important;
-  }
-
-  iframe#site-frame {
-    width: 0vw !important;
-    display: none !important;
-  }
-
-  #chat-open-close-button {
-    display: none;
   }
 
   .application-embed {

@@ -904,6 +904,18 @@ span.teneo-reply ul {
   z-index: 5;
 }
 
+@media only screen and (max-height: 480px) {
+  .chat-responses,
+  .chat-responses-float {
+    min-height: calc(100vh - 130px);
+  }
+
+  .chat-responses-float-mobile {
+    min-height: calc(var(--vh, 1vh) * 100 - 130px);
+    height: calc(var(--vh, 1vh) * 100 - 130px);
+  }
+}
+
 @media only screen and (max-width: 480px) {
   .v-footer,
   .chat-container,
