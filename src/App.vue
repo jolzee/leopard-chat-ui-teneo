@@ -123,7 +123,6 @@
                   v-for="(menuItem, i) in activeMenuItems"
                   :key="i + 'menuItem'"
                   :to="menuItem.route"
-                  @click="lookForLogout(menuItem)"
                 >
                   <v-list-item-action>
                     <v-icon
@@ -139,6 +138,21 @@
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
+              <template
+                v-slot:append
+                v-if="authenticated"
+              >
+                <div class="pa-2">
+                  <v-btn
+                    ripple
+                    to="/"
+                    block
+                    color="primary darken-1"
+                    @click="logout()"
+                  >{{ $t("menu.logout") }}
+                  </v-btn>
+                </div>
+              </template>
             </v-navigation-drawer>
           </transition>
 
@@ -323,12 +337,6 @@ export default {
           titleKey: "menu.login",
           route: "login",
           when: "notAuthenticated"
-        },
-        {
-          icon: "mdi-logout-variant",
-          titleKey: "menu.logout",
-          route: "/",
-          when: "authenticated"
         }
       ],
       miniVariant: true,
@@ -547,54 +555,52 @@ export default {
         2000
       );
     },
-    lookForLogout(menuItem) {
+    logout() {
       this.drawer = false;
       document.activeElement.blur();
-      if (menuItem.titleKey === "menu.logout") {
-        let chatButton = document.getElementById("chat-open-close-button");
-        let siteFrame;
-        if (!this.embed && !this.showButtonOnly) {
-          siteFrame = document.getElementById("site-frame");
-        }
+      let chatButton = document.getElementById("chat-open-close-button");
+      let siteFrame;
+      if (!this.embed && !this.showButtonOnly) {
+        siteFrame = document.getElementById("site-frame");
+      }
 
-        this.$store.dispatch("logout");
-        this.drawer = false;
-        // hide chat window - button clicked - logout
-        this.$store.commit("HIDE_CHAT_MODAL");
-        if (!this.embed && !this.overlayChat && siteFrame) {
-          siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
-        }
+      this.$store.dispatch("logout");
+      this.drawer = false;
+      // hide chat window - button clicked - logout
+      this.$store.commit("HIDE_CHAT_MODAL");
+      if (!this.embed && !this.overlayChat && siteFrame) {
+        siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
+      }
+
+      setTimeout(
+        function() {
+          this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // close the chat window - i want the iframe to resize first and then the chat window to close
+          chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
+        }.bind(this),
+        1000
+      );
+
+      this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY");
+
+      // now end the Teneo Session - user clicked the close button - intention is clear
+      this.$store.dispatch("endSession").then(() => {
+        this.$store.commit("CLEAR_CHAT_HISTORY"); // clear the dialogs once we have successfully ended the session
+
+        // show the loading gif as the window is closing. Although delay a bit
+        setTimeout(
+          function() {
+            this.$store.commit("SHOW_CHAT_LOADING");
+          }.bind(this),
+          400
+        );
 
         setTimeout(
           function() {
-            this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // close the chat window - i want the iframe to resize first and then the chat window to close
-            chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
+            this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // only show the open chat button once the session has ended
           }.bind(this),
-          1000
+          1500
         );
-
-        this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY");
-
-        // now end the Teneo Session - user clicked the close button - intention is clear
-        this.$store.dispatch("endSession").then(() => {
-          this.$store.commit("CLEAR_CHAT_HISTORY"); // clear the dialogs once we have successfully ended the session
-
-          // show the loading gif as the window is closing. Although delay a bit
-          setTimeout(
-            function() {
-              this.$store.commit("SHOW_CHAT_LOADING");
-            }.bind(this),
-            400
-          );
-
-          setTimeout(
-            function() {
-              this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // only show the open chat button once the session has ended
-            }.bind(this),
-            1500
-          );
-        });
-      } //
+      });
     },
     calculateMobileHeight() {
       if (this.isMobileDevice) {
