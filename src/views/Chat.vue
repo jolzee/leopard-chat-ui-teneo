@@ -730,7 +730,7 @@ button.v-expansion-panel-header:focus {
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
   box-shadow: none !important;
-  color: transparent;
+  /* color: transparent; */
 }
 
 div#chat-area p {
