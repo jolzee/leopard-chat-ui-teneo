@@ -147,10 +147,9 @@
                                 append-icon="mdi-chevron-double-down"
                               ></v-select>
                             </v-col>
-                            <v-col
-                              class="ma2"
-                              :cols="12"
-                            >
+                          </v-row>
+                          <v-row>
+                            <v-col>
                               <v-tooltip
                                 open-delay="600"
                                 bottom
@@ -195,7 +194,7 @@
                                 </template>
                                 <span>Active/Deactive</span>
                               </v-tooltip>
-                              <span v-if="selectedSolution">
+                              <template v-if="selectedSolution">
                                 <v-tooltip
                                   open-delay="600"
                                   bottom
@@ -322,7 +321,7 @@
                                   </template>
                                   <span>Generate sharable link for team members</span>
                                 </v-tooltip>
-                              </span>
+                              </template>
                             </v-col>
                           </v-row>
                         </v-container>
@@ -349,7 +348,7 @@
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn
                               aria-label="Upload new or additional solution configurations"
-                              class="mr-2"
+                              class="mr-2 mt-2"
                               v-bind="attrs"
                               v-on="on"
                               fab
@@ -370,7 +369,7 @@
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn
                               aria-label="Copy all solution configurations to the clipboard"
-                              class="mr-2"
+                              class="mr-2 mt-2"
                               v-bind="attrs"
                               v-on="on"
                               fab
@@ -391,7 +390,7 @@
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn
                               aria-label="Download all solution configurations as a JSON file"
-                              class="mr-2"
+                              class="mr-2 mt-2"
                               v-bind="attrs"
                               v-on="on"
                               fab
@@ -412,7 +411,7 @@
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn
                               aria-label="Toggle a visual display of all solution configurations as JSON"
-                              class="mr-2"
+                              class="mr-2 mt-2"
                               v-bind="attrs"
                               v-on="on"
                               fab
@@ -433,7 +432,7 @@
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn
                               aria-label="Open documentation for Leopard's Chat UI"
-                              class="mr-2"
+                              class="mr-2 mt-2"
                               fab
                               v-bind="attrs"
                               v-on="on"
