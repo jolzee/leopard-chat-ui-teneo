@@ -105,8 +105,9 @@
                             justify="center"
                           >
                             <v-progress-circular
+                              :size="50"
                               indeterminate
-                              color="grey lighten-5"
+                              color="primary"
                             ></v-progress-circular>
                           </v-row>
                         </template>
