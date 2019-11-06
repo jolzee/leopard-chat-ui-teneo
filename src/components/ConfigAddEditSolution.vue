@@ -31,8 +31,9 @@
           <v-container fluid>
             <v-row>
               <v-col
-                cols="4"
-                class="d-sm-none d-md-block"
+                :cols="12"
+                :sm="4"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>Solution Name</v-subheader>
               </v-col>
@@ -51,7 +52,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>Solution URL</v-subheader>
               </v-col>
@@ -71,7 +72,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>IFRAME URL</v-subheader>
               </v-col>
@@ -97,7 +98,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>Prompt Triggers</v-subheader>
               </v-col>
@@ -136,7 +137,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>Chat Window Title</v-subheader>
               </v-col>
@@ -155,7 +156,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>Deep Link (?dl=[deep-link])
                 </v-subheader>
@@ -175,7 +176,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>Locale</v-subheader>
               </v-col>
@@ -196,7 +197,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>Demo Animation</v-subheader>
               </v-col>
@@ -230,7 +231,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>Enter Animation</v-subheader>
               </v-col>
@@ -252,7 +253,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>Exit Animation</v-subheader>
               </v-col>
@@ -274,7 +275,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>Response Icon</v-subheader>
               </v-col>
@@ -319,7 +320,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>User Icon</v-subheader>
               </v-col>
@@ -365,7 +366,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>Features</v-subheader>
               </v-col>
@@ -529,7 +530,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>Button and Toolbar Custom CSS</v-subheader>
               </v-col>
@@ -550,7 +551,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>ASR Corrections</v-subheader>
               </v-col>
@@ -569,7 +570,7 @@
               <!-- help -->
               <v-col
                 cols="12"
-                sm="4"
+                :md="4"
               >
                 <v-btn
                   color="red"
@@ -620,7 +621,7 @@
               <v-col
                 cols="12"
                 sm="4"
-                class="d-sm-none d-md-block"
+                class="d-none d-sm-none d-md-inline"
               >
                 <v-subheader>When to send CTX params</v-subheader>
               </v-col>

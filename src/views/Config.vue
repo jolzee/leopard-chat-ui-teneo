@@ -12,7 +12,10 @@
           fixed
           color="grey lighten-2"
         >
-          <v-col cols="8">
+          <v-col
+            cols="12"
+            :sm="8"
+          >
             <v-row
               align="center"
               justify="start"
@@ -78,7 +81,7 @@
                 <span>Deep Link Desktop</span>
 
               </v-tooltip>
-              <v-toolbar-title class="d-none d-sm-flex text-left">Configuration</v-toolbar-title>
+              <v-toolbar-title class="d-none d-sm-none d-md-inline text-left">Configuration</v-toolbar-title>
             </v-row>
           </v-col>
 
@@ -88,7 +91,7 @@
             overlap
             color="#4051B1"
             :aria-label="`There are ${config.solutions.length} known teneo solutions`"
-            class="mr-2"
+            class="mr-2 d-none d-sm-inline"
           >
             <span
               slot="badge"
@@ -104,7 +107,7 @@
             disabled
             color="green"
             text-color="white"
-            class="mr-4 d-none d-sm-flex"
+            class="mr-4 d-none d-sm-none d-md-inline"
           >
             <v-avatar class="green darken-4">
               <v-icon>mdi-check</v-icon>
