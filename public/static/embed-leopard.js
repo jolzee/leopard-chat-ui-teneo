@@ -1,4 +1,35 @@
-var leopardUrl = "http://192.168.1.112:8080/";
+// var leopardUrl = "http://192.168.1.112:8080/";
+
+var leopardUrl;
+
+var leopardEmbedSrc = null;
+var scripts = document.getElementsByTagName("script");
+for (var i = 0; i < scripts.length; ++i) {
+  if (isLeopard(scripts[i])) {
+    leopardEmbedSrc = scripts[i].getAttribute("src");
+  }
+}
+
+function isLeopard(scriptElem) {
+  var srcValue = scriptElem.getAttribute("src");
+  return srcValue && srcValue.indexOf("embed-leopard.js") !== -1;
+}
+
+console.log(leopardEmbedSrc);
+
+if (leopardEmbedSrc.lastIndexOf("http", 0) === 0) {
+  leopardUrl = leopardEmbedSrc.replace("/static/embed-leopard.js", "/");
+} else {
+  if (leopardEmbedSrc.indexOf("/") === 0) {
+    leopardUrl = leopardEmbedSrc.replace("/static/embed-leopard.js", "");
+  } else {
+    leopardUrl = leopardEmbedSrc.replace("static/embed-leopard.js", "");
+  }
+  leopardUrl = window.location.href + leopardUrl;
+  leopardUrl = leopardUrl.substring(0, leopardUrl.lastIndexOf("/")) + "/";
+}
+
+console.log(leopardUrl);
 
 function getLeopardTemplate(f) {
   return f
@@ -9,7 +40,7 @@ function getLeopardTemplate(f) {
 
 var leopardButtonTemplate = getLeopardTemplate(function() {
   /*!
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
 <style>
 #teneo-chat-widget-container {
      -webkit-box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
@@ -222,7 +253,7 @@ function receiveLeopardMessage(event) {
 }
 
 function animateLeopard(animationName, callback) {
-  var node = document.querySelector("#teneo-chat-widget-container");
+  var node = document.getElementById("teneo-chat-widget-container");
   node.classList.remove("animated", leopardAnimations.out);
   node.classList.remove("animated", leopardAnimations.in);
 
