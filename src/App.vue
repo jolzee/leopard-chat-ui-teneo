@@ -8,7 +8,7 @@
     >
       <div
         id="chat-open-close-button-embed"
-        @click="toggleEmbedButton"
+        @click="openEmbedButton"
       >
         <v-fab-transition>
           <v-btn
@@ -17,15 +17,11 @@
             dark
             color="primary"
             elevation="2"
-            :aria-label="isChatOpenLocalStorage() ? 'Close Chat' : 'Open Chat'"
-            class="embed-button-center"
-            :class="{ pulse: (pulseButton && !isChatOpen)}"
+            aria-label="Open Chat"
+            class="embed-button-center pulse"
             :style="customCssButtonToolbar"
           >
-            <v-icon
-              dark
-              v-text="isChatOpenLocalStorage() ? 'mdi-close' : 'mdi-message-text'"
-            ></v-icon>
+            <v-icon dark>mdi-message-text</v-icon>
           </v-btn>
         </v-fab-transition>
       </div>
@@ -174,32 +170,25 @@
                 class="pl-0"
               ></v-toolbar-title>
               <v-spacer></v-spacer>
+              <!-- Handle close button on production embedded sites -->
               <template v-if="embed">
-                <div
-                  id="chat-open-close-button-embed"
-                  @click="toggleEmbedButton"
-                >
+                <span @click="closeChatEmbedded">
                   <v-fab-transition>
                     <v-btn
                       v-show="showChatButton"
-                      fab
-                      dark
-                      small
+                      icon
+                      ripple
                       color="secondary"
-                      elevation="2"
-                      :aria-label="isChatOpenLocalStorage() ? 'Close Chat' : 'Open Chat'"
+                      aria-label="Close Chat"
                       class="embed-button-center"
-                      :class="{ pulse: (pulseButton && !isChatOpen)}"
                       :style="customCssButtonToolbar"
                     >
-                      <v-icon
-                        dark
-                        v-text="isChatOpenLocalStorage() ? 'mdi-close' : 'mdi-message-text'"
-                      ></v-icon>
+                      <v-icon dark>mdi-close</v-icon>
                     </v-btn>
                   </v-fab-transition>
-                </div>
+                </span>
               </template>
+              <!-- Handle close button in demo mode -->
               <template v-else>
                 <v-fab-transition>
                   <v-btn
@@ -478,32 +467,32 @@ export default {
       }
 
       let result = false;
-      console.log(`App.vue:isChatOpenLocalStorage: ${isChatOpen}`);
+      // console.log(`App.vue:isChatOpenLocalStorage: ${isChatOpen}`);
       if (isChatOpen) {
         this.$store.commit("SHOW_CHAT_WINDOW");
         this.$store.commit("HIDE_CHAT_LOADING");
         this.sendMessageToParent("showLeopard");
-        console.log(
-          "App.vue:isChatOpenLocalStorage: Sent Parent Message to OPEN"
-        );
+        // console.log(
+        //   "App.vue:isChatOpenLocalStorage: Sent Parent Message to OPEN"
+        // );
         result = true;
       } else {
         this.$store.commit("HIDE_CHAT_WINDOW");
         localStorage.setItem("isChatOpen", "false");
         this.sendMessageToParent("hideLeopard");
-        console.log(
-          "App.vue:isChatOpenLocalStorage: Sent Parent Message to HIDE"
-        );
+        // console.log(
+        //   "App.vue:isChatOpenLocalStorage: Sent Parent Message to HIDE"
+        // );
         result = false;
       }
       // console.log("isChatOpenLocalStorage: " + result);
-      console.log(
-        `App.vue:isChatOpenLocalStorage:Local Storage Thinks "isChatOpenLocalStorage": ${result}`
-      );
+      // console.log(
+      //   `App.vue:isChatOpenLocalStorage:Local Storage Thinks "isChatOpenLocalStorage": ${result}`
+      // );
       return result;
     },
     sendMessageToParent(message) {
-      console.log(`App.vue: sendMessageToParent: ${message}`);
+      // console.log(`App.vue: sendMessageToParent: ${message}`);
       if (parent) {
         parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
         // console.log("Message from Leopard >> Embed : " + message);
@@ -540,14 +529,26 @@ export default {
       this.config.activeSolution = this.importedSolution.name;
       let deepLinkUrl = `${location.protocol}//${location.host}${location.pathname}?dl=${this.importedSolution.deepLink}`;
       localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
-      console.log(deepLinkUrl);
+      // console.log(deepLinkUrl);
       window.location.href = deepLinkUrl;
     },
-    toggleEmbedButton() {
+    closeChatEmbedded() {
       this.calculateMobileHeight(); // only called on mobile devices
-      console.log("App.vue: toggleEmbedButton");
+      // console.log("App.vue: closeChatEmbedded");
       this.$store.commit("HIDE_CHAT_BUTTON");
-      this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY");
+      this.$store.commit("HIDE_CHAT_WINDOW_DISPLAY_EMBED");
+      setTimeout(
+        function() {
+          this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
+        }.bind(this),
+        2000
+      );
+    },
+    openEmbedButton() {
+      this.calculateMobileHeight(); // only called on mobile devices
+      // console.log("App.vue: openEmbedButton");
+      this.$store.commit("HIDE_CHAT_BUTTON");
+      this.$store.commit("OPEN_CHAT_WINDOW_DISPLAY_EMBED");
       setTimeout(
         function() {
           this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
@@ -608,14 +609,14 @@ export default {
         // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
         // console.log("Calculating the View Height in JS");
         let vh = null;
-        console.log(`App.vue: onResizeOrEmbed`);
+        // console.log(`App.vue: onResizeOrEmbed`);
         if (this.embed && parent) {
           var parentHeight = parent.getLeopardElementHeight();
           // let parentHeight = localStorage.getItem(STORAGE_KEY + "parentHeight");
           // console.log(`onResizeOrEmbed >>> Frame Height: ${parentHeight}`);
           vh = parentHeight * 0.01;
           this.parentHeight = parentHeight;
-          console.log(`Parent Height: ${parentHeight}`);
+          // console.log(`Parent Height: ${parentHeight}`);
         } else {
           vh = window.innerHeight * 0.01;
         }
@@ -643,17 +644,17 @@ export default {
           !this.loginPerformed &&
           this.dialogs.length === 0)
       ) {
-        console.log("onResizeOrEmbed: Send Login");
-        console.log(
-          `onResizeOrEmbed: Has Login Been Performed? ${this.loginPerformed}`
-        );
+        // console.log("onResizeOrEmbed: Send Login");
+        // console.log(
+        //   `onResizeOrEmbed: Has Login Been Performed? ${this.loginPerformed}`
+        // );
         this.loginPerformed = true;
         let that = this;
         this.$store
           .dispatch("login")
           .then(() => {
             that.loginPerformed = true;
-            console.log("Successfully logged into chat");
+            console.log("Successfully established chat session");
           })
           .catch(err => {
             console.log("ERROR LOGGING IN TO CHAT: ", err.message);

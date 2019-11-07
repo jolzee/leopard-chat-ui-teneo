@@ -498,9 +498,9 @@ export default {
       this.formConfig.fields.forEach(field => {
         let fieldInfo = field[Object.keys(field)[0]];
         if (fieldInfo.initialValue) {
-          console.log(
-            `Setting default for field [${fieldInfo.name} : ${fieldInfo.initialValue}] `
-          );
+          // console.log(
+          //   `Setting default for field [${fieldInfo.name} : ${fieldInfo.initialValue}] `
+          // );
           this.formData[fieldInfo.name] = fieldInfo.initialValue;
         }
       });

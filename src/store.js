@@ -814,12 +814,24 @@ function storeSetup(vuetify, callback) {
       HIDE_CUSTOM_MODAL(state) {
         state.modals.showCustomModal = false;
       },
-      TOGGLE_CHAT_WINDOW_DISPLAY(state, getters) {
+      HIDE_CHAT_WINDOW_DISPLAY_EMBED(state, _getters) {
+        // console.log(`HIDE_CHAT_WINDOW_DISPLAY_EMBED`);
+        sendMessageToParent("hideLeopard");
+        localStorage.setItem("isChatOpen", false);
+      },
+      OPEN_CHAT_WINDOW_DISPLAY_EMBED(state, _getters) {
+        state.ui.showChatWindow = true;
+        // console.log(`OPEN_CHAT_WINDOW_DISPLAY_EMBED`);
+        sendMessageToParent("showLeopard");
+        localStorage.setItem("isChatOpen", true);
+      },
+      TOGGLE_CHAT_WINDOW_DISPLAY(state, _getters) {
         state.ui.showChatWindow = !state.ui.showChatWindow;
         // console.log(
         //   `store: TOGGLE_CHAT_WINDOW_DISPLAY:  state.ui.showChatWindow has toggled to: ${state.ui.showChatWindow}`
         // );
         if (state.ui.embed) {
+          // console.log(`TOGGLE_CHAT_WINDOW_DISPLAY: ${state.ui.showChatWindow}`);
           localStorage.setItem("isChatOpen", state.ui.showChatWindow);
           // console.log(`store: TOGGLE_CHAT_WINDOW_DISPLAY: sending message to parent to ${state.ui.showChatWindow}`);
           sendMessageToParent(state.ui.showChatWindow ? "showLeopard" : "hideLeopard");
@@ -889,7 +901,7 @@ function storeSetup(vuetify, callback) {
         state.conversation.dialog.push(miscMessage);
       },
       PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG(state, liveChatResponse) {
-        console.log(liveChatResponse);
+        // console.log(liveChatResponse);
         state.conversation.dialog.push(liveChatResponse);
       },
       CLEAR_USER_INPUT(state) {
@@ -1170,7 +1182,7 @@ function storeSetup(vuetify, callback) {
           .then(
             () => {
               commit("CLEAR_USER_INFO");
-              console.log("Signed out");
+              console.log("Signed out of chat");
             },
             function(error) {
               // An error happened.
@@ -1248,8 +1260,8 @@ function storeSetup(vuetify, callback) {
             .createUserWithEmailAndPassword(registrationInfo.email, registrationInfo.password)
             .then(user => {
               let currentUser = getters.firebase.auth().currentUser;
-              console.log(registrationInfo.displayName);
-              console.log(registrationInfo.photoURL);
+              // console.log(registrationInfo.displayName);
+              // console.log(registrationInfo.photoURL);
               currentUser
                 .updateProfile({
                   displayName: registrationInfo.displayName,
@@ -1775,7 +1787,7 @@ function stoperror() {
 // }
 
 function sendMessageToParent(message) {
-  console.log(`store: sendMessageToParent: ${message}`);
+  // console.log(`store: sendMessageToParent: ${message}`);
   if (parent) {
     parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
     // console.log("Message from Leopard >> Embed : " + message);
