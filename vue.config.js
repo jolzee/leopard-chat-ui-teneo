@@ -6,6 +6,9 @@ var BrotliPlugin = require("brotli-webpack-plugin");
 var prod = process.env.NODE_ENV === "production";
 
 module.exports = {
+  devServer: {
+    https: false
+  },
   css: {
     loaderOptions: {
       sass: {
