@@ -734,41 +734,11 @@ export default {
         siteFrame = document.getElementById("site-frame");
       }
 
-      let chatButton = document.getElementById("chat-open-close-button");
-
       // show chat window - button clicked - login
       if (!this.isChatOpen) {
-        if (this.$router.currentRoute.path !== "/") {
-          this.$router.push({ name: "chat" }); // make sure we show the main chat window
-        }
-
-        this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
-        let isChatUiFloating = this.float;
-        setTimeout(
-          function() {
-            // wait just a bit before animating things - need the chat button to hide first
-            this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // show the chat window
-            // console.log(`In move button left: ${isChatUiFloating}`);
-            // wait just a bit before animating things - need the chat button to hide first
-            if (chatButton) {
-              if (isChatUiFloating) {
-                chatButton.setAttribute("class", "move-button-left-float"); // reposition the chat button
-              } else {
-                chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
-              }
-            }
-
-            if (!this.embed && !this.overlayChat && siteFrame) {
-              setTimeout(function() {
-                siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
-              }, 1000);
-            }
-          }.bind(this),
-          400
-        );
         // console.log("Toggle Chat: Send Login");
         this.$store
-          .dispatch("login")
+          .dispatch("openChatWindow", true)
           .then(() => {
             // console.log("Successfully logged into chat");
             setTimeout(
@@ -779,7 +749,7 @@ export default {
             ); // only show the chat button after a successful login
           })
           .catch(err => {
-            console.log("ERROR LOGGING IN TO CHAT: ", err.message);
+            console.log("ERROR OPENING AND LOGGING IN TO CHAT: ", err.message);
           });
       } else {
         let chatButton = document.getElementById("chat-open-close-button");

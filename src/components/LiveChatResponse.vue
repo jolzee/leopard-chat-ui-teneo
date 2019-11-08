@@ -4,7 +4,10 @@
     <div v-if="item.type === 'liveChatQueue'">
       <v-alert
         :value="true"
-        color="info"
+        dense
+        border="left"
+        color="primary"
+        colored-border
         icon="mdi-counter"
         elevation="2"
       >
@@ -14,19 +17,29 @@
 
     <!-- Live Chat Status -->
     <div v-if="item.type === 'liveChatStatus'">
+
       <v-alert
         :value="true"
-        color="info"
-        icon="mdi-thumb_up"
+        dense
+        border="left"
+        colored-border
+        color="primary"
+        icon="mdi-thumb-up"
         elevation="2"
       >
         {{item.text}}
       </v-alert>
     </div>
-    <div v-if="item.type === 'liveChatEnded'">
+    <div
+      v-if="item.type === 'liveChatEnded'"
+      class="mt-4"
+    >
       <v-alert
         :value="true"
-        color="info"
+        color="primary"
+        dense
+        border="left"
+        colored-border
         icon="mdi-logout-variant"
         elevation="2"
       >

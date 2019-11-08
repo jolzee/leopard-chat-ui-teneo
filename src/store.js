@@ -3,6 +3,7 @@ import "regenerator-runtime/runtime";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
+import router from "@/router";
 var md = require("markdown-it")({
   html: true, // Enable HTML tags in source
   xhtmlOut: true, // Use '/' to close single tags (<br />).
@@ -106,6 +107,7 @@ function storeSetup(vuetify, callback) {
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       },
       auth: {
+        hasLoggedInTeneo: false,
         firebase: config.firebaseConfig.apiKey ? firebase.initializeApp(config.firebaseConfig) : null,
         userInfo: {
           user: null,
@@ -175,6 +177,9 @@ function storeSetup(vuetify, callback) {
       }
     },
     getters: {
+      hasLoggedInTeneo(state) {
+        return state.auth.hasLoggedInTeneo;
+      },
       config(state) {
         return state.chatConfig;
       },
@@ -799,6 +804,12 @@ function storeSetup(vuetify, callback) {
       }
     },
     mutations: {
+      CHANGE_CHAT_TITLE(state, title) {
+        state.ui.chatTitle = title;
+      },
+      RESET_CHAT_TITLE(state) {
+        state.ui.chatTitle = config.CHAT_TITLE;
+      },
       SHOW_RESPONSE_DELAY(state) {
         state.ui.showDelayedResponse = true;
       },
@@ -840,6 +851,12 @@ function storeSetup(vuetify, callback) {
       SHOW_CHAT_WINDOW(state) {
         // console.log(`store: SHOW_CHAT_WINDOW`);
         state.ui.showChatWindow = true;
+      },
+      LOGGED_INTO_TENEO(state) {
+        state.auth.hasLoggedInTeneo = true;
+      },
+      LOG_OUT_TENEO(state) {
+        state.auth.hasLoggedInTeneo = false;
       },
       HIDE_CHAT_WINDOW(state) {
         // console.log(`store: HIDE_CHAT_WINDOW`);
@@ -1150,6 +1167,69 @@ function storeSetup(vuetify, callback) {
       }
     },
     actions: {
+      openChatWindow(context, mustLogin = true) {
+        console.log("Boom Baby");
+        context.commit("HIDE_CHAT_BUTTON"); // toggle the chat button visibility
+        context.commit("STOP_TTS"); // always reset audio to not speak when chat button is clicked
+        let siteFrame;
+        //animate the IFrame
+        if (!this.embed && !this.overlayChat) {
+          siteFrame = document.getElementById("site-frame");
+        }
+        let chatButton = document.getElementById("chat-open-close-button");
+        // show chat window
+        if (!context.getters.isChatOpen) {
+          if (router.currentRoute.path !== "/") {
+            router.push({ name: "chat" }); // make sure we show the main chat window
+          }
+
+          context.commit("SHOW_CHAT_LOADING"); // display the loading spinner
+          let isChatUiFloating = context.getters.float;
+          setTimeout(
+            function() {
+              // wait just a bit before animating things - need the chat button to hide first
+              context.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // show the chat window
+              // console.log(`In move button left: ${isChatUiFloating}`);
+              // wait just a bit before animating things - need the chat button to hide first
+              if (chatButton) {
+                if (isChatUiFloating) {
+                  chatButton.setAttribute("class", "move-button-left-float"); // reposition the chat button
+                } else {
+                  chatButton.setAttribute("class", "move-button-left"); // reposition the chat button
+                }
+              }
+
+              if (!context.getters.embed && !context.getters.overlayChat && siteFrame) {
+                setTimeout(function() {
+                  siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+                }, 1000);
+              }
+            }.bind(this),
+            400
+          );
+          // console.log("Toggle Chat: Send Login");
+          if (mustLogin) {
+            context
+              .dispatch("login")
+              .then(() => {
+                // console.log("Successfully logged into chat");
+                context.commit("LOGGED_INTO_TENEO");
+                setTimeout(
+                  function() {
+                    context.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
+                    context.commit("HIDE_CHAT_LOADING");
+                  }.bind(this),
+                  1500
+                ); // only show the chat button after a successful login
+              })
+              .catch(err => {
+                console.log("ERROR LOGGING IN TO CHAT: ", err.message);
+              });
+          } else {
+            context.commit("HIDE_CHAT_LOADING");
+          }
+        }
+      },
       sendFeedback(context, feedback) {
         Vue.jsonp(
           config.TENEO_URL +
@@ -1181,6 +1261,7 @@ function storeSetup(vuetify, callback) {
           .signOut()
           .then(
             () => {
+              commit("LOG_OUT_TENEO");
               commit("CLEAR_USER_INFO");
               console.log("Signed out of chat");
             },
