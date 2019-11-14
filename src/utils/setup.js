@@ -22,7 +22,8 @@ export default class Setup {
     this.ASR_CORRECTIONS_MERGED;
     this.liveChat;
     this.CHAT_TITLE = "Configure Me";
-    this.EMBED = this.doesParameterExist("embed") || this.doesParameterExist("button");
+    this.EMBED =
+      this.doesParameterExist("embed") || this.doesParameterExist("button");
     this.SHOW_BUTTON_ONLY = this.doesParameterExist("button");
     this.ENABLE_LIVE_CHAT = false;
     this.FLOAT = false;
@@ -79,7 +80,9 @@ export default class Setup {
               this.activeSolution = matchingSolutions[0];
             } else {
               // allow for deep linking to a specific solution ?dl=<deepLink>
-              const matchingSolutions = this.chatConfig.solutions.filter(solution => solution.deepLink === deepLink);
+              const matchingSolutions = this.chatConfig.solutions.filter(
+                solution => solution.deepLink === deepLink
+              );
               if (matchingSolutions.length > 0) {
                 this.activeSolution = matchingSolutions[0];
               } else {
@@ -91,7 +94,9 @@ export default class Setup {
                 this.activeSolution = matchingSolutions[0];
               }
             }
-            this.ASR_CORRECTIONS_MERGED = this.getMergedAsrCorrections(ASR_CORRECTIONS);
+            this.ASR_CORRECTIONS_MERGED = this.getMergedAsrCorrections(
+              ASR_CORRECTIONS
+            );
             this.CHAT_TITLE = this.activeSolution.chatTitle;
             this.IFRAME_URL = this.activeSolution.iframeUrl;
             this.KNOWLEDGE_DATA = this.activeSolution.knowledgeData;
@@ -102,19 +107,24 @@ export default class Setup {
             this.SEND_CTX_PARAMS = this.activeSolution.sendContextParams
               ? this.activeSolution.sendContextParams
               : "login";
-            this.TENEO_URL = this.activeSolution.url + "?viewname=STANDARDJSONP";
+            this.TENEO_URL =
+              this.activeSolution.url + "?viewname=STANDARDJSONP";
             this.USER_ICON = this.activeSolution.userIcon;
 
             let theme = this.activeSolution.theme;
             // convert color names to their #hex equivalent
             for (const key in theme) {
-              if (theme[key].charAt(0) !== "#") theme[key] = COLOR_NAMES[theme[key]];
+              if (theme[key].charAt(0) !== "#")
+                theme[key] = COLOR_NAMES[theme[key]];
             }
             this.THEME = theme;
 
             this.ENABLE_LIVE_CHAT = this.activeSolution.enableLiveChat;
             this.UNIQUE_KEY =
-              this.activeSolution.deepLink + (window.location.href.indexOf("mobile=true") > -1 ? "_mobile" : "");
+              this.activeSolution.deepLink +
+              (window.location.href.indexOf("mobile=true") > -1
+                ? "_mobile"
+                : "");
             document.title = this.activeSolution.name;
 
             let self = this;
@@ -124,7 +134,11 @@ export default class Setup {
                 contextParam.values.forEach(value => {
                   if (value.active) {
                     self.REQUEST_PARAMETERS =
-                      self.REQUEST_PARAMETERS + "&" + contextParam.name + "=" + encodeURIComponent(value.text);
+                      self.REQUEST_PARAMETERS +
+                      "&" +
+                      contextParam.name +
+                      "=" +
+                      encodeURIComponent(value.text);
                   }
                 });
               }
@@ -132,7 +146,11 @@ export default class Setup {
           }
 
           // update the IFRAME URL
-          if (!this.EMBED && !this.SHOW_BUTTON_ONLY && document.getElementById("site-frame")) {
+          if (
+            !this.EMBED &&
+            !this.SHOW_BUTTON_ONLY &&
+            document.getElementById("site-frame")
+          ) {
             document.getElementById("site-frame").src = this.IFRAME_URL;
           }
 
@@ -194,8 +212,13 @@ export default class Setup {
         localStorage.removeItem(STORAGE_KEY + "config");
         console.log("Cleared local storage");
       }
-      this.chatConfig = JSON.parse(localStorage.getItem(STORAGE_KEY + "config"));
-      if (!this.chatConfig || (this.chatConfig && this.chatConfig.solutions.length === 0)) {
+      this.chatConfig = JSON.parse(
+        localStorage.getItem(STORAGE_KEY + "config")
+      );
+      if (
+        !this.chatConfig ||
+        (this.chatConfig && this.chatConfig.solutions.length === 0)
+      ) {
         console.log("No config: Looking for default.json");
         this._loadDefaultConfig()
           .then(defaultConfig => {
@@ -223,7 +246,10 @@ export default class Setup {
           .then(res => {
             console.log("Found and loaded external default config");
             let defaultConfig = res.body;
-            localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(defaultConfig));
+            localStorage.setItem(
+              STORAGE_KEY + "config",
+              JSON.stringify(defaultConfig)
+            );
             resolve(defaultConfig);
           })
           .catch(function(error) {
@@ -234,7 +260,12 @@ export default class Setup {
   }
 
   setupLiveChat(store) {
-    this.liveChat = new LiveChat(store, !this.USE_SESSION_STORAGE, STORAGE_KEY, this.TENEO_CHAT_HISTORY);
+    this.liveChat = new LiveChat(
+      store,
+      !this.USE_SESSION_STORAGE,
+      STORAGE_KEY,
+      this.TENEO_CHAT_HISTORY
+    );
   }
 
   getMergedAsrCorrections(leopardDefaultCorrections) {
@@ -252,14 +283,20 @@ export default class Setup {
           }
         }
       });
-      finalCorrections = leopardDefaultCorrections.concat(solutionResplacements);
+      finalCorrections = leopardDefaultCorrections.concat(
+        solutionResplacements
+      );
     }
     return finalCorrections;
   }
 
   getUrlVars() {
     var vars = {};
-    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
+      m,
+      key,
+      value
+    ) {
       vars[key] = value;
     });
     return vars;
@@ -271,7 +308,12 @@ export default class Setup {
       urlparameter = this.getUrlVars()[parameter];
       if (urlparameter) {
         urlparameter = urlparameter.split("#")[0];
-        urlparameter = urlparameter === "true" ? true : urlparameter === "false" ? false : urlparameter;
+        urlparameter =
+          urlparameter === "true"
+            ? true
+            : urlparameter === "false"
+            ? false
+            : urlparameter;
       } else {
         urlparameter = defaultvalue;
       }

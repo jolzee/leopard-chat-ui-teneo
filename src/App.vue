@@ -685,7 +685,7 @@ export default {
         let chatButton = document.getElementById("chat-open-close-button");
 
         if (this.$router.currentRoute.path !== "/") {
-          this.$router.push({ name: "chat" }); // make sure we show the main chat window
+          // this.$router.push({ name: "chat" }); // make sure we show the main chat window
         }
 
         // this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
