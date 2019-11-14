@@ -7,7 +7,16 @@ var prod = process.env.NODE_ENV === "production";
 
 module.exports = {
   devServer: {
-    https: false
+    https: false,
+    port: 8080,
+    disableHostCheck: true,
+    host: "0.0.0.0",
+    open: "Google Chrome",
+    progress: true,
+    overlay: {
+      warnings: true,
+      errors: true
+    }
   },
   css: {
     loaderOptions: {
@@ -27,6 +36,7 @@ module.exports = {
     // },
     // })]
     // },
+    devtool: "source-map",
     plugins: prod
       ? [
           new CompressionPlugin({
@@ -59,5 +69,10 @@ module.exports = {
   publicPath: prod ? "./" : "/",
   assetsDir: "./assets/",
   productionSourceMap: false,
-  transpileDependencies: ["vuetify", "replace-string", "url-regex", "vue-long-press-directive"]
+  transpileDependencies: [
+    "vuetify",
+    "replace-string",
+    "url-regex",
+    "vue-long-press-directive"
+  ]
 };
