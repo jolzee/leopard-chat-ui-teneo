@@ -856,6 +856,11 @@ export default {
       this.refresh = true;
       sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
       let addtionalParams = "";
+      if (this.doesParameterExist("plugin_id")) {
+        const params = new URLSearchParams(window.location.search);
+        const pluginId = params.get("plugin_id");
+        addtionalParams += `&plugin_id=${pluginId}`;
+      }
       if (this.doesParameterExist("embed")) {
         addtionalParams += "&embed";
       }
