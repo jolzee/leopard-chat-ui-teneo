@@ -22,6 +22,7 @@ export default class Setup {
     this.ASR_CORRECTIONS_MERGED;
     this.liveChat;
     this.CHAT_TITLE = "Configure Me";
+    this.IS_AGENT_ASSIST = this.doesParameterExist("plugin_id");
     this.EMBED =
       this.doesParameterExist("embed") || this.doesParameterExist("button");
     this.SHOW_BUTTON_ONLY = this.doesParameterExist("button");
@@ -119,7 +120,9 @@ export default class Setup {
             }
             this.THEME = theme;
 
-            this.ENABLE_LIVE_CHAT = this.activeSolution.enableLiveChat;
+            this.ENABLE_LIVE_CHAT =
+              this.activeSolution.enableLiveChat &&
+              !this.doesParameterExist("plugin_id");
             this.UNIQUE_KEY =
               this.activeSolution.deepLink +
               (window.location.href.indexOf("mobile=true") > -1

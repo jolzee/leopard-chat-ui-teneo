@@ -11,13 +11,12 @@
         icon="mdi-counter"
         elevation="2"
       >
-        {{item.text}}
+        {{ item.text }}
       </v-alert>
     </div>
 
     <!-- Live Chat Status -->
     <div v-if="item.type === 'liveChatStatus'">
-
       <v-alert
         :value="true"
         dense
@@ -27,13 +26,10 @@
         icon="mdi-thumb-up"
         elevation="2"
       >
-        {{item.text}}
+        {{ item.text }}
       </v-alert>
     </div>
-    <div
-      v-if="item.type === 'liveChatEnded'"
-      class="mt-4"
-    >
+    <div v-if="item.type === 'liveChatEnded'" class="mt-4">
       <v-alert
         :value="true"
         color="primary"
@@ -43,7 +39,7 @@
         icon="mdi-logout-variant"
         elevation="2"
       >
-        {{item.text}}
+        {{ item.text }}
       </v-alert>
     </div>
     <!-- Live Chat Response -->
@@ -59,14 +55,8 @@
         class="text-center d-none d-sm-block"
         v-if="showChatIcons && !this.$vuetify.breakpoint.xs"
       >
-        <v-avatar
-          size="40px"
-          class="teneo-response-icon elevation-2"
-        >
-          <img
-            :src="item.agentAvatar"
-            :alt="item.agentName"
-          >
+        <v-avatar size="40px" class="teneo-response-icon elevation-2">
+          <img :src="item.agentAvatar" :alt="item.agentName" />
         </v-avatar>
       </v-col>
       <v-col class="text-left">
@@ -74,16 +64,13 @@
           :color="$vuetify.theme.dark ? '#333333' : '#FAFAFA'"
           class="chat-card chat-card-left text-left"
         >
-          <span
-            v-html="item.text"
-            class="teneo-reply"
-          ></span>
+          <span class="teneo-reply"
+            ><p>{{ item.text }}</p></span
+          >
         </v-card>
       </v-col>
-
     </v-row>
     <!-- end -->
-
   </span>
 </template>
 
@@ -97,4 +84,3 @@ export default {
   }
 };
 </script>
-

@@ -1,7 +1,7 @@
 <template>
   <ValidationObserver
     ref="observer"
-    v-slot="{ invalid, validated, passes, validate }"
+    v-slot="{ invalid, validated}"
   >
     <v-row
       align="start"
@@ -291,7 +291,7 @@
                       <ValidationProvider
                         v-if="field.checkbox"
                         :rules="field.checkbox.mustBeChecked ? { required: { allowFalse: false } } : ''"
-                        v-slot="{ errors, valid }"
+                        v-slot="{ errors }"
                       >
                         <v-checkbox
                           v-model="formData[field.checkbox.name]"
@@ -309,7 +309,7 @@
                       <ValidationProvider
                         v-if="field.switch"
                         :rules="field.switch.validations ? field.switch.validations : ''"
-                        v-slot="{ errors, valid }"
+                        v-slot="{ errors }"
                       >
                         <v-switch
                           v-model="formData[field.switch.name]"
@@ -328,7 +328,7 @@
                       <ValidationProvider
                         v-if="field.radio"
                         :rules="field.radio.validations ? field.radio.validations : ''"
-                        v-slot="{ errors, valid }"
+                        v-slot="{ errors }"
                       >
                         <v-radio-group
                           v-model="formData[field.radio.name]"
@@ -360,7 +360,7 @@
                       <ValidationProvider
                         v-if="field.slider"
                         :rules="field.slider.validations ? field.slider.validations : ''"
-                        v-slot="{ errors, valid }"
+                        v-slot="{ errors }"
                       >
                         <v-slider
                           v-if="!field.slider.range"

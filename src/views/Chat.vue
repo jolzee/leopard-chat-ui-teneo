@@ -383,6 +383,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "isLiveAgentAssist",
       "askingForPassword",
       "askingForEmail",
       "dialogs",
@@ -423,7 +424,6 @@ export default {
           this.updateInputBox(dayjs(this.date).format("D MMMM YYYY"));
         }
         if (this.userInputReadyForSending) {
-          console.log(`hnkdsnfdskfn`);
           this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals
           this.sendUserInput();
         }

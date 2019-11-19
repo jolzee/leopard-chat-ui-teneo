@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <v-app
       :dark="$vuetify.theme.dark"
       v-if="showButtonOnly"
@@ -29,7 +28,12 @@
     <v-app
       v-else
       toolbar
-      :class="{'elevation-2': !embed, 'application-float': shouldFloat, 'application-embed': embed, 'application-mobile': isMobileDevice}"
+      :class="{
+        'elevation-2': !embed,
+        'application-float': shouldFloat,
+        'application-embed': embed,
+        'application-mobile': isMobileDevice
+      }"
     >
       <div
         id="chat-open-close-button"
@@ -44,7 +48,7 @@
             elevation="2"
             @click="toggleChat"
             v-show="showChatButton && !isChatOpen"
-            :class="{ pulse: (pulseButton && !isChatOpen)}"
+            :class="{ pulse: pulseButton && !isChatOpen }"
             :style="customCssButtonToolbar"
           >
             <v-icon
@@ -62,7 +66,14 @@
         <div
           id="teneo"
           v-if="isChatOpen"
-          :class="{'elevation-2': !embed, 'application-float': float, 'application-embed': embed, 'teneo-light-bg': !$vuetify.theme.dark, 'teneo-dark-bg': $vuetify.theme.dark, 'application-mobile': isMobileDevice}"
+          :class="{
+            'elevation-2': !embed,
+            'application-float': float,
+            'application-embed': embed,
+            'teneo-light-bg': !$vuetify.theme.dark,
+            'teneo-dark-bg': $vuetify.theme.dark,
+            'application-mobile': isMobileDevice
+          }"
         >
           <transition
             name="menu-transition"
@@ -79,14 +90,17 @@
               right
               width="250"
             >
-
               <v-row>
                 <v-col class="pa-0 ma-0 elevation-2">
                   <div class="secondary darken-1 text-center pa-2">
-                    <div class="headline white--text font-weight-medium">Artificial Solutions</div>
+                    <div class="headline white--text font-weight-medium">
+                      Artificial Solutions
+                    </div>
                   </div>
                   <div class="primary darken-1 text-center py-2 px-4">
-                    <div class="white--text body-2 pa-1">{{ $t('about.page.content') }}</div>
+                    <div class="white--text body-2 pa-1">
+                      {{ $t("about.page.content") }}
+                    </div>
                   </div>
                 </v-col>
               </v-row>
@@ -101,16 +115,20 @@
                     <v-icon
                       medium
                       :class="menuClass"
-                      v-text="$vuetify.theme.dark
-            ? 'mdi-brightness-5'
-            : 'mdi-brightness-4'"
+                      v-text="
+                        $vuetify.theme.dark
+                          ? 'mdi-brightness-5'
+                          : 'mdi-brightness-4'
+                      "
                     ></v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
                     <v-list-item-title
                       class="subheading"
                       :class="menuClassText"
-                    >{{ $vuetify.theme.dark ? 'Light Mode' : 'Dark Mode' }}</v-list-item-title>
+                    >{{
+                        $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
+                      }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item
@@ -124,7 +142,9 @@
                     <v-icon
                       medium
                       :class="menuClass"
-                    >{{menuItem.icon}}</v-icon>
+                    >{{
+                      menuItem.icon
+                    }}</v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
                     <v-list-item-title
@@ -157,11 +177,16 @@
               :color="toolbarColor"
               height="64"
               class="teneo-leopard-header"
-              :class="{'teneo-toolbar-float' : float, 'teneo-toolbar-embed' : embed}"
+              :class="{
+                'teneo-toolbar-float': float,
+                'teneo-toolbar-embed': embed
+              }"
               :style="toolbarStyle"
             >
               <v-app-bar-nav-icon
-                :aria-label="drawer ? 'Hide the chat menu' : 'Show the chat menu'"
+                :aria-label="
+                  drawer ? 'Hide the chat menu' : 'Show the chat menu'
+                "
                 @click.stop="drawer = !drawer"
                 class="secondary--text"
               ></v-app-bar-nav-icon>
@@ -204,7 +229,6 @@
                   </v-btn>
                 </v-fab-transition>
               </template>
-
             </v-toolbar>
             <v-content
               app
@@ -229,7 +253,7 @@
         >
           <v-card>
             <v-card-title class="headline">Solution Import</v-card-title>
-            <v-card-text>{{importDialogMessages.message}}<br /><br />
+            <v-card-text>{{ importDialogMessages.message }}<br /><br />
               <v-simple-table>
                 <template v-slot:default>
                   <thead>
@@ -240,19 +264,19 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td>{{importDialogMessages.name}}</td>
-                      <td>{{importDialogMessages.deepLink}}</td>
+                      <td>{{ importDialogMessages.name }}</td>
+                      <td>{{ importDialogMessages.deepLink }}</td>
                     </tr>
                   </tbody>
-                </template>
-              </v-simple-table><br />
+                </template> </v-simple-table><br />
               <v-alert
                 border="top"
                 colored-border
                 type="warning"
                 elevation="2"
               >
-                Accepting will overwrite other solutions with the same name or deep link.
+                Accepting will overwrite other solutions with the same name or
+                deep link.
               </v-alert>
             </v-card-text>
             <v-card-actions>
@@ -278,10 +302,15 @@ import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "./constants/solution-config-default.js";
 import jsonpack from "jsonpack/main";
 
+// import { createDetailsWidget } from "@livechat/agent-app-sdk";
+// import { createMessageBoxWidget } from "@livechat/agent-app-sdk";
+
 export default {
   components: {},
   data() {
     return {
+      liveChatAccessToken: null,
+      liveChatAgentAssistLastMessage: null,
       importDialog: false,
       parentHeight: "",
       loginPerformed: false,
@@ -334,6 +363,7 @@ export default {
   },
   updated() {},
   mounted() {
+    this.$store.dispatch("setupLiveChatAgentAssist"); // only enabled in certain scenario
     window.addEventListener("resize", this.onResizeOrEmbed);
     // deal with import of solution
     const urlParams = new URLSearchParams(window.location.search);
@@ -359,6 +389,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "isLiveAgentAssist",
       "accentStyling",
       "authenticated",
       "isPromptPollingActive",
@@ -409,7 +440,8 @@ export default {
         return this.menuItems.filter(menuItem => {
           if (
             this.socialAuthEnabled &&
-            ("when" in menuItem && menuItem.when === "notAuthenticated")
+            "when" in menuItem &&
+            menuItem.when === "notAuthenticated"
           ) {
             return true;
           } else if (menuItem.route === "config") {

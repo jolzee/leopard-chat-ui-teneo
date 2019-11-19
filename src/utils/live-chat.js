@@ -40,7 +40,7 @@ export class LiveChat {
         //     clientId: "5e68dfc9597a892b27eb97740abe1fee"
         //   })
         // );
-        window.sdk = this.sdk;
+        // window.sdk = this.sdk;
         // console.log(this.sdk);
 
         this.sdk.auth
@@ -48,8 +48,15 @@ export class LiveChat {
           .then(token => (this.accessToken = token.accessToken));
 
         this.sdk.on("connected", payload => {
+          // console.log(`>>>>>>>> Conected`, payload);
           if (payload.chatsSummary.length > 0) {
             this.chatId = payload.chatsSummary[0].id;
+            this.lastMessage =
+              payload.chatsSummary[0].lastEventsPerType.message.text;
+            this.lastMessageAuthorId =
+              payload.chatsSummary[0].lastEventsPerType.message.author;
+            console.log(this.lastMessageAuthorId);
+            console.log(this.lastMessage);
           }
         });
 
@@ -59,29 +66,22 @@ export class LiveChat {
         this.sdk.on("customer_id", noop);
 
         this.sdk.on("disconnected", reason => {
+          console.log(`>>>>>>>> disconnected`);
           console.log(reason);
         });
 
         this.sdk.on("user_data", user => {
+          console.log(`>>>>>>>> user_data`);
           if (user.type === "agent") {
             this.agent = user;
           }
-          // console.log(`USER DATA:`);
-          // console.log(user);
-          // const agent = {
-          //   avatar:
-          //     "https://cdn.livechatinc.com/cloud/?uri=https%3A%2F%2Flivechat.s3.amazonaws.com%2F9243615%2Favatars%2Fa102134835ab6bef075d58912e55d099.png",
-          //   id: "ae9a46e6c60d18cedb4c6bf12bb0e3e5",
-          //   jobTitle: "Support Agent",
-          //   name: "Peter",
-          //   type: "agent"
-          // };
           this.store.commit("AGENT_NAME", user.name);
           this.store.commit("AGENT_ID", user.id);
           this.store.commit("AGENT_AVATAR", user.avatar);
         });
 
         this.sdk.on("user_joined_chat", ({ user, chat }) => {
+          console.log(`>>>>>>>> user_joined_chat`);
           this.chatId = chat;
           if (user === this.agent.id) {
             this.startLiveChat();
@@ -89,33 +89,57 @@ export class LiveChat {
         });
 
         this.sdk.on("thread_summary", threadSummary => {
+          // console.log(`>>>>>>>> thread_summary`);
+          if (!this.store.state.liveAgent.isLiveChat) {
+            this.startLiveChat();
+            console.log(`Started live chat...`);
+          }
+          // console.log(`Thread Summary: `, threadSummary);
           this.chatId = threadSummary.chat;
-          let secondsWait = threadSummary.properties.lc2.queue_waiting_time;
-          let message =
-            "Chat request sent to agent. You are number " +
-            threadSummary.properties.lc2.queue_pos +
-            " in the queue. Average wait time is " +
-            (Math.floor(secondsWait / 60) +
-              " min " +
-              ("0" + Math.floor(secondsWait % 60)).slice(-2)) +
-            " seconds";
-          // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
-          let liveChatStatus = {
-            type: "liveChatQueue",
-            text: message,
-            bodyText: "",
-            hasExtraData: false
-          };
-          this.store.commit("PUSH_LIVE_CHAT_STATUS_TO_DIALOG", liveChatStatus); // push the getting message onto the dialog
+          try {
+            let secondsWait = threadSummary.properties.lc2.queue_waiting_time;
+            let message =
+              "Chat request sent to agent. You are number " +
+              threadSummary.properties.lc2.queue_pos +
+              " in the queue. Average wait time is " +
+              (Math.floor(secondsWait / 60) +
+                " min " +
+                ("0" + Math.floor(secondsWait % 60)).slice(-2)) +
+              " seconds";
+            // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
+            let liveChatStatus = {
+              type: "liveChatQueue",
+              text: message,
+              bodyText: "",
+              hasExtraData: false
+            };
+            this.store.commit(
+              "PUSH_LIVE_CHAT_STATUS_TO_DIALOG",
+              liveChatStatus
+            ); // push the getting message onto the dialog
+          } catch (e) {
+            console.log(e);
+          }
         });
 
         this.sdk.on("new_event", ({ chat, event }) => {
-          // console.log(event.type);
+          // console.log(`>>>>>>>> new_event`, event.type);
+
           switch (event.type) {
             case "message":
+              console.log(event.text);
               if (!this.chatId) {
                 this.chatId = chat;
+              }
+              console.log(
+                `Is live chat enabled? ${this.store.state.liveAgent.isLiveChat}`
+              );
+              if (
+                !this.store.state.liveAgent.isLiveChat ||
+                !this.store.state.ui.showChatWindow
+              ) {
                 this.startLiveChat();
+                console.log(`Started live chat...`);
               }
 
               if (event.author === this.agent.id) {
@@ -188,6 +212,7 @@ export class LiveChat {
         });
 
         this.sdk.on("user_is_typing", payload => {
+          // console.log(`>>>>>>>> user_is_typing`);
           if (payload.user === this.agent.id) {
             this.store.commit("LIVE_CHAT_LOADING", true);
           } else {
@@ -196,6 +221,7 @@ export class LiveChat {
         });
 
         this.sdk.on("user_stopped_typing", payload => {
+          // console.log(`>>>>>>>> user_stopped_typing`);
           if (payload.user === this.agent.id) {
             this.store.commit("LIVE_CHAT_LOADING", false);
           } else {
@@ -205,6 +231,7 @@ export class LiveChat {
 
         this.sdk.on("thread_closed", () => {
           // console.log(`chat_ended`);
+          // console.log(`>>>>>>>> thread_closed`);
           let message = "Chat with live agent ended.";
           this.store.commit("RESET_CHAT_TITLE");
           // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
@@ -234,6 +261,13 @@ export class LiveChat {
     }
   }
 
+  disableLiveChat() {
+    this.sdk.disconnect();
+    this.sdk.destroy();
+    this.store.commit("RESET_CHAT_TITLE");
+    this.store.commit("STOP_LIVE_CHAT");
+  }
+
   startLiveChat() {
     this.store.commit("CHANGE_CHAT_TITLE", `Speaking with ${this.agent.name}`);
 
@@ -241,7 +275,7 @@ export class LiveChat {
     // show typing output agentName + ' is typing...'
 
     let message = "You are talking to " + this.agent.name + ".";
-
+    this.store.commit("START_LIVE_CHAT");
     // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
 
     let liveChatStatus = {

@@ -4,6 +4,9 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 import router from "@/router";
+import LiveChat from "@livechat/agent-app-widget-sdk";
+import { accountsSdk } from "@livechat/accounts-sdk";
+import liveChatConfig from "./utils/livechat-config";
 var md = require("markdown-it")({
   html: true, // Enable HTML tags in source
   xhtmlOut: true, // Use '/' to close single tags (<br />).
@@ -143,11 +146,13 @@ function storeSetup(vuetify, callback) {
       promptTriggerInterval: null,
       knowledgeData: config.KNOWLEDGE_DATA,
       liveAgent: {
+        apiAccessToken: null,
         agentAvatar: null,
         agentID: null,
         agentName: null,
         enableLiveChat: config.ENABLE_LIVE_CHAT,
         isLiveChat: false,
+        isAgentAssist: config.IS_AGENT_ASSIST,
         liveChatMessage: null,
         showLiveChatProcessing: false
       },
@@ -191,8 +196,14 @@ function storeSetup(vuetify, callback) {
       }
     },
     getters: {
+      liveChatApiToken(state) {
+        return state.liveAgent.apiAccessToken;
+      },
       hasLoggedInTeneo(state) {
         return state.auth.hasLoggedInTeneo;
+      },
+      isLiveAgentAssist(state) {
+        return state.liveAgent.isAgentAssist;
       },
       config(state) {
         return state.chatConfig;
@@ -551,6 +562,74 @@ function storeSetup(vuetify, callback) {
         });
         return hasInline;
       },
+      hasExtensions: (_state, getters) => item => {
+        let extensions = getters.itemExtensions(item);
+        return extensions.length > 0;
+      },
+      hasMediaExtensions: (_state, getters) => item => {
+        let extensions = getters.itemExtensions(item);
+        let hasMediaExtensions = false;
+        extensions.forEach(extension => {
+          if (getters.hasExtensionType(extension, "youTube")) {
+            hasMediaExtensions = true;
+          } else if (getters.hasExtensionType(extension, "vimeo")) {
+            hasMediaExtensions = true;
+          } else if (getters.hasExtensionType(extension, "video")) {
+            hasMediaExtensions = true;
+          } else if (getters.hasExtensionType(extension, "map")) {
+            hasMediaExtensions = true;
+          } else if (getters.hasExtensionType(extension, "image")) {
+            hasMediaExtensions = true;
+          } else if (getters.hasExtensionType(extension, "carousel")) {
+            hasMediaExtensions = true;
+          }
+        });
+        return hasMediaExtensions;
+      },
+      hasExtensionType: (_state, getters) => (extension, type) => {
+        if (extension) {
+          switch (type) {
+            case "youTube":
+              if (getters.youTubeVideoId(extension)) {
+                return true;
+              }
+              break;
+            case "audio":
+              if (getters.audioInfo(extension)) {
+                return true;
+              }
+              break;
+            case "vimeo":
+              if (getters.vimeoId(extension)) {
+                return true;
+              }
+              break;
+            case "video":
+              if (getters.videoInfo(extension)) {
+                return true;
+              }
+              break;
+            case "map":
+              if (getters.mapInfo(extension)) {
+                return true;
+              }
+              break;
+            case "image":
+              if (getters.imageUrl(extension)) {
+                return true;
+              }
+              break;
+            case "carousel":
+              if (getters.carouselImageArray(extension)) {
+                return true;
+              }
+              break;
+            default:
+              return false;
+          }
+        }
+        return false;
+      },
       hasInlineType: (_state, getters) => (extension, type) => {
         if (extension && extension.inline) {
           switch (type) {
@@ -904,6 +983,9 @@ function storeSetup(vuetify, callback) {
       }
     },
     mutations: {
+      LIVE_CHAT_API_ACCESS_TOKEN(state, token) {
+        state.liveAgent.apiAccessToken = token;
+      },
       CHANGE_CHAT_TITLE(state, title) {
         state.ui.chatTitle = title;
       },
@@ -1056,6 +1138,9 @@ function storeSetup(vuetify, callback) {
       STOP_LIVE_CHAT(state) {
         state.liveAgent.isLiveChat = false;
       },
+      DISABLE_LIVE_CHAT(state) {
+        state.liveAgent.enableLiveChat = false;
+      },
       CHANGE_THEME(state) {
         state.ui.dark = !state.ui.dark;
         localStorage.setItem(
@@ -1073,6 +1158,8 @@ function storeSetup(vuetify, callback) {
         if (userInput) {
           //state.userInput.userInput = userInput.replace(/^\w/, c => c.toUpperCase());
           state.userInput.userInput = userInput;
+        } else {
+          state.userInput.userInput = "";
         }
       },
       START_TTS(state) {
@@ -1289,6 +1376,91 @@ function storeSetup(vuetify, callback) {
       }
     },
     actions: {
+      liveChatAddCannedResponse(context, config) {
+        // config.data.token = context.getters.liveChatApiToken;
+        console.log(config);
+        const agentAssistServer =
+          process.env.VUE_APP_LIVE_CHAT_AGENT_ASSIST_SERVER;
+        superagent
+          .post(`${agentAssistServer}/can`)
+          .accept("json")
+          .type("json")
+          .send(config)
+          .then(res => {
+            // res.body = json, res.headers, res.status
+            console.log("Agent Assist: Canned Resposne Created", res.body);
+          })
+          .catch(err => {
+            // err.message, err.response
+            console.error(err);
+          });
+      },
+      async putLiveChatAgentMessage(_context, message) {
+        // await LiveChat.refreshSessionId();
+        await LiveChat.putMessage(stripHtml(message));
+      },
+      setupLiveChatAgentAssist(context) {
+        console.log(
+          `Is this an Agent Assist App?`,
+          context.getters.isLiveAgentAssist
+        );
+        console.log(">> Before Live Agent Assist Setup");
+        if (context.getters.isLiveAgentAssist) {
+          console.log(">> In Live Agent Assist Setup");
+          let liveChatAgentAssistLastMessage = null;
+          LiveChat.init({ authorize: false })
+            .then(async () => {
+              console.log(">> Live Agent Assist Setup");
+              context.commit("DISABLE_LIVE_CHAT");
+
+              await LiveChat.refreshSessionId();
+              console.log("LiveChat Agent Assist Setup!");
+              LiveChat.on("customer_profile", profile => {
+                console.log("customer_profile", profile);
+              });
+
+              LiveChat.on("message", message => {
+                console.log("message received", message);
+                if (
+                  message.message_source === "visitor" &&
+                  message.message_id !== liveChatAgentAssistLastMessage &&
+                  !message.message.includes(
+                    "VIRTUAL ASSISTANT CONVERSATION HISTORY"
+                  )
+                ) {
+                  liveChatAgentAssistLastMessage = message.message_id;
+                  context.commit("SET_USER_INPUT", message.message);
+                  context.dispatch("sendUserInput").then(() => {});
+                }
+
+                // putLiveChatMessage("Wow this works a treat");
+              });
+
+              await LiveChat.watchMessages();
+              accountsSdk.init({
+                client_id: liveChatConfig.client_id,
+                onIdentityFetched: (_error, data) => {
+                  if (data && data.access_token) {
+                    context.commit(
+                      "LIVE_CHAT_API_ACCESS_TOKEN",
+                      data.access_token
+                    );
+                    console.log(
+                      "LIVE_CHAT_API_ACCESS_TOKEN",
+                      data.access_token
+                    );
+                  } else {
+                    window.location.href = `${liveChatConfig.account_url}?response_type=token&client_id=${liveChatConfig.client_id}&redirect_uri=${window.location.href}`;
+                  }
+                }
+              });
+            })
+            .catch(err => {
+              console.error(err);
+              context.dispatch("setupLiveChatAgentAssist");
+            });
+        }
+      },
       openChatWindow(context, mustLogin = true) {
         context.commit("HIDE_CHAT_BUTTON"); // toggle the chat button visibility
         context.commit("STOP_TTS"); // always reset audio to not speak when chat button is clicked
@@ -1508,6 +1680,40 @@ function storeSetup(vuetify, callback) {
           context.commit("STOP_AUDIO_CAPTURE");
         }
       },
+      endSessionLite(context) {
+        context.commit("REMOVE_MODAL_ITEM");
+        let fullUrl = new URL(context.getters.teneoUrl);
+        let endSessionUrl =
+          fullUrl.protocol +
+          "//" +
+          fullUrl.host +
+          fullUrl.pathname +
+          "endsession?viewtype=STANDARDJSONP" +
+          (config.SEND_CTX_PARAMS === "all"
+            ? config.REQUEST_PARAMETERS.length > 0
+              ? "&" +
+                config.REQUEST_PARAMETERS.substring(
+                  1,
+                  config.REQUEST_PARAMETERS.length
+                )
+              : ""
+            : "");
+
+        Vue.jsonp(endSessionUrl, {}).then(() => {
+          context.commit("HIDE_CHAT_LOADING");
+          context.commit(
+            "SHOW_MESSAGE_IN_CHAT",
+            "Session restarted at this point",
+            "info",
+            "info",
+            "false",
+            true,
+            "mdi-cast-connected",
+            "top"
+          );
+          console.log("Session Ended");
+        });
+      },
       endSession(context) {
         context.commit("CLEAR_DIALOGS");
         context.commit("REMOVE_MODAL_ITEM");
@@ -1668,8 +1874,11 @@ function storeSetup(vuetify, callback) {
             }
           )
             .then(json => {
-              // deal with polling
+              if (params.indexOf("command=train") !== -1) {
+                return;
+              }
               if ("numActiveFlows" in json.responseData.extraData) {
+                // deal with polling
                 let numActiveFlows = parseInt(
                   json.responseData.extraData.numActiveFlows
                 );

@@ -1,18 +1,56 @@
 <template>
   <!-- Reply -->
   <span v-if="item.type === 'reply'">
-    <v-row
-      v-if="itemText !== '<p>'"
-      class="my-1"
-      no-gutters
-      justify="start"
-    >
+    <v-row v-if="itemText !== '<p>'" class="my-1" no-gutters justify="start">
       <v-col
         cols="2"
         class="text-center d-none d-sm-block"
         v-if="showChatIcons && !this.$vuetify.breakpoint.xs"
       >
+        <v-menu
+          v-if="isLiveAgentAssist"
+          close-on-click
+          close-on-content-click
+          offset-y
+        >
+          <template v-slot:activator="{ on }">
+            <v-btn
+              v-on="on"
+              v-long-press="1000"
+              aria-label="Chat icon representing the virtual assitant"
+              @long-press-start="swapInputButton"
+              color="secondary"
+              class="teneo-response-icon elevation-2"
+              fab
+              light
+              small
+            >
+              <v-icon>{{ responseIcon }}</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list class="liveAgentAssitMenu">
+            <v-hover
+              v-slot:default="{ hover }"
+              v-for="menuItem in dynamicAgentAssistMenu"
+              :key="menuItem.title"
+            >
+              <v-list-item
+                @click="menuItem.method"
+                :class="hover ? 'primary' : ''"
+              >
+                <v-list-item-title :class="hover ? 'white--text' : ''">
+                  <v-icon :color="hover ? 'secondary' : ''" class="mr-2">{{
+                    menuItem.icon
+                  }}</v-icon>
+                  {{ menuItem.title }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-hover>
+          </v-list>
+        </v-menu>
         <v-btn
+          v-else
           v-long-press="1000"
           aria-label="Chat icon representing the virtual assitant"
           @long-press-start="swapInputButton"
@@ -22,7 +60,7 @@
           light
           small
         >
-          <v-icon>{{responseIcon}}</v-icon>
+          <v-icon>{{ responseIcon }}</v-icon>
         </v-btn>
       </v-col>
       <v-col class="text-left">
@@ -30,17 +68,13 @@
           :color="$vuetify.theme.dark ? '#333333' : '#FAFAFA'"
           class="chat-card chat-card-left text-left"
         >
-          <span
-            v-html="itemText"
-            class="teneo-reply"
-          ></span>
+          <span v-html="itemText" class="teneo-reply"></span>
         </v-card>
       </v-col>
-
     </v-row>
 
     <Card
-      v-if="hasCard(item) && (itemIndexInDialog === dialog.length - 1)"
+      v-if="hasCard(item) && itemIndexInDialog === dialog.length - 1"
       :item="item"
       class="mb-2"
     />
@@ -52,38 +86,38 @@
     >
       <v-col cols="12">
         <YouTube
-          v-if="hasInlineType(extension,'youTube')"
+          v-if="hasInlineType(extension, 'youTube')"
           :videoId="youTubeVideoId(extension)"
           class="mt-2"
         ></YouTube>
         <Audio
-          v-if="hasInlineType(extension,'audio')"
+          v-if="hasInlineType(extension, 'audio')"
           :url="audioInfo(extension).audioUrl"
           class="mt-2"
         ></Audio>
         <Vimeo
-          v-if="hasInlineType(extension,'vimeo')"
+          v-if="hasInlineType(extension, 'vimeo')"
           :videoId="vimeoId(extension)"
           class="mt-2"
         ></Vimeo>
         <Video
-          v-if="hasInlineType(extension,'video')"
+          v-if="hasInlineType(extension, 'video')"
           :url="videoInfo(extension).videoUrl"
           :type="videoInfo(extension).videoType"
           class="mt-2"
         ></Video>
         <Map
-          v-if="hasInlineType(extension,'map')"
+          v-if="hasInlineType(extension, 'map')"
           :address="mapInfo(extension).address"
           class="mt-2"
         ></Map>
         <ImageAnimation
-          v-if="hasInlineType(extension,'image')"
+          v-if="hasInlineType(extension, 'image')"
           :url="imageUrl(extension)"
           class="mt-2"
         ></ImageAnimation>
         <Carousel
-          v-if="hasInlineType(extension,'carousel')"
+          v-if="hasInlineType(extension, 'carousel')"
           :imageItems="carouselImageArray(extension)"
           class="mt-2"
         ></Carousel>
@@ -97,11 +131,7 @@
         no-gutters
         class="mb-2"
       >
-        <v-col
-          cols="2"
-          class="text-center"
-          v-if="showChatIcons"
-        >
+        <v-col cols="2" class="text-center" v-if="showChatIcons">
           <v-btn
             v-long-press="1000"
             @long-press-start="swapInputButton"
@@ -110,7 +140,7 @@
             fab
             small
           >
-            <v-icon class="white--text">{{responseIcon}}</v-icon>
+            <v-icon class="white--text">{{ responseIcon }}</v-icon>
           </v-btn>
         </v-col>
         <v-col>
@@ -118,34 +148,32 @@
             class="chat-card chat-card-left text-left"
             :color="$vuetify.theme.dark ? '#333333' : '#FAFAFA'"
           >
-            <span
-              v-html="chunkText"
-              class="teneo-reply"
-            ></span>
+            <span v-html="chunkText" class="teneo-reply"></span>
           </v-card>
         </v-col>
       </v-row>
     </div>
-    <DelayedResponse v-if="showDelayedResponse && (itemIndexInDialog === dialog.length - 1)"></DelayedResponse>
+    <DelayedResponse
+      v-if="showDelayedResponse && itemIndexInDialog === dialog.length - 1"
+    ></DelayedResponse>
     <!-- show any options in the response: for example Yes, No Maybe -->
     <v-card
       text
-      v-if="hasCollection && ((itemIndexInDialog === dialog.length - 1) || hasPermanentOptions)"
+      v-if="
+        hasCollection &&
+          (itemIndexInDialog === dialog.length - 1 || hasPermanentOptions)
+      "
       class="mb-3 elevation-0 text-center"
       width="100%"
     >
       <!-- Button Options -->
-      <v-card-text
-        class="teneo-button-options"
-        v-if="!hasLongOptions"
-      >
+      <v-card-text class="teneo-button-options" v-if="!hasLongOptions">
         <h3 v-text="getOptions.title"></h3>
         <div
           v-if="getOptions.html"
           class="elevation-2 mt-2"
           v-html="getOptions.items"
-        >
-        </div>
+        ></div>
         <span
           v-else
           v-for="(option, optionIndex) in getOptions.items"
@@ -156,7 +184,7 @@
             small
             color="success"
             @click="optionClicked(option)"
-          >{{option.name}}
+            >{{ option.name }}
           </v-btn>
         </span>
       </v-card-text>
@@ -173,36 +201,33 @@
               dense
             >
               <v-list-item-icon class="mr-4">
-                <v-icon>{{ getLongListIcon(altOptionIndex)}}</v-icon>
+                <v-icon>{{ getLongListIcon(altOptionIndex) }}</v-icon>
               </v-list-item-icon>
               <v-list-item-content class="text-left">
                 <!-- <v-list-item-title v-html="option.name"></v-list-item-title> -->
-                <v-list-item-subtitle v-html="option.name"></v-list-item-subtitle>
+                <v-list-item-subtitle
+                  v-html="option.name"
+                ></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </template>
         </v-list-item-group>
       </v-list>
-
     </v-card>
     <!-- more info for modals & calendar picker button -->
     <v-row no-gutters>
       <v-col
         cols="12"
         class="text-right mb-2"
-        v-if="hasFeedbackForm(item) && (itemIndexInDialog === dialog.length - 1)"
+        v-if="hasFeedbackForm(item) && itemIndexInDialog === dialog.length - 1"
       >
-        <v-btn
-          color="secondary"
-          class="mt-2"
-          small
-          @click="displayFeedbackForm"
-        >{{ getFeedbackFormConfig.label ? getFeedbackFormConfig.label : "Leave Feedback" }}
-          <v-icon
-            right
-            small
-            color="white"
-          >mdi-thumbs-up-down</v-icon>
+        <v-btn color="secondary" class="mt-2" small @click="displayFeedbackForm"
+          >{{
+            getFeedbackFormConfig.label
+              ? getFeedbackFormConfig.label
+              : "Leave Feedback"
+          }}
+          <v-icon right small color="white">mdi-thumbs-up-down</v-icon>
         </v-btn>
       </v-col>
 
@@ -220,43 +245,36 @@
           @handleFocus="handleFocus()"
         />
 
-        <v-btn
-          color="success"
-          class="mt-2"
-          small
-          @click="showForm()"
-        >{{ getFormConfig && getFormConfig.openFormButtonText ? getFormConfig.openFormButtonText : "Form" }}
-          <v-icon
-            right
-            small
-            color="white"
-          >mdi-file-document-edit-outline</v-icon>
+        <v-btn color="success" class="mt-2" small @click="showForm()"
+          >{{
+            getFormConfig && getFormConfig.openFormButtonText
+              ? getFormConfig.openFormButtonText
+              : "Form"
+          }}
+          <v-icon right small color="white"
+            >mdi-file-document-edit-outline</v-icon
+          >
         </v-btn>
       </v-col>
 
       <v-col
         cols="12"
         class="text-right mb-2"
-        v-if="(item.hasExtraData && hasModal(item) && notLiveChatTranscript) || itemHasLongResponse(item)"
+        v-if="
+          (item.hasExtraData && hasModal(item) && notLiveChatTranscript) ||
+            itemHasLongResponse(item)
+        "
       >
-        <v-btn
-          color="success"
-          class="mt-2"
-          small
-          @click="showModal"
-        >{{ modalButtonText }}
-          <v-icon
-            right
-            small
-            color="white"
-          >{{ modalButtonIcon }}</v-icon>
+        <v-btn color="success" class="mt-2" small @click="showModal"
+          >{{ modalButtonText }}
+          <v-icon right small color="white">{{ modalButtonIcon }}</v-icon>
         </v-btn>
       </v-col>
       <!-- Date Picker -->
       <v-col
         class="text-right"
         cols="12"
-        v-if="mustShowDate && (itemIndexInDialog === dialog.length - 1)"
+        v-if="mustShowDate && itemIndexInDialog === dialog.length - 1"
       >
         <v-btn
           small
@@ -272,7 +290,7 @@
       <v-col
         class="text-right"
         cols="12"
-        v-if="mustShowTime && (itemIndexInDialog === dialog.length - 1)"
+        v-if="mustShowTime && itemIndexInDialog === dialog.length - 1"
       >
         <v-btn
           small
@@ -285,6 +303,20 @@
         </v-btn>
       </v-col>
     </v-row>
+    <v-snackbar
+      v-model="snackbar"
+      absolute
+      color="primary"
+      :timeout="snackBarTimeout"
+      top
+      >{{ snackBarText }}</v-snackbar
+    >
+    <AgentAssistCannedResponseForm
+      v-if="agentAssist.cannedResponseForm"
+      :text="agentAssist.cannedResponseText"
+      @hideDialog="agentAssist.cannedResponseForm = false"
+      @saved="handleAgentAssistCannedResponseSave"
+    />
   </span>
 </template>
 
@@ -295,11 +327,14 @@ import Carousel from "./Carousel";
 import ImageAnimation from "./ImageAnimation";
 import DelayedResponse from "./DelayedResponse";
 import Video from "./Video";
+import AgentAssistCannedResponseForm from "./AgentAssistCannedResponseForm";
 import Map from "./Map";
 import Vimeo from "./Vimeo";
 import Card from "./Card";
 import YouTube from "./YouTube";
 import { mapGetters } from "vuex";
+import copy from "copy-to-clipboard";
+var stripHtml = require("striptags");
 
 export default {
   name: "ChatTeneoResponse",
@@ -308,6 +343,7 @@ export default {
   },
   components: {
     Audio,
+    AgentAssistCannedResponseForm,
     Carousel,
     Card,
     ImageAnimation,
@@ -321,6 +357,52 @@ export default {
   props: ["item", "itemIndexInDialog"],
   data() {
     return {
+      snackbar: false,
+      snackBarTimeout: 1500,
+      snackBarText: "Success",
+      agentAssist: {
+        cannedResponseForm: false,
+        cannedResponseText: "",
+        menu: [
+          {
+            icon: "mdi-backburger",
+            title: "Send to live chat",
+            method: this.sendToLiveChatAgentInputBox
+          },
+          {
+            icon: "mdi-clipboard-arrow-up-outline",
+            title: "Copy to clipboard",
+            method: this.copyToClipboard
+          },
+          {
+            icon: "mdi-pound-box-outline",
+            title: "Add as canned response",
+            method: this.showLiveAgentCannedResponseForm
+          },
+          {
+            icon: "mdi-refresh",
+            title: "Reset bot session",
+            method: this.resetBotSession
+          },
+          {
+            icon: "mdi-link-box-variant-outline",
+            title: "Send URL to customer",
+            condition: this.hasLink,
+            method: this.sendLinkToLiveAgent
+          },
+          {
+            icon: "mdi-tooltip-image-outline",
+            title: "Get media data",
+            condition: this.hasMedia,
+            method: this.sendResponseMediaToLiveAgent
+          },
+          {
+            icon: "mdi-arrow-expand-up",
+            title: "Create moment",
+            method: this.createLiveChatMoment
+          }
+        ]
+      },
       displayForm: false,
       hasFormAutomaticallyDisplayed: false,
       completedForm: false
@@ -328,6 +410,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "isLiveAgentAssist",
       "dark",
       "itemAnswerTextCropped",
       "showChatIcons",
@@ -338,6 +421,7 @@ export default {
       "responseIcon",
       "uuid",
       "hasInline",
+      "hasMediaExtensions",
       "hasInlineType",
       "showFeedbackForm",
       "dialogs",
@@ -353,6 +437,13 @@ export default {
       "mapInfo",
       "youTubeVideoId"
     ]),
+    dynamicAgentAssistMenu() {
+      let filtered = this.agentAssist.menu.filter(menuItem => {
+        return !("condition" in menuItem) || menuItem.condition();
+      });
+
+      return filtered;
+    },
     modalButtonText() {
       if (this.itemHasLongResponse(this.item)) {
         return this.$t("button.more");
@@ -513,6 +604,79 @@ export default {
     }
   },
   methods: {
+    hasMedia() {
+      return this.hasMediaExtensions(this.item);
+    },
+    sendResponseMediaToLiveAgent() {
+      console.log(`Sending media to Agent`);
+      let finalMessageToAgent = "";
+      const extensions = this.itemExtensions(this.item);
+      extensions.forEach(extension => {
+        if (this.hasInlineType(extension, "youTube")) {
+          finalMessageToAgent += `\nYouTube: https://www.youtube.com/watch?v=${this.youTubeVideoId(
+            extension
+          )}`;
+        } else if (this.hasInlineType(extension, "vimeo")) {
+          finalMessageToAgent += `\nVimeoId: ${this.vimeoId(extension)}`;
+        } else if (this.hasInlineType(extension, "video")) {
+          finalMessageToAgent += `\nVideo: ${
+            this.videoInfo(extension).videoUrl
+          }`;
+        } else if (this.hasInlineType(extension, "map")) {
+          finalMessageToAgent += `\nAddress: ${
+            this.mapInfo(extension).address
+          }`;
+        } else if (this.hasInlineType(extension, "image")) {
+          console.log(this.imageUrl(extension));
+          finalMessageToAgent += `\nImage: ${this.imageUrl(extension)}`;
+        } else if (this.hasInlineType(extension, "carousel")) {
+          finalMessageToAgent += `\nImages: ${this.carouselImageArray(
+            extension
+          )}`;
+        }
+      });
+      if (finalMessageToAgent) {
+        this.$store.dispatch(
+          "putLiveChatAgentMessage",
+          decodeURIComponent(finalMessageToAgent)
+        );
+      }
+    },
+    createLiveChatMoment() {
+      console.log(`Create Moment`);
+    },
+    handleAgentAssistCannedResponseSave() {
+      this.agentAssist.cannedResponseForm = false;
+      this.snackBarText = "#️⃣ New canned response added";
+      this.snackbar = true;
+    },
+    showLiveAgentCannedResponseForm() {
+      this.agentAssist.cannedResponseText = stripHtml(this.itemText);
+      this.agentAssist.cannedResponseForm = true;
+    },
+    hasLink() {
+      return this.item.teneoResponse.link.href;
+    },
+    sendLinkToLiveAgent() {
+      this.$store.dispatch(
+        "putLiveChatAgentMessage",
+        decodeURIComponent(this.item.teneoResponse.link.href)
+      );
+    },
+    resetBotSession() {
+      this.$store.dispatch("endSessionLite").then(() => {
+        this.snackBarText = "♻ Bot session reset";
+        this.snackbar = true;
+      });
+    },
+    copyToClipboard() {
+      copy(stripHtml(this.itemText));
+      this.snackBarText = "📋 Copied to your clipboard";
+      this.snackbar = true;
+    },
+    sendToLiveChatAgentInputBox() {
+      this.$store.dispatch("putLiveChatAgentMessage", this.itemText);
+    },
     isLastInDialog() {
       return this.itemIndexInDialog === this.dialog.length - 1;
     },

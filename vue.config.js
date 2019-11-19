@@ -7,7 +7,7 @@ var prod = process.env.NODE_ENV === "production";
 
 module.exports = {
   devServer: {
-    https: false,
+    https: true,
     port: 8080,
     disableHostCheck: true,
     host: "0.0.0.0",
@@ -21,7 +21,7 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        data: `@import "~@/sass/variables.scss"`
+        prependData: `@import "~@/sass/variables.scss"`
       }
     }
   },

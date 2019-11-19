@@ -1,5 +1,5 @@
 module.exports = {
-  presets: ["@vue/app"],
+  presets: [["@vue/app", { useBuiltIns: "entry" }]],
   plugins: [
     "@babel/transform-runtime",
     "@babel/syntax-dynamic-import",
