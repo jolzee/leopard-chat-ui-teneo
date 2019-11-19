@@ -45,6 +45,7 @@
           v-if="!maximizeChat"
           color="primary"
           class="white--text elevation-4 leopard-system-bar"
+          style="border-left: 4px solid yellowgreen !important; border-right: 4px solid yellowgreen !important;"
           @click="maximizeChat = true"
         >
           <v-icon color="secondary">mdi-message-text</v-icon>
