@@ -45,14 +45,12 @@
           v-if="!maximizeChat"
           color="primary"
           class="white--text elevation-4 leopard-system-bar"
+          @click="maximizeChat = true"
         >
           <v-icon color="secondary">mdi-message-text</v-icon>
           <span>Agent Assist Bot</span>
           <v-spacer></v-spacer>
-          <v-icon
-            color="secondary"
-            @click="maximizeChat = true"
-          >mdi-checkbox-blank-outline</v-icon>
+          <v-icon color="secondary">mdi-checkbox-blank-outline</v-icon>
         </v-system-bar>
       </transition>
       <template v-if="maximizeChat">
@@ -869,6 +867,7 @@ export default {
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
 .leopard-system-bar {
+  cursor: pointer;
   border-radius: 0.5em;
   position: fixed;
   right: 50px;
