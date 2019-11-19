@@ -205,13 +205,25 @@
               }"
                 :style="toolbarStyle"
               >
-                <v-app-bar-nav-icon
-                  :aria-label="
+                <v-fab-transition>
+                  <v-btn
+                    icon
+                    text
+                    small
+                    tile
+                    ripple
+                    color="secondary"
+                    :aria-label="
                   drawer ? 'Hide the chat menu' : 'Show the chat menu'
                 "
-                  @click.stop="drawer = !drawer"
-                  class="secondary--text"
-                ></v-app-bar-nav-icon>
+                    @click.stop="drawer = !drawer"
+                    class="embed-button-center ml-0"
+                    :style="customCssButtonToolbar"
+                  >
+                    <v-icon dark>{{ drawer ? 'mdi-menu-open' : 'mdi-menu'}}</v-icon>
+                  </v-btn>
+                </v-fab-transition>
+
                 <v-toolbar-title
                   v-text="toolbarTitle"
                   class="pl-0"
@@ -224,10 +236,13 @@
                       <v-btn
                         v-show="showChatButton"
                         icon
+                        text
+                        small
+                        tile
                         ripple
                         color="secondary"
                         aria-label="Close Chat"
-                        class="embed-button-center"
+                        class="embed-button-center mr-0"
                         :style="customCssButtonToolbar"
                       >
                         <v-icon dark>mdi-close</v-icon>
@@ -240,10 +255,13 @@
                   <v-fab-transition v-if="isLiveAgentAssist">
                     <v-btn
                       icon
+                      text
+                      tile
                       ripple
+                      small
                       color="secondary"
                       aria-label="Minimize Chat"
-                      class="embed-button-center"
+                      class="embed-button-center mr-1"
                       :style="customCssButtonToolbar"
                       @click="maximizeChat = false"
                     >
@@ -253,10 +271,13 @@
                   <v-fab-transition>
                     <v-btn
                       icon
+                      text
+                      tile
                       ripple
+                      small
                       color="secondary"
                       aria-label="Close Chat"
-                      class="embed-button-center"
+                      class="embed-button-center mr-0"
                       :style="customCssButtonToolbar"
                       @click="toggleChat"
                     >
