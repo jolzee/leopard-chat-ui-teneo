@@ -92,6 +92,7 @@ Vue.component(
 );
 
 Vue.config.productionTip = false;
+let liveChatAssistConnectCount = 0;
 
 export function getStore(callback) {
   config
@@ -1457,7 +1458,10 @@ function storeSetup(vuetify, callback) {
             })
             .catch(err => {
               console.error(err);
-              context.dispatch("setupLiveChatAgentAssist");
+              liveChatAssistConnectCount += 1;
+              if (liveChatAssistConnectCount < 5) {
+                context.dispatch("setupLiveChatAgentAssist");
+              }
             });
         }
       },

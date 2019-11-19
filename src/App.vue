@@ -35,38 +35,59 @@
         'application-mobile': isMobileDevice
       }"
     >
-      <div
-        id="chat-open-close-button"
-        v-if="!embed"
-      >
-        <v-fab-transition>
-          <v-btn
-            fab
-            dark
-            color="primary"
-            :aria-label="isChatOpen ? 'Close Chat' : 'Open Chat'"
-            elevation="2"
-            @click="toggleChat"
-            v-show="showChatButton && !isChatOpen"
-            :class="{ pulse: pulseButton && !isChatOpen }"
-            :style="customCssButtonToolbar"
-          >
-            <v-icon
-              dark
-              v-text="isChatOpen ? 'mdi-close' : 'mdi-message-text'"
-            ></v-icon>
-          </v-btn>
-        </v-fab-transition>
-      </div>
       <transition
-        name="menu-transition"
-        :enter-active-class="getAnimatedIn"
-        :leave-active-class="getAnimatedOut"
+        name="system-bar-transition"
+        enter-active-class="animated fadeInRightBig"
+        leave-active-class="animated fadeOutRightBig"
       >
+        <v-system-bar
+          window
+          v-if="!maximizeChat"
+          color="primary"
+          class="white--text elevation-4 leopard-system-bar"
+        >
+          <v-icon color="secondary">mdi-message-text</v-icon>
+          <span>Agent Assist Bot</span>
+          <v-spacer></v-spacer>
+          <v-icon
+            color="secondary"
+            @click="maximizeChat = true"
+          >mdi-checkbox-blank-outline</v-icon>
+        </v-system-bar>
+      </transition>
+      <template v-if="maximizeChat">
         <div
-          id="teneo"
-          v-if="isChatOpen"
-          :class="{
+          id="chat-open-close-button"
+          v-if="!embed"
+        >
+          <v-fab-transition>
+            <v-btn
+              fab
+              dark
+              color="primary"
+              :aria-label="isChatOpen ? 'Close Chat' : 'Open Chat'"
+              elevation="2"
+              @click="toggleChat"
+              v-show="showChatButton && !isChatOpen"
+              :class="{ pulse: pulseButton && !isChatOpen }"
+              :style="customCssButtonToolbar"
+            >
+              <v-icon
+                dark
+                v-text="isChatOpen ? 'mdi-close' : 'mdi-message-text'"
+              ></v-icon>
+            </v-btn>
+          </v-fab-transition>
+        </div>
+        <transition
+          name="chat-window-transition"
+          :enter-active-class="getAnimatedIn"
+          :leave-active-class="getAnimatedOut"
+        >
+          <div
+            id="teneo"
+            v-if="isChatOpen"
+            :class="{
             'elevation-2': !embed,
             'application-float': float,
             'application-embed': embed,
@@ -74,225 +95,241 @@
             'teneo-dark-bg': $vuetify.theme.dark,
             'application-mobile': isMobileDevice
           }"
-        >
-          <transition
-            name="menu-transition"
-            enter-active-class="animated slideInRight"
-            leave-active-class="animated slideOutRight"
           >
-            <v-navigation-drawer
-              app
-              :clipped="clipped"
-              v-if="drawer"
-              v-model="drawer"
-              enable-resize-watcher
-              temporary
-              right
-              width="250"
+
+            <transition
+              name="menu-transition"
+              enter-active-class="animated slideInRight"
+              leave-active-class="animated slideOutRight"
             >
-              <v-row>
-                <v-col class="pa-0 ma-0 elevation-2">
-                  <div class="secondary darken-1 text-center pa-2">
-                    <div class="headline white--text font-weight-medium">
-                      Artificial Solutions
+
+              <v-navigation-drawer
+                app
+                :clipped="clipped"
+                v-if="drawer"
+                v-model="drawer"
+                enable-resize-watcher
+                temporary
+                right
+                width="250"
+              >
+                <v-row>
+                  <v-col class="pa-0 ma-0 elevation-2">
+                    <div class="secondary darken-1 text-center pa-2">
+                      <div class="headline white--text font-weight-medium">
+                        Artificial Solutions
+                      </div>
                     </div>
-                  </div>
-                  <div class="primary darken-1 text-center py-2 px-4">
-                    <div class="white--text body-2 pa-1">
-                      {{ $t("about.page.content") }}
+                    <div class="primary darken-1 text-center py-2 px-4">
+                      <div class="white--text body-2 pa-1">
+                        {{ $t("about.page.content") }}
+                      </div>
                     </div>
-                  </div>
-                </v-col>
-              </v-row>
-              <v-list class="px-2 mt-1">
-                <v-list-item
-                  ripple
-                  value="true"
-                  key="menuItemTheme"
-                  @click="toggleBrightness"
-                >
-                  <v-list-item-action>
-                    <v-icon
-                      medium
-                      :class="menuClass"
-                      v-text="
+                  </v-col>
+                </v-row>
+                <v-list class="px-2 mt-1">
+                  <v-list-item
+                    ripple
+                    value="true"
+                    key="menuItemTheme"
+                    @click="toggleBrightness"
+                  >
+                    <v-list-item-action>
+                      <v-icon
+                        medium
+                        :class="menuClass"
+                        v-text="
                         $vuetify.theme.dark
                           ? 'mdi-brightness-5'
                           : 'mdi-brightness-4'
                       "
-                    ></v-icon>
-                  </v-list-item-action>
-                  <v-list-item-content>
-                    <v-list-item-title
-                      class="subheading"
-                      :class="menuClassText"
-                    >{{
+                      ></v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        class="subheading"
+                        :class="menuClassText"
+                      >{{
                         $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
                       }}</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-list-item
-                  ripple
-                  value="true"
-                  v-for="(menuItem, i) in activeMenuItems"
-                  :key="i + 'menuItem'"
-                  :to="menuItem.route"
-                >
-                  <v-list-item-action>
-                    <v-icon
-                      medium
-                      :class="menuClass"
-                    >{{
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item
+                    ripple
+                    value="true"
+                    v-for="(menuItem, i) in activeMenuItems"
+                    :key="i + 'menuItem'"
+                    :to="menuItem.route"
+                  >
+                    <v-list-item-action>
+                      <v-icon
+                        medium
+                        :class="menuClass"
+                      >{{
                       menuItem.icon
                     }}</v-icon>
-                  </v-list-item-action>
-                  <v-list-item-content>
-                    <v-list-item-title
-                      class="subheading"
-                      :class="menuClassText"
-                    >{{ $t(menuItem.titleKey) }}</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-              <template
-                v-slot:append
-                v-if="authenticated"
-              >
-                <div class="pa-2">
-                  <v-btn
-                    ripple
-                    to="/"
-                    block
-                    color="primary darken-1"
-                    @click="logout()"
-                  >{{ $t("menu.logout") }}
-                  </v-btn>
-                </div>
-              </template>
-            </v-navigation-drawer>
-          </transition>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        class="subheading"
+                        :class="menuClassText"
+                      >{{ $t(menuItem.titleKey) }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+                <template
+                  v-slot:append
+                  v-if="authenticated"
+                >
+                  <div class="pa-2">
+                    <v-btn
+                      ripple
+                      to="/"
+                      block
+                      color="primary darken-1"
+                      @click="logout()"
+                    >{{ $t("menu.logout") }}
+                    </v-btn>
+                  </div>
+                </template>
+              </v-navigation-drawer>
+            </transition>
 
-          <div>
-            <v-toolbar
-              :color="toolbarColor"
-              height="64"
-              class="teneo-leopard-header"
-              :class="{
+            <div>
+              <v-toolbar
+                :color="toolbarColor"
+                height="64"
+                class="teneo-leopard-header"
+                :class="{
                 'teneo-toolbar-float': float,
                 'teneo-toolbar-embed': embed
               }"
-              :style="toolbarStyle"
-            >
-              <v-app-bar-nav-icon
-                :aria-label="
+                :style="toolbarStyle"
+              >
+                <v-app-bar-nav-icon
+                  :aria-label="
                   drawer ? 'Hide the chat menu' : 'Show the chat menu'
                 "
-                @click.stop="drawer = !drawer"
-                class="secondary--text"
-              ></v-app-bar-nav-icon>
-              <v-toolbar-title
-                v-text="toolbarTitle"
-                class="pl-0"
-              ></v-toolbar-title>
-              <v-spacer></v-spacer>
-              <!-- Handle close button on production embedded sites -->
-              <template v-if="embed">
-                <span @click="closeChatEmbedded">
+                  @click.stop="drawer = !drawer"
+                  class="secondary--text"
+                ></v-app-bar-nav-icon>
+                <v-toolbar-title
+                  v-text="toolbarTitle"
+                  class="pl-0"
+                ></v-toolbar-title>
+                <v-spacer></v-spacer>
+                <!-- Handle close button on production embedded sites -->
+                <template v-if="embed">
+                  <span @click="closeChatEmbedded">
+                    <v-fab-transition>
+                      <v-btn
+                        v-show="showChatButton"
+                        icon
+                        ripple
+                        color="secondary"
+                        aria-label="Close Chat"
+                        class="embed-button-center"
+                        :style="customCssButtonToolbar"
+                      >
+                        <v-icon dark>mdi-close</v-icon>
+                      </v-btn>
+                    </v-fab-transition>
+                  </span>
+                </template>
+                <!-- Handle close button in demo mode -->
+                <template v-else>
+                  <v-fab-transition v-if="isLiveAgentAssist">
+                    <v-btn
+                      icon
+                      ripple
+                      color="secondary"
+                      aria-label="Minimize Chat"
+                      class="embed-button-center"
+                      :style="customCssButtonToolbar"
+                      @click="maximizeChat = false"
+                    >
+                      <v-icon dark>mdi-window-minimize</v-icon>
+                    </v-btn>
+                  </v-fab-transition>
                   <v-fab-transition>
                     <v-btn
-                      v-show="showChatButton"
                       icon
                       ripple
                       color="secondary"
                       aria-label="Close Chat"
                       class="embed-button-center"
                       :style="customCssButtonToolbar"
+                      @click="toggleChat"
                     >
                       <v-icon dark>mdi-close</v-icon>
                     </v-btn>
                   </v-fab-transition>
-                </span>
-              </template>
-              <!-- Handle close button in demo mode -->
-              <template v-else>
-                <v-fab-transition>
-                  <v-btn
-                    icon
-                    ripple
-                    color="secondary"
-                    aria-label="Close Chat"
-                    class="embed-button-center"
-                    :style="customCssButtonToolbar"
-                    @click="toggleChat"
-                  >
-                    <v-icon dark>mdi-close</v-icon>
-                  </v-btn>
-                </v-fab-transition>
-              </template>
-            </v-toolbar>
-            <v-content
-              app
-              class="content-area"
-            >
-              <transition
-                name="page-transition"
-                enter-active-class="animation fadeIn"
+                </template>
+              </v-toolbar>
+              <v-content
+                app
+                class="content-area"
               >
-                <router-view />
-              </transition>
-              <teneo-modal></teneo-modal>
-            </v-content>
+                <transition
+                  name="page-transition"
+                  enter-active-class="animation fadeIn"
+                >
+                  <router-view />
+                </transition>
+                <teneo-modal></teneo-modal>
+              </v-content>
+            </div>
           </div>
-        </div>
-      </transition>
-      <v-row justify="center">
-        <v-dialog
-          v-model="importDialog"
-          persistent
-          max-width="600"
-        >
-          <v-card>
-            <v-card-title class="headline">Solution Import</v-card-title>
-            <v-card-text>{{ importDialogMessages.message }}<br /><br />
-              <v-simple-table>
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th class="text-left">Name</th>
-                      <th class="text-left">Deep Link</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{ importDialogMessages.name }}</td>
-                      <td>{{ importDialogMessages.deepLink }}</td>
-                    </tr>
-                  </tbody>
-                </template> </v-simple-table><br />
-              <v-alert
-                border="top"
-                colored-border
-                type="warning"
-                elevation="2"
-              >
-                Accepting will overwrite other solutions with the same name or
-                deep link.
-              </v-alert>
-            </v-card-text>
-            <v-card-actions>
-              <div class="flex-grow-1"></div>
-              <v-btn
-                color="grey lighten-5"
-                @click="importDialog = false"
-              >Cancel</v-btn>
-              <v-btn
-                color="green lighten-2"
-                @click="importSolutionFromUrl"
-              >OK</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
+        </transition>
+        <v-row justify="center">
+          <v-dialog
+            v-model="importDialog"
+            persistent
+            max-width="600"
+          >
+            <v-card>
+              <v-card-title class="headline">Solution Import</v-card-title>
+              <v-card-text>{{ importDialogMessages.message }}<br /><br />
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-left">Name</th>
+                        <th class="text-left">Deep Link</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{ importDialogMessages.name }}</td>
+                        <td>{{ importDialogMessages.deepLink }}</td>
+                      </tr>
+                    </tbody>
+                  </template> </v-simple-table><br />
+                <v-alert
+                  border="top"
+                  colored-border
+                  type="warning"
+                  elevation="2"
+                >
+                  Accepting will overwrite other solutions with the same name or
+                  deep link.
+                </v-alert>
+              </v-card-text>
+              <v-card-actions>
+                <div class="flex-grow-1"></div>
+                <v-btn
+                  color="grey lighten-5"
+                  @click="importDialog = false"
+                >Cancel</v-btn>
+                <v-btn
+                  color="green lighten-2"
+                  @click="importSolutionFromUrl"
+                >OK</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-row>
+      </template>
     </v-app>
   </div>
 </template>
@@ -314,6 +351,7 @@ export default {
       importDialog: false,
       parentHeight: "",
       loginPerformed: false,
+      maximizeChat: true,
       importedSolution: {},
       importDialogMessages: {},
       clipped: false,
@@ -829,6 +867,14 @@ export default {
 
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
+
+.leopard-system-bar {
+  border-radius: 0.5em;
+  position: fixed;
+  right: 50px;
+  bottom: 30px;
+  width: 220px;
+}
 
 .v-overlay--active {
   border-radius: 0px !important;

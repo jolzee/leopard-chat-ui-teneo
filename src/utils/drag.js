@@ -2,16 +2,22 @@
   // make vuetify dialogs movable
   const d = {};
   document.addEventListener("mousedown", e => {
-    const closestDialog = e.target.closest(".v-dialog.v-dialog--active, .v-application.application-float");
+    const closestDialog = e.target.closest(
+      ".v-dialog.v-dialog--active, .v-application.application-float"
+    );
 
     if (
       e.button === 0 &&
       closestDialog !== null &&
-      (e.target.classList.contains("v-system-bar") || e.target.classList.contains("v-toolbar__content"))
+      ((e.target.classList.contains("v-system-bar") &&
+        !e.target.classList.contains("leopard-system-bar")) ||
+        e.target.classList.contains("v-toolbar__content"))
     ) {
       // element which can be used to move element
       d.el = closestDialog; // element which should be moved
-      d.what = e.target.classList.contains("v-toolbar__content") ? "chat-window" : "dialog";
+      d.what = e.target.classList.contains("v-toolbar__content")
+        ? "chat-window"
+        : "dialog";
       d.mouseStartX = e.clientX;
       d.mouseStartY = e.clientY;
       d.elStartX = d.el.getBoundingClientRect().left;
@@ -55,9 +61,15 @@
     const dialog = document.querySelector(".v-dialog.v-dialog--active");
     if (dialog === null) return;
     dialog.style.left =
-      Math.min(parseInt(dialog.style.left), window.innerWidth - dialog.getBoundingClientRect().width) + "px";
+      Math.min(
+        parseInt(dialog.style.left),
+        window.innerWidth - dialog.getBoundingClientRect().width
+      ) + "px";
     dialog.style.top =
-      Math.min(parseInt(dialog.style.top), window.innerHeight - dialog.getBoundingClientRect().height) + "px";
+      Math.min(
+        parseInt(dialog.style.top),
+        window.innerHeight - dialog.getBoundingClientRect().height
+      ) + "px";
   }, 5000);
 
   setInterval(() => {
@@ -67,8 +79,14 @@
     if (dialog === null || teneo === null) return;
     // console.log("setInternal application app");
     dialog.style.left =
-      Math.min(parseInt(dialog.style.left), window.innerWidth - teneo.getBoundingClientRect().width) + "px";
+      Math.min(
+        parseInt(dialog.style.left),
+        window.innerWidth - teneo.getBoundingClientRect().width
+      ) + "px";
     dialog.style.top =
-      Math.min(parseInt(dialog.style.top), window.innerHeight - teneo.getBoundingClientRect().height) + "px";
+      Math.min(
+        parseInt(dialog.style.top),
+        window.innerHeight - teneo.getBoundingClientRect().height
+      ) + "px";
   }, 5000);
 })();
