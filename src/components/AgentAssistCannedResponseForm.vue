@@ -1,5 +1,8 @@
 <template>
-  <v-row justify="center">
+  <v-row
+    justify="center"
+    v-if="showDialog"
+  >
     <v-dialog
       v-model="showDialog"
       persistent

@@ -238,6 +238,7 @@
     <!-- Date picker dialog -->
     <v-col
       cols="12"
+      v-if="showDate"
       :key="'datePicker' + uuid"
     >
       <v-dialog
@@ -268,6 +269,7 @@
     <!-- Time picker dialog -->
     <v-col
       cols="12"
+      v-if="showTime"
       :key="'timePicker' + uuid"
     >
       <v-dialog

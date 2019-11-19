@@ -6,6 +6,7 @@
     <v-row
       align="start"
       justify="start"
+      v-if="dialog"
     >
       <v-dialog
         v-model="dialog"

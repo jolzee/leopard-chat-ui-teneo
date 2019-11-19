@@ -1,5 +1,8 @@
 <template>
-  <v-row justify="center">
+  <v-row
+    justify="center"
+    v-if="dialog"
+  >
     <v-dialog
       v-model="dialog"
       scrollable

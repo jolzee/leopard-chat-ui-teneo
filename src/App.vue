@@ -193,7 +193,7 @@
               </v-navigation-drawer>
             </transition>
 
-            <div>
+            <div style="height: inherit">
               <v-toolbar
                 :color="toolbarColor"
                 height="64"
@@ -268,6 +268,7 @@
                 app
                 class="content-area"
               >
+                <OverlayAlert />
                 <transition
                   name="page-transition"
                   enter-active-class="animation fadeIn"
@@ -279,7 +280,10 @@
             </div>
           </div>
         </transition>
-        <v-row justify="center">
+        <v-row
+          v-if="importDialog"
+          justify="center"
+        >
           <v-dialog
             v-model="importDialog"
             persistent
@@ -335,13 +339,14 @@
 <script>
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "./constants/solution-config-default.js";
+import OverlayAlert from "./components/OverlayAlert";
 import jsonpack from "jsonpack/main";
 
 // import { createDetailsWidget } from "@livechat/agent-app-sdk";
 // import { createMessageBoxWidget } from "@livechat/agent-app-sdk";
 
 export default {
-  components: {},
+  components: { OverlayAlert },
   data() {
     return {
       liveChatAccessToken: null,
@@ -1092,8 +1097,12 @@ a:focus {
   right: 0;
 }
 
+.v-application--wrap {
+  min-height: inherit !important;
+}
+
 .content-area {
-  height: auto;
+  height: calc(100% - 64px);
   padding: unset;
 }
 

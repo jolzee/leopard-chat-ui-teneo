@@ -9,12 +9,10 @@
       <v-expansion-panels>
         <v-expansion-panel
           v-for="(item,i) in knowledgeData"
+          @click="sendUserInput(item)"
           :key="i"
         >
-          <v-expansion-panel-header
-            @click="sendUserInput(item)"
-            :hide-actions="true"
-          >
+          <v-expansion-panel-header :hide-actions="true">
             {{ item }}
           </v-expansion-panel-header>
         </v-expansion-panel>

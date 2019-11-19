@@ -1,5 +1,8 @@
 <template>
-  <v-row justify="center">
+  <v-row
+    justify="center"
+    v-if="dialog"
+  >
     <v-dialog
       v-model="dialog"
       persistent
@@ -8,7 +11,10 @@
     >
       <v-card>
         <v-card-title class="title">
-          <v-icon class="mr-2" color="primary">mdi-teach</v-icon> Train Bot
+          <v-icon
+            class="mr-2"
+            color="primary"
+          >mdi-teach</v-icon> Train Bot
         </v-card-title>
         <v-card-text class="px-1">
           <v-col cols="12">
@@ -61,10 +67,16 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="$emit('close')"
-            >Cancel</v-btn
-          >
-          <v-btn color="blue darken-1" text @click="trainTeneo">Train</v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="$emit('close')"
+          >Cancel</v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="trainTeneo"
+          >Train</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

@@ -157,6 +157,10 @@ function storeSetup(vuetify, callback) {
         liveChatMessage: null,
         showLiveChatProcessing: false
       },
+      overlay: {
+        showOverlayAlert: false,
+        overlayAlertMessage: ""
+      },
       modals: {
         modalItem: null,
         showConfigModal: true,
@@ -197,6 +201,12 @@ function storeSetup(vuetify, callback) {
       }
     },
     getters: {
+      showOverlayAlert(state) {
+        return state.overlay.showOverlayAlert;
+      },
+      overlayAlertMessage(state) {
+        return state.overlay.overlayAlertMessage;
+      },
       liveChatApiToken(state) {
         return state.liveAgent.apiAccessToken;
       },
@@ -984,6 +994,18 @@ function storeSetup(vuetify, callback) {
       }
     },
     mutations: {
+      SHOW_OVERLAY_ALERT(state, message) {
+        state.overlay.overlayAlertMessage = message;
+        state.overlay.showOverlayAlert = true;
+        setTimeout(function() {
+          state.overlay.showOverlayAlert = false;
+          state.overlay.overlayAlertMessage = "";
+        }, 2000);
+      },
+      CLOSE_OVERY_ALERT(state) {
+        state.overlay.showOverlayAlert = false;
+        state.overlay.overlayAlertMessage = "";
+      },
       LIVE_CHAT_API_ACCESS_TOKEN(state, token) {
         state.liveAgent.apiAccessToken = token;
       },
