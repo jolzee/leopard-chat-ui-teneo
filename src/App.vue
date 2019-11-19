@@ -50,7 +50,7 @@
           <v-icon color="secondary">mdi-message-text</v-icon>
           <span>Agent Assist Bot</span>
           <v-spacer></v-spacer>
-          <v-icon color="secondary">mdi-checkbox-blank-outline</v-icon>
+          <v-icon color="secondary">mdi-arrow-expand-all</v-icon>
         </v-system-bar>
       </transition>
       <template v-if="maximizeChat">
@@ -246,7 +246,7 @@
                       :style="customCssButtonToolbar"
                       @click="maximizeChat = false"
                     >
-                      <v-icon dark>mdi-window-minimize</v-icon>
+                      <v-icon dark>mdi-image-size-select-small</v-icon>
                     </v-btn>
                   </v-fab-transition>
                   <v-fab-transition>
