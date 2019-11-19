@@ -987,7 +987,9 @@ function storeSetup(vuetify, callback) {
         return state.ui.chatTitle;
       },
       showChatIcons(state) {
-        return state.activeSolution.showChatIcons;
+        return state.liveAgent.isAgentAssist
+          ? true
+          : state.activeSolution.showChatIcons;
       },
       showUploadButton(state) {
         return state.ui.showUploadButton;
