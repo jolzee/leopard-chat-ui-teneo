@@ -21,7 +21,7 @@
         cols="12"
         class="pa-0"
         id="teneo-chat-scroll"
-        :class="{'dark-scroll': $vuetify.theme.dark, 'light-scroll': !$vuetify.theme.dark, 'chat-responses-float': float, 'chat-responses': !float, 'chat-responses-float-mobile': isMobileDevice}"
+        :class="{'grey darken-4 dark-scroll': $vuetify.theme.dark, 'light-scroll grey lighten-4': !$vuetify.theme.dark, 'chat-responses-float': float, 'chat-responses': !float, 'chat-responses-float-mobile': isMobileDevice}"
         ref="chatContainer"
       >
         <!-- show the initial loding ball animation when first loading the chat window -->
@@ -40,7 +40,7 @@
         >
           <transition-group
             name="chat-line-transition"
-            enter-active-class="animated fadeIn"
+            enter-active-class="animated no-animation-today"
           >
             <!-- item && hasCollection(item) -->
             <v-expansion-panel
@@ -853,6 +853,8 @@ div.options-list a.v-list__tile--link {
   border-top: unset !important;
   padding-left: 10px;
   padding-right: 10px;
+  animation-duration: 2s;
+  animation-delay: 1s;
 }
 
 .chat-responses-float {
