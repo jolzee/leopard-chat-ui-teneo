@@ -18,21 +18,15 @@
         </v-card-title>
         <v-card-text class="px-1">
           <v-col cols="12">
-            <v-textarea
-              solo
-              v-model="question"
-              name="question"
-              rows="2"
-              label="User Question"
-              hint="User Question"
-              disabled
-              background-color="grey lighten-4"
-              auto-grow
-              outlined
-              persistent-hint
-              append-icon="mdi-comment-question-outline"
-              class="mt-0 pt-0 teneoQuestion"
-            ></v-textarea>
+            <v-alert
+              border="top"
+              colored-border
+              color="success"
+              elevation="2"
+              icon="mdi-comment-question-outline"
+            >
+              {{ question }}
+            </v-alert>
           </v-col>
           <v-col cols="12">
             <v-textarea
