@@ -182,10 +182,10 @@ export default class Setup {
                 light: this.THEME,
                 dark: {
                   primary: "#161616",
-                  secondary: "#4A4A4A",
+                  secondary: "#575757",
                   accent: "#00FF00",
                   error: "#FF4B4B",
-                  info: "#0048BA",
+                  info: "#1E92D0",
                   success: "#46A352",
                   warning: "#9B5D09"
                 }
