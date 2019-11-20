@@ -957,6 +957,7 @@ export default {
         "mdi-message-reply-text",
         "mdi-android-messages",
         "mdi-assistant",
+        "mdi-bullseye-arrow",
         "mdi-account",
         "mdi-account-arrow-right",
         "mdi-account-arrow-left",
