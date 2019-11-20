@@ -1,53 +1,39 @@
 <template>
-  <v-row
-    justify="center"
-    v-if="dialog"
-  >
+  <v-row justify="center" v-if="dialog">
     <v-dialog
       v-model="dialog"
       scrollable
       max-width="400px"
-      :fullscreen="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm || $vuetify.breakpoint.md"
+      :fullscreen="
+        $vuetify.breakpoint.xs ||
+          $vuetify.breakpoint.sm ||
+          $vuetify.breakpoint.md
+      "
     >
       <v-card>
-        <v-app-bar
-          dark
-          color="primary"
-          max-height="64"
-        >
+        <v-app-bar dark color="primary" max-height="64">
           <v-toolbar-title>Feedback</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-icon>mdi-message-processing-outline</v-icon>
         </v-app-bar>
 
-        <v-card-text
-          style="height: 360px;"
-          class="px-2"
-        >
-
+        <v-card-text style="height: 360px;" class="px-2">
           <v-container fluid>
             <v-row>
-              <v-col
-                cols="12"
-                class="mb-0 pb-0"
-              >
+              <v-col cols="12" class="mb-0 pb-0">
                 <div class="text-center">
                   <v-rating
                     v-model="rating"
                     color="primary"
                     background-color="secondary lighten-5"
                     empty-icon="$ratingFull"
-                    :x-large="$vuetify.breakpoint.lg ||$vuetify.breakpoint.xl"
+                    :x-large="$vuetify.breakpoint.lg || $vuetify.breakpoint.xl"
                     :large="$vuetify.breakpoint.md"
                     :x-small="$vuetify.breakpoint.xs"
                   ></v-rating>
                 </div>
               </v-col>
-              <v-col
-                v-if="feedbackConfig.reasons"
-                cols="12"
-                class="mb-0 pb-0"
-              >
+              <v-col v-if="feedbackConfig.reasons" cols="12" class="mb-0 pb-0">
                 <v-combobox
                   v-model="reasons"
                   :items="items"
@@ -57,7 +43,7 @@
                   clearable
                   solo
                   deletable-chips
-                  :item-color="secondary"
+                  item-color="secondary"
                   hide-selected
                   small-chips
                   chips
@@ -66,10 +52,7 @@
                   dense
                 ></v-combobox>
               </v-col>
-              <v-col
-                cols="12"
-                class="my-0 py-0"
-              >
+              <v-col cols="12" class="my-0 py-0">
                 <v-textarea
                   outlined
                   v-model="comment"
@@ -87,22 +70,12 @@
               </v-col>
             </v-row>
           </v-container>
-
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            small
-            color="error"
-            text
-            @click="hideFeedback"
-          >Close</v-btn>
-          <v-btn
-            small
-            color="success"
-            @click="sendFeedback"
-          >Send</v-btn>
+          <v-btn small color="error" text @click="hideFeedback">Close</v-btn>
+          <v-btn small color="success" @click="sendFeedback">Send</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -146,5 +119,4 @@ export default {
   computed: {}
 };
 </script>
-<style>
-</style>
+<style></style>
