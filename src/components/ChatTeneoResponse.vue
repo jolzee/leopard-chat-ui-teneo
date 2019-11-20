@@ -30,7 +30,7 @@
               light
               small
             >
-              <v-icon>{{ responseIcon }}</v-icon>
+              <v-icon>{{ getResponseIcon }}</v-icon>
             </v-btn>
           </template>
 
@@ -68,7 +68,7 @@
           light
           small
         >
-          <v-icon>{{ responseIcon }}</v-icon>
+          <v-icon>{{ getResponseIcon }}</v-icon>
         </v-btn>
       </v-col>
       <v-col class="text-left">
@@ -155,7 +155,7 @@
             fab
             small
           >
-            <v-icon class="white--text">{{ responseIcon }}</v-icon>
+            <v-icon class="white--text">{{ getResponseIcon }}</v-icon>
           </v-btn>
         </v-col>
         <v-col>
@@ -476,6 +476,18 @@ export default {
       "mapInfo",
       "youTubeVideoId"
     ]),
+    getResponseIcon() {
+      let icon = this.responseIcon;
+      if (
+        "teneoResponse" in this.item &&
+        this.item.teneoResponse.emotion !== "" &&
+        decodeURIComponent(this.item.teneoResponse.emotion).indexOf("|") !== -1
+      ) {
+        let rawEmotion = decodeURIComponent(this.item.teneoResponse.emotion);
+        icon = "mdi-" + rawEmotion.split("|")[1].trim();
+      }
+      return icon;
+    },
     dynamicAgentAssistMenu() {
       let filtered = this.agentAssist.menu.filter(menuItem => {
         if ("condition" in menuItem) {
