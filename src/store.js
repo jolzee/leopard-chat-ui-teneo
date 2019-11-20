@@ -1851,6 +1851,7 @@ function storeSetup(vuetify, callback) {
               if (hasExtraData) {
                 context.commit("SHOW_CHAT_MODAL", response);
               }
+              context.commit("LOGGED_INTO_TENEO");
               resolve();
             })
             .catch(err => {

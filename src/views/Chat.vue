@@ -1,10 +1,5 @@
 <template>
-  <v-container
-    fluid
-    id="chat-area"
-    class="chat-container"
-  >
-
+  <v-container fluid id="chat-area" class="chat-container">
     <ChatNoHistory v-if="noHistory && isHistoryPage"></ChatNoHistory>
 
     <!-- show the listening modal when recognizing audio input -->
@@ -13,15 +8,18 @@
       :message="$t('listening')"
     ></teneo-listening>
 
-    <v-row
-      class="mx-0"
-      no-gutters
-    >
+    <v-row class="mx-0" no-gutters>
       <v-col
         cols="12"
         class="pa-0"
         id="teneo-chat-scroll"
-        :class="{'grey darken-4 dark-scroll': $vuetify.theme.dark, 'light-scroll grey lighten-4': !$vuetify.theme.dark, 'chat-responses-float': float, 'chat-responses': !float, 'chat-responses-float-mobile': isMobileDevice}"
+        :class="{
+          'grey darken-4 dark-scroll': $vuetify.theme.dark,
+          'light-scroll grey lighten-4': !$vuetify.theme.dark,
+          'chat-responses-float': float,
+          'chat-responses': !float,
+          'chat-responses-float-mobile': isMobileDevice
+        }"
         ref="chatContainer"
       >
         <!-- show the initial loding ball animation when first loading the chat window -->
@@ -45,9 +43,9 @@
             <!-- item && hasCollection(item) -->
             <v-expansion-panel
               class="teneo-dialog pa-0"
-              v-for="(item,i) in dialog"
+              v-for="(item, i) in dialog"
               :key="i + 'itemsIter' + uuid"
-              :class="{'mt-0 pb-0': (i === dialog.length - 1), 'pt-0': (i === 0)}"
+              :class="{ 'mt-0 pb-0': i === dialog.length - 1, 'pt-0': i === 0 }"
             >
               <v-expansion-panel-header
                 :hide-actions="true"
@@ -56,7 +54,10 @@
                 <v-container fluid>
                   <ChatBroadcastMessage :item="item"></ChatBroadcastMessage>
 
-                  <LiveChatResponse :item="item"></LiveChatResponse>
+                  <LiveChatResponse
+                    :itemIndexInDialog="i"
+                    :item="item"
+                  ></LiveChatResponse>
 
                   <ChatTeneoResponse
                     :item="item"
@@ -75,7 +76,6 @@
                   ></ChatUserQuestion>
                 </v-container>
               </v-expansion-panel-header>
-
             </v-expansion-panel>
           </transition-group>
 
@@ -92,17 +92,14 @@
               elevation="2"
               colored-border
               icon="mdi-keyboard-settings"
-            >Agent is typing a message..
+              >Agent is typing a message..
               <vue-loaders-ball-pulse-sync
                 color="#C2C2C2"
                 scale="0.5"
               ></vue-loaders-ball-pulse-sync>
             </v-alert>
-
           </div>
-
         </v-expansion-panels>
-
       </v-col>
       <!-- Chat Footer - Input Field and Buttons -->
       <v-progress-linear
@@ -115,11 +112,7 @@
     </v-row>
     <!-- // progressBar -->
 
-    <v-row
-      class="teneo-footer"
-      :class="{'footer-float': float}"
-      no-gutters
-    >
+    <v-row class="teneo-footer" :class="{ 'footer-float': float }" no-gutters>
       <v-col class="pt-2">
         <v-form
           v-model="valid"
@@ -128,10 +121,7 @@
           style="height: 50px;"
         >
           <v-row no-gutters>
-            <v-col
-              cols="10"
-              class="px-2"
-            >
+            <v-col cols="10" class="px-2">
               <v-text-field
                 id="teneo-input-field"
                 aria-label="Enter your question for assistance here"
@@ -139,10 +129,25 @@
                 :disabled="progressBar"
                 :append-icon="showAudioInput ? 'mdi-chevron-double-right' : ''"
                 @click:append="sendUserInput"
-                v-shortkey="{toggle1: ['ctrl', 'alt', '/'], toggle2: ['ctrl', 'alt', 'arrowdown']}"
+                v-shortkey="{
+                  toggle1: ['ctrl', 'alt', '/'],
+                  toggle2: ['ctrl', 'alt', 'arrowdown']
+                }"
                 @shortkey.native="swapInputButton"
-                :prepend-inner-icon="askingForPassword ? showPassword ? 'mdi-eye' : 'mdi-eye-off' : ''"
-                :type="askingForPassword ? showPassword ? 'text' : 'password' : 'text'"
+                :prepend-inner-icon="
+                  askingForPassword
+                    ? showPassword
+                      ? 'mdi-eye'
+                      : 'mdi-eye-off'
+                    : ''
+                "
+                :type="
+                  askingForPassword
+                    ? showPassword
+                      ? 'text'
+                      : 'password'
+                    : 'text'
+                "
                 @click:prepend-inner="showPassword = !showPassword"
                 :rules="askingForEmail ? [rules.email(userInput)] : []"
                 clearable
@@ -156,14 +161,19 @@
                 autocomplete="off"
                 @keyup.enter.native="sendUserInput"
                 v-model="userInput"
-                :label="inputHelpText ? inputHelpText : askingForPassword ? $t('input.box.label.password') : askingForEmail ? $t('input.box.label.email') : $t('input.box.label')"
+                :label="
+                  inputHelpText
+                    ? inputHelpText
+                    : askingForPassword
+                    ? $t('input.box.label.password')
+                    : askingForEmail
+                    ? $t('input.box.label.email')
+                    : $t('input.box.label')
+                "
                 single-line
                 data-lpignore="true"
               ></v-text-field>
-              <span
-                v-shortkey="['esc']"
-                @shortkey="stopAudioCapture"
-              ></span>
+              <span v-shortkey="['esc']" @shortkey="stopAudioCapture"></span>
             </v-col>
             <v-col cols="2">
               <upload-btn
@@ -176,10 +186,7 @@
                 class="elevation-2 v-btn v-btn--contained v-btn--fab v-btn--round v-size--small primary white--text"
               >
                 <template slot="icon">
-                  <v-icon
-                    dark
-                    class="py-2"
-                  >mdi-paperclip</v-icon>
+                  <v-icon dark class="py-2">mdi-paperclip</v-icon>
                 </template>
               </upload-btn>
               <v-progress-circular
@@ -218,7 +225,11 @@
                   @long-press-start="swapInputButton"
                   small
                   v-if="showAudioInput"
-                  v-shortkey="{recordAudioOne: ['ctrl', 'alt', '.'], recordAudioTwo: ['ctrl', 'alt', '`'], recordAudioThree: ['ctrl', 'alt', 'arrowup']}"
+                  v-shortkey="{
+                    recordAudioOne: ['ctrl', 'alt', '.'],
+                    recordAudioTwo: ['ctrl', 'alt', '`'],
+                    recordAudioThree: ['ctrl', 'alt', 'arrowup']
+                  }"
                   @shortkey.native="captureAudio"
                   :color="audioButtonColor"
                   :class="audioButtonClasses"
@@ -236,69 +247,35 @@
 
     <!-- end -->
     <!-- Date picker dialog -->
-    <v-col
-      cols="12"
-      v-if="showDate"
-      :key="'datePicker' + uuid"
-    >
+    <v-col cols="12" v-if="showDate" :key="'datePicker' + uuid">
       <v-dialog
         ref="dialogDate"
         v-model="showDate"
         :return-value.sync="date"
         width="290px"
       >
-        <v-date-picker
-          v-model="date"
-          scrollable
-        >
+        <v-date-picker v-model="date" scrollable>
           <v-spacer></v-spacer>
-          <v-btn
-            text
-            color="primary"
-            @click="showDate = false"
-          >Cancel</v-btn>
-          <v-btn
-            text
-            color="primary"
-            @click="sendUserInput"
-          >OK</v-btn>
+          <v-btn text color="primary" @click="showDate = false">Cancel</v-btn>
+          <v-btn text color="primary" @click="sendUserInput">OK</v-btn>
         </v-date-picker>
       </v-dialog>
     </v-col>
 
     <!-- Time picker dialog -->
-    <v-col
-      cols="12"
-      v-if="showTime"
-      :key="'timePicker' + uuid"
-    >
-      <v-dialog
-        ref="dialogTime"
-        v-model="showTime"
-        width="290px"
-      >
-        <v-time-picker
-          v-model="userInput"
-          format="24hr"
-        ></v-time-picker>
+    <v-col cols="12" v-if="showTime" :key="'timePicker' + uuid">
+      <v-dialog ref="dialogTime" v-model="showTime" width="290px">
+        <v-time-picker v-model="userInput" format="24hr"></v-time-picker>
         <v-card>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="error"
-              @click="showTime = false"
-            >Cancel</v-btn>
-            <v-btn
-              color="success"
-              @click="sendUserInput"
-            >OK</v-btn>
+            <v-btn color="error" @click="showTime = false">Cancel</v-btn>
+            <v-btn color="success" @click="sendUserInput">OK</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-col>
-
   </v-container>
-
 </template>
 
 <script>

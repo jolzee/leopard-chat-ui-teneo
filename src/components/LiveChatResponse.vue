@@ -6,8 +6,8 @@
         :value="true"
         dense
         border="left"
-        color="primary"
-        colored-border
+        prominent
+        :color="this.$vuetify.theme.dark ? 'info darken-3' : 'info lighten-2'"
         icon="mdi-counter"
         elevation="2"
       >
@@ -16,14 +16,17 @@
     </div>
 
     <!-- Live Chat Status -->
-    <div v-if="item.type === 'liveChatStatus'">
+    <div
+      v-if="item.type === 'liveChatStatus'"
+      :class="itemIndexInDialog === 0 ? 'mt-4' : 'mt-0'"
+    >
       <v-alert
         :value="true"
         dense
         border="left"
         colored-border
-        color="primary"
-        icon="mdi-thumb-up"
+        color="success"
+        icon="mdi-account-multiple-check"
         elevation="2"
       >
         {{ item.text }}
@@ -32,11 +35,11 @@
     <div v-if="item.type === 'liveChatEnded'" class="mt-4">
       <v-alert
         :value="true"
-        color="primary"
+        color="warning"
         dense
         border="left"
         colored-border
-        icon="mdi-logout-variant"
+        icon="mdi-account-multiple-minus"
         elevation="2"
       >
         {{ item.text }}
@@ -64,9 +67,7 @@
           :color="$vuetify.theme.dark ? '#333333' : '#FAFAFA'"
           class="chat-card chat-card-left text-left"
         >
-          <span class="teneo-reply"
-            ><p>{{ item.text }}</p></span
-          >
+          <span class="teneo-reply" v-html="item.text"> </span>
         </v-card>
       </v-col>
     </v-row>
@@ -78,7 +79,7 @@
 import { mapGetters } from "vuex";
 export default {
   name: "LiveChatResponse",
-  props: ["item"],
+  props: ["item", "itemIndexInDialog"],
   computed: {
     ...mapGetters(["showChatIcons"])
   }
