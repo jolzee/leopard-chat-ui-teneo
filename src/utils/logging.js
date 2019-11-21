@@ -1,6 +1,7 @@
 let log = {
   info: function info(message) {
-    const callerInfo = getFileName(info.caller.name);
+    // const callerInfo = getFileName(info.caller.name);
+    const callerInfo = getFileName();
     console.log(
       arguments.callee.name.toUpperCase() +
         " | " +

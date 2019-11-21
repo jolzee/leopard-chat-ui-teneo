@@ -1,5 +1,8 @@
 <template>
-  <v-card class="mx-auto mt-2" max-width="400">
+  <v-card
+    class="mx-auto mt-2"
+    max-width="400"
+  >
     <v-img
       v-if="config.imageUrl"
       class="white--text align-end"
@@ -10,23 +13,34 @@
     <v-card-title
       class="subtitle-2 white--text primary cardTitleBackground mb-5"
       v-if="config.title"
-      >{{ config.title }}</v-card-title
-    >
-    <v-card-subtitle v-if="config.subTitle" class="pb-1">{{
+    >{{ config.title }}</v-card-title>
+    <v-card-subtitle
+      v-if="config.subTitle"
+      class="pb-1"
+    >{{
       config.subTitle
     }}</v-card-subtitle>
 
-    <v-card-text v-if="config.bodyText" class="text--primary">
+    <v-card-text
+      v-if="config.bodyText"
+      class="text--primary"
+    >
       {{ config.bodyText }}
     </v-card-text>
 
-    <v-card-text v-if="config.chips" class="my-0 py-0">
+    <v-card-text
+      v-if="config.chips"
+      class="my-0 py-0"
+    >
       <v-chip-group
         v-model="chipSelectionIndex"
         active-class="secondary white--text"
         column
       >
-        <v-chip v-for="(chip, index) in config.chips" :key="'chip' + index">{{
+        <v-chip
+          v-for="(chip, index) in config.chips"
+          :key="'chip' + index"
+        >{{
           chip.name
         }}</v-chip>
       </v-chip-group>
@@ -80,12 +94,7 @@ export default {
       this.$store.commit("SET_USER_INPUT", responseText);
       let optionClickParam = "&isClick=true";
       this.$store
-        .dispatch(
-          "sendUserInput",
-          responseParameters !== ""
-            ? responseParameters + optionClickParam
-            : optionClickParam
-        )
+        .dispatch("sendUserInput", responseParameters + optionClickParam)
         .then(() => {
           this.$log.debug("Card info sent to Teneo");
         });

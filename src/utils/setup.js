@@ -71,9 +71,9 @@ export default class Setup {
       messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID
     };
     // Get the dark theme setting from local storage
-    if ((localStorage.getItem(STORAGE_KEY + "darkTheme") === "true") === null) {
-      localStorage.setItem(STORAGE_KEY + "darkTheme", "false");
-    }
+    // let darkThemeSetting = localStorage.getItem(STORAGE_KEY + "darkTheme");
+
+    localStorage.setItem(STORAGE_KEY + "darkTheme", "false");
   }
 
   init() {
