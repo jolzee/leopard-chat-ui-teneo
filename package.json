@@ -19,6 +19,8 @@
     "@livechat/agent-app-widget-sdk": "github:livechat/agent-app-widget-sdk#master",
     "@livechat/customer-auth": "^0.4.0-alpha.0",
     "@livechat/customer-sdk": "^2.0.0-alpha.3",
+    "@sentry/browser": "^5.9.1",
+    "@sentry/integrations": "^5.8.0",
     "artyom.js": "github:jolzee/artyom.js#master",
     "copy-to-clipboard": "^3.2.0",
     "core-js": "^3.4.1",

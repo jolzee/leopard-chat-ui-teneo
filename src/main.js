@@ -18,6 +18,21 @@ import { getStore } from "./store";
 import App from "./App";
 import router from "./router";
 
+// start sentry
+
+if (process.env.NODE_ENV === "production" && process.env.VUE_APP_SENTRY_DSN) {
+  Promise.all([import("@sentry/browser"), import("@sentry/integrations")]).then(
+    ([Sentry, Integrations]) => {
+      Sentry.init({
+        dsn: process.env.VUE_APP_SENTRY_DSN,
+        integrations: [new Integrations.Vue({ Vue, attachProps: true })],
+        logErrors: true
+      });
+    }
+  );
+}
+// end sentry
+
 getStore((vuetify, store) => {
   new Vue({
     vuetify,
