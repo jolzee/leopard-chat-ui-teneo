@@ -14,6 +14,20 @@ import { ASR_CORRECTIONS } from "../constants/asr-corrections"; // fix ASR issue
 import { LiveChat } from "../utils/live-chat";
 import { STORAGE_KEY } from "../constants/solution-config-default";
 
+import VueLogger from "vuejs-logger";
+const isProduction = process.env.NODE_ENV === "production";
+const options = {
+  isEnabled: true,
+  logLevel: isProduction ? "error" : "debug",
+  stringifyArguments: false,
+  showLogLevel: true,
+  showMethodName: true,
+  separator: "|",
+  showConsoleColors: true
+};
+
+Vue.use(VueLogger, options);
+
 export default class Setup {
   constructor() {
     this.TENEO_CHAT_HISTORY = "teneo-chat-history";
@@ -213,7 +227,7 @@ export default class Setup {
       // Reload config for each load. Maybe there a new deployment change that you want to
       if (process.env.VUE_APP_LOAD_CONFIG_FOR_NEW_SESSIONS === "true") {
         localStorage.removeItem(STORAGE_KEY + "config");
-        console.log("Cleared local storage");
+        Vue.$log.debug("Cleared local storage");
       }
       this.chatConfig = JSON.parse(
         localStorage.getItem(STORAGE_KEY + "config")
@@ -222,7 +236,7 @@ export default class Setup {
         !this.chatConfig ||
         (this.chatConfig && this.chatConfig.solutions.length === 0)
       ) {
-        console.log("No config: Looking for default.json");
+        Vue.$log.debug("No config: Looking for default.json");
         this._loadDefaultConfig()
           .then(defaultConfig => {
             this.chatConfig = defaultConfig;
@@ -238,7 +252,7 @@ export default class Setup {
   _loadDefaultConfig() {
     return new Promise((resolve, reject) => {
       if (!process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG) {
-        console.log("Loaded internal config");
+        Vue.$log.debug("Loaded internal config");
         resolve(internalConfig);
       } else {
         // look for default config on the server
@@ -247,7 +261,7 @@ export default class Setup {
           .get(defaultConfigUrl)
           .accept("application/json")
           .then(res => {
-            console.log("Found and loaded external default config");
+            Vue.$log.debug("Found and loaded external default config");
             let defaultConfig = res.body;
             localStorage.setItem(
               STORAGE_KEY + "config",

@@ -1,11 +1,9 @@
 <template>
-  <v-row
-    align="start"
-    justify="start"
-    class="mx-2 fill-height"
-  >
+  <v-row align="start" justify="start" class="mx-2 fill-height">
     <v-col cols="12">
-      <p class="subheading font-weight-medium">Login with one of the following methods.</p>
+      <p class="subheading font-weight-medium">
+        Login with one of the following methods.
+      </p>
     </v-col>
     <v-col cols="12">
       <v-btn
@@ -13,11 +11,7 @@
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
         @click="loginSocial('facebook')"
       >
-        <v-icon
-          left
-          light
-          class="ml-1"
-        >mdi-facebook-box</v-icon>
+        <v-icon left light class="ml-1">mdi-facebook-box</v-icon>
         Facebook
       </v-btn>
       <v-btn
@@ -25,11 +19,7 @@
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
         @click="loginSocial('google')"
       >
-        <v-icon
-          left
-          light
-          class="ml-1"
-        >mdi-google-plus</v-icon>
+        <v-icon left light class="ml-1">mdi-google-plus</v-icon>
         Google+
       </v-btn>
       <v-btn
@@ -37,16 +27,14 @@
         class="white--text teneo-social-btn px-1 mb-1 mr-0"
         @click="loginSocial('github')"
       >
-        <v-icon
-          left
-          light
-          class="ml-1"
-        >mdi-github-circle</v-icon>
+        <v-icon left light class="ml-1">mdi-github-circle</v-icon>
         GitHub
       </v-btn>
     </v-col>
     <v-col cols="12">
-      <p class="subheading font-weight-medium">Alternatively use your email and password.</p>
+      <p class="subheading font-weight-medium">
+        Alternatively use your email and password.
+      </p>
     </v-col>
     <v-form
       ref="form"
@@ -56,7 +44,6 @@
     >
       <v-container fluid>
         <v-row>
-
           <v-col cols="12">
             <v-text-field
               v-model="email"
@@ -83,29 +70,15 @@
               @click:append="showPassword = !showPassword"
             ></v-text-field>
           </v-col>
-          <v-col
-            cols="12"
-            class="ml-0"
-          >
-            <v-btn
-              @click="loginUser"
-              color="success"
-              type="submit"
-            >
+          <v-col cols="12" class="ml-0">
+            <v-btn @click="loginUser" color="success" type="submit">
               Login
             </v-btn>
           </v-col>
-          <v-col
-            v-if="errorMessage"
-            cols="12"
-          >
-            <v-alert
-              :value="true"
-              type="info"
-            >
+          <v-col v-if="errorMessage" cols="12">
+            <v-alert :value="true" type="info">
               {{ errorMessage }}
             </v-alert>
-
           </v-col>
         </v-row>
       </v-container>
@@ -171,7 +144,7 @@ export default {
             try {
               setTimeout(this.hideErrorMessage, 2000);
             } catch (e) {
-              console.log(e.message);
+              this.$log.error(e);
             }
           });
       }

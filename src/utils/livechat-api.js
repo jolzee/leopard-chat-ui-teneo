@@ -1,5 +1,6 @@
 import config from "./livechat-config";
 import axios from "axios";
+import Vue from "vue";
 
 const GET = "GET";
 const { server_url } = config;
@@ -15,7 +16,7 @@ const createApiRequest = (method, route, accessToken, login) => {
       Agent: login
     }
   }).catch(function(error) {
-    console.error(error);
+    Vue.$log.error(error);
   });
 };
 

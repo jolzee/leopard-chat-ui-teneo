@@ -1,12 +1,7 @@
 <template>
   <!-- Reply -->
   <span v-if="item.type === 'reply'">
-    <v-row
-      v-if="itemText !== '<p>'"
-      class="my-1"
-      no-gutters
-      justify="start"
-    >
+    <v-row v-if="itemText !== '<p>'" class="my-1" no-gutters justify="start">
       <v-col
         cols="2"
         class="text-center d-none d-sm-block"
@@ -45,10 +40,7 @@
                 :class="hover ? 'primary' : ''"
               >
                 <v-list-item-title :class="hover ? 'white--text' : ''">
-                  <v-icon
-                    :color="hover ? 'secondary' : ''"
-                    class="mr-2"
-                  >{{
+                  <v-icon :color="hover ? 'secondary' : ''" class="mr-2">{{
                     menuItem.icon
                   }}</v-icon>
                   {{ menuItem.title }}
@@ -76,10 +68,7 @@
           :color="$vuetify.theme.dark ? '#333333' : '#FAFAFA'"
           class="chat-card chat-card-left text-left"
         >
-          <span
-            v-html="itemText"
-            class="teneo-reply"
-          ></span>
+          <span v-html="itemText" class="teneo-reply"></span>
         </v-card>
       </v-col>
     </v-row>
@@ -142,11 +131,7 @@
         no-gutters
         class="mb-2"
       >
-        <v-col
-          cols="2"
-          class="text-center"
-          v-if="showChatIcons"
-        >
+        <v-col cols="2" class="text-center" v-if="showChatIcons">
           <v-btn
             v-long-press="1000"
             @long-press-start="swapInputButton"
@@ -163,15 +148,14 @@
             class="chat-card chat-card-left text-left"
             :color="$vuetify.theme.dark ? '#333333' : '#FAFAFA'"
           >
-            <span
-              v-html="chunkText"
-              class="teneo-reply"
-            ></span>
+            <span v-html="chunkText" class="teneo-reply"></span>
           </v-card>
         </v-col>
       </v-row>
     </div>
-    <DelayedResponse v-if="showDelayedResponse && itemIndexInDialog === dialog.length - 1"></DelayedResponse>
+    <DelayedResponse
+      v-if="showDelayedResponse && itemIndexInDialog === dialog.length - 1"
+    ></DelayedResponse>
     <!-- show any options in the response: for example Yes, No Maybe -->
     <v-card
       text
@@ -183,10 +167,7 @@
       width="100%"
     >
       <!-- Button Options -->
-      <v-card-text
-        class="teneo-button-options"
-        v-if="!hasLongOptions"
-      >
+      <v-card-text class="teneo-button-options" v-if="!hasLongOptions">
         <h3 v-text="getOptions.title"></h3>
         <div
           v-if="getOptions.html"
@@ -203,7 +184,7 @@
             small
             color="success"
             @click="optionClicked(option)"
-          >{{ option.name }}
+            >{{ option.name }}
           </v-btn>
         </span>
       </v-card-text>
@@ -224,7 +205,9 @@
               </v-list-item-icon>
               <v-list-item-content class="text-left">
                 <!-- <v-list-item-title v-html="option.name"></v-list-item-title> -->
-                <v-list-item-subtitle v-html="option.name"></v-list-item-subtitle>
+                <v-list-item-subtitle
+                  v-html="option.name"
+                ></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -238,21 +221,13 @@
         class="text-right mb-2"
         v-if="hasFeedbackForm(item) && itemIndexInDialog === dialog.length - 1"
       >
-        <v-btn
-          color="secondary"
-          class="mt-2"
-          small
-          @click="displayFeedbackForm"
-        >{{
+        <v-btn color="secondary" class="mt-2" small @click="displayFeedbackForm"
+          >{{
             getFeedbackFormConfig.label
               ? getFeedbackFormConfig.label
               : "Leave Feedback"
           }}
-          <v-icon
-            right
-            small
-            color="white"
-          >mdi-thumbs-up-down</v-icon>
+          <v-icon right small color="white">mdi-thumbs-up-down</v-icon>
         </v-btn>
       </v-col>
 
@@ -270,21 +245,15 @@
           @handleFocus="handleFocus()"
         />
 
-        <v-btn
-          color="success"
-          class="mt-2"
-          small
-          @click="showForm()"
-        >{{
+        <v-btn color="success" class="mt-2" small @click="showForm()"
+          >{{
             getFormConfig && getFormConfig.openFormButtonText
               ? getFormConfig.openFormButtonText
               : "Form"
           }}
-          <v-icon
-            right
-            small
-            color="white"
-          >mdi-file-document-edit-outline</v-icon>
+          <v-icon right small color="white"
+            >mdi-file-document-edit-outline</v-icon
+          >
         </v-btn>
       </v-col>
 
@@ -296,17 +265,9 @@
             itemHasLongResponse(item)
         "
       >
-        <v-btn
-          color="success"
-          class="mt-2"
-          small
-          @click="showModal"
-        >{{ modalButtonText }}
-          <v-icon
-            right
-            small
-            color="white"
-          >{{ modalButtonIcon }}</v-icon>
+        <v-btn color="success" class="mt-2" small @click="showModal"
+          >{{ modalButtonText }}
+          <v-icon right small color="white">{{ modalButtonIcon }}</v-icon>
         </v-btn>
       </v-col>
       <!-- Date Picker -->
@@ -348,7 +309,8 @@
       color="primary"
       :timeout="snackBarTimeout"
       top
-    >{{ snackBarText }}</v-snackbar>
+      >{{ snackBarText }}</v-snackbar
+    >
     <AgentAssistCannedResponseForm
       v-if="agentAssist.cannedResponseForm"
       :text="agentAssist.cannedResponseText"
@@ -667,7 +629,7 @@ export default {
       return this.hasMediaExtensions(this.item);
     },
     sendResponseMediaToLiveAgent() {
-      console.log(`Sending media to Agent`);
+      this.$log.debug(`Sending media to Agent`);
       let finalMessageToAgent = "";
       const extensions = this.itemExtensions(this.item);
       extensions.forEach(extension => {
@@ -686,7 +648,7 @@ export default {
             this.mapInfo(extension).address
           }`;
         } else if (this.hasInlineType(extension, "image")) {
-          console.log(this.imageUrl(extension));
+          this.$log.debug(this.imageUrl(extension));
           finalMessageToAgent += `\nImage: ${this.imageUrl(extension)}`;
         } else if (this.hasInlineType(extension, "carousel")) {
           finalMessageToAgent += `\nImages: ${this.carouselImageArray(
@@ -702,7 +664,7 @@ export default {
       }
     },
     createLiveChatMoment() {
-      console.log(`Create Moment`);
+      this.$log.debug(`Create Moment`);
     },
     handleAgentAssistCannedResponseSave() {
       this.agentAssist.cannedResponseForm = false;

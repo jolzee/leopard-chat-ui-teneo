@@ -499,9 +499,9 @@ export default {
       this.formConfig.fields.forEach(field => {
         let fieldInfo = field[Object.keys(field)[0]];
         if (fieldInfo.initialValue) {
-          // console.log(
-          //   `Setting default for field [${fieldInfo.name} : ${fieldInfo.initialValue}] `
-          // );
+          this.$log.debug(
+            `Setting default for field [${fieldInfo.name} : ${fieldInfo.initialValue}] `
+          );
           this.formData[fieldInfo.name] = fieldInfo.initialValue;
         }
       });
@@ -547,7 +547,7 @@ export default {
             JSON.stringify(this.formData)
           )}`;
         }
-        console.log(JSON.stringify(this.formData));
+        this.$log.debug(JSON.stringify(this.formData));
         this.$store.dispatch("sendUserInput", params).then(() => {
           this.$emit("completed");
           this.$emit("handleFocus");

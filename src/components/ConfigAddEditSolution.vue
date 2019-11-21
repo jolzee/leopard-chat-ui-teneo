@@ -1010,7 +1010,7 @@ export default {
       this.globalSnackbarColor = color;
     },
     failsValidation() {
-      // console.log(this.$refs.form);
+      this.$log.debug(this.$refs.form);
       if (!this.$refs.form.validate()) {
         this.snackbar = true;
         return true;
@@ -1044,7 +1044,7 @@ export default {
         }
         // adding a new solution config
       } else {
-        // console.log("About to add a new solution");
+        this.$log.debug("About to add a new solution");
         this.config.solutions.push(this.cloneObject(this.solution));
         // this.selectedSolution = this.cloneObject(this.solution);
         if (this.config.solutions.length === 1) {
@@ -1130,11 +1130,11 @@ export default {
         }
       } else {
         // editing and existing solution config
-        // console.log("Editing solution: checking deep link validity");
+        this.$log.debug("Editing solution: checking deep link validity");
         const foundSolution = this.config.solutions.find(
           solution => solution.deepLink === value
         );
-        // console.log(foundSolution);
+        this.$log.debug(foundSolution);
         if (
           foundSolution &&
           foundSolution.name !== this.selectedSolution.name
@@ -1146,7 +1146,7 @@ export default {
       }
     },
     ruleMustBeInteger(value) {
-      console.log(`The value is ${Number(value)}`);
+      this.$log.debug(`The value is ${Number(value)}`);
       if (Number.isInteger(Number(value))) {
         return true;
       } else {
@@ -1178,7 +1178,7 @@ export default {
       }
     },
     ruleMustHaveValue(value) {
-      // console.log(value);
+      this.$log.debug(value);
       if (/\S/.test(value)) {
         return true;
       }

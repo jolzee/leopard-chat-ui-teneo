@@ -5,10 +5,7 @@
       v-if="showButtonOnly"
       class="application-button"
     >
-      <div
-        id="chat-open-close-button-embed"
-        @click="openEmbedButton"
-      >
+      <div id="chat-open-close-button-embed" @click="openEmbedButton">
         <v-fab-transition>
           <v-btn
             v-show="showChatButton"
@@ -55,10 +52,7 @@
         </v-system-bar>
       </transition>
       <template v-if="maximizeChat">
-        <div
-          id="chat-open-close-button"
-          v-if="!embed"
-        >
+        <div id="chat-open-close-button" v-if="!embed">
           <v-fab-transition>
             <v-btn
               fab
@@ -87,21 +81,19 @@
             id="teneo"
             v-if="isChatOpen"
             :class="{
-            'elevation-2': !embed,
-            'application-float': float,
-            'application-embed': embed,
-            'teneo-light-bg': !$vuetify.theme.dark,
-            'teneo-dark-bg': $vuetify.theme.dark,
-            'application-mobile': isMobileDevice
-          }"
+              'elevation-2': !embed,
+              'application-float': float,
+              'application-embed': embed,
+              'teneo-light-bg': !$vuetify.theme.dark,
+              'teneo-dark-bg': $vuetify.theme.dark,
+              'application-mobile': isMobileDevice
+            }"
           >
-
             <transition
               name="menu-transition"
               enter-active-class="animated slideInRight"
               leave-active-class="animated slideOutRight"
             >
-
               <v-navigation-drawer
                 app
                 :clipped="clipped"
@@ -138,19 +130,20 @@
                         medium
                         :class="menuClass"
                         v-text="
-                        $vuetify.theme.dark
-                          ? 'mdi-brightness-5'
-                          : 'mdi-brightness-4'
-                      "
+                          $vuetify.theme.dark
+                            ? 'mdi-brightness-5'
+                            : 'mdi-brightness-4'
+                        "
                       ></v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
                       <v-list-item-title
                         class="subheading"
                         :class="menuClassText"
-                      >{{
-                        $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
-                      }}</v-list-item-title>
+                        >{{
+                          $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
+                        }}</v-list-item-title
+                      >
                     </v-list-item-content>
                   </v-list-item>
                   <v-list-item
@@ -161,25 +154,20 @@
                     :to="menuItem.route"
                   >
                     <v-list-item-action>
-                      <v-icon
-                        medium
-                        :class="menuClass"
-                      >{{
-                      menuItem.icon
-                    }}</v-icon>
+                      <v-icon medium :class="menuClass">{{
+                        menuItem.icon
+                      }}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
                       <v-list-item-title
                         class="subheading"
                         :class="menuClassText"
-                      >{{ $t(menuItem.titleKey) }}</v-list-item-title>
+                        >{{ $t(menuItem.titleKey) }}</v-list-item-title
+                      >
                     </v-list-item-content>
                   </v-list-item>
                 </v-list>
-                <template
-                  v-slot:append
-                  v-if="authenticated"
-                >
+                <template v-slot:append v-if="authenticated">
                   <div class="pa-2">
                     <v-btn
                       ripple
@@ -187,7 +175,7 @@
                       block
                       color="primary darken-1"
                       @click="logout()"
-                    >{{ $t("menu.logout") }}
+                      >{{ $t("menu.logout") }}
                     </v-btn>
                   </div>
                 </template>
@@ -200,9 +188,9 @@
                 height="64"
                 class="teneo-leopard-header"
                 :class="{
-                'teneo-toolbar-float': float,
-                'teneo-toolbar-embed': embed
-              }"
+                  'teneo-toolbar-float': float,
+                  'teneo-toolbar-embed': embed
+                }"
                 :style="toolbarStyle"
               >
                 <v-fab-transition>
@@ -214,13 +202,15 @@
                     ripple
                     color="secondary"
                     :aria-label="
-                  drawer ? 'Hide the chat menu' : 'Show the chat menu'
-                "
+                      drawer ? 'Hide the chat menu' : 'Show the chat menu'
+                    "
                     @click.stop="drawer = !drawer"
                     class="embed-button-center ml-0"
                     :style="customCssButtonToolbar"
                   >
-                    <v-icon dark>{{ drawer ? 'mdi-menu-open' : 'mdi-menu'}}</v-icon>
+                    <v-icon dark>{{
+                      drawer ? "mdi-menu-open" : "mdi-menu"
+                    }}</v-icon>
                   </v-btn>
                 </v-fab-transition>
 
@@ -286,10 +276,7 @@
                   </v-fab-transition>
                 </template>
               </v-toolbar>
-              <v-content
-                app
-                class="content-area"
-              >
+              <v-content app class="content-area">
                 <OverlayAlert />
                 <transition
                   name="page-transition"
@@ -302,18 +289,12 @@
             </div>
           </div>
         </transition>
-        <v-row
-          v-if="importDialog"
-          justify="center"
-        >
-          <v-dialog
-            v-model="importDialog"
-            persistent
-            max-width="600"
-          >
+        <v-row v-if="importDialog" justify="center">
+          <v-dialog v-model="importDialog" persistent max-width="600">
             <v-card>
               <v-card-title class="headline">Solution Import</v-card-title>
-              <v-card-text>{{ importDialogMessages.message }}<br /><br />
+              <v-card-text
+                >{{ importDialogMessages.message }}<br /><br />
                 <v-simple-table>
                   <template v-slot:default>
                     <thead>
@@ -328,7 +309,8 @@
                         <td>{{ importDialogMessages.deepLink }}</td>
                       </tr>
                     </tbody>
-                  </template> </v-simple-table><br />
+                  </template> </v-simple-table
+                ><br />
                 <v-alert
                   border="top"
                   colored-border
@@ -341,14 +323,12 @@
               </v-card-text>
               <v-card-actions>
                 <div class="flex-grow-1"></div>
-                <v-btn
-                  color="grey lighten-5"
-                  @click="importDialog = false"
-                >Cancel</v-btn>
-                <v-btn
-                  color="green lighten-2"
-                  @click="importSolutionFromUrl"
-                >OK</v-btn>
+                <v-btn color="grey lighten-5" @click="importDialog = false"
+                  >Cancel</v-btn
+                >
+                <v-btn color="green lighten-2" @click="importSolutionFromUrl"
+                  >OK</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -426,6 +406,7 @@ export default {
   },
   updated() {},
   mounted() {
+    this.$log.error("test");
     this.$store.dispatch("setupLiveChatAgentAssist"); // only enabled in certain scenario
     window.addEventListener("resize", this.onResizeOrEmbed);
     // deal with import of solution
@@ -436,7 +417,7 @@ export default {
       this.importDialogMessages.message = `Do you want to import this solution?`;
       this.importDialogMessages.name = this.importedSolution.name;
       this.importDialogMessages.deepLink = this.importedSolution.deepLink;
-      // console.log(solConfig);
+      this.$log.debug(solConfig);
       this.importDialog = true;
     }
     // this.toggleChat(); // will automatically open the chat window on load
@@ -477,8 +458,8 @@ export default {
       "socialAuthEnabled"
     ]),
     shouldFloat() {
-      // console.log(this.float);
-      // console.log(this.$router.currentRoute.path !== "/config");
+      this.$log.debug(this.float);
+      this.$log.debug(this.$router.currentRoute.path !== "/config");
       if (this.float && this.$router.currentRoute.path !== "/config") {
         return true;
       } else {
@@ -562,35 +543,35 @@ export default {
       }
 
       let result = false;
-      // console.log(`App.vue:isChatOpenLocalStorage: ${isChatOpen}`);
+      this.$log.debug(`App.vue:isChatOpenLocalStorage: ${isChatOpen}`);
       if (isChatOpen) {
         this.$store.commit("SHOW_CHAT_WINDOW");
         this.$store.commit("HIDE_CHAT_LOADING");
         this.sendMessageToParent("showLeopard");
-        // console.log(
-        //   "App.vue:isChatOpenLocalStorage: Sent Parent Message to OPEN"
-        // );
+        this.$log.debug(
+          "App.vue:isChatOpenLocalStorage: Sent Parent Message to OPEN"
+        );
         result = true;
       } else {
         this.$store.commit("HIDE_CHAT_WINDOW");
         localStorage.setItem("isChatOpen", "false");
         this.sendMessageToParent("hideLeopard");
-        // console.log(
-        //   "App.vue:isChatOpenLocalStorage: Sent Parent Message to HIDE"
-        // );
+        this.$log.debug(
+          "App.vue:isChatOpenLocalStorage: Sent Parent Message to HIDE"
+        );
         result = false;
       }
-      // console.log("isChatOpenLocalStorage: " + result);
-      // console.log(
-      //   `App.vue:isChatOpenLocalStorage:Local Storage Thinks "isChatOpenLocalStorage": ${result}`
-      // );
+      this.$log.debug("isChatOpenLocalStorage: " + result);
+      this.$log.debug(
+        `App.vue:isChatOpenLocalStorage:Local Storage Thinks "isChatOpenLocalStorage": ${result}`
+      );
       return result;
     },
     sendMessageToParent(message) {
-      // console.log(`App.vue: sendMessageToParent: ${message}`);
+      this.$log.debug(`App.vue: sendMessageToParent: ${message}`);
       if (parent) {
         parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
-        // console.log("Message from Leopard >> Embed : " + message);
+        this.$log.debug("Message from Leopard >> Embed : " + message);
       }
       return true;
     },
@@ -624,12 +605,12 @@ export default {
       this.config.activeSolution = this.importedSolution.name;
       let deepLinkUrl = `${location.protocol}//${location.host}${location.pathname}?dl=${this.importedSolution.deepLink}`;
       localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
-      // console.log(deepLinkUrl);
+      this.$log.debug(deepLinkUrl);
       window.location.href = deepLinkUrl;
     },
     closeChatEmbedded() {
       this.calculateMobileHeight(); // only called on mobile devices
-      // console.log("App.vue: closeChatEmbedded");
+      this.$log.debug("App.vue: closeChatEmbedded");
       this.$store.commit("HIDE_CHAT_BUTTON");
       this.$store.commit("HIDE_CHAT_WINDOW_DISPLAY_EMBED");
       setTimeout(
@@ -641,7 +622,7 @@ export default {
     },
     openEmbedButton() {
       this.calculateMobileHeight(); // only called on mobile devices
-      // console.log("App.vue: openEmbedButton");
+      this.$log.debug("App.vue: openEmbedButton");
       this.$store.commit("HIDE_CHAT_BUTTON");
       this.$store.commit("OPEN_CHAT_WINDOW_DISPLAY_EMBED");
       setTimeout(
@@ -702,16 +683,16 @@ export default {
       if (this.isMobileDevice) {
         // on mobile devices open the chat window automatically
         // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
-        // console.log("Calculating the View Height in JS");
+        this.$log.debug("Calculating the View Height in JS");
         let vh = null;
-        // console.log(`App.vue: onResizeOrEmbed`);
+        this.$log.debug(`App.vue: onResizeOrEmbed`);
         if (this.embed && parent) {
           var parentHeight = parent.getLeopardElementHeight();
           // let parentHeight = localStorage.getItem(STORAGE_KEY + "parentHeight");
-          // console.log(`onResizeOrEmbed >>> Frame Height: ${parentHeight}`);
+          this.$log.debug(`onResizeOrEmbed >>> Frame Height: ${parentHeight}`);
           vh = parentHeight * 0.01;
           this.parentHeight = parentHeight;
-          // console.log(`Parent Height: ${parentHeight}`);
+          this.$log.debug(`Parent Height: ${parentHeight}`);
         } else {
           vh = window.innerHeight * 0.01;
         }
@@ -739,27 +720,27 @@ export default {
           !this.loginPerformed &&
           this.dialogs.length === 0)
       ) {
-        // console.log("onResizeOrEmbed: Send Login");
-        // console.log(
-        //   `onResizeOrEmbed: Has Login Been Performed? ${this.loginPerformed}`
-        // );
+        this.$log.debug("onResizeOrEmbed: Send Login");
+        this.$log.debug(
+          `onResizeOrEmbed: Has Login Been Performed? ${this.loginPerformed}`
+        );
         this.loginPerformed = true;
         let that = this;
         this.$store
           .dispatch("login")
           .then(() => {
             that.loginPerformed = true;
-            console.log("Successfully established chat session");
+            this.$log.debug("Successfully established chat session");
           })
           .catch(err => {
-            console.log("ERROR LOGGING IN TO CHAT: ", err.message);
+            this.$log.error("ERROR LOGGING IN TO CHAT: ", err);
           });
       } else {
         this.$store.commit("HIDE_CHAT_LOADING");
       }
-      // console.log(
-      //   `onResizeOrEmbed: AGAIN Has Login Been Performed? ${this.loginPerformed}`
-      // );
+      this.$log.debug(
+        `onResizeOrEmbed: AGAIN Has Login Been Performed? ${this.loginPerformed}`
+      );
       if (this.$router.currentRoute.path === "/config") {
         return;
       }
@@ -767,10 +748,10 @@ export default {
         (window.innerWidth <= 480 && !this.embed) ||
         (this.embed && this.isChatOpenLocalStorage())
       ) {
-        // console.log(
-        //   `App.vue:onResizeOrEmbed:window.innerWidth <= 480 && !this.embed`
-        // );
-        // this.$store.commit("HIDE_CHAT_BUTTON");
+        this.$log.debug(
+          `App.vue:onResizeOrEmbed:window.innerWidth <= 480 && !this.embed`
+        );
+        this.$store.commit("HIDE_CHAT_BUTTON");
         this.$store.commit("SHOW_CHAT_WINDOW"); // show the chat window
         //animate the IFrame
         let siteFrame;
@@ -787,7 +768,7 @@ export default {
         let isChatUiFloating = this.float;
         setTimeout(
           function() {
-            // console.log(`In move button left: ${isChatUiFloating}`);
+            this.$log.debug(`In move button left: ${isChatUiFloating}`);
             // wait just a bit before animating things - need the chat button to hide first
             if (chatButton && !this.embed) {
               if (isChatUiFloating) {
@@ -831,11 +812,11 @@ export default {
 
       // show chat window - button clicked - login
       if (!this.isChatOpen) {
-        // console.log("Toggle Chat: Send Login");
+        this.$log.debug("Toggle Chat: Send Login");
         this.$store
           .dispatch("openChatWindow", true)
           .then(() => {
-            // console.log("Successfully logged into chat");
+            this.$log.debug("Successfully logged into chat");
             setTimeout(
               function() {
                 this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
@@ -844,7 +825,7 @@ export default {
             ); // only show the chat button after a successful login
           })
           .catch(err => {
-            console.log("ERROR OPENING AND LOGGING IN TO CHAT: ", err.message);
+            this.$log.error("ERROR OPENING AND LOGGING IN TO CHAT: ", err);
           });
       } else {
         let chatButton = document.getElementById("chat-open-close-button");

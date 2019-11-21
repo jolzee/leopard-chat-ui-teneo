@@ -100,7 +100,7 @@ export default {
       this.$emit("hideFeedback");
     },
     sendFeedback() {
-      console.log(
+      this.$log.debug(
         `Rating: ${this.rating} Reasons: ${this.reasons} Comment: ${this.comment}`
       );
 

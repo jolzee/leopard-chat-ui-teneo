@@ -1,5 +1,6 @@
 import Artyom from "artyom.js"; // for speech recognition and tts
 import replaceString from "replace-string";
+import Vue from "vue";
 
 export function initializeTTS(locale) {
   let tts = null;
@@ -25,9 +26,19 @@ export function initializeTTS(locale) {
         "en_US"
       ];
     } else if (locale === "en-uk-male") {
-      tts.ArtyomVoicesIdentifiers["en-GB"] = ["Google UK English Male", "Google UK English Female", "en-GB", "en_GB"];
+      tts.ArtyomVoicesIdentifiers["en-GB"] = [
+        "Google UK English Male",
+        "Google UK English Female",
+        "en-GB",
+        "en_GB"
+      ];
     } else {
-      tts.ArtyomVoicesIdentifiers["en-GB"] = ["Google UK English Female", "Google UK English Male", "en-GB", "en_GB"];
+      tts.ArtyomVoicesIdentifiers["en-GB"] = [
+        "Google UK English Female",
+        "Google UK English Male",
+        "en-GB",
+        "en_GB"
+      ];
     }
 
     // artyom.ArtyomVoicesIdentifiers["en-ZA"] = ["Google US English", "en-US", "en_US"];
@@ -85,7 +96,7 @@ export function initializeASR(store, asrCorrections) {
           store.commit("SET_USER_INPUT", text);
         }
         timeoutVar = setTimeout(function() {
-          // console.log("timeout - aborting recognition");
+          Vue.$log.debug("timeout - aborting recognition");
           store.state.asr.asr.stop();
           if (text) {
             store.commit("SET_USER_INPUT", text); // final transcript from ASR
@@ -106,7 +117,9 @@ export function initializeASR(store, asrCorrections) {
 
         if (store.getters.userInput) {
           let fixedUserInput = store.getters.userInput;
-          // console.log("Final Transcription from ASR: " + store.state.userInput.userInput);
+          Vue.$log.debug(
+            "Final Transcription from ASR: " + store.state.userInput.userInput
+          );
           asrCorrections.forEach(replacement => {
             let startingText = fixedUserInput;
 
@@ -117,22 +130,35 @@ export function initializeASR(store, asrCorrections) {
                 replacement[1].toLowerCase()
               );
             } else {
-              let search = replacement[0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"); // escase any special characters
+              let search = replacement[0].replace(
+                /[-[\]{}()*+?.,\\^$|#\s]/g,
+                "\\$&"
+              ); // escase any special characters
               var re = new RegExp("\\b" + search + "\\b", "gi");
               // fixedUserInput = fixedUserInput.toLowerCase().replace(re, replacement[1].toLowerCase());
               fixedUserInput = fixedUserInput.replace(re, replacement[1]);
             }
 
-            // console.log(`Starting: ${startingText} | Ending: ${fixedUserInput}`);
+            Vue.$log.debug(
+              `Starting: ${startingText} | Ending: ${fixedUserInput}`
+            );
 
             if (startingText.toLowerCase() !== fixedUserInput.toLowerCase()) {
-              console.log("Made a change to ASR response: " + replacement[0] + " >> " + replacement[1]);
+              Vue.$log.debug(
+                "Made a change to ASR response: " +
+                  replacement[0] +
+                  " >> " +
+                  replacement[1]
+              );
             }
           });
 
-          if (store.getters.userInput.toLowerCase() !== fixedUserInput.toLowerCase()) {
+          if (
+            store.getters.userInput.toLowerCase() !==
+            fixedUserInput.toLowerCase()
+          ) {
             store.commit("SET_USER_INPUT", fixedUserInput);
-            console.log(`Final Transcription: ${fixedUserInput}`);
+            Vue.$log.debug(`Final Transcription: ${fixedUserInput}`);
           }
 
           setTimeout(function() {

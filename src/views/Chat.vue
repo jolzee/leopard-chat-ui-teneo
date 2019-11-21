@@ -453,7 +453,7 @@ export default {
         }
       }
     } catch (e) {
-      console.log(e);
+      this.$log.debug(e);
       // do nothing
     }
   },
@@ -506,7 +506,7 @@ export default {
           .post(config.postUrl)
           .send(formData)
           .then(res => {
-            console.log(res);
+            this.$log.debug(res);
             if (config.reqUserInputSuccess) {
               self.$store.commit("SET_USER_INPUT", config.reqUserInputSuccess);
             }
@@ -524,7 +524,7 @@ export default {
               "sendUserInput",
               config.teneoFailureQuery ? config.teneoFailureQuery : ""
             );
-            console.log(response);
+            this.$log.error(response);
           });
 
         // {
@@ -553,13 +553,13 @@ export default {
               `Thanks we have successfully received your file: ${file.name}`
             );
             this.$store.dispatch("sendUserInput").then(() => {
-              console.log("Upload flag sent to Teneo");
+              this.$log.debug("Upload flag sent to Teneo");
             });
 
             // var reader = new FileReader();
 
             // reader.onload = function(e) {
-            //   console.log(e.target.result);
+            //   this.$log.debug(e.target.result);
             // };
 
             // reader.readAsDataURL(file);
@@ -568,7 +568,7 @@ export default {
         }
         this.progressValue += 10;
       }, 300);
-      // console.log(file);
+      this.$log.debug(file);
     },
 
     stopAudioCapture() {
@@ -637,7 +637,7 @@ export default {
               }
             })
             .catch(err => {
-              this.userInput = err;
+              this.$log.error("Error Sending User Input", err);
             });
         }
         if (!this.isMobileDevice) {
@@ -673,7 +673,7 @@ export default {
           that.$store.commit("TTS_ENABLE", that.showAudioInput);
         })
         .catch(function(err) {
-          console.log(err);
+          this.$log.debug("ASR input is not allowed", err);
           that.$store.commit(
             "SHOW_MESSAGE_IN_CHAT",
             "ASR input is not allowed. This could be because you're not loading this website over HTTPS or you have explicity denied microphone access in your browser. ASR and TTS is supported in Chrome."

@@ -22,34 +22,19 @@
     >
       <v-row no-gutters>
         <v-col cols="12">
-
-          <v-toolbar
-            dark
-            color="primary"
-            height="64"
-            :class="toolbarWidth"
-          >
-            <v-btn
-              fab
-              small
-              @click="hideModal"
-              color="secondary"
-            >
-              <v-icon
-                dark
-                medium
-              >mdi-close</v-icon>
+          <v-toolbar dark color="primary" height="64" :class="toolbarWidth">
+            <v-btn fab small @click="hideModal" color="secondary">
+              <v-icon dark medium>mdi-close</v-icon>
             </v-btn>
-            <v-toolbar-title>{{ $t('more.info.title') }}</v-toolbar-title>
+            <v-toolbar-title>{{ $t("more.info.title") }}</v-toolbar-title>
           </v-toolbar>
         </v-col>
         <v-col cols="12">
           <v-card
             class="modal-height teneo-modal-card"
-            :class="{'dark-scroll': dark, 'light-scroll': !dark}"
+            :class="{ 'dark-scroll': dark, 'light-scroll': !dark }"
             tile
           >
-
             <!-- YouTube -->
             <YouTube :videoId="youTubeVideoId"></YouTube>
 
@@ -60,19 +45,12 @@
             <Audio :url="audioUrl"></Audio>
 
             <!-- Misc Video -->
-            <Video
-              :url="videoUrl"
-              :type="videoType"
-            ></Video>
+            <Video :url="videoUrl" :type="videoType"></Video>
 
             <!-- Gogle Map -->
-            <Map
-              v-if="address"
-              :address="address"
-            ></Map>
+            <Map v-if="address" :address="address"></Map>
 
             <v-container class="modal-container">
-
               <!-- show an image if available -->
               <ImageAnimation :url="imageUrl"></ImageAnimation>
 
@@ -80,18 +58,10 @@
               <Carousel :imageItems="images"></Carousel>
 
               <!-- display the modal title and sub-title -->
-              <v-row
-                align="start"
-                justify="start"
-                class="mx-1"
-              >
+              <v-row align="start" justify="start" class="mx-1">
                 <v-card-title primary-title>
                   <!-- Main Title -->
-                  <div
-                    class="modal-headline"
-                    v-if="title"
-                    v-html="title"
-                  ></div>
+                  <div class="modal-headline" v-if="title" v-html="title"></div>
                   <!-- Sub-Title -->
                   <span
                     class="grey--text"
@@ -101,10 +71,7 @@
                 </v-card-title>
               </v-row>
 
-              <v-row
-                align="start"
-                justify="center"
-              >
+              <v-row align="start" justify="center">
                 <!-- show the close modal button -->
                 <v-card-actions>
                   <!-- Yes there are keyboard shortcuts to close the modal window -->
@@ -113,7 +80,7 @@
                     v-shortkey="['ctrl', 'alt', 'arrowleft']"
                     @shortkey.native="hideModal"
                     @click.native="hideModal"
-                  >{{ $t('back.to.chat.button') }}
+                    >{{ $t("back.to.chat.button") }}
                   </v-btn>
                 </v-card-actions>
               </v-row>
@@ -121,7 +88,12 @@
               <!-- Show the body text, flight itineary, and any tables if available -->
               <div
                 class=" mt-3"
-                v-if="itinerary || bodyText || transactionItems.length || tableRows.length"
+                v-if="
+                  itinerary ||
+                    bodyText ||
+                    transactionItems.length ||
+                    tableRows.length
+                "
               >
                 <!-- Show the flight itinerary -->
                 <FlightItinerary :itinerary="itinerary"></FlightItinerary>
@@ -144,20 +116,13 @@
                 >
                   <!-- table title -->
                   <v-row v-if="tableTitle">
-                    <v-col
-                      cols="8"
-                      class="ml-4"
-                    >
-                      <h3>{{tableTitle}}</h3>
+                    <v-col cols="8" class="ml-4">
+                      <h3>{{ tableTitle }}</h3>
                     </v-col>
                   </v-row>
                   <v-spacer v-else></v-spacer>
                   <!-- show a search input box for the table -->
-                  <v-col
-                    cols="4"
-                    v-if="tableEnableSearch"
-                    class="mr-2"
-                  >
+                  <v-col cols="4" v-if="tableEnableSearch" class="mr-2">
                     <v-text-field
                       v-model="search"
                       append-icon="mdi-table-search"
@@ -183,16 +148,13 @@
                   :footer="tableFooter"
                   :rowsPerPage="tableRowsPerPage"
                 ></Table>
-
               </div>
               <v-spacer></v-spacer>
             </v-container>
-
           </v-card>
         </v-col>
       </v-row>
     </v-dialog>
-
   </span>
 </template>
 
@@ -284,14 +246,14 @@ export default {
   },
   mounted() {
     // if (this.pusherEnabled) {
-    //   console.log("Setting up pusher");
+    //   this.$log.debug("Setting up pusher");
     //   this.$pusher.subscribe("web-channel");
-    //   console.log("Subscribed to 'web-channel'");
+    //   this.$log.debug("Subscribed to 'web-channel'");
     //   let that = this;
     //   this.$pusher.bind(
     //     "some-event-and-possibly-some-unique-id-for-user",
     //     data => {
-    //       console.log("Message from Teneo: " + data.message);
+    //       this.$log.debug("Message from Teneo: " + data.message);
     //       that.pusherMessage = data.message;
     //       that.displayPusherMessage = true;
     //     },
@@ -311,7 +273,7 @@ export default {
         let displayModal = false;
 
         // check if user wants to talk to a live agent
-        // console.log("Live Chat? :" + this.isLiveChat);
+        this.$log.debug("Live Chat? :" + this.isLiveChat);
         if (transcript !== "undefined" && this.isLiveChat) {
           this.$store.commit(
             "LIVE_CHAT",
@@ -377,7 +339,7 @@ export default {
               this.transactionItems = [];
               extension.parameters.transactions.transactions.forEach(
                 transaction => {
-                  // console.log(transaction);
+                  this.$log.debug(transaction);
                   this.transactionItems.push({
                     date: transaction.Date,
                     description: transaction.Description,
@@ -443,7 +405,7 @@ export default {
               let videoId = this.youTubeIdFromUrl(url);
               if (!videoId) {
                 videoId = this.vimeoIdFromUrl(url);
-                // console.log("vimeoid: " + videoId);
+                this.$log.debug("vimeoid: " + videoId);
                 if (videoId) {
                   this.vimeoVideoId = videoId;
                 } else {
@@ -524,9 +486,9 @@ export default {
       return false;
     },
     toolbarWidth() {
-      // console.log("Seeing if we need to adjust toolbar style");
+      this.$log.debug("Seeing if we need to adjust toolbar style");
       if (this.currentModalSize !== "") {
-        // console.log("Yep adjusted toolbar style");
+        this.$log.debug("Yep adjusted toolbar style");
         return `teneo-modal-${this.currentModalSize}-width`;
       }
       return "";
@@ -549,8 +511,8 @@ export default {
       return text;
     },
     modalClass() {
-      // console.log("Applying custom modal size and position");
-      // console.log("Adding sizing and position styles to modal");
+      this.$log.debug("Applying custom modal size and position");
+      this.$log.debug("Adding sizing and position styles to modal");
       var modalElements = document.getElementsByClassName("teneo-modal");
       if (
         modalElements !== "undefined" &&
@@ -564,11 +526,11 @@ export default {
       }
     },
     removeCustomStylesFromModal() {
-      // console.log("removing custom styles from modal");
+      this.$log.debug("removing custom styles from modal");
       var modalElements = document.getElementsByClassName("teneo-modal");
       if (modalElements !== "undefined") {
         for (var i = 0; i < modalElements.length; i++) {
-          // console.log("Removing existing modal styles - reset");
+          this.$log.debug("Removing existing modal styles - reset");
           modalElements[i].classList.remove("teneo-modal-center");
           modalElements[i].classList.remove("teneo-modal-right");
           modalElements[i].classList.remove("teneo-modal-left");
@@ -580,7 +542,7 @@ export default {
       }
     },
     onHtmlClickInModal(event) {
-      // console.log("html link clicked in modal");
+      this.$log.debug("html link clicked in modal");
       // Find the closest anchor to the target.
       const anchor = event.target.closest("a");
       if (!anchor) return;
