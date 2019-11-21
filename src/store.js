@@ -1425,13 +1425,13 @@ function storeSetup(vuetify, callback) {
         await LiveChat.putMessage(stripHtml(message));
       },
       setupLiveChatAgentAssist(context) {
-        console.log(
-          `Is this an Agent Assist App?`,
-          context.getters.isLiveAgentAssist
-        );
-        console.log(">> Before Live Agent Assist Setup");
+        // console.log(">> Before Live Agent Assist Setup");
         if (context.getters.isLiveAgentAssist) {
-          console.log(">> In Live Agent Assist Setup");
+          console.log(
+            `Is this an Agent Assist App?`,
+            context.getters.isLiveAgentAssist
+          );
+          // console.log(">> In Live Agent Assist Setup");
           let liveChatAgentAssistLastMessage = null;
           LiveChat.init({ authorize: false })
             .then(async () => {
@@ -1439,7 +1439,7 @@ function storeSetup(vuetify, callback) {
               context.commit("DISABLE_LIVE_CHAT");
 
               await LiveChat.refreshSessionId();
-              console.log("LiveChat Agent Assist Setup!");
+              // console.log("LiveChat Agent Assist Setup!");
               LiveChat.on("customer_profile", profile => {
                 console.log("customer_profile", profile);
               });
