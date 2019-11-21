@@ -1740,6 +1740,7 @@ function storeSetup(vuetify, callback) {
 
         Vue.jsonp(endSessionUrl, {}).then(() => {
           context.commit("HIDE_CHAT_LOADING");
+          context.commit("HIDE_UPLOAD_BUTTON");
           context.commit(
             "SHOW_MESSAGE_IN_CHAT",
             "Session restarted at this point",
@@ -1775,6 +1776,7 @@ function storeSetup(vuetify, callback) {
 
         Vue.jsonp(endSessionUrl, {}).then(() => {
           context.commit("HIDE_CHAT_LOADING");
+          context.commit("HIDE_UPLOAD_BUTTON");
           Vue.$log.debug("Session Ended");
         });
       },
