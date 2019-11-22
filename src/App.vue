@@ -5,10 +5,7 @@
       v-if="showButtonOnly"
       class="application-button"
     >
-      <div
-        id="chat-open-close-button-embed"
-        @click="openEmbedButton"
-      >
+      <div id="chat-open-close-button-embed" @click="openEmbedButton">
         <v-fab-transition>
           <v-btn
             v-show="showChatButton"
@@ -55,10 +52,7 @@
         </v-system-bar>
       </transition>
       <template v-if="maximizeChat">
-        <div
-          id="chat-open-close-button"
-          v-if="!embed"
-        >
+        <div id="chat-open-close-button" v-if="!embed">
           <v-fab-transition>
             <v-btn
               fab
@@ -146,9 +140,10 @@
                       <v-list-item-title
                         class="subheading"
                         :class="menuClassText"
-                      >{{
+                        >{{
                           $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
-                        }}</v-list-item-title>
+                        }}</v-list-item-title
+                      >
                     </v-list-item-content>
                   </v-list-item>
                   <v-list-item
@@ -159,10 +154,7 @@
                     :to="menuItem.route"
                   >
                     <v-list-item-action>
-                      <v-icon
-                        medium
-                        :class="menuClass"
-                      >{{
+                      <v-icon medium :class="menuClass">{{
                         menuItem.icon
                       }}</v-icon>
                     </v-list-item-action>
@@ -170,14 +162,12 @@
                       <v-list-item-title
                         class="subheading"
                         :class="menuClassText"
-                      >{{ $t(menuItem.titleKey) }}</v-list-item-title>
+                        >{{ $t(menuItem.titleKey) }}</v-list-item-title
+                      >
                     </v-list-item-content>
                   </v-list-item>
                 </v-list>
-                <template
-                  v-slot:append
-                  v-if="authenticated"
-                >
+                <template v-slot:append v-if="authenticated">
                   <div class="pa-2">
                     <v-btn
                       ripple
@@ -185,7 +175,7 @@
                       block
                       color="primary darken-1"
                       @click="logout()"
-                    >{{ $t("menu.logout") }}
+                      >{{ $t("menu.logout") }}
                     </v-btn>
                   </div>
                 </template>
@@ -263,7 +253,7 @@
                       aria-label="Minimize Chat"
                       class="embed-button-center mr-1"
                       :style="customCssButtonToolbar"
-                      @click="maximizeChat = false"
+                      @click="minimizeChat"
                     >
                       <v-icon dark>mdi-image-size-select-small</v-icon>
                     </v-btn>
@@ -286,10 +276,7 @@
                   </v-fab-transition>
                 </template>
               </v-toolbar>
-              <v-content
-                app
-                class="content-area"
-              >
+              <v-content app class="content-area">
                 <OverlayAlert />
                 <transition
                   name="page-transition"
@@ -302,18 +289,12 @@
             </div>
           </div>
         </transition>
-        <v-row
-          v-if="importDialog"
-          justify="center"
-        >
-          <v-dialog
-            v-model="importDialog"
-            persistent
-            max-width="600"
-          >
+        <v-row v-if="importDialog" justify="center">
+          <v-dialog v-model="importDialog" persistent max-width="600">
             <v-card>
               <v-card-title class="headline">Solution Import</v-card-title>
-              <v-card-text>{{ importDialogMessages.message }}<br /><br />
+              <v-card-text
+                >{{ importDialogMessages.message }}<br /><br />
                 <v-simple-table>
                   <template v-slot:default>
                     <thead>
@@ -328,7 +309,8 @@
                         <td>{{ importDialogMessages.deepLink }}</td>
                       </tr>
                     </tbody>
-                  </template> </v-simple-table><br />
+                  </template> </v-simple-table
+                ><br />
                 <v-alert
                   border="top"
                   colored-border
@@ -341,14 +323,12 @@
               </v-card-text>
               <v-card-actions>
                 <div class="flex-grow-1"></div>
-                <v-btn
-                  color="grey lighten-5"
-                  @click="importDialog = false"
-                >Cancel</v-btn>
-                <v-btn
-                  color="green lighten-2"
-                  @click="importSolutionFromUrl"
-                >OK</v-btn>
+                <v-btn color="grey lighten-5" @click="importDialog = false"
+                  >Cancel</v-btn
+                >
+                <v-btn color="green lighten-2" @click="importSolutionFromUrl"
+                  >OK</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -553,6 +533,16 @@ export default {
     }
   },
   methods: {
+    minimizeChat() {
+      this.maximizeChat = false;
+      setTimeout(
+        function() {
+          let appElement = document.getElementById("app");
+          appElement.setAttribute("style", "");
+        }.bind(this),
+        1500
+      );
+    },
     isChatOpenLocalStorage() {
       let isChatOpen = localStorage.getItem("isChatOpen");
       if (isChatOpen === null) {
