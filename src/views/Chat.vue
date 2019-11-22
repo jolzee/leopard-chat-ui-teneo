@@ -121,14 +121,12 @@
           style="height: 50px;"
         >
           <v-row no-gutters>
-            <v-col cols="10" class="px-2">
+            <v-col>
               <v-text-field
                 id="teneo-input-field"
                 aria-label="Enter your question for assistance here"
                 v-show="!showUploadButton && !showUploadProgress"
                 :disabled="progressBar"
-                :append-icon="showAudioInput ? 'mdi-chevron-double-right' : ''"
-                @click:append="sendUserInput"
                 v-shortkey="{
                   toggle1: ['ctrl', 'alt', '/'],
                   toggle2: ['ctrl', 'alt', 'arrowdown']
@@ -151,6 +149,7 @@
                 @click:prepend-inner="showPassword = !showPassword"
                 :rules="askingForEmail ? [rules.email(userInput)] : []"
                 clearable
+                clear-icon="mdi-comment-remove-outline"
                 auto-grow
                 required
                 solo
@@ -172,10 +171,26 @@
                 "
                 single-line
                 data-lpignore="true"
-              ></v-text-field>
+              >
+                <template v-if="showAudioInput" v-slot:append>
+                  <v-fade-transition leave-absolute>
+                    <v-btn
+                      :disabled="userInput === ''"
+                      @click="sendUserInput"
+                      large
+                      text
+                      icon
+                      ripple
+                      color="primary"
+                    >
+                      <v-icon>mdi-send</v-icon>
+                    </v-btn>
+                  </v-fade-transition>
+                </template>
+              </v-text-field>
               <span v-shortkey="['esc']" @shortkey="stopAudioCapture"></span>
             </v-col>
-            <v-col cols="2">
+            <v-col cols="3" sm="2" style="text-align: center;">
               <upload-btn
                 icon
                 aria-label="Select file for upload"
@@ -202,7 +217,7 @@
               <template v-if="!showUploadButton && !showUploadProgress">
                 <v-btn
                   fab
-                  :disabled="progressBar"
+                  :disabled="progressBar || userInput === ''"
                   :loading="progressBar"
                   v-long-press="1000"
                   @long-press-start="swapInputButton"
@@ -213,7 +228,7 @@
                   class="white--text elevation-2 mt-1"
                   @click.native="sendUserInput"
                 >
-                  <v-icon>mdi-chevron-double-right</v-icon>
+                  <v-icon>mdi-send</v-icon>
                 </v-btn>
 
                 <v-btn
@@ -724,6 +739,7 @@ div.teneo-footer .v-input__slot {
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
   background: transparent !important;
+  padding-right: 0px !important;
   /* padding-left: 5px !important; */
 }
 
