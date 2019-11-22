@@ -113,67 +113,62 @@
     <!-- // progressBar -->
 
     <v-row class="teneo-footer" :class="{ 'footer-float': float }" no-gutters>
-      <v-col class="pt-2">
-        <v-form
-          v-model="valid"
-          v-on:submit.prevent
-          ref="userInputForm"
-          style="height: 50px;"
-        >
-          <v-row no-gutters>
-            <v-col>
-              <v-text-field
-                id="teneo-input-field"
-                aria-label="Enter your question for assistance here"
-                v-show="!showUploadButton && !showUploadProgress"
-                :disabled="progressBar"
-                v-shortkey="{
-                  toggle1: ['ctrl', 'alt', '/'],
-                  toggle2: ['ctrl', 'alt', 'arrowdown']
-                }"
-                @shortkey.native="swapInputButton"
-                :prepend-inner-icon="
-                  askingForPassword
-                    ? showPassword
-                      ? 'mdi-eye'
-                      : 'mdi-eye-off'
-                    : ''
-                "
-                :type="
-                  askingForPassword
-                    ? showPassword
-                      ? 'text'
-                      : 'password'
-                    : 'text'
-                "
-                @click:prepend-inner="showPassword = !showPassword"
-                :rules="askingForEmail ? [rules.email(userInput)] : []"
-                clearable
-                clear-icon="mdi-comment-remove-outline"
-                auto-grow
-                required
-                solo
-                return-masked-value
-                :mask="itemInputMask"
-                name="userInput"
-                ref="userInput"
-                autocomplete="off"
-                @keyup.enter.native="sendUserInput"
-                v-model="userInput"
-                :label="
-                  inputHelpText
-                    ? inputHelpText
-                    : askingForPassword
-                    ? $t('input.box.label.password')
-                    : askingForEmail
-                    ? $t('input.box.label.email')
-                    : $t('input.box.label')
-                "
-                single-line
-                data-lpignore="true"
-              >
-                <template v-if="showAudioInput" v-slot:append>
-                  <v-fade-transition leave-absolute>
+      <v-col>
+        <v-form v-model="valid" v-on:submit.prevent ref="userInputForm">
+          <v-container class="fill-height">
+            <v-row no-gutters align="center" justify="center">
+              <v-col class="text-center">
+                <v-text-field
+                  id="teneo-input-field"
+                  aria-label="Enter your question for assistance here"
+                  v-show="!showUploadButton && !showUploadProgress"
+                  :disabled="progressBar"
+                  v-shortkey="{
+                    toggle1: ['ctrl', 'alt', '/'],
+                    toggle2: ['ctrl', 'alt', 'arrowdown']
+                  }"
+                  @shortkey.native="swapInputButton"
+                  :prepend-inner-icon="
+                    askingForPassword
+                      ? showPassword
+                        ? 'mdi-eye'
+                        : 'mdi-eye-off'
+                      : ''
+                  "
+                  :type="
+                    askingForPassword
+                      ? showPassword
+                        ? 'text'
+                        : 'password'
+                      : 'text'
+                  "
+                  @click:prepend-inner="showPassword = !showPassword"
+                  :rules="askingForEmail ? [rules.email(userInput)] : []"
+                  clearable
+                  clear-icon="mdi-comment-remove-outline"
+                  auto-grow
+                  required
+                  solo
+                  return-masked-value
+                  :mask="itemInputMask"
+                  name="userInput"
+                  ref="userInput"
+                  autocomplete="off"
+                  @keyup.enter.native="sendUserInput"
+                  v-model="userInput"
+                  :label="
+                    inputHelpText
+                      ? inputHelpText
+                      : askingForPassword
+                      ? $t('input.box.label.password')
+                      : askingForEmail
+                      ? $t('input.box.label.email')
+                      : $t('input.box.label')
+                  "
+                  single-line
+                  data-lpignore="true"
+                >
+                  <template v-if="showAudioInput" v-slot:append>
                     <v-btn
                       :disabled="userInput === ''"
                       @click="sendUserInput"
@@ -185,77 +180,77 @@
                     >
                       <v-icon>mdi-send</v-icon>
                     </v-btn>
-                  </v-fade-transition>
-                </template>
-              </v-text-field>
-              <span v-shortkey="['esc']" @shortkey="stopAudioCapture"></span>
-            </v-col>
-            <v-col cols="3" sm="2" style="text-align: center;">
-              <upload-btn
-                icon
-                aria-label="Select file for upload"
-                v-if="showUploadButton"
-                @file-update="fileChanged"
-                large
-                hover
-                class="elevation-2 v-btn v-btn--contained v-btn--fab v-btn--round v-size--small primary white--text"
-              >
-                <template slot="icon">
-                  <v-icon dark class="py-2">mdi-paperclip</v-icon>
-                </template>
-              </upload-btn>
-              <v-progress-circular
-                v-if="showUploadProgress"
-                :rotate="360"
-                :size="40"
-                :width="10"
-                :value="progressValue"
-                color="accent"
-                class=""
-              >
-              </v-progress-circular>
-              <template v-if="!showUploadButton && !showUploadProgress">
-                <v-btn
-                  fab
-                  :disabled="progressBar || userInput === ''"
-                  :loading="progressBar"
-                  v-long-press="1000"
-                  @long-press-start="swapInputButton"
-                  aria-label="Send your question to the assistant"
-                  v-if="!showAudioInput"
-                  small
-                  color="primary"
-                  class="white--text elevation-2 mt-1"
-                  @click.native="sendUserInput"
+                  </template>
+                </v-text-field>
+                <span v-shortkey="['esc']" @shortkey="stopAudioCapture"></span>
+              </v-col>
+              <v-col cols="3" sm="2" class="text-center">
+                <upload-btn
+                  icon
+                  aria-label="Select file for upload"
+                  v-if="showUploadButton"
+                  @file-update="fileChanged"
+                  large
+                  hover
+                  class="elevation-2 v-btn v-btn--contained v-btn--fab v-btn--round v-size--small primary white--text"
                 >
-                  <v-icon>mdi-send</v-icon>
-                </v-btn>
+                  <template slot="icon">
+                    <v-icon dark class="py-2">mdi-paperclip</v-icon>
+                  </template>
+                </upload-btn>
+                <v-progress-circular
+                  v-if="showUploadProgress"
+                  :rotate="360"
+                  :size="40"
+                  :width="10"
+                  :value="progressValue"
+                  color="accent"
+                  class=""
+                >
+                </v-progress-circular>
+                <template v-if="!showUploadButton && !showUploadProgress">
+                  <v-btn
+                    text
+                    icon
+                    :disabled="progressBar || userInput === ''"
+                    :loading="progressBar"
+                    v-long-press="1000"
+                    @long-press-start="swapInputButton"
+                    aria-label="Send your question to the assistant"
+                    v-if="!showAudioInput"
+                    large
+                    color="primary"
+                    @click.native="sendUserInput"
+                  >
+                    <v-icon>mdi-send</v-icon>
+                  </v-btn>
 
-                <v-btn
-                  fab
-                  aria-label="Send your question to the assistant."
-                  :disabled="progressBar"
-                  :loading="progressBar"
-                  v-long-press="1000"
-                  @long-press-start="swapInputButton"
-                  small
-                  v-if="showAudioInput"
-                  v-shortkey="{
-                    recordAudioOne: ['ctrl', 'alt', '.'],
-                    recordAudioTwo: ['ctrl', 'alt', '`'],
-                    recordAudioThree: ['ctrl', 'alt', 'arrowup']
-                  }"
-                  @shortkey.native="captureAudio"
-                  :color="audioButtonColor"
-                  :class="audioButtonClasses"
-                  class="elevation-2 mt-1"
-                  @click.native="captureAudio"
-                >
-                  <v-icon medium>mdi-microphone</v-icon>
-                </v-btn>
-              </template>
-            </v-col>
-          </v-row>
+                  <v-btn
+                    fab
+                    aria-label="Send your question to the assistant."
+                    :disabled="progressBar"
+                    :loading="progressBar"
+                    v-long-press="1000"
+                    @long-press-start="swapInputButton"
+                    small
+                    v-if="showAudioInput"
+                    v-shortkey="{
+                      recordAudioOne: ['ctrl', 'alt', '.'],
+                      recordAudioTwo: ['ctrl', 'alt', '`'],
+                      recordAudioThree: ['ctrl', 'alt', 'arrowup']
+                    }"
+                    @shortkey.native="captureAudio"
+                    :color="audioButtonColor"
+                    :class="audioButtonClasses"
+                    class="elevation-2"
+                    @click.native="captureAudio"
+                  >
+                    <v-icon medium>mdi-microphone</v-icon>
+                  </v-btn>
+                </template>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-form>
       </v-col>
     </v-row>
@@ -731,21 +726,18 @@ div#chat-area p {
   margin-bottom: 5px;
 }
 
-div.teneo-footer .v-input__control {
-  height: 65px !important;
-}
-
 div.teneo-footer .v-input__slot {
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
   background: transparent !important;
   padding-right: 0px !important;
+  margin-top: 8px !important;
   /* padding-left: 5px !important; */
 }
 
 div.teneo-footer .v-text-field__details {
   position: absolute;
-  margin-top: 35px;
+  margin-top: 45px;
 }
 
 div.chat-container .v-expansion-panel-header {
@@ -897,7 +889,7 @@ span.teneo-reply ul {
   position: relative;
   bottom: 0px !important;
   width: 100%;
-  height: 65px;
+  /* height: 65px; */
   z-index: 5;
 }
 
