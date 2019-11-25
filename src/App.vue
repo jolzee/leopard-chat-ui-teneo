@@ -5,7 +5,10 @@
       v-if="showButtonOnly"
       class="application-button"
     >
-      <div id="chat-open-close-button-embed" @click="openEmbedButton">
+      <div
+        id="chat-open-close-button-embed"
+        @click="openEmbedButton"
+      >
         <v-fab-transition>
           <v-btn
             v-show="showChatButton"
@@ -52,7 +55,10 @@
         </v-system-bar>
       </transition>
       <template v-if="maximizeChat">
-        <div id="chat-open-close-button" v-if="!embed">
+        <div
+          id="chat-open-close-button"
+          v-if="!embed"
+        >
           <v-fab-transition>
             <v-btn
               fab
@@ -140,10 +146,9 @@
                       <v-list-item-title
                         class="subheading"
                         :class="menuClassText"
-                        >{{
+                      >{{
                           $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
-                        }}</v-list-item-title
-                      >
+                        }}</v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
                   <v-list-item
@@ -154,7 +159,10 @@
                     :to="menuItem.route"
                   >
                     <v-list-item-action>
-                      <v-icon medium :class="menuClass">{{
+                      <v-icon
+                        medium
+                        :class="menuClass"
+                      >{{
                         menuItem.icon
                       }}</v-icon>
                     </v-list-item-action>
@@ -162,12 +170,14 @@
                       <v-list-item-title
                         class="subheading"
                         :class="menuClassText"
-                        >{{ $t(menuItem.titleKey) }}</v-list-item-title
-                      >
+                      >{{ $t(menuItem.titleKey) }}</v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
                 </v-list>
-                <template v-slot:append v-if="authenticated">
+                <template
+                  v-slot:append
+                  v-if="authenticated"
+                >
                   <div class="pa-2">
                     <v-btn
                       ripple
@@ -175,32 +185,40 @@
                       block
                       color="primary darken-1"
                       @click="logout()"
-                      >{{ $t("menu.logout") }}
+                    >{{ $t("menu.logout") }}
                     </v-btn>
                   </div>
                 </template>
               </v-navigation-drawer>
             </transition>
 
-            <div style="height: inherit">
-              <v-toolbar
-                :color="toolbarColor"
+            <div
+              class="overflow-hidden"
+              style="height: inherit; border-radius: inherit"
+            >
+              <v-app-bar
+                elevate-on-scroll
+                max-height="64"
+                min-height="64"
                 height="64"
-                class="teneo-leopard-header"
+                :color="toolbarColor"
+                dark
+                app
                 :class="{
                   'teneo-toolbar-float': float,
                   'teneo-toolbar-embed': embed
                 }"
+                scroll-target="#teneo-chat-scroll"
+                class="teneo-leopard-header"
                 :style="toolbarStyle"
               >
                 <v-fab-transition>
                   <v-btn
                     icon
                     text
-                    small
                     tile
+                    small
                     ripple
-                    color="secondary"
                     :aria-label="
                       drawer ? 'Hide the chat menu' : 'Show the chat menu'
                     "
@@ -218,6 +236,7 @@
                   v-text="toolbarTitle"
                   class="pl-0"
                 ></v-toolbar-title>
+
                 <v-spacer></v-spacer>
                 <!-- Handle close button on production embedded sites -->
                 <template v-if="embed">
@@ -227,10 +246,9 @@
                         v-show="showChatButton"
                         icon
                         text
-                        small
                         tile
+                        small
                         ripple
-                        color="secondary"
                         aria-label="Close Chat"
                         class="embed-button-center mr-0"
                         :style="customCssButtonToolbar"
@@ -247,9 +265,8 @@
                       icon
                       text
                       tile
-                      ripple
                       small
-                      color="secondary"
+                      ripple
                       aria-label="Minimize Chat"
                       class="embed-button-center mr-1"
                       :style="customCssButtonToolbar"
@@ -263,9 +280,8 @@
                       icon
                       text
                       tile
-                      ripple
                       small
-                      color="secondary"
+                      ripple
                       aria-label="Close Chat"
                       class="embed-button-center mr-0"
                       :style="customCssButtonToolbar"
@@ -275,8 +291,12 @@
                     </v-btn>
                   </v-fab-transition>
                 </template>
-              </v-toolbar>
-              <v-content app class="content-area">
+              </v-app-bar>
+              <v-content
+                app
+                id="scrolling-techniques content-area"
+                class="pt-0"
+              >
                 <OverlayAlert />
                 <transition
                   name="page-transition"
@@ -289,12 +309,18 @@
             </div>
           </div>
         </transition>
-        <v-row v-if="importDialog" justify="center">
-          <v-dialog v-model="importDialog" persistent max-width="600">
+        <v-row
+          v-if="importDialog"
+          justify="center"
+        >
+          <v-dialog
+            v-model="importDialog"
+            persistent
+            max-width="600"
+          >
             <v-card>
               <v-card-title class="headline">Solution Import</v-card-title>
-              <v-card-text
-                >{{ importDialogMessages.message }}<br /><br />
+              <v-card-text>{{ importDialogMessages.message }}<br /><br />
                 <v-simple-table>
                   <template v-slot:default>
                     <thead>
@@ -309,8 +335,7 @@
                         <td>{{ importDialogMessages.deepLink }}</td>
                       </tr>
                     </tbody>
-                  </template> </v-simple-table
-                ><br />
+                  </template> </v-simple-table><br />
                 <v-alert
                   border="top"
                   colored-border
@@ -323,12 +348,14 @@
               </v-card-text>
               <v-card-actions>
                 <div class="flex-grow-1"></div>
-                <v-btn color="grey lighten-5" @click="importDialog = false"
-                  >Cancel</v-btn
-                >
-                <v-btn color="green lighten-2" @click="importSolutionFromUrl"
-                  >OK</v-btn
-                >
+                <v-btn
+                  color="grey lighten-5"
+                  @click="importDialog = false"
+                >Cancel</v-btn>
+                <v-btn
+                  color="green lighten-2"
+                  @click="importSolutionFromUrl"
+                >OK</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -897,8 +924,7 @@ export default {
 }
 
 .teneo-leopard-header {
-  z-index: 3;
-  position: relative;
+  position: relative !important;
 }
 
 #app {
@@ -1081,9 +1107,9 @@ a:focus {
   height: 80vh !important;
   right: 5% !important;
   top: 10%;
-  border-radius: 13px;
-  -moz-border-radius: 13px;
-  -webkit-border-radius: 13px;
+  border-radius: 13px !important;
+  -moz-border-radius: 13px !important;
+  -webkit-border-radius: 13px !important;
   position: fixed;
 }
 
@@ -1114,7 +1140,7 @@ a:focus {
 }
 
 .content-area {
-  height: calc(100% - 64px);
+  /* height: calc(100% - 64px); */
   padding: unset;
 }
 
@@ -1204,9 +1230,9 @@ iframe#site-frame {
     top: 0;
     bottom: 0;
     right: 0 !important;
-    border-radius: unset;
-    -moz-border-radius: unset;
-    -webkit-border-radius: unset;
+    border-radius: unset !important;
+    -moz-border-radius: unset !important;
+    -webkit-border-radius: unset !important;
   }
 
   .application-float {
@@ -1214,9 +1240,9 @@ iframe#site-frame {
     height: 100vh !important;
     right: 0 !important;
     top: 0;
-    border-radius: unset;
-    -moz-border-radius: unset;
-    -webkit-border-radius: unset;
+    border-radius: unset !important;
+    -moz-border-radius: unset !important;
+    -webkit-border-radius: unset !important;
   }
 
   .application-mobile {
