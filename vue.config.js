@@ -1,13 +1,21 @@
 const path = require("path");
-// const TerserPlugin = require("terser-webpack-plugin");
+const fs = require("fs");
 const CompressionPlugin = require("compression-webpack-plugin");
 var BrotliPlugin = require("brotli-webpack-plugin");
 
 var prod = process.env.NODE_ENV === "production";
+// var dev = process.env.NODE_ENV === "development";
+// var qa = process.env.NODE_ENV === "qa";
+
+console.log(`NODE_ENV = ${process.env.NODE_ENV}`);
+console.log(`Solution Config: ${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
+
+let rawdata = fs.readFileSync(`${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
+let solutionConfig = JSON.parse(rawdata);
 
 module.exports = {
   devServer: {
-    https: true,
+    https: false,
     port: 8080,
     disableHostCheck: true,
     host: "0.0.0.0",
@@ -26,16 +34,6 @@ module.exports = {
     }
   },
   configureWebpack: {
-    // optimization: {
-    //   minimize: true,
-    //   minimizer: [new TerserPlugin({
-    // terserOptions: {
-    //   compress: {
-    //     drop_console: true,
-    //   },
-    // },
-    // })]
-    // },
     devtool: "source-map",
     plugins: prod
       ? [
@@ -52,11 +50,6 @@ module.exports = {
         ]
       : []
   },
-  pluginOptions: {
-    webpackBundleAnalyzer: {
-      openAnalyzer: false
-    }
-  },
   chainWebpack: config => {
     config.module
       .rule("eslint")
@@ -65,10 +58,16 @@ module.exports = {
         options.configFile = path.resolve(__dirname, ".eslintrc.js");
         return options;
       });
+    config.plugin("define").tap(definitions => {
+      Object.assign(definitions[0]["process.env"], {
+        VUE_APP_SOLUTION_CONFIG: JSON.stringify(solutionConfig)
+      });
+      return definitions;
+    });
   },
-  publicPath: prod ? "./" : "/",
+  publicPath: "./",
   assetsDir: "./assets/",
-  productionSourceMap: false,
+  productionSourceMap: true,
   transpileDependencies: [
     "vuetify",
     "replace-string",
