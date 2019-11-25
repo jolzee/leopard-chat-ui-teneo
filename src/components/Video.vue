@@ -1,9 +1,9 @@
 <template>
-  <vue-plyr v-if="url && type" class="mb-2">
-    <video
-      poster="poster.png"
-      src="video.mp4"
-    >
+  <vue-plyr
+    v-if="url && type"
+    class="mb-2"
+  >
+    <video autoplay="false">
       <source
         :src="url"
         :type="type"
