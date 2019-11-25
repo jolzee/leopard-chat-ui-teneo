@@ -1,34 +1,33 @@
 language: node_js
 dist: xenial
 node_js:
-  - 12.13.0
+- 12.13.0
 notifications:
   slack:
     secure: NzGl8ZGdDYH0M5dnmMDK5djurdN7hXFRTGrIDJCsD8BmBA2sH2d/PS1rmtlpvQJ0SoE+1LP2ZMmnpRSKV3HhY6a5IgKPu/Tqu42YTA0MncGf377CyrMrOagaL6KFdsqxKvibRkgcux8sGZKX9ZXq59Zjb5ihgRHsUbQkXoibn+/y4zG3A7tcyfSJuNi62DO1bN31Ji56BX2mTc91iYpzb3p/KOSc0yS4NgWT3yXPzdvZuNg2zR01tzhNv92G73tyYDykLw2KBcCUkWopj1uIrFPXgFDEonQ8Qp3gVuIa8vEkh+hhyu4lPfkAB1zLQBowzrDNKdIQln5/orTVhgQIHxLvUNFFmBAGKKDscAOTKWr6mOvW6xGreVfBvhcJ+W7wwPdU3g8BtT5+85y+vCUmbiwMFWLTjSnrwjGlgBfY6GisdIa/XysrURxOyYdweG1S9/TdNRwBj8QRPrYYkb+X1M3Z9gFa3PWAIEDFgHX7SywreRfIPksRHKuYO1XGzOl5RLWgfa32733wl/cAtbwMmJmXX3kFbIQavhgmlEsKVyDqbgZwbvXD8yip3ZXRW5KavuljK6UYJwhcGql/e4tB76Qm69HtspYTFMsEzbpx1h9q41CAd4tm3ZokYxPW/cfTHJm4u5B8K0Bv6nsQInFhabnaHTzRk3WjfaFNkXZVP8E=
 branches:
   only:
-    - master
+  - master
 env:
   global:
-    - secure: Fb0DilEJ862wobrfbO/9tqCfap7gmmUQyUZLx6g9QDsCv/pq7yEeBmOWZT1ld8Praw0rdPSs7r+sgoLqvfYyaBA58bvCkk7HtP6ANuDVH+LKG9z6ThL3ehuS0FBbXTCrgaT77ZA5SJu1ReDlEWRl6SU/lnCyDeV+ZJxOG2lRduDAuYGT9aKH6YVbsjT7mAuQMZPyfp3mjMxeNDtu6Vs07hXbqyv70Usdert3X/NXIMeN2L+jWSBXXYAsLvhQNJ/uGG3mEgqcJInaCI68DIlNGkbgmymBrkbDj7Ii4K3nKu4mV4naTRScF5++eu7nHrzZ+aP3heBCLKY967aNZZiXh9nazvMXpMsSjFb2h4DCeMfMfMmsxIYM/FDtIZa5NxeggRe/8DgahHSaNyw9k60ur40dte8K+ef438jDAsXrIGWTUZlqf5KVOXiOHWOQ0uC0bB3t0heSpvbwvqsaXeU50Hmxn4mqGK4aGuPpGeU7EAFLXZdPvxRa0Zjaw1EAXBpmK430foTxmrcEIaTvjg+jM/b59wLFYcbACnHoouWos4CWKp5kMw2b1HX1Q0bBod3oJAZJL59lwC9nFpQj3p56M5wK9Ptd6VRSGuv8Lw2xiYtnN3fCYP/gsxpqeZFTFsH3MiSGwU7+9RF+4cS5RlXdiCwb7vjLV9qVeAIImL7m1Cw=
-    - secure: DUK7mtuIPxnjWlFkZJs1kMpqIgQwQtdee3HPBKRSvLLx99eHv5gFxJDfBjllJ5zJ6UqkTPuRFq23Z69m6ButxDgL4vJ0LKGXr1p/EOpB6LizKH7NKdH/A1ha6HLmkJI39w13uZGZUZ0BjF1KKlKEa79Jile+DiYJGgoayjhyJxVHubJ/0eJx0XdCr3mmFoHet85GncIqf77ohRyVi2dzzY1cFRS6hHb6nxkX6/8wLQmShuB2tuZNOFNA/EnB1D9NhQ1LOEiZLViCweHzt98la02tKH8e08wKA4RurxMkvNaYeVlQlBBDtQ1H/LXJbrQmMjLcNkncyAXWdvig51X5IF4xWHoKtLzK864t87X0PPBuIbZoWfxh3EX1FAdC9+XYIrHGZdbbwewB5QqJz4CYs1CdWrEiIlLO0LVKfxr0kJMR25Gu91Z1y78xlQc06Hc9skmmALNMpPDUQ1vHlzkvlLkgd4Alm6rinzYfJW2PWdAQOB6iNKd+pIH1qN7QWUBU0FKtKN3Z6iwzV6P0Z0FnH3RYC42g6pY+XmPKY1lgfkSlBw9IS3lvpcL2ddv3rXb2nN0o4hFvOl5o1SeDYWNqdeUOmqLDc2kOvrKYHTBoFaVF4T/0YmvUK+CdwKhn1nwqsUjQzoY41leD7Hqa73UWyQZ3i/Jf8lpTaCBjvf9zWu0=
+  - secure: Fb0DilEJ862wobrfbO/9tqCfap7gmmUQyUZLx6g9QDsCv/pq7yEeBmOWZT1ld8Praw0rdPSs7r+sgoLqvfYyaBA58bvCkk7HtP6ANuDVH+LKG9z6ThL3ehuS0FBbXTCrgaT77ZA5SJu1ReDlEWRl6SU/lnCyDeV+ZJxOG2lRduDAuYGT9aKH6YVbsjT7mAuQMZPyfp3mjMxeNDtu6Vs07hXbqyv70Usdert3X/NXIMeN2L+jWSBXXYAsLvhQNJ/uGG3mEgqcJInaCI68DIlNGkbgmymBrkbDj7Ii4K3nKu4mV4naTRScF5++eu7nHrzZ+aP3heBCLKY967aNZZiXh9nazvMXpMsSjFb2h4DCeMfMfMmsxIYM/FDtIZa5NxeggRe/8DgahHSaNyw9k60ur40dte8K+ef438jDAsXrIGWTUZlqf5KVOXiOHWOQ0uC0bB3t0heSpvbwvqsaXeU50Hmxn4mqGK4aGuPpGeU7EAFLXZdPvxRa0Zjaw1EAXBpmK430foTxmrcEIaTvjg+jM/b59wLFYcbACnHoouWos4CWKp5kMw2b1HX1Q0bBod3oJAZJL59lwC9nFpQj3p56M5wK9Ptd6VRSGuv8Lw2xiYtnN3fCYP/gsxpqeZFTFsH3MiSGwU7+9RF+4cS5RlXdiCwb7vjLV9qVeAIImL7m1Cw=
+  - secure: DUK7mtuIPxnjWlFkZJs1kMpqIgQwQtdee3HPBKRSvLLx99eHv5gFxJDfBjllJ5zJ6UqkTPuRFq23Z69m6ButxDgL4vJ0LKGXr1p/EOpB6LizKH7NKdH/A1ha6HLmkJI39w13uZGZUZ0BjF1KKlKEa79Jile+DiYJGgoayjhyJxVHubJ/0eJx0XdCr3mmFoHet85GncIqf77ohRyVi2dzzY1cFRS6hHb6nxkX6/8wLQmShuB2tuZNOFNA/EnB1D9NhQ1LOEiZLViCweHzt98la02tKH8e08wKA4RurxMkvNaYeVlQlBBDtQ1H/LXJbrQmMjLcNkncyAXWdvig51X5IF4xWHoKtLzK864t87X0PPBuIbZoWfxh3EX1FAdC9+XYIrHGZdbbwewB5QqJz4CYs1CdWrEiIlLO0LVKfxr0kJMR25Gu91Z1y78xlQc06Hc9skmmALNMpPDUQ1vHlzkvlLkgd4Alm6rinzYfJW2PWdAQOB6iNKd+pIH1qN7QWUBU0FKtKN3Z6iwzV6P0Z0FnH3RYC42g6pY+XmPKY1lgfkSlBw9IS3lvpcL2ddv3rXb2nN0o4hFvOl5o1SeDYWNqdeUOmqLDc2kOvrKYHTBoFaVF4T/0YmvUK+CdwKhn1nwqsUjQzoY41leD7Hqa73UWyQZ3i/Jf8lpTaCBjvf9zWu0=
 before_install:
-  - openssl aes-256-cbc -K $encrypted_e0272ac8690c_key -iv $encrypted_e0272ac8690c_iv
-    -in secrets.tar.enc -out secrets.tar -d
-  - tar xvf secrets.tar
+- openssl aes-256-cbc -K $encrypted_e0272ac8690c_key -iv $encrypted_e0272ac8690c_iv
+  -in secrets.tar.enc -out secrets.tar -d
+- tar xvf secrets.tar
 install:
-  - echo 'Build starting...'
-  - echo 'Installing Dependencies...'
-  - npm install
+- echo 'Build starting...'
+- echo 'Installing Dependencies...'
+- npm install
 script:
-  - npm run build
+- npm run build
 before_deploy:
-  - eval "$(ssh-agent -s)"
-  - chmod 600 deploy_rsa
-  - ssh-add deploy_rsa
+- eval "$(ssh-agent -s)"
+- chmod 600 deploy_rsa
+- ssh-add deploy_rsa
 deploy:
   provider: script
   skip_cleanup: true
-  script:
-    rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after --quiet ./dist/
+  script: rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after --quiet ./dist/
     ${SSH_USER}@${SSH_HOST}:/var/www/leopard-chat

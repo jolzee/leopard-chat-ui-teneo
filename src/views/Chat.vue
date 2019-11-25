@@ -701,6 +701,10 @@ export default {
   width: 360px;
 }
 
+#teneo-chat-scroll {
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
 .container {
   padding: 0 !important;
 }
