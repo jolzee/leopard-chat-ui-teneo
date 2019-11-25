@@ -294,8 +294,7 @@ export class LiveChat {
         });
       }
     } catch (e) {
-      Vue.$log.debug("Error Setting Up Live Chat");
-      Vue.$log.error(e);
+      Vue.$log.error("Error Setting Up Live Chat", e);
     }
   }
 
@@ -339,7 +338,7 @@ export class LiveChat {
         })
         .catch(err => {
           Vue.$log.error(
-            "ERROR OPENING CHAT FORM INCOMING LIVE CHAT MESSAGE: ",
+            "ERROR OPENING CHAT FROM INCOMING LIVE CHAT MESSAGE: ",
             err
           );
         });
