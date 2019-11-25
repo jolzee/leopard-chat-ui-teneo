@@ -19,8 +19,8 @@
         }
       ],
       "animations": {
-        "in": "rotateInUpRight",
-        "out": "zoomOutDown"
+        "in": "slideInUp",
+        "out": "flipOutY"
       },
       "chatTitle": "Speak with Leo",
       "responseIcon": "mdi-message-bulleted",
@@ -28,12 +28,12 @@
       "useLocalStorage": false,
       "enableLiveChat": false,
       "theme": {
-        "primary": "#4291B4",
-        "secondary": "#7F6764",
-        "accent": "#4CAF50",
-        "error": "#FF5252",
-        "info": "#2196F3",
+        "primary": "#3D237D",
+        "secondary": "#7C5BB7",
+        "accent": "#2196F3",
         "success": "#4CAF50",
+        "info": "#2196F3",
+        "error": "#FF5252",
         "warning": "#FFC107"
       },
       "displayAccent": true,
