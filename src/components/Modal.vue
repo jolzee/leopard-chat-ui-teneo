@@ -12,6 +12,7 @@
 
     <!-- show normal message -->
     <v-dialog
+      v-if="showModal"
       v-model="showModal"
       leave-absolute
       scrollable
@@ -267,6 +268,7 @@ export default {
         (this.modalItem && this.$store.getters.showModal) ||
         this.itemHasLongResponse(this.modalItem)
       ) {
+        this.$log.debug("About to RESET MODAL 11");
         this.resetModal();
         let item = this.modalItem;
         let transcript = this.liveChatTranscript(item);
@@ -583,6 +585,7 @@ export default {
     hideModal() {
       this.$store.commit("HIDE_CHAT_MODAL");
       let that = this;
+      this.$log.debug("About to RESET MODAL 22");
       setTimeout(function() {
         that.resetModal();
       }, 1000); // needed to stop weird animations on the close
