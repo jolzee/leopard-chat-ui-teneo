@@ -6,7 +6,6 @@ import PromisedLocation from "promised-location";
 import { COLOR_NAMES } from "../constants/color-names.js";
 import Vue from "vue";
 import Vuetify from "vuetify/lib";
-import internalConfig from "../assets/default.json";
 
 // import "vuetify/src/stylus/app.styl";
 
@@ -85,14 +84,22 @@ export default class Setup {
             this.addIframeHtml();
           }
 
+          Vue.$log.debug(`Chat Config: ${this.chatConfig}`);
+          Vue.$log.debug(`Active Solution: ${this.chatConfig.activeSolution}`);
+
           if (this.chatConfig && this.chatConfig.activeSolution) {
             let deepLink = this.getParameterByName("dl"); // look for deep link
             if (!deepLink) {
+              Vue.$log.debug(`No deep link found in the current url`);
               this.activeSolution = this.chatConfig.activeSolution;
               const matchingSolutions = this.chatConfig.solutions.filter(
                 solution => solution.name === this.activeSolution
               );
-              this.activeSolution = matchingSolutions[0];
+              if (matchingSolutions.length > 0) {
+                this.activeSolution = matchingSolutions[0];
+              } else {
+                this.activeSolution = this.chatConfig.solutions[0];
+              }
             } else {
               // allow for deep linking to a specific solution ?dl=<deepLink>
               const matchingSolutions = this.chatConfig.solutions.filter(
@@ -106,7 +113,11 @@ export default class Setup {
                 const matchingSolutions = this.chatConfig.solutions.filter(
                   solution => solution.name === this.activeSolution
                 );
-                this.activeSolution = matchingSolutions[0];
+                if (matchingSolutions.length > 0) {
+                  this.activeSolution = matchingSolutions[0];
+                } else {
+                  this.activeSolution = this.chatConfig.solutions[0];
+                }
               }
             }
             this.ASR_CORRECTIONS_MERGED = this.getMergedAsrCorrections(
@@ -178,9 +189,6 @@ export default class Setup {
           });
 
           let vuetify = new Vuetify({
-            // icons: {
-            //   iconfont: ["mdi", "fa", "md"]
-            // },
             breakpoint: {
               thresholds: {
                 xs: 0,
@@ -223,9 +231,10 @@ export default class Setup {
   }
 
   getSolutionConfig() {
+    Vue.$log.debug("setup.js: getSolutionConfig ");
     return new Promise((resolve, reject) => {
       // Reload config for each load. Maybe there a new deployment change that you want to
-      if (process.env.VUE_APP_LOAD_CONFIG_FOR_NEW_SESSIONS === "true") {
+      if (process.env.VUE_APP_LOAD_FRESH_CONFIG_FOR_NEW_SESSIONS === "true") {
         localStorage.removeItem(STORAGE_KEY + "config");
         Vue.$log.debug("Cleared local storage");
       }
@@ -236,7 +245,9 @@ export default class Setup {
         !this.chatConfig ||
         (this.chatConfig && this.chatConfig.solutions.length === 0)
       ) {
-        Vue.$log.debug("No config: Looking for default.json");
+        Vue.$log.debug(
+          "No config found in local storage: Looking for default.json"
+        );
         this._loadDefaultConfig()
           .then(defaultConfig => {
             this.chatConfig = defaultConfig;
@@ -251,9 +262,12 @@ export default class Setup {
 
   _loadDefaultConfig() {
     return new Promise((resolve, reject) => {
-      if (!process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG) {
-        Vue.$log.debug("Loaded internal config");
-        resolve(internalConfig);
+      if (!(process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG === "true")) {
+        Vue.$log.debug(
+          "Loaded solution environment config",
+          process.env.VUE_APP_SOLUTION_CONFIG
+        );
+        resolve(process.env.VUE_APP_SOLUTION_CONFIG);
       } else {
         // look for default config on the server
         const defaultConfigUrl = `${location.protocol}//${location.host}${location.pathname}/../static/default.json`;
@@ -261,7 +275,9 @@ export default class Setup {
           .get(defaultConfigUrl)
           .accept("application/json")
           .then(res => {
-            Vue.$log.debug("Found and loaded external default config");
+            Vue.$log.debug(
+              "Found and loaded solution config from /static/default.json"
+            );
             let defaultConfig = res.body;
             localStorage.setItem(
               STORAGE_KEY + "config",
@@ -270,7 +286,10 @@ export default class Setup {
             resolve(defaultConfig);
           })
           .catch(function(error) {
-            reject("Could not load default.json: " + error.message);
+            reject(
+              "Could not load default.json from /static/default.json: " +
+                error.message
+            );
           });
       }
     });
@@ -287,7 +306,7 @@ export default class Setup {
 
   getMergedAsrCorrections(leopardDefaultCorrections) {
     let finalCorrections = leopardDefaultCorrections;
-    if ("asrCorrections" in this.activeSolution) {
+    if (this.activeSolution && "asrCorrections" in this.activeSolution) {
       let solutionResplacements = [];
       let lines = this.activeSolution.asrCorrections.split(/\r?\n/);
       lines.forEach(replacement => {
