@@ -70,6 +70,7 @@ module.exports = {
   productionSourceMap: true,
   transpileDependencies: [
     "vuetify",
+    "vue-plyr",
     "replace-string",
     "url-regex",
     "vue-long-press-directive"

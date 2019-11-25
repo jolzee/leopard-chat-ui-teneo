@@ -1,13 +1,7 @@
 <template>
-  <vue-plyr
-    v-if="url && type"
-    class="mb-2"
-  >
+  <vue-plyr v-if="url && type" class="mb-2">
     <video autoplay="false">
-      <source
-        :src="url"
-        :type="type"
-      />
+      <source :src="url" :type="type" />
     </video>
   </vue-plyr>
 </template>
