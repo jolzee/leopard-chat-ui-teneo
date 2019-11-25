@@ -1783,17 +1783,16 @@ function storeSetup(vuetify, callback) {
       login(context) {
         // get the greeting message if we haven't done so for this session
         return new Promise((resolve, reject) => {
-          Vue.jsonp(
+          const teneoUrl =
             config.TENEO_URL +
-              config.REQUEST_PARAMETERS +
-              context.getters.userInformationParams +
-              context.getters.timeZoneParam +
-              context.getters.ctxParameters,
-            {
-              command: "login"
-              // userInput: ""
-            }
-          )
+            config.REQUEST_PARAMETERS +
+            context.getters.userInformationParams +
+            context.getters.timeZoneParam +
+            context.getters.ctxParameters;
+          Vue.jsonp(teneoUrl, {
+            command: "login"
+            // userInput: ""
+          })
             .then(json => {
               if ("numActiveFlows" in json.responseData.extraData) {
                 let numActiveFlows = parseInt(
@@ -1868,14 +1867,18 @@ function storeSetup(vuetify, callback) {
               resolve();
             })
             .catch(err => {
-              Vue.$log.debug(`Problems sending login command`, err);
+              const errResp = {
+                error: err,
+                teneoUrl: teneoUrl
+              };
+              Vue.$log.debug(`Problems sending login command`, errResp);
               context.commit(
                 "SHOW_MESSAGE_IN_CHAT",
                 "Problems sending login command: " +
                   err.message +
                   ". Please make sure your Solution is published and that you are referencing the correct TIE Url."
               );
-              reject(err);
+              reject(errResp);
             });
         });
       },
@@ -1903,18 +1906,17 @@ function storeSetup(vuetify, callback) {
 
         if (!context.getters.isLiveChat) {
           // normal Teneo request needs to be made
-          Vue.jsonp(
+          const teneoUrl =
             context.getters.teneoUrl +
-              (config.SEND_CTX_PARAMS === "all"
-                ? config.REQUEST_PARAMETERS + params
-                : params) +
-              context.getters.userInformationParams +
-              context.getters.timeZoneParam +
-              context.getters.ctxParameters,
-            {
-              userinput: currentUserInput.trim()
-            }
-          )
+            (config.SEND_CTX_PARAMS === "all"
+              ? config.REQUEST_PARAMETERS + params
+              : params) +
+            context.getters.userInformationParams +
+            context.getters.timeZoneParam +
+            context.getters.ctxParameters;
+          Vue.jsonp(teneoUrl, {
+            userinput: currentUserInput.trim()
+          })
             .then(json => {
               if (params.indexOf("command=train") !== -1) {
                 return;
@@ -2273,19 +2275,24 @@ function storeSetup(vuetify, callback) {
               }
             })
             .catch(err => {
-              Vue.$log.debug("Request To Teneo Timed Out", err);
+              const errResp = {
+                error: err,
+                teneoUrl: teneoUrl
+              };
               if (err.status && err.status === 408) {
-                Vue.$log.debug("Oh dear - Request Timed Out");
+                Vue.$log.error("Request To Teneo Timed Out: 408", errResp);
                 context.commit(
                   "SHOW_MESSAGE_IN_CHAT",
                   "I'm sorry but the request timed out - Please try again."
                 );
               } else if (err.status && err.status === 400) {
+                Vue.$log.error("Request To Teneo Timed Out: 400", errResp);
                 context.commit(
                   "SHOW_MESSAGE_IN_CHAT",
                   "I'm sorry, I wasn't able to communicate with the virtual assitant. Please check your internet connection."
                 );
               } else {
+                Vue.$log.error("Could not communicate with Teneo", errResp);
                 context.commit("SHOW_MESSAGE_IN_CHAT", err.message);
               }
               context.commit("HIDE_PROGRESS_BAR");
