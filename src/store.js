@@ -7,6 +7,17 @@ import router from "@/router";
 import LiveChat from "@livechat/agent-app-widget-sdk";
 import { accountsSdk } from "@livechat/accounts-sdk";
 import liveChatConfig from "./utils/livechat-config";
+
+let logrocketPlugin = null;
+if (process.env.NODE_ENV === "production" && process.env.VUE_APP_LOG_ROCKET) {
+  Promise.all([import("logrocket"), import("logrocket-vuex")]).then(
+    ([LogRocket, createPlugin]) => {
+      LogRocket.init(process.env.VUE_APP_LOG_ROCKET);
+      logrocketPlugin = createPlugin(LogRocket);
+    }
+  );
+}
+
 var md = require("markdown-it")({
   html: true, // Enable HTML tags in source
   xhtmlOut: true, // Use '/' to close single tags (<br />).
@@ -103,6 +114,7 @@ export function getStore(callback) {
 
 function storeSetup(vuetify, callback) {
   store = new Vuex.Store({
+    plugins: [...(logrocketPlugin ? [logrocketPlugin] : [])],
     state: {
       asr: {
         stopAudioCapture: false,
