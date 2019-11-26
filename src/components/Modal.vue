@@ -20,179 +20,189 @@
       no-click-animation
       content-class="teneo-modal"
       hide-overlay
-      fullscreen
+      :width="currentModalSize === 'small' ? 360 : currentModalSize === 'medium' ? 500 : currentModalSize === 'large' ? 700 : 900"
+      :fullscreen="fullscreen || currentModalSize === 'fullscreen' || currentModalPosition === 'fullscreen' || $vuetify.breakpoint.xs || $vuetify.breakpoint.sm || $vuetify.breakpoint.md"
     >
-      <v-row no-gutters>
-        <v-col cols="12">
-          <v-toolbar
-            dark
-            color="primary"
-            height="64"
-            :class="toolbarWidth"
+      <v-card>
+        <v-fade-transition>
+          <v-overlay
+            absolute
+            opacity="0.7"
+            :value="overlay"
           >
-            <v-btn
-              fab
-              small
-              @click="hideModal"
-              color="secondary"
+
+            <v-alert
+              border="left"
+              light
+              colored-border
+              type="info"
+              elevation="2"
+              @click="overlay = false"
             >
-              <v-icon
-                dark
-                medium
-              >mdi-close</v-icon>
-            </v-btn>
-            <v-toolbar-title>{{ $t("more.info.title") }}</v-toolbar-title>
-          </v-toolbar>
-        </v-col>
-        <v-col cols="12">
-          <v-card
-            class="modal-height teneo-modal-card"
-            :class="{ 'dark-scroll': dark, 'light-scroll': !dark }"
-            tile
-          >
-            <!-- YouTube -->
-            <YouTube :videoId="youTubeVideoId"></YouTube>
+              {{ overlayMessage }}
+            </v-alert>
+          </v-overlay>
+        </v-fade-transition>
+        <v-system-bar
+          color="primary darken-2"
+          :class="{ 'popup-header': !fullscreen }"
+          dark
+        >
+          <v-spacer></v-spacer>
+          <v-icon
+            @click="toggleFullscreen"
+            v-if="currentModalPosition !== 'fullscreen' && currentModalSize !== 'fullscreen'"
+          >{{ fullscreen ? 'mdi-window-restore' : 'mdi-window-maximize' }}</v-icon>
+          <v-icon @click="hideModal">mdi-close</v-icon>
+        </v-system-bar>
 
-            <!-- Vimeo -->
-            <Vimeo :videoId="vimeoVideoId"></Vimeo>
+        <v-app-bar
+          dark
+          color="primary"
+          dense
+        >
+          <v-toolbar-title>{{ $t("more.info.title") }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-app-bar>
+        <v-card-text
+          style="height: 80%;"
+          class="px-2 mx-0 py-0"
+          :class="{'dark-scroll': dark, 'light-scroll': !dark}"
+        >
 
-            <!-- Audio -->
-            <Audio :url="audioUrl"></Audio>
-
-            <!-- Misc Video -->
-            <Video
-              :url="videoUrl"
-              :type="videoType"
-            ></Video>
-
-            <!-- Gogle Map -->
-            <Map
-              v-if="address"
-              :address="address"
-            ></Map>
-
-            <v-container class="modal-container">
-              <!-- show an image if available -->
-              <ImageAnimation :url="imageUrl"></ImageAnimation>
-
-              <!-- show a carousel of images if available -->
-              <Carousel :imageItems="images"></Carousel>
-
-              <!-- display the modal title and sub-title -->
-              <v-row
-                align="start"
-                justify="start"
-                class="mx-1"
+          <v-container fluid>
+            <v-row
+              align="start"
+              justify="start"
+            >
+              <v-col
+                cols="12"
+                class="pa-2"
               >
-                <v-card-title primary-title>
-                  <!-- Main Title -->
-                  <div
-                    class="modal-headline"
-                    v-if="title"
-                    v-html="title"
-                  ></div>
-                  <!-- Sub-Title -->
-                  <span
-                    class="grey--text"
-                    v-if="subTitle"
-                    v-html="subTitle"
-                  ></span>
-                </v-card-title>
-              </v-row>
+                <!-- display the modal title and sub-title -->
+                <div
+                  v-if="title"
+                  v-html="title"
+                  class="subtitle-2 font-weight-bold"
+                ></div>
+                <!-- Sub-Title -->
+                <div
+                  class="subtitle-2 font-weight-bold"
+                  v-if="subTitle"
+                  v-html="subTitle"
+                ></div>
 
-              <v-row
-                align="start"
-                justify="center"
-              >
-                <!-- show the close modal button -->
-                <v-card-actions>
-                  <!-- Yes there are keyboard shortcuts to close the modal window -->
-                  <v-btn
-                    color="primary"
-                    v-shortkey="['ctrl', 'alt', 'arrowleft']"
-                    @shortkey.native="hideModal"
-                    @click.native="hideModal"
-                  >{{ $t("back.to.chat.button") }}
-                  </v-btn>
-                </v-card-actions>
-              </v-row>
+                <!-- YouTube -->
+                <YouTube :videoId="youTubeVideoId"></YouTube>
 
-              <!-- Show the body text, flight itineary, and any tables if available -->
-              <div
-                class=" mt-3"
-                v-if="
-                  itinerary ||
-                    bodyText ||
-                    transactionItems.length ||
-                    tableRows.length
-                "
-              >
-                <!-- Show the flight itinerary -->
-                <FlightItinerary :itinerary="itinerary"></FlightItinerary>
+                <!-- Vimeo -->
+                <Vimeo :videoId="vimeoVideoId"></Vimeo>
 
-                <!-- show the body text -->
-                <v-card-text
-                  class="cardText"
-                  id="chat-modal-html"
-                  v-if="bodyText"
-                  v-html="bodyText"
-                  scrollable
-                ></v-card-text>
+                <!-- Audio -->
+                <Audio :url="audioUrl"></Audio>
 
-                <!-- data tables -->
-                <v-row
-                  class="fill-height mx-1"
-                  v-if="transactionItems.length > 0 || tableRows.length > 0"
-                  align="end"
-                  justify="start"
+                <!-- Misc Video -->
+                <Video
+                  :url="videoUrl"
+                  :type="videoType"
+                ></Video>
+
+                <!-- Gogle Map -->
+                <Map
+                  v-if="address"
+                  :address="address"
+                ></Map>
+
+                <!-- show an image if available -->
+                <ImageAnimation :url="imageUrl"></ImageAnimation>
+
+                <!-- show a carousel of images if available -->
+                <Carousel :imageItems="images"></Carousel>
+
+                <!-- Show the body text, flight itineary, and any tables if available -->
+                <div
+                  class="mt-3"
+                  v-if="itinerary || bodyText || transactionItems.length || tableRows.length"
                 >
-                  <!-- table title -->
-                  <v-row v-if="tableTitle">
+                  <!-- Show the flight itinerary -->
+                  <FlightItinerary :itinerary="itinerary"></FlightItinerary>
+
+                  <!-- show the body text -->
+                  <v-card-text
+                    class="cardText"
+                    id="chat-modal-html"
+                    v-if="bodyText"
+                    v-html="bodyText"
+                    scrollable
+                  ></v-card-text>
+
+                  <!-- data tables -->
+                  <v-row
+                    class="fill-height mx-1"
+                    v-if="transactionItems.length > 0 || tableRows.length > 0"
+                    align="end"
+                    justify="start"
+                  >
+                    <!-- table title -->
+                    <v-row v-if="tableTitle">
+                      <v-col
+                        cols="8"
+                        class="ml-4"
+                      >
+                        <h3>{{ tableTitle }}</h3>
+                      </v-col>
+                    </v-row>
+                    <v-spacer v-else></v-spacer>
+                    <!-- show a search input box for the table -->
                     <v-col
-                      cols="8"
-                      class="ml-4"
+                      cols="4"
+                      v-if="tableEnableSearch"
+                      class="mr-2"
                     >
-                      <h3>{{ tableTitle }}</h3>
+                      <v-text-field
+                        v-model="search"
+                        append-icon="mdi-table-search"
+                        label="Search"
+                        single-line
+                        hide-details
+                      ></v-text-field>
                     </v-col>
                   </v-row>
-                  <v-spacer v-else></v-spacer>
-                  <!-- show a search input box for the table -->
-                  <v-col
-                    cols="4"
-                    v-if="tableEnableSearch"
-                    class="mr-2"
-                  >
-                    <v-text-field
-                      v-model="search"
-                      append-icon="mdi-table-search"
-                      label="Search"
-                      single-line
-                      hide-details
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
 
-                <!-- Show the MyBank Transactions as a Table -->
-                <MyBankTransactions
-                  :headers="transactionHeaders"
-                  :items="transactionItems"
-                  :search="search"
-                ></MyBankTransactions>
+                  <!-- Show the MyBank Transactions as a Table -->
+                  <MyBankTransactions
+                    :headers="transactionHeaders"
+                    :items="transactionItems"
+                    :search="search"
+                  ></MyBankTransactions>
 
-                <!-- Show a Generic Data Table -->
-                <Table
-                  :headers="tableHeaders"
-                  :items="tableRows"
-                  :search="search"
-                  :footer="tableFooter"
-                  :rowsPerPage="tableRowsPerPage"
-                ></Table>
-              </div>
-              <v-spacer></v-spacer>
-            </v-container>
-          </v-card>
-        </v-col>
-      </v-row>
+                  <!-- Show a Generic Data Table -->
+                  <Table
+                    :headers="tableHeaders"
+                    :items="tableRows"
+                    :search="search"
+                    :footer="tableFooter"
+                    :rowsPerPage="tableRowsPerPage"
+                  ></Table>
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="secondary white--text"
+            small
+            @click.native="hideModal"
+            v-shortkey="['ctrl', 'alt', 'arrowleft']"
+            @shortkey.native="hideModal"
+          >{{ $t("back.to.chat.button") }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </v-dialog>
   </span>
 </template>
@@ -238,8 +248,11 @@ export default {
       images: [],
       imageUrl: "",
       itinerary: "",
-      currentModalPosition: "center", // left / right / center
-      currentModalSize: "small", // small / medium / large / x-large / "" = full screen
+      fullscreen: false,
+      overlay: false,
+      overlayMessage: "",
+      currentModalPosition: "center", // left / right / center / fullscreen
+      currentModalSize: "medium", // small / medium / large / x-large / fullscreen "" = full screen
       pusherEnabled: false,
       pusherMessage: "",
       search: "",
@@ -301,12 +314,19 @@ export default {
     // }
   },
   watch: {
+    fullscreen(mustBeFullscreen) {
+      if (mustBeFullscreen) {
+        this.removeCustomStylesFromModal();
+      } else {
+        this.modalClass();
+      }
+    },
     modalItem() {
       if (
         (this.modalItem && this.$store.getters.showModal) ||
         this.itemHasLongResponse(this.modalItem)
       ) {
-        this.$log.debug("About to RESET MODAL 11");
+        this.$log.debug("About to RESET MODAL");
         this.resetModal();
         let item = this.modalItem;
         let transcript = this.liveChatTranscript(item);
@@ -544,6 +564,11 @@ export default {
     }
   },
   methods: {
+    toggleFullscreen() {
+      let modalElements = document.getElementsByClassName("teneo-modal");
+      modalElements[0].setAttribute("style", "");
+      this.fullscreen = !this.fullscreen;
+    },
     getFirstChunk(text) {
       if (text && text.includes("||")) {
         return text.split("||")[0];
@@ -551,18 +576,32 @@ export default {
       return text;
     },
     modalClass() {
-      this.$log.debug("Applying custom modal size and position");
-      this.$log.debug("Adding sizing and position styles to modal");
-      var modalElements = document.getElementsByClassName("teneo-modal");
-      if (
-        modalElements !== "undefined" &&
-        this.currentModalSize !== "undefined"
-      ) {
-        for (var i = 0; i < modalElements.length; i++) {
-          modalElements[
-            i
-          ].className += ` teneo-modal-${this.currentModalPosition} teneo-modal-${this.currentModalSize}-width`;
+      if (!this.fullscreen) {
+        this.$log.debug("Applying custom modal size and position");
+        this.$log.debug("Adding sizing and position styles to modal");
+        var modalElements = document.getElementsByClassName("teneo-modal");
+        if (
+          modalElements !== "undefined" &&
+          this.currentModalSize !== "undefined"
+        ) {
+          // for (var i = 0; i < modalElements.length; i++) {
+          //   modalElements[
+          //     i
+          //   ].className += ` teneo-modal-${this.currentModalPosition} teneo-modal-${this.currentModalSize}-width`;
+          // }
+          for (var i = 0; i < modalElements.length; i++) {
+            if (
+              this.currentModalSize !== "fullscreen" &&
+              this.currentModalPosition !== "fullscreen"
+            ) {
+              modalElements[
+                i
+              ].className += ` teneo-modal-${this.currentModalPosition}`;
+            }
+          }
         }
+      } else {
+        this.removeCustomStylesFromModal();
       }
     },
     removeCustomStylesFromModal() {
@@ -570,7 +609,9 @@ export default {
       var modalElements = document.getElementsByClassName("teneo-modal");
       if (modalElements !== "undefined") {
         for (var i = 0; i < modalElements.length; i++) {
-          this.$log.debug("Removing existing modal styles - reset");
+          this.$log.debug(
+            "Removing existing modal size and position styles - reset"
+          );
           modalElements[i].classList.remove("teneo-modal-center");
           modalElements[i].classList.remove("teneo-modal-right");
           modalElements[i].classList.remove("teneo-modal-left");
@@ -637,7 +678,10 @@ export default {
       this.imageUrl = "";
       this.images = [];
       this.itinerary = "";
-      this.currentModalPosition = "center";
+      (this.fullscreen = false),
+        (this.overlay = false),
+        (this.overlayMessage = ""),
+        (this.currentModalPosition = "center");
       this.currentModalSize = "small";
       this.removeCustomStylesFromModal();
       this.search = "";
@@ -731,10 +775,9 @@ export default {
 }
 
 .teneo-modal {
-  position: absolute !important;
-  right: 0 !important;
-  margin: 0 !important;
-  /* padding-top: 48px !important; */
+  /* position: absolute !important;
+  right: 0;
+  margin: 0 !important; */
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -745,37 +788,14 @@ export default {
   height: auto;
 }
 
-.teneo-modal-center {
-  margin-right: auto !important;
-  margin-left: auto !important;
-  right: unset !important;
-  position: unset !important;
-}
-
 .teneo-modal-right {
-  left: unset !important;
-  right: 0px !important;
+  left: unset;
+  right: 20px;
 }
 
 .teneo-modal-left {
-  right: unset !important;
-  left: 0px !important;
-}
-
-.teneo-modal-small-width {
-  max-width: 360px !important;
-}
-
-.teneo-modal-medium-width {
-  max-width: 500px !important;
-}
-
-.teneo-modal-large-width {
-  max-width: 700px !important;
-}
-
-.teneo-modal-x-large-width {
-  max-width: 900px !important;
+  right: unset;
+  left: 20px;
 }
 
 @media only screen and (max-width: 480px) {
@@ -783,12 +803,12 @@ export default {
     width: 100vw !important;
   }
 
-  .teneo-modal,
-  .teneo-modal-small-width,
-  .teneo-modal-medium-width,
-  .teneo-modal-large-width,
-  .teneo-modal-x-large-width {
-    max-width: unset !important;
+  .teneo-modal-right {
+    right: 0;
+  }
+
+  .teneo-modal-left {
+    left: 0;
   }
 }
 </style>

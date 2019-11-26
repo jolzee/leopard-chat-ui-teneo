@@ -581,6 +581,15 @@ export default {
         container: "#teneo-chat-scroll"
       };
       this.$vuetify.goTo(endChatTarget, options);
+      let that = this;
+      setTimeout(function() {
+        that.$vuetify.goTo(endChatTarget, {
+          duration: 500,
+          offset: 0,
+          easing: "easeInQuad",
+          container: "#teneo-chat-scroll"
+        });
+      }, 1500);
     },
     handleFocus() {
       if (!this.isMobileDevice) {

@@ -192,25 +192,24 @@ class ExtensionHelper {
     static String displayChecklist(def step, def failureStep) {
         def result = ''
         def title = 'Checklist'
-        def items = ''
+        def items = []
         def stepLabels = ['Router Online', 'ISP Speed Good', 'Connected Devices']
 
         stepLabels.eachWithIndex {
             label,
             idx ->
-                def checkColor = 'grey-text'
-                def checkIcon = 'mdi-checkbox-blank-outline'
+                def color = 'grey'
+                def icon = 'mdi-checkbox-multiple-blank-outline'
                 if (idx <= step) {
-                    checkColor = 'green-text text-darken-1'
-                    checkIcon = 'mdi-checkbox-marked-outline'
+                    color = 'success'
+                    icon = 'mdi-checkbox-multiple-marked-outline'
                 }
                 if (idx == failureStep) {
-                    checkColor = 'red-text'
-                    checkIcon = 'mdi-alert-circle-outline'
+                    color = 'error'
+                    icon = 'mdi-alert-decagram-outline'
                 }
-                def stepHTML = '<li class="collection-item"><div>' + label + '<div class="secondary-content left ' + checkColor + '" style="padding-right:20px;"><i class="material-icons">' + checkIcon + '</i></div></div></li>'
-                items += stepHTML
-
+                def theStep = [label : label, color: color, icon: icon]
+                items.push(theStep)
         }
 
         def parameters = [
@@ -219,7 +218,7 @@ class ExtensionHelper {
         ]
 
         def action = [
-                'name'      : 'displayCollectionBasic',
+                'name'      : 'displayRouterCheckList',
                 'parameters': parameters
         ]
 

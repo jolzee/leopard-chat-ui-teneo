@@ -910,6 +910,12 @@ export default {
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
+p {
+  white-space: normal;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
 .leopard-system-bar {
   cursor: pointer;
   border-radius: 0.5em;

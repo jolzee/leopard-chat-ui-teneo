@@ -1,7 +1,12 @@
 <template>
   <!-- Reply -->
   <span v-if="item.type === 'reply'">
-    <v-row v-if="itemText !== '<p>'" class="my-1" no-gutters justify="start">
+    <v-row
+      v-if="itemText !== '<p>'"
+      class="my-1"
+      no-gutters
+      justify="start"
+    >
       <v-col
         cols="2"
         class="text-center d-none d-sm-block"
@@ -40,7 +45,10 @@
                 :class="hover ? 'primary' : ''"
               >
                 <v-list-item-title :class="hover ? 'white--text' : ''">
-                  <v-icon :color="hover ? 'secondary' : ''" class="mr-2">{{
+                  <v-icon
+                    :color="hover ? 'secondary' : ''"
+                    class="mr-2"
+                  >{{
                     menuItem.icon
                   }}</v-icon>
                   {{ menuItem.title }}
@@ -68,7 +76,10 @@
           :color="$vuetify.theme.dark ? '#333333' : '#FAFAFA'"
           class="chat-card chat-card-left text-left"
         >
-          <span v-html="itemText" class="teneo-reply"></span>
+          <span
+            v-html="itemText"
+            class="teneo-reply"
+          ></span>
         </v-card>
       </v-col>
     </v-row>
@@ -131,7 +142,11 @@
         no-gutters
         class="mb-2"
       >
-        <v-col cols="2" class="text-center" v-if="showChatIcons">
+        <v-col
+          cols="2"
+          class="text-center"
+          v-if="showChatIcons"
+        >
           <v-btn
             v-long-press="1000"
             @long-press-start="swapInputButton"
@@ -148,15 +163,53 @@
             class="chat-card chat-card-left text-left"
             :color="$vuetify.theme.dark ? '#333333' : '#FAFAFA'"
           >
-            <span v-html="chunkText" class="teneo-reply"></span>
+            <span
+              v-html="chunkText"
+              class="teneo-reply"
+            ></span>
           </v-card>
         </v-col>
       </v-row>
     </div>
-    <DelayedResponse
-      v-if="showDelayedResponse && itemIndexInDialog === dialog.length - 1"
-    ></DelayedResponse>
+    <DelayedResponse v-if="showDelayedResponse && itemIndexInDialog === dialog.length - 1"></DelayedResponse>
     <!-- show any options in the response: for example Yes, No Maybe -->
+    <v-col
+      cols="12"
+      v-if="routerCheckList && itemIndexInDialog === dialog.length - 1"
+      class="px-0"
+    >
+      <v-card>
+        <div class="d-flex flex-no-wrap justify-space-between">
+          <div>
+            <v-card-title class="headline">{{ routerCheckList.title }}</v-card-title>
+
+            <v-row
+              align="center"
+              justify="start"
+              v-for="(item, index) in routerCheckList.items"
+              :key="index"
+              class="ml-1"
+            >
+              <v-col cols="2">
+                <v-icon :color="item.color">{{ item.icon }}</v-icon>
+              </v-col>
+              <v-col cols="10">
+                <p>{{ item.label }}</p>
+              </v-col>
+            </v-row>
+          </div>
+
+          <v-avatar
+            class="ma-3"
+            size="100"
+            tile
+          >
+            <v-img src="https://wi.presales.artificial-solutions.com/media/mytelco/router.png"></v-img>
+          </v-avatar>
+        </div>
+      </v-card>
+    </v-col>
+
     <v-card
       text
       v-if="
@@ -167,7 +220,10 @@
       width="100%"
     >
       <!-- Button Options -->
-      <v-card-text class="teneo-button-options" v-if="!hasLongOptions">
+      <v-card-text
+        class="teneo-button-options"
+        v-if="!hasLongOptions"
+      >
         <h3 v-text="getOptions.title"></h3>
         <div
           v-if="getOptions.html"
@@ -184,7 +240,7 @@
             small
             color="success"
             @click="optionClicked(option)"
-            >{{ option.name }}
+          >{{ option.name }}
           </v-btn>
         </span>
       </v-card-text>
@@ -205,9 +261,7 @@
               </v-list-item-icon>
               <v-list-item-content class="text-left">
                 <!-- <v-list-item-title v-html="option.name"></v-list-item-title> -->
-                <v-list-item-subtitle
-                  v-html="option.name"
-                ></v-list-item-subtitle>
+                <v-list-item-subtitle v-html="option.name"></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -221,13 +275,21 @@
         class="text-right mb-2"
         v-if="hasFeedbackForm(item) && itemIndexInDialog === dialog.length - 1"
       >
-        <v-btn color="secondary" class="mt-2" small @click="displayFeedbackForm"
-          >{{
+        <v-btn
+          color="secondary"
+          class="mt-2"
+          small
+          @click="displayFeedbackForm"
+        >{{
             getFeedbackFormConfig.label
               ? getFeedbackFormConfig.label
               : "Leave Feedback"
           }}
-          <v-icon right small color="white">mdi-thumbs-up-down</v-icon>
+          <v-icon
+            right
+            small
+            color="white"
+          >mdi-thumbs-up-down</v-icon>
         </v-btn>
       </v-col>
 
@@ -245,15 +307,21 @@
           @handleFocus="handleFocus()"
         />
 
-        <v-btn color="success" class="mt-2" small @click="showForm()"
-          >{{
+        <v-btn
+          color="success"
+          class="mt-2"
+          small
+          @click="showForm()"
+        >{{
             getFormConfig && getFormConfig.openFormButtonText
               ? getFormConfig.openFormButtonText
               : "Form"
           }}
-          <v-icon right small color="white"
-            >mdi-file-document-edit-outline</v-icon
-          >
+          <v-icon
+            right
+            small
+            color="white"
+          >mdi-file-document-edit-outline</v-icon>
         </v-btn>
       </v-col>
 
@@ -265,9 +333,17 @@
             itemHasLongResponse(item)
         "
       >
-        <v-btn color="success" class="mt-2" small @click="showModal"
-          >{{ modalButtonText }}
-          <v-icon right small color="white">{{ modalButtonIcon }}</v-icon>
+        <v-btn
+          color="success"
+          class="mt-2"
+          small
+          @click="showModal"
+        >{{ modalButtonText }}
+          <v-icon
+            right
+            small
+            color="white"
+          >{{ modalButtonIcon }}</v-icon>
         </v-btn>
       </v-col>
       <!-- Date Picker -->
@@ -309,8 +385,7 @@
       color="primary"
       :timeout="snackBarTimeout"
       top
-      >{{ snackBarText }}</v-snackbar
-    >
+    >{{ snackBarText }}</v-snackbar>
     <AgentAssistCannedResponseForm
       v-if="agentAssist.cannedResponseForm"
       :text="agentAssist.cannedResponseText"
@@ -438,6 +513,18 @@ export default {
       "mapInfo",
       "youTubeVideoId"
     ]),
+    routerCheckList() {
+      let extensions = this.itemExtensions(this.item);
+      let routerCheckList = null;
+
+      extensions.forEach(extension => {
+        if (extension.name.startsWith("displayRouterCheckList")) {
+          routerCheckList = extension.parameters;
+        }
+      });
+
+      return routerCheckList;
+    },
     getResponseIcon() {
       let icon = this.responseIcon;
       if (
@@ -588,13 +675,6 @@ export default {
       extensions.forEach(extension => {
         if (extension.name === "displayCollection") {
           options = extension.parameters.content;
-        } else if (extension.name.startsWith("displayCollectionBasic")) {
-          extension.parameters.html = true;
-          extension.parameters.items = extension.parameters.items.replace(
-            /left/g,
-            ""
-          );
-          options = extension.parameters;
         }
       });
       return options;

@@ -557,7 +557,8 @@ function storeSetup(vuetify, callback) {
           if (
             extension &&
             !extension.inline &&
-            !extension.name.startsWith("displayCollection")
+            !extension.name.startsWith("displayCollection") &&
+            !extension.name.startsWith("displayRouterCheckList")
           ) {
             hasModal = true;
           }
