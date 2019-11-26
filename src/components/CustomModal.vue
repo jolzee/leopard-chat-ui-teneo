@@ -5,6 +5,7 @@
     v-model="items"
     scrollable
     persistent
+    no-click-animation
     content-class="teneo-modal"
     hide-overlay
     fullscreen

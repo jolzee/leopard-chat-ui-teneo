@@ -17,15 +17,29 @@
       leave-absolute
       scrollable
       persistent
+      no-click-animation
       content-class="teneo-modal"
       hide-overlay
       fullscreen
     >
       <v-row no-gutters>
         <v-col cols="12">
-          <v-toolbar dark color="primary" height="64" :class="toolbarWidth">
-            <v-btn fab small @click="hideModal" color="secondary">
-              <v-icon dark medium>mdi-close</v-icon>
+          <v-toolbar
+            dark
+            color="primary"
+            height="64"
+            :class="toolbarWidth"
+          >
+            <v-btn
+              fab
+              small
+              @click="hideModal"
+              color="secondary"
+            >
+              <v-icon
+                dark
+                medium
+              >mdi-close</v-icon>
             </v-btn>
             <v-toolbar-title>{{ $t("more.info.title") }}</v-toolbar-title>
           </v-toolbar>
@@ -46,10 +60,16 @@
             <Audio :url="audioUrl"></Audio>
 
             <!-- Misc Video -->
-            <Video :url="videoUrl" :type="videoType"></Video>
+            <Video
+              :url="videoUrl"
+              :type="videoType"
+            ></Video>
 
             <!-- Gogle Map -->
-            <Map v-if="address" :address="address"></Map>
+            <Map
+              v-if="address"
+              :address="address"
+            ></Map>
 
             <v-container class="modal-container">
               <!-- show an image if available -->
@@ -59,10 +79,18 @@
               <Carousel :imageItems="images"></Carousel>
 
               <!-- display the modal title and sub-title -->
-              <v-row align="start" justify="start" class="mx-1">
+              <v-row
+                align="start"
+                justify="start"
+                class="mx-1"
+              >
                 <v-card-title primary-title>
                   <!-- Main Title -->
-                  <div class="modal-headline" v-if="title" v-html="title"></div>
+                  <div
+                    class="modal-headline"
+                    v-if="title"
+                    v-html="title"
+                  ></div>
                   <!-- Sub-Title -->
                   <span
                     class="grey--text"
@@ -72,7 +100,10 @@
                 </v-card-title>
               </v-row>
 
-              <v-row align="start" justify="center">
+              <v-row
+                align="start"
+                justify="center"
+              >
                 <!-- show the close modal button -->
                 <v-card-actions>
                   <!-- Yes there are keyboard shortcuts to close the modal window -->
@@ -81,7 +112,7 @@
                     v-shortkey="['ctrl', 'alt', 'arrowleft']"
                     @shortkey.native="hideModal"
                     @click.native="hideModal"
-                    >{{ $t("back.to.chat.button") }}
+                  >{{ $t("back.to.chat.button") }}
                   </v-btn>
                 </v-card-actions>
               </v-row>
@@ -117,13 +148,20 @@
                 >
                   <!-- table title -->
                   <v-row v-if="tableTitle">
-                    <v-col cols="8" class="ml-4">
+                    <v-col
+                      cols="8"
+                      class="ml-4"
+                    >
                       <h3>{{ tableTitle }}</h3>
                     </v-col>
                   </v-row>
                   <v-spacer v-else></v-spacer>
                   <!-- show a search input box for the table -->
-                  <v-col cols="4" v-if="tableEnableSearch" class="mr-2">
+                  <v-col
+                    cols="4"
+                    v-if="tableEnableSearch"
+                    class="mr-2"
+                  >
                     <v-text-field
                       v-model="search"
                       append-icon="mdi-table-search"
