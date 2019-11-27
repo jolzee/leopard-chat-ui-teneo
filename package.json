@@ -67,7 +67,6 @@
     "vuex-i18n": "^1.13.1"
   },
   "devDependencies": {
-    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
     "@vue/cli-plugin-babel": "^4.0.5",
     "@vue/cli-plugin-eslint": "^4.0.5",
     "@vue/cli-service": "^4.0.5",
@@ -75,7 +74,7 @@
     "babel-eslint": "^10.0.3",
     "brotli-webpack-plugin": "^1.1.0",
     "compression-webpack-plugin": "^3.0.0",
-    "eslint": "^6.6.0",
+    "eslint": "^6.7.1",
     "eslint-plugin-vue": "^6.0.1",
     "eslint-plugin-vuetify": "^1.0.0-beta.5",
     "fibers": "^4.0.2",
