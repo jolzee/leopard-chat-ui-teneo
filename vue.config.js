@@ -3,9 +3,41 @@ const fs = require("fs");
 const CompressionPlugin = require("compression-webpack-plugin");
 var BrotliPlugin = require("brotli-webpack-plugin");
 
-var prod = process.env.NODE_ENV === "production";
-// var dev = process.env.NODE_ENV === "development";
-// var qa = process.env.NODE_ENV === "qa";
+// const prod = process.env.NODE_ENV === "production";
+// const dev = process.env.NODE_ENV === "development";
+// var const = process.env.NODE_ENV === "qa";
+const enableJavaScriptCompression = process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
+  ? process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
+  : false;
+
+const enableCssCompression = process.env.VUE_APP_BUILD_COMPRESS_CSS_ASSETS
+  ? process.env.VUE_APP_BUILD_COMPRESS_CSS_ASSETS
+  : true;
+
+const compressionPluginTest = () => {
+  let test = /\.css$|\.html$/;
+  if (enableJavaScriptCompression && enableCssCompression) {
+    test = /\.js$|\.css$|\.html$/;
+  } else if (enableJavaScriptCompression) {
+    test = /\.js$|\.html$/;
+  } else {
+    test = /\.css$|\.html$/;
+  }
+  return test;
+};
+
+const brotliPluginTest = () => {
+  let test = /\.(css|html|svg)$/;
+  if (enableJavaScriptCompression && enableCssCompression) {
+    test = /\.(js|css|html|svg)$/;
+  } else if (enableJavaScriptCompression) {
+    test = /\.(js|html|svg)$/;
+  }
+  return test;
+};
+
+// VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS = true;
+// VUE_APP_BUILD_COMPRESS_CSS_ASSETS = true;
 
 console.log(`NODE_ENV = ${process.env.NODE_ENV}`);
 console.log(`Solution Config = ${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
@@ -42,20 +74,21 @@ module.exports = {
   },
   configureWebpack: {
     devtool: "source-map",
-    plugins: prod
-      ? [
-          new CompressionPlugin({
-            test: /\.js$|\.css$|\.html$/,
-            threshold: 8192
-          }),
-          new BrotliPlugin({
-            asset: "[path].br[query]",
-            test: /\.(js|css|html|svg)$/,
-            threshold: 10240,
-            minRatio: 0.8
-          })
-        ]
-      : []
+    plugins:
+      enableJavaScriptCompression || enableCssCompression
+        ? [
+            new CompressionPlugin({
+              test: compressionPluginTest(),
+              threshold: 8192
+            }),
+            new BrotliPlugin({
+              asset: "[path].br[query]",
+              test: brotliPluginTest(),
+              threshold: 10240,
+              minRatio: 0.8
+            })
+          ]
+        : []
   },
   chainWebpack: config => {
     config.module
@@ -75,11 +108,5 @@ module.exports = {
   publicPath: "./",
   assetsDir: "./assets/",
   productionSourceMap: false,
-  transpileDependencies: [
-    "vuetify",
-    "vue-plyr",
-    "replace-string",
-    "url-regex",
-    "vue-long-press-directive"
-  ]
+  transpileDependencies: ["vuetify", "vue-plyr", "replace-string", "url-regex", "vue-long-press-directive"]
 };
