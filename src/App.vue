@@ -432,8 +432,11 @@ export default {
     };
   },
   updated() {},
-  mounted() {
+  created() {
+    this.$store.dispatch("setupFirebase");
     this.$store.dispatch("setupLiveChatAgentAssist"); // only enabled in certain scenario
+  },
+  mounted() {
     window.addEventListener("resize", this.onResizeOrEmbed);
     // deal with import of solution
     const urlParams = new URLSearchParams(window.location.search);
@@ -474,6 +477,7 @@ export default {
       "getAnimatedOut",
       "embed",
       "float",
+      "firebase",
       "hideConfigMenu",
       "overlayChat",
       "progressBar",
@@ -676,11 +680,12 @@ export default {
       if (!this.embed && !this.showButtonOnly) {
         siteFrame = document.getElementById("site-frame");
       }
-
-      this.$store.dispatch("logout");
       this.drawer = false;
-      // hide chat window - button clicked - logout
       this.$store.commit("HIDE_CHAT_MODAL");
+      this.$store.dispatch("logoutSocial");
+
+      // hide chat window - button clicked - logout
+
       if (!this.embed && !this.overlayChat && siteFrame) {
         siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
       }
@@ -693,26 +698,26 @@ export default {
         1000
       );
 
-      this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY");
+      // this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // was removed
 
       // now end the Teneo Session - user clicked the close button - intention is clear
       this.$store.dispatch("endSession").then(() => {
         this.$store.commit("CLEAR_CHAT_HISTORY"); // clear the dialogs once we have successfully ended the session
 
         // show the loading gif as the window is closing. Although delay a bit
-        setTimeout(
-          function() {
-            this.$store.commit("SHOW_CHAT_LOADING");
-          }.bind(this),
-          400
-        );
+        // setTimeout(
+        //   function() {
+        //     this.$store.commit("SHOW_CHAT_LOADING");
+        //   }.bind(this),
+        //   400
+        // );
 
-        setTimeout(
-          function() {
-            this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // only show the open chat button once the session has ended
-          }.bind(this),
-          1500
-        );
+        // setTimeout(
+        //   function() {
+        //     this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // only show the open chat button once the session has ended
+        //   }.bind(this),
+        //   1500
+        // );
       });
     },
     calculateMobileHeight() {

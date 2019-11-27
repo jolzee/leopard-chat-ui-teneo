@@ -15,7 +15,7 @@ function isLeopard(scriptElem) {
   return srcValue && srcValue.indexOf("embed-leopard.js") !== -1;
 }
 
-console.log(leopardEmbedSrc);
+// console.log(leopardEmbedSrc);
 
 if (leopardEmbedSrc.lastIndexOf("http", 0) === 0) {
   leopardUrl = leopardEmbedSrc.replace("/static/embed-leopard.js", "/");
@@ -29,7 +29,7 @@ if (leopardEmbedSrc.lastIndexOf("http", 0) === 0) {
   leopardUrl = leopardUrl.substring(0, leopardUrl.lastIndexOf("/")) + "/";
 }
 
-console.log(leopardUrl);
+// console.log(leopardUrl);
 
 function getLeopardTemplate(f) {
   return f
@@ -163,7 +163,10 @@ var leopardChatTemplate = getLeopardTemplate(function() {
 var leopardUrlRegex = /\[leopardUrl\]/g;
 var teneoCtxParamsRegex = /\[teneoCtxParams\]/g;
 
-leopardButtonTemplate = leopardButtonTemplate.replace(leopardUrlRegex, leopardUrl);
+leopardButtonTemplate = leopardButtonTemplate.replace(
+  leopardUrlRegex,
+  leopardUrl
+);
 leopardChatTemplate = leopardChatTemplate.replace(leopardUrlRegex, leopardUrl);
 if (window.TENEOCTX) {
   leopardChatTemplate = leopardChatTemplate.replace(
@@ -223,7 +226,9 @@ function receiveLeopardMessage(event) {
 
       setTimeout(function() {
         if (shouldShowLeopard) {
-          buttonElement = document.getElementById("teneo-chat-button-container");
+          buttonElement = document.getElementById(
+            "teneo-chat-button-container"
+          );
           buttonElement.style.display = "none";
           var node = document.getElementById("teneo-chat-widget-container");
           node.style.display = "block";
@@ -236,7 +241,9 @@ function receiveLeopardMessage(event) {
         if (!shouldShowLeopard) {
           var node = document.getElementById("teneo-chat-widget-container");
           node.style.display = "none";
-          buttonElement = document.getElementById("teneo-chat-button-container");
+          buttonElement = document.getElementById(
+            "teneo-chat-button-container"
+          );
           buttonElement.style.display = "block";
         }
       });

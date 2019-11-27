@@ -10,10 +10,10 @@ import Vuetify from "vuetify/lib";
 // import "vuetify/src/stylus/app.styl";
 
 import { ASR_CORRECTIONS } from "../constants/asr-corrections"; // fix ASR issues before they get to Teneo
-import { LiveChat } from "../utils/live-chat";
+import { LiveChat } from "./live-chat";
 import { STORAGE_KEY } from "../constants/solution-config-default";
-
 import VueLogger from "vuejs-logger";
+
 const isProduction = process.env.NODE_ENV === "production";
 const options = {
   isEnabled: true,
@@ -61,14 +61,6 @@ export default class Setup {
     this.USER_ICON = "";
     this.activeSolution = null;
     this.chatConfig = null;
-    this.firebaseConfig = {
-      apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
-      authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
-      databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
-      projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
-      storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID
-    };
     // Get the dark theme setting from local storage
     // let darkThemeSetting = localStorage.getItem(STORAGE_KEY + "darkTheme");
 
@@ -84,13 +76,15 @@ export default class Setup {
             this.addIframeHtml();
           }
 
-          Vue.$log.debug(`Chat Config: ${this.chatConfig}`);
+          Vue.$log.debug(`Chat Config: `, this.chatConfig);
           Vue.$log.debug(`Active Solution: ${this.chatConfig.activeSolution}`);
 
           if (this.chatConfig && this.chatConfig.activeSolution) {
             let deepLink = this.getParameterByName("dl"); // look for deep link
             if (!deepLink) {
-              Vue.$log.debug(`No deep link found in the current url`);
+              Vue.$log.debug(
+                `setup.js > No deep link found in the current url`
+              );
               this.activeSolution = this.chatConfig.activeSolution;
               const matchingSolutions = this.chatConfig.solutions.filter(
                 solution => solution.name === this.activeSolution
@@ -235,18 +229,21 @@ export default class Setup {
     return new Promise((resolve, reject) => {
       // Reload config for each load. Maybe there a new deployment change that you want to
       if (process.env.VUE_APP_LOAD_FRESH_CONFIG_FOR_NEW_SESSIONS === "true") {
-        localStorage.removeItem(STORAGE_KEY + "config");
-        Vue.$log.debug("Cleared local storage");
+        // localStorage.removeItem(STORAGE_KEY + "config");
+        Vue.$log.debug("getSolutionConfig > Using internal build config");
+      } else {
+        Vue.$log.debug("getSolutionConfig > Looking in localstorage first");
+        this.chatConfig = JSON.parse(
+          localStorage.getItem(STORAGE_KEY + "config")
+        );
       }
-      this.chatConfig = JSON.parse(
-        localStorage.getItem(STORAGE_KEY + "config")
-      );
+
       if (
         !this.chatConfig ||
         (this.chatConfig && this.chatConfig.solutions.length === 0)
       ) {
         Vue.$log.debug(
-          "No config found in local storage: Looking for default.json"
+          "setup.js > No config found in local storage: Looking for solution config..."
         );
         this._loadDefaultConfig()
           .then(defaultConfig => {
@@ -255,6 +252,9 @@ export default class Setup {
           })
           .catch(message => reject(message));
       } else {
+        Vue.$log.debug(
+          "setup.js > Found and using existing solutions in local storage"
+        );
         resolve(this.chatConfig);
       }
     });
@@ -264,7 +264,7 @@ export default class Setup {
     return new Promise((resolve, reject) => {
       if (!(process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG === "true")) {
         Vue.$log.debug(
-          "Loaded solution environment config",
+          "setup.js > Found and loaded build's solution environment config",
           process.env.VUE_APP_SOLUTION_CONFIG
         );
         resolve(process.env.VUE_APP_SOLUTION_CONFIG);
@@ -276,7 +276,7 @@ export default class Setup {
           .accept("application/json")
           .then(res => {
             Vue.$log.debug(
-              "Found and loaded solution config from /static/default.json"
+              "setup.js > Found and loaded solution config from /static/default.json"
             );
             let defaultConfig = res.body;
             localStorage.setItem(
@@ -287,7 +287,7 @@ export default class Setup {
           })
           .catch(function(error) {
             reject(
-              "Could not load default.json from /static/default.json: " +
+              "setup.js > Could not load default.json from /static/default.json: " +
                 error.message
             );
           });

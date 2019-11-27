@@ -546,9 +546,8 @@ export default {
       return false;
     },
     toolbarWidth() {
-      this.$log.debug("Seeing if we need to adjust toolbar style");
       if (this.currentModalSize !== "") {
-        this.$log.debug("Yep adjusted toolbar style");
+        this.$log.debug("Adjusted the custom modal toolbar style");
         return `teneo-modal-${this.currentModalSize}-width`;
       }
       return "";

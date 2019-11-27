@@ -26,7 +26,7 @@
     "@sentry/integrations": "^5.8.0",
     "artyom.js": "github:jolzee/artyom.js#master",
     "copy-to-clipboard": "^3.2.0",
-    "core-js": "^3.4.2",
+    "core-js": "^3.4.4",
     "custom-event-polyfill": "^1.0.7",
     "dayjs": "^1.8.17",
     "element-matches": "^0.1.2",
@@ -61,12 +61,13 @@
     "vue-the-mask": "^0.11.1",
     "vue2-animate": "^2.1.2",
     "vuejs-logger": "1.5.3",
-    "vuetify": "^2.1.11",
+    "vuetify": "^2.1.12",
     "vuetify-upload-button": "^2.0.2",
     "vuex": "^3.1.2",
     "vuex-i18n": "^1.13.1"
   },
   "devDependencies": {
+    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
     "@vue/cli-plugin-babel": "^4.0.5",
     "@vue/cli-plugin-eslint": "^4.0.5",
     "@vue/cli-service": "^4.0.5",

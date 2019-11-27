@@ -1,22 +1,12 @@
 /* eslint-disable no-unused-vars */
 import "regenerator-runtime/runtime";
-import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/database";
+
 import router from "@/router";
 import LiveChat from "@livechat/agent-app-widget-sdk";
 import { accountsSdk } from "@livechat/accounts-sdk";
 import liveChatConfig from "./utils/livechat-config";
 
-let logrocketPlugin = null;
-if (process.env.NODE_ENV === "production" && process.env.VUE_APP_LOG_ROCKET) {
-  Promise.all([import("logrocket"), import("logrocket-vuex")]).then(
-    ([LogRocket, createPlugin]) => {
-      LogRocket.init(process.env.VUE_APP_LOG_ROCKET);
-      logrocketPlugin = createPlugin(LogRocket);
-    }
-  );
-}
+import Firebase from "./utils/firebase";
 
 var md = require("markdown-it")({
   html: true, // Enable HTML tags in source
@@ -65,12 +55,6 @@ import { TRANSLATIONS } from "./constants/translations"; // add UI translations 
 import Setup from "./utils/setup";
 
 let config = new Setup();
-let store;
-Vue.use(VueJsonp, 20000);
-Vue.use(Vuex);
-
-Vue.use(VuePlyr);
-Vue.use(Prism);
 
 if (!config.EMBED) {
   console.groupCollapsed(
@@ -80,10 +64,36 @@ if (!config.EMBED) {
     "background:transparent"
   );
   console.log("Author: Peter Joles - peter.joles@artificial-solutions.com");
-  console.log("Documentation: https://jolzee.gitbook.io/leopard/");
-  console.log("Code: https://github.com/jolzee/chat-teneo-vue");
+  // console.log("Documentation: https://jolzee.gitbook.io/leopard/");
+  // console.log("Code: https://github.com/jolzee/chat-teneo-vue");
   console.groupEnd();
 }
+
+// start LogRocket Setup
+let logrocketPlugin = null;
+if (process.env.NODE_ENV === "production" && process.env.VUE_APP_LOG_ROCKET) {
+  Vue.$log.debug(`Setting up LogRocket 🚀`);
+
+  import(/* webpackChunkName: "logrocket" */ "logrocket")
+    .then(LogRocket => {
+      LogRocket["default"].init(process.env.VUE_APP_LOG_ROCKET);
+      import("logrocket-vuex").then(createPlugin => {
+        logrocketPlugin = createPlugin["default"](LogRocket["default"]);
+        Vue.$log.debug(`LogRocket 🚀 setup complete`);
+      });
+    })
+    .catch(err => {
+      Vue.$log.error(`Failed to dynamically import LogRocket 🚀`, err);
+    });
+}
+// End LogRocket Setup
+
+let store;
+Vue.use(VueJsonp, 20000);
+Vue.use(Vuex);
+
+Vue.use(VuePlyr);
+Vue.use(Prism);
 
 Vue.use(require("vue-shortkey"));
 
@@ -109,7 +119,7 @@ export function getStore(callback) {
   config
     .init()
     .then(vuetify => storeSetup(vuetify, callback))
-    .catch(message => Vue.$log.error(message));
+    .catch(error => Vue.$log.error(error));
 }
 
 function storeSetup(vuetify, callback) {
@@ -135,9 +145,7 @@ function storeSetup(vuetify, callback) {
       },
       auth: {
         hasLoggedInTeneo: false,
-        firebase: config.firebaseConfig.apiKey
-          ? firebase.initializeApp(config.firebaseConfig)
-          : null,
+        firebase: null,
         userInfo: {
           user: null,
           username: null,
@@ -1159,6 +1167,9 @@ function storeSetup(vuetify, callback) {
           document.activeElement.blur();
         }
       },
+      SET_FIREBASE(state, firebase) {
+        state.auth.firebase = firebase;
+      },
       SHOW_CHAT_LOADING(state) {
         state.progress.showChatLoading = true;
       },
@@ -1595,49 +1606,116 @@ function storeSetup(vuetify, callback) {
         });
       },
       setUserInformation({ commit, getters }) {
+        if (!process.env.VUE_APP_FIREBASE_API_KEY) {
+          return;
+        }
         if (getters.firebase) {
+          Vue.$log.debug(`SET USER INFORMATION > Located Firebase`);
           getters.firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
               commit("USER_INFO", { user: user }); // user is still signed in
             }
           });
+        } else {
+          let retyCount = 0;
+          let checkExist = setInterval(function() {
+            retyCount++;
+
+            if (getters.firebase) {
+              Vue.$log.debug(
+                `SET USER INFORMATION > Firebase > Found on retry: ${retyCount}`
+              );
+              getters.firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                  commit("USER_INFO", { user: user }); // user is still signed in
+                }
+              });
+              clearInterval(checkExist);
+            }
+
+            if (retyCount++ > 80) {
+              Vue.$log.debug(
+                "SET USER INFORMATION > Firebase > Giving up trying waiting!!"
+              );
+              clearInterval(checkExist);
+            }
+          }, 100); // check every 100ms
         }
       },
-      logout({ commit, getters }) {
-        getters.firebase
-          .auth()
-          .signOut()
-          .then(
-            () => {
-              commit("LOG_OUT_TENEO");
-              commit("CLEAR_USER_INFO");
-              Vue.$log.debug("Signed out of chat");
-            },
-            function(error) {
-              // An error happened.
-              Vue.$log.error(error);
-            }
-          );
+      logoutSocial({ commit, getters }) {
+        if (!process.env.VUE_APP_FIREBASE_API_KEY) {
+          return;
+        }
+        if (getters.firebase) {
+          getters.firebase
+            .auth()
+            .signOut()
+            .then(
+              () => {
+                commit("LOG_OUT_TENEO");
+                commit("CLEAR_USER_INFO");
+                Vue.$log.debug("Signed out of chat");
+              },
+              function(error) {
+                // An error happened.
+                Vue.$log.error(error);
+              }
+            );
+        }
+      },
+      setupFirebase(context) {
+        return new Promise((resolve, _reject) => {
+          if (!process.env.VUE_APP_FIREBASE_API_KEY) {
+            Vue.$log.debug("No configuration for Firebase - skipping");
+            resolve();
+            return;
+          }
+          if (!context.getters.firebase) {
+            Firebase.init({
+              apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+              authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+              databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
+              projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+              storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+              messagingSenderId:
+                process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID
+            }).then(firebase => {
+              context.commit("SET_FIREBASE", firebase);
+              Vue.$log.debug(`Firebase has been initiated`, firebase);
+              resolve(firebase);
+              return;
+            });
+          } else {
+            resolve(context.getters.firebase);
+            return;
+          }
+        });
       },
       loginSocial({ commit, getters }, socialProvider) {
         return new Promise((resolve, reject) => {
+          if (!process.env.VUE_APP_FIREBASE_API_KEY) {
+            resolve();
+            return;
+          }
           let provider = null;
+          Vue.$log.debug(`Firebase Login `, socialProvider);
           switch (socialProvider) {
             case "google":
-              provider = new firebase.auth.GoogleAuthProvider();
+              provider = new getters.firebase.auth.GoogleAuthProvider();
               break;
             case "facebook":
-              provider = new firebase.auth.FacebookAuthProvider();
+              provider = new getters.firebase.auth.FacebookAuthProvider();
               break;
             case "github":
-              provider = new firebase.auth.GithubAuthProvider();
+              provider = new getters.firebase.auth.GithubAuthProvider();
               break;
             default:
               break;
           }
+
           // getters.firebase.auth().languageCode = "en";
           // To apply the default browser preference instead of explicitly setting it.
-          firebase.auth().useDeviceLanguage();
+          getters.firebase.auth().useDeviceLanguage();
 
           getters.firebase
             .auth()
@@ -1648,7 +1726,9 @@ function storeSetup(vuetify, callback) {
               // The signed-in user info.
               let user = result.user;
               Vue.$log.debug(user);
-              commit("USER_INFO", { user: user });
+              commit("USER_INFO", {
+                user: user
+              });
               resolve();
             })
             .catch(function(error) {
@@ -1666,6 +1746,10 @@ function storeSetup(vuetify, callback) {
       },
       loginUserWithUsernameEmailPassword({ commit, getters }, loginInfo) {
         return new Promise((resolve, reject) => {
+          if (!process.env.VUE_APP_FIREBASE_API_KEY) {
+            resolve();
+            return;
+          }
           loginInfo.photoURL = getters.profileImageFromEmail(loginInfo.email);
           getters.firebase
             .auth()
@@ -1686,6 +1770,10 @@ function storeSetup(vuetify, callback) {
         // import(/* webpackChunkName: "dep-firebase-database" */ "firebase/database");
 
         return new Promise((resolve, reject) => {
+          if (!process.env.VUE_APP_FIREBASE_API_KEY) {
+            resolve();
+            return;
+          }
           registrationInfo.photoURL = getters.profileImageFromEmail(
             registrationInfo.email
           );

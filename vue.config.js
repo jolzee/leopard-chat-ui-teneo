@@ -8,7 +8,13 @@ var prod = process.env.NODE_ENV === "production";
 // var qa = process.env.NODE_ENV === "qa";
 
 console.log(`NODE_ENV = ${process.env.NODE_ENV}`);
-console.log(`Solution Config: ${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
+// const vueVariables = Object.entries(process.env).filter(k => {
+//   return k[0].startsWith("VUE_APP_");
+// });
+// console.log(`Build Variables:`);
+// vueVariables.forEach(variable => {
+//   console.log(`${variable[0]}=${variable[1]}`);
+// });
 
 let rawdata = fs.readFileSync(`${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
 let solutionConfig = JSON.parse(rawdata);
@@ -67,7 +73,7 @@ module.exports = {
   },
   publicPath: "./",
   assetsDir: "./assets/",
-  productionSourceMap: true,
+  productionSourceMap: false,
   transpileDependencies: [
     "vuetify",
     "vue-plyr",
