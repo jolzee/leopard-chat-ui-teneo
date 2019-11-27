@@ -1158,7 +1158,10 @@ function storeSetup(vuetify, callback) {
         state.conversation.dialog.push(miscMessage);
       },
       PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG(state, liveChatResponse) {
-        Vue.$log.debug(liveChatResponse);
+        Vue.$log.debug(
+          `Pushing LiveChat response onto chat dialog`,
+          liveChatResponse
+        );
         state.conversation.dialog.push(liveChatResponse);
       },
       CLEAR_USER_INPUT(state) {
@@ -1437,7 +1440,7 @@ function storeSetup(vuetify, callback) {
     actions: {
       liveChatAddCannedResponse(context, config) {
         // config.data.token = context.getters.liveChatApiToken;
-        Vue.$log.debug(config);
+        Vue.$log.debug(`Adding LiveChat Canned Response`, config);
         const agentAssistServer =
           process.env.VUE_APP_LIVE_CHAT_AGENT_ASSIST_SERVER;
         superagent
@@ -1451,7 +1454,7 @@ function storeSetup(vuetify, callback) {
           })
           .catch(err => {
             // err.message, err.response
-            Vue.$log.error(err);
+            Vue.$log.error(`Could not add LiveChat canned response`, err);
           });
       },
       async putLiveChatAgentMessage(_context, message) {
