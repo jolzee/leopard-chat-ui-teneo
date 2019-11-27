@@ -1926,16 +1926,20 @@ function storeSetup(vuetify, callback) {
                   "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
                   "background:transparent"
                 );
-                Vue.$log.debug(
+                Vue.$log.error(
                   "Prompt polling is active but you are not returning the numActiveFlows from Teneo"
                 );
-                Vue.$log.debug(
+                Vue.$log.error(
                   "Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
                 );
                 console.groupEnd();
               }
               context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
-              Vue.$log.debug(decodeURIComponent(json.responseData.answer));
+              Vue.$log.debug(
+                `Login Message from Teneo: ${decodeURIComponent(
+                  json.responseData.answer
+                )}`
+              );
               let hasExtraData = false;
 
               if (
