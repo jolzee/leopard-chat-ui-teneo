@@ -8,6 +8,7 @@ var prod = process.env.NODE_ENV === "production";
 // var qa = process.env.NODE_ENV === "qa";
 
 console.log(`NODE_ENV = ${process.env.NODE_ENV}`);
+console.log(`Solution Config = ${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
 // const vueVariables = Object.entries(process.env).filter(k => {
 //   return k[0].startsWith("VUE_APP_");
 // });
