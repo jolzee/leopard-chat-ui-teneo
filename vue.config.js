@@ -20,8 +20,6 @@ const compressionPluginTest = () => {
     test = /\.js$|\.css$|\.html$/;
   } else if (enableJavaScriptCompression) {
     test = /\.js$|\.html$/;
-  } else {
-    test = /\.css$|\.html$/;
   }
   return test;
 };

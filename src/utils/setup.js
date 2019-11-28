@@ -36,8 +36,7 @@ export default class Setup {
     this.liveChat;
     this.CHAT_TITLE = "Configure Me";
     this.IS_AGENT_ASSIST = this.doesParameterExist("plugin_id");
-    this.EMBED =
-      this.doesParameterExist("embed") || this.doesParameterExist("button");
+    this.EMBED = this.doesParameterExist("embed") || this.doesParameterExist("button");
     this.SHOW_BUTTON_ONLY = this.doesParameterExist("button");
     this.ENABLE_LIVE_CHAT = false;
     this.FLOAT = false;
@@ -77,14 +76,12 @@ export default class Setup {
           }
 
           Vue.$log.debug(`Chat Config: `, this.chatConfig);
-          Vue.$log.debug(`Active Solution: ${this.chatConfig.activeSolution}`);
 
           if (this.chatConfig && this.chatConfig.activeSolution) {
+            Vue.$log.debug(`Active Solution: ${this.chatConfig.activeSolution}`);
             let deepLink = this.getParameterByName("dl"); // look for deep link
             if (!deepLink) {
-              Vue.$log.debug(
-                `setup.js > No deep link found in the current url`
-              );
+              Vue.$log.debug(`setup.js > No deep link found in the current url`);
               this.activeSolution = this.chatConfig.activeSolution;
               const matchingSolutions = this.chatConfig.solutions.filter(
                 solution => solution.name === this.activeSolution
@@ -96,9 +93,7 @@ export default class Setup {
               }
             } else {
               // allow for deep linking to a specific solution ?dl=<deepLink>
-              const matchingSolutions = this.chatConfig.solutions.filter(
-                solution => solution.deepLink === deepLink
-              );
+              const matchingSolutions = this.chatConfig.solutions.filter(solution => solution.deepLink === deepLink);
               if (matchingSolutions.length > 0) {
                 this.activeSolution = matchingSolutions[0];
               } else {
@@ -114,9 +109,7 @@ export default class Setup {
                 }
               }
             }
-            this.ASR_CORRECTIONS_MERGED = this.getMergedAsrCorrections(
-              ASR_CORRECTIONS
-            );
+            this.ASR_CORRECTIONS_MERGED = this.getMergedAsrCorrections(ASR_CORRECTIONS);
             this.CHAT_TITLE = this.activeSolution.chatTitle;
             this.IFRAME_URL = this.activeSolution.iframeUrl;
             this.KNOWLEDGE_DATA = this.activeSolution.knowledgeData;
@@ -127,26 +120,19 @@ export default class Setup {
             this.SEND_CTX_PARAMS = this.activeSolution.sendContextParams
               ? this.activeSolution.sendContextParams
               : "login";
-            this.TENEO_URL =
-              this.activeSolution.url + "?viewname=STANDARDJSONP";
+            this.TENEO_URL = this.activeSolution.url + "?viewname=STANDARDJSONP";
             this.USER_ICON = this.activeSolution.userIcon;
 
             let theme = this.activeSolution.theme;
             // convert color names to their #hex equivalent
             for (const key in theme) {
-              if (theme[key].charAt(0) !== "#")
-                theme[key] = COLOR_NAMES[theme[key]];
+              if (theme[key].charAt(0) !== "#") theme[key] = COLOR_NAMES[theme[key]];
             }
             this.THEME = theme;
 
-            this.ENABLE_LIVE_CHAT =
-              this.activeSolution.enableLiveChat &&
-              !this.doesParameterExist("plugin_id");
+            this.ENABLE_LIVE_CHAT = this.activeSolution.enableLiveChat && !this.doesParameterExist("plugin_id");
             this.UNIQUE_KEY =
-              this.activeSolution.deepLink +
-              (window.location.href.indexOf("mobile=true") > -1
-                ? "_mobile"
-                : "");
+              this.activeSolution.deepLink + (window.location.href.indexOf("mobile=true") > -1 ? "_mobile" : "");
             document.title = this.activeSolution.name;
 
             let self = this;
@@ -156,11 +142,7 @@ export default class Setup {
                 contextParam.values.forEach(value => {
                   if (value.active) {
                     self.REQUEST_PARAMETERS =
-                      self.REQUEST_PARAMETERS +
-                      "&" +
-                      contextParam.name +
-                      "=" +
-                      encodeURIComponent(value.text);
+                      self.REQUEST_PARAMETERS + "&" + contextParam.name + "=" + encodeURIComponent(value.text);
                   }
                 });
               }
@@ -168,11 +150,7 @@ export default class Setup {
           }
 
           // update the IFRAME URL
-          if (
-            !this.EMBED &&
-            !this.SHOW_BUTTON_ONLY &&
-            document.getElementById("site-frame")
-          ) {
+          if (!this.EMBED && !this.SHOW_BUTTON_ONLY && document.getElementById("site-frame")) {
             document.getElementById("site-frame").src = this.IFRAME_URL;
           }
 
@@ -233,18 +211,11 @@ export default class Setup {
         Vue.$log.debug("getSolutionConfig > Using internal build config");
       } else {
         Vue.$log.debug("getSolutionConfig > Looking in localstorage first");
-        this.chatConfig = JSON.parse(
-          localStorage.getItem(STORAGE_KEY + "config")
-        );
+        this.chatConfig = JSON.parse(localStorage.getItem(STORAGE_KEY + "config"));
       }
 
-      if (
-        !this.chatConfig ||
-        (this.chatConfig && this.chatConfig.solutions.length === 0)
-      ) {
-        Vue.$log.debug(
-          "setup.js > No config found in local storage: Looking for solution config..."
-        );
+      if (!this.chatConfig || (this.chatConfig && this.chatConfig.solutions.length === 0)) {
+        Vue.$log.debug("setup.js > No config found in local storage: Looking for solution config...");
         this._loadDefaultConfig()
           .then(defaultConfig => {
             this.chatConfig = defaultConfig;
@@ -252,9 +223,7 @@ export default class Setup {
           })
           .catch(message => reject(message));
       } else {
-        Vue.$log.debug(
-          "setup.js > Found and using existing solutions in local storage"
-        );
+        Vue.$log.debug("setup.js > Found and using existing solutions in local storage");
         resolve(this.chatConfig);
       }
     });
@@ -262,7 +231,7 @@ export default class Setup {
 
   _loadDefaultConfig() {
     return new Promise((resolve, reject) => {
-      if (!(process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG === "true")) {
+      if (process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG !== "true") {
         Vue.$log.debug(
           "setup.js > Found and loaded build's solution environment config",
           process.env.VUE_APP_SOLUTION_CONFIG
@@ -275,33 +244,20 @@ export default class Setup {
           .get(defaultConfigUrl)
           .accept("application/json")
           .then(res => {
-            Vue.$log.debug(
-              "setup.js > Found and loaded solution config from /static/default.json"
-            );
+            Vue.$log.debug("setup.js > Found and loaded solution config from /static/default.json");
             let defaultConfig = res.body;
-            localStorage.setItem(
-              STORAGE_KEY + "config",
-              JSON.stringify(defaultConfig)
-            );
+            localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(defaultConfig));
             resolve(defaultConfig);
           })
           .catch(function(error) {
-            reject(
-              "setup.js > Could not load default.json from /static/default.json: " +
-                error.message
-            );
+            reject("setup.js > Could not load default.json from /static/default.json: " + error.message);
           });
       }
     });
   }
 
   setupLiveChat(store) {
-    this.liveChat = new LiveChat(
-      store,
-      !this.USE_SESSION_STORAGE,
-      STORAGE_KEY,
-      this.TENEO_CHAT_HISTORY
-    );
+    this.liveChat = new LiveChat(store, !this.USE_SESSION_STORAGE, STORAGE_KEY, this.TENEO_CHAT_HISTORY);
   }
 
   getMergedAsrCorrections(leopardDefaultCorrections) {
@@ -319,20 +275,14 @@ export default class Setup {
           }
         }
       });
-      finalCorrections = leopardDefaultCorrections.concat(
-        solutionResplacements
-      );
+      finalCorrections = leopardDefaultCorrections.concat(solutionResplacements);
     }
     return finalCorrections;
   }
 
   getUrlVars() {
     var vars = {};
-    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
-      m,
-      key,
-      value
-    ) {
+    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
       vars[key] = value;
     });
     return vars;
@@ -344,12 +294,7 @@ export default class Setup {
       urlparameter = this.getUrlVars()[parameter];
       if (urlparameter) {
         urlparameter = urlparameter.split("#")[0];
-        urlparameter =
-          urlparameter === "true"
-            ? true
-            : urlparameter === "false"
-            ? false
-            : urlparameter;
+        urlparameter = urlparameter === "true" ? true : urlparameter === "false" ? false : urlparameter;
       } else {
         urlparameter = defaultvalue;
       }
