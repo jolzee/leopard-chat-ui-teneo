@@ -7,12 +7,16 @@ function loadView(view) {
   return () => import(/* webpackChunkName: "view-[request]" */ `@/views/${view}.vue`);
 }
 
+function loadChatView() {
+  return () => import(/* webpackPrefetch: true */ `@/views/Chat.vue`);
+}
+
 export default new Router({
   routes: [
     {
       path: "/",
       name: "chat",
-      component: loadView("Chat")
+      component: loadChatView()
     },
     {
       path: "/about",
@@ -34,7 +38,7 @@ export default new Router({
       name: "config",
       component: loadView("Config"),
       beforeEnter: (to, from, next) => {
-        if (process.env.VUE_APP_HIDE_CONFIG_MENU === "true") {
+        if (window.leopardConfig.hideConfigMenu) {
           next(false);
         } else {
           next();

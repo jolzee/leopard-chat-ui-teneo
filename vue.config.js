@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const CompressionPlugin = require("compression-webpack-plugin");
 var BrotliPlugin = require("brotli-webpack-plugin");
+var WebpackDeletePlugin = require("webpack-delete-plugin");
 
 // const prod = process.env.NODE_ENV === "production";
 // const dev = process.env.NODE_ENV === "development";
@@ -38,19 +39,28 @@ const brotliPluginTest = () => {
 // VUE_APP_BUILD_COMPRESS_CSS_ASSETS = true;
 
 console.log(`NODE_ENV = ${process.env.NODE_ENV}`);
-console.log(`Solution Config = ${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
-// const vueVariables = Object.entries(process.env).filter(k => {
-//   return k[0].startsWith("VUE_APP_");
-// });
-// console.log(`Build Variables:`);
-// vueVariables.forEach(variable => {
-//   console.log(`${variable[0]}=${variable[1]}`);
-// });
+
+const useInternalSolutionConfig =
+  !process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG || process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG === "false";
+
+if (useInternalSolutionConfig) {
+  console.log(`Solution Config = ${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
+} else {
+  console.log(`Solution Config = /static/default.json`);
+}
+
+const vueVariables = Object.entries(process.env).filter(k => {
+  return k[0].startsWith("VUE_APP_");
+});
+console.log(`Build Variables:`);
+vueVariables.forEach(variable => {
+  console.log(`${variable[0]}=${variable[1]}`);
+});
 
 let rawdata = fs.readFileSync(`${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
 let solutionConfig = JSON.parse(rawdata);
 
-module.exports = {
+let buildConfig = {
   devServer: {
     https: false,
     port: 8080,
@@ -64,6 +74,7 @@ module.exports = {
     }
   },
   css: {
+    extract: { ignoreOrder: true },
     loaderOptions: {
       sass: {
         prependData: `@import "~@/sass/variables.scss"`
@@ -86,9 +97,18 @@ module.exports = {
               minRatio: 0.8
             })
           ]
-        : []
+        : [],
+    optimization: {
+      splitChunks: {
+        minSize: 10000,
+        maxSize: 200000
+      }
+    }
   },
   chainWebpack: config => {
+    config.externals({
+      leopardConfig: "@/../public/static/config.js"
+    });
     config.module
       .rule("eslint")
       .use("eslint-loader")
@@ -108,3 +128,11 @@ module.exports = {
   productionSourceMap: false,
   transpileDependencies: ["vuetify", "vue-plyr", "replace-string", "url-regex", "vue-long-press-directive"]
 };
+
+if (useInternalSolutionConfig) {
+  buildConfig.configureWebpack.plugins.push(
+    new WebpackDeletePlugin(["./dist/static/default.json", "./dist/static/embed-leopard.js.gz"])
+  );
+}
+
+module.exports = buildConfig;

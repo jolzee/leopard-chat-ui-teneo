@@ -7,31 +7,51 @@ import { COLOR_NAMES } from "../constants/color-names.js";
 import Vue from "vue";
 import Vuetify from "vuetify/lib";
 
-// import "vuetify/src/stylus/app.styl";
-
 import { ASR_CORRECTIONS } from "../constants/asr-corrections"; // fix ASR issues before they get to Teneo
 import { LiveChat } from "./live-chat";
 import { STORAGE_KEY } from "../constants/solution-config-default";
-import VueLogger from "vuejs-logger";
 
-const isProduction = process.env.NODE_ENV === "production";
-const options = {
-  isEnabled: true,
-  logLevel: isProduction ? "error" : "debug",
-  stringifyArguments: false,
-  showLogLevel: true,
-  showMethodName: true,
-  separator: "|",
-  showConsoleColors: true
-};
+let logrocketPlugin = null;
 
-Vue.use(VueLogger, options);
+// start LogRocket Setup
+if (window.leopardConfig.isProduction && window.leopardConfig.logging.logRocket) {
+  import(/* webpackChunkName: "logrocket" */ "logrocket")
+    .then(({ default: LogRocket }) => {
+      Vue.$log.debug(`Setting up LogRocket 🚀`);
+      LogRocket.init(window.leopardConfig.logging.logRocket);
+      import(/* webpackChunkName: "logrocket" */ "logrocket-vuex").then(({ default: createPlugin }) => {
+        logrocketPlugin = createPlugin(LogRocket);
+        Vue.$log.debug(`LogRocket 🚀 setup complete`);
+      });
+    })
+    .catch(err => {
+      Vue.$log.error(`Failed to dynamically import LogRocket 🚀`, err);
+    });
+}
+// End LogRocket Setup
+
+// start sentry
+
+if (window.window.leopardConfig.isProduction && window.window.leopardConfig.logging.sentryDsn) {
+  Promise.all([
+    import(/* webpackChunkName: "sentry" */ "@sentry/browser"),
+    import(/* webpackChunkName: "sentry" */ "@sentry/integrations")
+  ]).then(([Sentry, Integrations]) => {
+    Sentry.init({
+      dsn: window.leopardConfig.logging.sentryDsn,
+      integrations: [new Integrations.Vue({ Vue, attachProps: true })],
+      logErrors: true
+    });
+  });
+}
+// end sentry
 
 export default class Setup {
   constructor() {
     this.TENEO_CHAT_HISTORY = "teneo-chat-history";
     this.TENEO_LAST_INTERACTION_DATE = "teneo-last-interaction";
     this.TENEO_CHAT_DARK_THEME = "darkTheme";
+    this.logrocketPlugin = logrocketPlugin;
     this.ASR_CORRECTIONS_MERGED;
     this.liveChat;
     this.CHAT_TITLE = "Configure Me";
@@ -75,7 +95,7 @@ export default class Setup {
             this.addIframeHtml();
           }
 
-          Vue.$log.debug(`Chat Config: `, this.chatConfig);
+          Vue.$log.debug(`Active Solution Config: `, this.chatConfig);
 
           if (this.chatConfig && this.chatConfig.activeSolution) {
             Vue.$log.debug(`Active Solution: ${this.chatConfig.activeSolution}`);
@@ -206,7 +226,7 @@ export default class Setup {
     Vue.$log.debug("setup.js: getSolutionConfig ");
     return new Promise((resolve, reject) => {
       // Reload config for each load. Maybe there a new deployment change that you want to
-      if (process.env.VUE_APP_LOAD_FRESH_CONFIG_FOR_NEW_SESSIONS === "true") {
+      if (window.leopardConfig.loadFreshConfigForNewSessions) {
         // localStorage.removeItem(STORAGE_KEY + "config");
         Vue.$log.debug("getSolutionConfig > Using internal build config");
       } else {
@@ -231,12 +251,12 @@ export default class Setup {
 
   _loadDefaultConfig() {
     return new Promise((resolve, reject) => {
-      if (process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG !== "true") {
+      if (!window.leopardConfig.mustGetStaticDefaultConfig) {
         Vue.$log.debug(
           "setup.js > Found and loaded build's solution environment config",
-          process.env.VUE_APP_SOLUTION_CONFIG
+          window.leopardConfig.solutionConfig.buildConfig
         );
-        resolve(process.env.VUE_APP_SOLUTION_CONFIG);
+        resolve(window.leopardConfig.solutionConfig.buildConfig);
       } else {
         // look for default config on the server
         const defaultConfigUrl = `${location.protocol}//${location.host}${location.pathname}/../static/default.json`;
@@ -314,12 +334,7 @@ export default class Setup {
     return locator;
   }
 
-  // get markDownConvertor() {
-  //   return this.converter;
-  // }
-
   isPusherEnabled() {
-    // return process.env.VUE_APP_FIREBASE_API_KEY ? true : false;
     return false;
   }
 
@@ -362,7 +377,7 @@ export default class Setup {
   setupPusher() {
     // if (this.isPusherEnabled()) {
     //   Vue.use(require("vue-pusher"), {
-    //     api_key: process.env.VUE_APP_PUSHER_KEY,
+    //     api_key: window.leopardConfig.pusherKey,
     //     options: {
     //       cluster: "us2",
     //       encrypted: true,

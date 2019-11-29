@@ -13,34 +13,57 @@ import "./utils/drag";
 import "vue-loaders/dist/vue-loaders.css";
 import "plyr/dist/plyr.css";
 import "vue2-animate/dist/vue2-animate.min.css";
-
-import { getStore } from "./store";
+import VueLogger from "vuejs-logger";
+// import { getStore } from "./store";
 import App from "./App";
 import router from "./router";
+import utils from "./utils/utils";
 
-// start sentry
+if (!utils.doesParameterExist("embed") && !utils.doesParameterExist("button")) {
+  console.groupCollapsed(
+    `%c Powered by %c Leopard Chat UI 💬 %c`,
+    "background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",
+    "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
+    "background:transparent"
+  );
+  console.log("Author: Peter Joles - peter.joles@artificial-solutions.com");
+  // console.log("Documentation: https://jolzee.gitbook.io/leopard/");
+  // console.log("Code: https://github.com/jolzee/chat-teneo-vue");
+  console.groupEnd();
+}
 
-if (process.env.NODE_ENV === "production" && process.env.VUE_APP_SENTRY_DSN) {
-  Promise.all([
-    import(/* webpackChunkName: "sentry" */ "@sentry/browser"),
-    import(/* webpackChunkName: "sentry" */ "@sentry/integrations")
-  ]).then(([Sentry, Integrations]) => {
-    Sentry.init({
-      dsn: process.env.VUE_APP_SENTRY_DSN,
-      integrations: [new Integrations.Vue({ Vue, attachProps: true })],
-      logErrors: true
+import(/* webpackChunkName: "leopardConfig" */ "./utils/leopardConfig").then(config => {
+  window.leopardConfig = config.default;
+
+  Vue.use(VueLogger, {
+    isEnabled: true,
+    logLevel: window.leopardConfig.isProduction && !utils.doesParameterExist("leopardDebug") ? "error" : "debug",
+    stringifyArguments: false,
+    showLogLevel: true,
+    showMethodName: true,
+    separator: "|",
+    showConsoleColors: true
+  });
+
+  Vue.$log.debug(`Setup > Leopard Config: `, window.leopardConfig);
+
+  import("./store").then(store => {
+    store.default((vuetify, store) => {
+      new Vue({
+        vuetify,
+        router,
+        store,
+        render: h => h(App)
+      }).$mount("#app");
     });
   });
-}
-// end sentry
 
-// Vue.prototype.$log = console.log.bind(console);
-
-getStore((vuetify, store) => {
-  new Vue({
-    vuetify,
-    router,
-    store,
-    render: h => h(App)
-  }).$mount("#app");
+  // getStore((vuetify, store) => {
+  //   new Vue({
+  //     vuetify,
+  //     router,
+  //     store,
+  //     render: h => h(App)
+  //   }).$mount("#app");
+  // });
 });

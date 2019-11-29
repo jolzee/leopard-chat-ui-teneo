@@ -54,41 +54,8 @@ import { STORAGE_KEY } from "./constants/solution-config-default"; // applicatio
 import { TRANSLATIONS } from "./constants/translations"; // add UI translations for different language here
 import Setup from "./utils/setup";
 
-let config = new Setup();
-
-if (!config.EMBED) {
-  console.groupCollapsed(
-    `%c Powered by %c Leopard Chat UI 💬 %c`,
-    "background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",
-    "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
-    "background:transparent"
-  );
-  console.log("Author: Peter Joles - peter.joles@artificial-solutions.com");
-  // console.log("Documentation: https://jolzee.gitbook.io/leopard/");
-  // console.log("Code: https://github.com/jolzee/chat-teneo-vue");
-  console.groupEnd();
-}
-
-// start LogRocket Setup
-let logrocketPlugin = null;
-if (process.env.NODE_ENV === "production" && process.env.VUE_APP_LOG_ROCKET) {
-  Vue.$log.debug(`Setting up LogRocket 🚀`);
-
-  import(/* webpackChunkName: "logrocket" */ "logrocket")
-    .then(LogRocket => {
-      LogRocket["default"].init(process.env.VUE_APP_LOG_ROCKET);
-      import("logrocket-vuex").then(createPlugin => {
-        logrocketPlugin = createPlugin["default"](LogRocket["default"]);
-        Vue.$log.debug(`LogRocket 🚀 setup complete`);
-      });
-    })
-    .catch(err => {
-      Vue.$log.error(`Failed to dynamically import LogRocket 🚀`, err);
-    });
-}
-// End LogRocket Setup
-
 let store;
+let config = new Setup();
 Vue.use(VueJsonp, 20000);
 Vue.use(Vuex);
 
@@ -99,32 +66,23 @@ Vue.use(require("vue-shortkey"));
 
 Vue.component("teneo-modal", Modal);
 Vue.component("teneo-listening", Listening);
-Vue.component(
-  VueLoadersBallPulseSync.component.name,
-  VueLoadersBallPulseSync.component
-);
-Vue.component(
-  VueLoadersLineScale.component.name,
-  VueLoadersLineScale.component
-);
-Vue.component(
-  VueLoadersLineScalePulseOutRapid.component.name,
-  VueLoadersLineScalePulseOutRapid.component
-);
+Vue.component(VueLoadersBallPulseSync.component.name, VueLoadersBallPulseSync.component);
+Vue.component(VueLoadersLineScale.component.name, VueLoadersLineScale.component);
+Vue.component(VueLoadersLineScalePulseOutRapid.component.name, VueLoadersLineScalePulseOutRapid.component);
 
 Vue.config.productionTip = false;
 let liveChatAssistConnectCount = 0;
 
-export function getStore(callback) {
+export default function getStore(callback) {
   config
     .init()
     .then(vuetify => storeSetup(vuetify, callback))
-    .catch(error => Vue.$log.error(error));
+    .catch(error => Vue.$log.error(`ERROR setting up Leopard`, error));
 }
 
 function storeSetup(vuetify, callback) {
   store = new Vuex.Store({
-    plugins: [...(logrocketPlugin ? [logrocketPlugin] : [])],
+    plugins: [...(config.logrocketPlugin ? [config.logrocketPlugin] : [])],
     state: {
       asr: {
         stopAudioCapture: false,
@@ -134,9 +92,7 @@ function storeSetup(vuetify, callback) {
       activeSolution: config.activeSolution,
       connection: {
         requestParameters: config.REQUEST_PARAMETERS,
-        ctxParameters: config.doesParameterExist("teneoCtx")
-          ? JSON.parse(config.getParameterByName("teneoCtx"))
-          : "",
+        ctxParameters: config.doesParameterExist("teneoCtx") ? JSON.parse(config.getParameterByName("teneoCtx")) : "",
         teneoUrl: config.TENEO_URL
       },
       browser: {
@@ -160,8 +116,7 @@ function storeSetup(vuetify, callback) {
       iframe: {
         iframeUrl: config.IFRAME_URL,
         iframeUrlBase: config.IFRAME_URL
-          ? config.IFRAME_URL.substring(0, config.IFRAME_URL.lastIndexOf("/")) +
-            "/"
+          ? config.IFRAME_URL.substring(0, config.IFRAME_URL.lastIndexOf("/")) + "/"
           : config.IFRAME_URL
       },
       promptTriggerInterval: null,
@@ -203,7 +158,7 @@ function storeSetup(vuetify, callback) {
           : false,
         embed: config.EMBED,
         showDelayedResponse: false,
-        hideConfigMenu: process.env.VUE_APP_HIDE_CONFIG_MENU === "true",
+        hideConfigMenu: window.leopardConfig.hideConfigMenu,
         isWebSite: true,
         overlayChat: config.FLOAT,
         responseIcon: config.RESPONSE_ICON,
@@ -240,22 +195,14 @@ function storeSetup(vuetify, callback) {
         return state.chatConfig;
       },
       isPromptPollingActive(state) {
-        if (
-          "promptTriggers" in state.activeSolution &&
-          state.activeSolution.promptTriggers.enabled
-        ) {
+        if ("promptTriggers" in state.activeSolution && state.activeSolution.promptTriggers.enabled) {
           return true;
         }
         return false;
       },
       getPromptPollingIntervalInMilliseconds(state) {
-        if (
-          "promptTriggers" in state.activeSolution &&
-          state.activeSolution.promptTriggers.pollSeconds
-        ) {
-          return (
-            parseInt(state.activeSolution.promptTriggers.pollSeconds) * 1000
-          );
+        if ("promptTriggers" in state.activeSolution && state.activeSolution.promptTriggers.pollSeconds) {
+          return parseInt(state.activeSolution.promptTriggers.pollSeconds) * 1000;
         }
         return 10000; // default to 10 seconds
       },
@@ -292,9 +239,7 @@ function storeSetup(vuetify, callback) {
       },
       accentStyling(state) {
         if (state.activeSolution.displayAccent) {
-          return (
-            "border-top: 3px solid" + state.ui.theme.accent + " !important;"
-          );
+          return "border-top: 3px solid" + state.ui.theme.accent + " !important;";
         }
         return "";
       },
@@ -337,13 +282,8 @@ function storeSetup(vuetify, callback) {
         let item = getters.lastReplyItem;
         let isAskingForPassword = false;
         if (item && item.teneoResponse) {
-          let inputType = decodeURIComponent(
-            item.teneoResponse.extraData.inputType
-          );
-          if (
-            inputType !== "undefined" &&
-            inputType.trim().toLowerCase() === "password"
-          ) {
+          let inputType = decodeURIComponent(item.teneoResponse.extraData.inputType);
+          if (inputType !== "undefined" && inputType.trim().toLowerCase() === "password") {
             isAskingForPassword = true;
           }
         }
@@ -353,9 +293,7 @@ function storeSetup(vuetify, callback) {
         let item = getters.lastReplyItem;
         let inputHelpText;
         if (item && item.teneoResponse) {
-          let helpText = decodeURIComponent(
-            item.teneoResponse.extraData.inputHelpText
-          );
+          let helpText = decodeURIComponent(item.teneoResponse.extraData.inputHelpText);
           if (helpText !== "undefined") {
             inputHelpText = helpText;
           }
@@ -377,13 +315,8 @@ function storeSetup(vuetify, callback) {
         let item = getters.lastReplyItem;
         let isAskingForEmail = false;
         if (item && item.teneoResponse) {
-          let inputType = decodeURIComponent(
-            item.teneoResponse.extraData.inputType
-          );
-          if (
-            inputType !== "undefined" &&
-            inputType.trim().toLowerCase() === "email"
-          ) {
+          let inputType = decodeURIComponent(item.teneoResponse.extraData.inputType);
+          if (inputType !== "undefined" && inputType.trim().toLowerCase() === "email") {
             isAskingForEmail = true;
           }
         }
@@ -399,9 +332,7 @@ function storeSetup(vuetify, callback) {
         return state.ui.responseIcon;
       },
       userIcon(state) {
-        return state.auth.userInfo.profileImage
-          ? "account-check"
-          : state.ui.userIcon;
+        return state.auth.userInfo.profileImage ? "account-check" : state.ui.userIcon;
       },
       tts(state) {
         return state.tts.tts;
@@ -422,18 +353,14 @@ function storeSetup(vuetify, callback) {
         return state.userInput.userInputReadyForSending;
       },
       modalPosition: _state => item => {
-        let modalPosition = decodeURIComponent(
-          item.teneoResponse.extraData.modalPosition
-        );
+        let modalPosition = decodeURIComponent(item.teneoResponse.extraData.modalPosition);
         if (modalPosition !== "undefined") {
           modalPosition = modalPosition.toLowerCase();
         }
         return modalPosition;
       },
       modalSize: _state => item => {
-        let modalSize = decodeURIComponent(
-          item.teneoResponse.extraData.modalSize
-        );
+        let modalSize = decodeURIComponent(item.teneoResponse.extraData.modalSize);
         if (modalSize !== "undefined") {
           modalSize = modalSize.toLowerCase();
         }
@@ -495,10 +422,7 @@ function storeSetup(vuetify, callback) {
         let extensions = getters.itemExtensions(item);
         let modalExtensions = [];
         extensions.forEach(extension => {
-          if (
-            !getters.extensionIsInline(extension) &&
-            !extension.name.startsWith("displayCollection")
-          ) {
+          if (!getters.extensionIsInline(extension) && !extension.name.startsWith("displayCollection")) {
             modalExtensions.push(extension);
           }
         });
@@ -506,14 +430,8 @@ function storeSetup(vuetify, callback) {
       },
       itemExtraData: _state => (item, name) => {
         let response = {};
-        if (
-          item &&
-          item.teneoResponse &&
-          name in item.teneoResponse.extraData
-        ) {
-          response = JSON.parse(
-            decodeURIComponent(item.teneoResponse.extraData[name])
-          );
+        if (item && item.teneoResponse && name in item.teneoResponse.extraData) {
+          response = JSON.parse(decodeURIComponent(item.teneoResponse.extraData[name]));
         }
         return response;
       },
@@ -536,9 +454,7 @@ function storeSetup(vuetify, callback) {
               for (var key in ordered) {
                 if (key.startsWith("extensions")) {
                   var value = decodeURIComponent(ordered[key]);
-                  Vue.$log.debug(
-                    `Item Extensions > Key: ${key} Value: ${value}`
-                  );
+                  Vue.$log.debug(`Item Extensions > Key: ${key} Value: ${value}`);
                   actions.push(JSON.parse(value));
                 }
               }
@@ -561,10 +477,7 @@ function storeSetup(vuetify, callback) {
         return "";
       },
       hasFeedbackForm: () => item => {
-        if (
-          item.teneoResponse.extraData &&
-          item.teneoResponse.extraData.offerFeedbackForm
-        ) {
+        if (item.teneoResponse.extraData && item.teneoResponse.extraData.offerFeedbackForm) {
           return true;
         } else {
           return false;
@@ -810,23 +723,15 @@ function storeSetup(vuetify, callback) {
           answer = getters.lastReplyItem.text;
         }
 
-        if (
-          getters.settingLongResponsesInModal &&
-          getters.lastItemHasLongResponse
-        ) {
-          answer =
-            answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
+        if (getters.settingLongResponsesInModal && getters.lastItemHasLongResponse) {
+          answer = answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
         }
         return answer;
       },
       itemAnswerTextCropped: (_state, getters) => item => {
         let answer = item.text;
-        if (
-          getters.settingLongResponsesInModal &&
-          getters.itemHasLongResponse(item)
-        ) {
-          answer =
-            answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
+        if (getters.settingLongResponsesInModal && getters.itemHasLongResponse(item)) {
+          answer = answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
         }
         return answer;
       },
@@ -842,12 +747,7 @@ function storeSetup(vuetify, callback) {
       },
       itemHasLongResponse: (_state, getters) => item => {
         let hasLongResponse = false;
-        if (
-          getters.settingLongResponsesInModal &&
-          item &&
-          item.text &&
-          item.text.length > 400
-        ) {
+        if (getters.settingLongResponsesInModal && item && item.text && item.text.length > 400) {
           hasLongResponse = true;
         }
         return hasLongResponse;
@@ -874,50 +774,29 @@ function storeSetup(vuetify, callback) {
         Vue.$log.debug(
           `Session Storage? ${config.USE_SESSION_STORAGE} Dialog Length ${state.conversation.dialog.length}`
         );
-        if (
-          !config.USE_SESSION_STORAGE &&
-          state.conversation.dialog.length === 0
-        ) {
+        if (!config.USE_SESSION_STORAGE && state.conversation.dialog.length === 0) {
           Vue.$log.debug("Checking for stale session - embed");
           // typically here when in production embedded state
           // check if session expired
           let now = new Date();
-          let lastInteractionTime = localStorage.getItem(
-            STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE
-          );
+          let lastInteractionTime = localStorage.getItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE);
           if (!lastInteractionTime) {
             Vue.$log.debug("No previous interaction time...");
-            state.conversation.dialog = JSON.parse(
-              localStorage.getItem(
-                STORAGE_KEY + config.TENEO_CHAT_HISTORY,
-                "[]"
-              )
-            );
+            state.conversation.dialog = JSON.parse(localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]"));
           } else {
-            Vue.$log.debug(
-              `found last interaction time: ${lastInteractionTime}`
-            );
+            Vue.$log.debug(`found last interaction time: ${lastInteractionTime}`);
             var diff = (now.getTime() - lastInteractionTime) / 1000;
             diff /= 60;
             let diffMins = Math.abs(Math.round(diff));
             Vue.$log.debug(`Minutes Difference: ${diffMins}`);
             if (diffMins > 0) {
-              localStorage.setItem(
-                STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE,
-                now.getTime()
-              );
+              localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
               state.conversation.dialog = [];
-              localStorage.setItem(
-                STORAGE_KEY + config.TENEO_CHAT_HISTORY,
-                "[]"
-              );
+              localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]");
             } else {
               // "session" still active
               state.conversation.dialog = JSON.parse(
-                localStorage.getItem(
-                  STORAGE_KEY + config.TENEO_CHAT_HISTORY,
-                  "[]"
-                )
+                localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
               );
             }
           }
@@ -931,17 +810,11 @@ function storeSetup(vuetify, callback) {
         if (state.conversation.dialogHistory.length === 0) {
           if (config.USE_SESSION_STORAGE) {
             state.conversation.dialogHistory = JSON.parse(
-              sessionStorage.getItem(
-                STORAGE_KEY + config.TENEO_CHAT_HISTORY,
-                "[]"
-              )
+              sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
             );
           } else {
             state.conversation.dialogHistory = JSON.parse(
-              localStorage.getItem(
-                STORAGE_KEY + config.TENEO_CHAT_HISTORY,
-                "[]"
-              )
+              localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
             );
           }
 
@@ -998,14 +871,10 @@ function storeSetup(vuetify, callback) {
         return state.auth.userInfo.user ? true : false;
       },
       userProfileImage(state) {
-        return state.auth.userInfo.user
-          ? state.auth.userInfo.user.photoURL
-          : "";
+        return state.auth.userInfo.user ? state.auth.userInfo.user.photoURL : "";
       },
       displayName(state) {
-        return state.auth.userInfo.user
-          ? state.auth.userInfo.user.displayName
-          : "Anonymous";
+        return state.auth.userInfo.user ? state.auth.userInfo.user.displayName : "Anonymous";
       },
       dark(state) {
         return state.ui.dark;
@@ -1014,9 +883,7 @@ function storeSetup(vuetify, callback) {
         return state.ui.chatTitle;
       },
       showChatIcons(state) {
-        return state.liveAgent.isAgentAssist
-          ? true
-          : state.activeSolution.showChatIcons;
+        return state.liveAgent.isAgentAssist ? true : state.activeSolution.showChatIcons;
       },
       showUploadButton(state) {
         return state.ui.showUploadButton;
@@ -1076,16 +943,10 @@ function storeSetup(vuetify, callback) {
           `store: TOGGLE_CHAT_WINDOW_DISPLAY:  state.ui.showChatWindow has toggled to: ${state.ui.showChatWindow}`
         );
         if (state.ui.embed) {
-          Vue.$log.debug(
-            `TOGGLE_CHAT_WINDOW_DISPLAY: ${state.ui.showChatWindow}`
-          );
+          Vue.$log.debug(`TOGGLE_CHAT_WINDOW_DISPLAY: ${state.ui.showChatWindow}`);
           localStorage.setItem("isChatOpen", state.ui.showChatWindow);
-          Vue.$log.debug(
-            `store: TOGGLE_CHAT_WINDOW_DISPLAY: sending message to parent to ${state.ui.showChatWindow}`
-          );
-          sendMessageToParent(
-            state.ui.showChatWindow ? "showLeopard" : "hideLeopard"
-          );
+          Vue.$log.debug(`store: TOGGLE_CHAT_WINDOW_DISPLAY: sending message to parent to ${state.ui.showChatWindow}`);
+          sendMessageToParent(state.ui.showChatWindow ? "showLeopard" : "hideLeopard");
         }
       },
       SHOW_CHAT_WINDOW(state) {
@@ -1158,10 +1019,7 @@ function storeSetup(vuetify, callback) {
         state.conversation.dialog.push(miscMessage);
       },
       PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG(state, liveChatResponse) {
-        Vue.$log.debug(
-          `Pushing LiveChat response onto chat dialog`,
-          liveChatResponse
-        );
+        Vue.$log.debug(`Pushing LiveChat response onto chat dialog`, liveChatResponse);
         state.conversation.dialog.push(liveChatResponse);
       },
       CLEAR_USER_INPUT(state) {
@@ -1205,10 +1063,7 @@ function storeSetup(vuetify, callback) {
       },
       CHANGE_THEME(state) {
         state.ui.dark = !state.ui.dark;
-        localStorage.setItem(
-          STORAGE_KEY + config.TENEO_CHAT_DARK_THEME,
-          JSON.stringify(state.ui.dark)
-        );
+        localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_DARK_THEME, JSON.stringify(state.ui.dark));
       },
       SHOW_LISTING_OVERLAY(state) {
         state.progress.listening = true;
@@ -1238,9 +1093,7 @@ function storeSetup(vuetify, callback) {
 
         if (
           payload.response.teneoResponse &&
-          (Object.keys(payload.response.teneoResponse.extraData).some(function(
-            k
-          ) {
+          (Object.keys(payload.response.teneoResponse.extraData).some(function(k) {
             return ~k.indexOf("extensions");
           }) ||
             payload.response.teneoResponse.extraData.liveChat ||
@@ -1281,14 +1134,9 @@ function storeSetup(vuetify, callback) {
 
         // deal with persiting the chat history
         if (!config.USE_SESSION_STORAGE) {
-          localStorage.setItem(
-            STORAGE_KEY + config.TENEO_CHAT_HISTORY,
-            JSON.stringify(state.conversation.dialog)
-          );
+          localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, JSON.stringify(state.conversation.dialog));
         }
-        state.conversation.dialogHistory = JSON.parse(
-          sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY)
-        );
+        state.conversation.dialogHistory = JSON.parse(sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY));
         if (state.conversation.dialogHistory === null) {
           state.conversation.dialogHistory = state.conversation.dialog;
         } else {
@@ -1305,9 +1153,7 @@ function storeSetup(vuetify, callback) {
         );
       },
       REMOVE_FORM_CONFIG(state, itemId) {
-        let foundHistory = state.conversation.dialogHistory.find(function(
-          item
-        ) {
+        let foundHistory = state.conversation.dialogHistory.find(function(item) {
           return item.id === itemId;
         });
 
@@ -1315,12 +1161,7 @@ function storeSetup(vuetify, callback) {
           return item.id === itemId;
         });
 
-        if (
-          found &&
-          found.teneoResponse &&
-          found.teneoResponse.extraData &&
-          found.teneoResponse.extraData.formConfig
-        ) {
+        if (found && found.teneoResponse && found.teneoResponse.extraData && found.teneoResponse.extraData.formConfig) {
           delete found.teneoResponse.extraData.formConfig;
         }
 
@@ -1418,13 +1259,10 @@ function storeSetup(vuetify, callback) {
         if (document.getElementById("site-frame")) {
           document.getElementById("site-frame").src = newUrl;
         } else if (state.ui.embed) {
-          sendMessageToParent(
-            `runLeopardScript|window.location.href = '${newUrl}';`
-          );
+          sendMessageToParent(`runLeopardScript|window.location.href = '${newUrl}';`);
         }
         state.iframe.iframeUrl = newUrl;
-        state.iframe.iframeUrlBase =
-          newUrl.substring(0, newUrl.lastIndexOf("/")) + "/";
+        state.iframe.iframeUrlBase = newUrl.substring(0, newUrl.lastIndexOf("/")) + "/";
       },
       USER_INFO(state, userInfo) {
         state.auth.userInfo.user = userInfo.user;
@@ -1441,10 +1279,9 @@ function storeSetup(vuetify, callback) {
       liveChatAddCannedResponse(context, config) {
         // config.data.token = context.getters.liveChatApiToken;
         Vue.$log.debug(`Adding LiveChat Canned Response`, config);
-        const agentAssistServer =
-          process.env.VUE_APP_LIVE_CHAT_AGENT_ASSIST_SERVER;
+
         superagent
-          .post(`${agentAssistServer}/can`)
+          .post(`${window.leopardConfig.liveChat.agentAssistServerUrl}/can`)
           .accept("json")
           .type("json")
           .send(config)
@@ -1464,10 +1301,7 @@ function storeSetup(vuetify, callback) {
       setupLiveChatAgentAssist(context) {
         Vue.$log.debug(">> Before Live Agent Assist Setup");
         if (context.getters.isLiveAgentAssist) {
-          Vue.$log.debug(
-            `Is this an Agent Assist App?`,
-            context.getters.isLiveAgentAssist
-          );
+          Vue.$log.debug(`Is this an Agent Assist App?`, context.getters.isLiveAgentAssist);
           Vue.$log.debug(">> In Live Agent Assist Setup");
           let liveChatAgentAssistLastMessage = null;
           LiveChat.init({ authorize: false })
@@ -1486,9 +1320,7 @@ function storeSetup(vuetify, callback) {
                 if (
                   message.message_source === "visitor" &&
                   message.message_id !== liveChatAgentAssistLastMessage &&
-                  !message.message.includes(
-                    "VIRTUAL ASSISTANT CONVERSATION HISTORY"
-                  )
+                  !message.message.includes("VIRTUAL ASSISTANT CONVERSATION HISTORY")
                 ) {
                   liveChatAgentAssistLastMessage = message.message_id;
                   context.commit("SET_USER_INPUT", message.message);
@@ -1503,14 +1335,8 @@ function storeSetup(vuetify, callback) {
                 client_id: liveChatConfig.client_id,
                 onIdentityFetched: (_error, data) => {
                   if (data && data.access_token) {
-                    context.commit(
-                      "LIVE_CHAT_API_ACCESS_TOKEN",
-                      data.access_token
-                    );
-                    Vue.$log.debug(
-                      "LIVE_CHAT_API_ACCESS_TOKEN",
-                      data.access_token
-                    );
+                    context.commit("LIVE_CHAT_API_ACCESS_TOKEN", data.access_token);
+                    Vue.$log.debug("LIVE_CHAT_API_ACCESS_TOKEN", data.access_token);
                   } else {
                     window.location.href = `${liveChatConfig.account_url}?response_type=token&client_id=${liveChatConfig.client_id}&redirect_uri=${window.location.href}`;
                   }
@@ -1557,11 +1383,7 @@ function storeSetup(vuetify, callback) {
                 }
               }
 
-              if (
-                !context.getters.embed &&
-                !context.getters.overlayChat &&
-                siteFrame
-              ) {
+              if (!context.getters.embed && !context.getters.overlayChat && siteFrame) {
                 setTimeout(function() {
                   siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
                 }, 1000);
@@ -1609,7 +1431,7 @@ function storeSetup(vuetify, callback) {
         });
       },
       setUserInformation({ commit, getters }) {
-        if (!process.env.VUE_APP_FIREBASE_API_KEY) {
+        if (!window.leopardConfig.firebase.apiKey) {
           return;
         }
         if (getters.firebase) {
@@ -1625,9 +1447,7 @@ function storeSetup(vuetify, callback) {
             retyCount++;
 
             if (getters.firebase) {
-              Vue.$log.debug(
-                `SET USER INFORMATION > Firebase > Found on retry: ${retyCount}`
-              );
+              Vue.$log.debug(`SET USER INFORMATION > Firebase > Found on retry: ${retyCount}`);
               getters.firebase.auth().onAuthStateChanged(function(user) {
                 if (user) {
                   commit("USER_INFO", { user: user }); // user is still signed in
@@ -1637,16 +1457,14 @@ function storeSetup(vuetify, callback) {
             }
 
             if (retyCount++ > 80) {
-              Vue.$log.debug(
-                "SET USER INFORMATION > Firebase > Giving up trying waiting!!"
-              );
+              Vue.$log.debug("SET USER INFORMATION > Firebase > Giving up trying waiting!!");
               clearInterval(checkExist);
             }
           }, 100); // check every 100ms
         }
       },
       logoutSocial({ commit, getters }) {
-        if (!process.env.VUE_APP_FIREBASE_API_KEY) {
+        if (!window.leopardConfig.firebase.apiKey) {
           return;
         }
         if (getters.firebase) {
@@ -1668,21 +1486,13 @@ function storeSetup(vuetify, callback) {
       },
       setupFirebase(context) {
         return new Promise((resolve, _reject) => {
-          if (!process.env.VUE_APP_FIREBASE_API_KEY) {
+          if (!window.leopardConfig.firebase.apiKey) {
             Vue.$log.debug("No configuration for Firebase - skipping");
             resolve();
             return;
           }
           if (!context.getters.firebase) {
-            Firebase.init({
-              apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
-              authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
-              databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
-              projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
-              storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
-              messagingSenderId:
-                process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID
-            }).then(firebase => {
+            Firebase.init().then(firebase => {
               context.commit("SET_FIREBASE", firebase);
               Vue.$log.debug(`Firebase has been initiated`, firebase);
               resolve(firebase);
@@ -1696,7 +1506,7 @@ function storeSetup(vuetify, callback) {
       },
       loginSocial({ commit, getters }, socialProvider) {
         return new Promise((resolve, reject) => {
-          if (!process.env.VUE_APP_FIREBASE_API_KEY) {
+          if (!window.leopardConfig.firebase.apiKey) {
             resolve();
             return;
           }
@@ -1749,7 +1559,7 @@ function storeSetup(vuetify, callback) {
       },
       loginUserWithUsernameEmailPassword({ commit, getters }, loginInfo) {
         return new Promise((resolve, reject) => {
-          if (!process.env.VUE_APP_FIREBASE_API_KEY) {
+          if (!window.leopardConfig.firebase.apiKey) {
             resolve();
             return;
           }
@@ -1766,26 +1576,18 @@ function storeSetup(vuetify, callback) {
             });
         });
       },
-      registerUserWithUsernameEmailPassword(
-        { commit, getters },
-        registrationInfo
-      ) {
+      registerUserWithUsernameEmailPassword({ commit, getters }, registrationInfo) {
         // import(/* webpackChunkName: "dep-firebase-database" */ "firebase/database");
 
         return new Promise((resolve, reject) => {
-          if (!process.env.VUE_APP_FIREBASE_API_KEY) {
+          if (!window.leopardConfig.firebase.apiKey) {
             resolve();
             return;
           }
-          registrationInfo.photoURL = getters.profileImageFromEmail(
-            registrationInfo.email
-          );
+          registrationInfo.photoURL = getters.profileImageFromEmail(registrationInfo.email);
           getters.firebase
             .auth()
-            .createUserWithEmailAndPassword(
-              registrationInfo.email,
-              registrationInfo.password
-            )
+            .createUserWithEmailAndPassword(registrationInfo.email, registrationInfo.password)
             .then(user => {
               let currentUser = getters.firebase.auth().currentUser;
               Vue.$log.debug(registrationInfo.displayName);
@@ -1799,10 +1601,7 @@ function storeSetup(vuetify, callback) {
                   Vue.$log.debug("User's profile info updated");
                 })
                 .catch(function(error) {
-                  Vue.$log.error(
-                    `Unable to update user's profile information:`,
-                    error
-                  );
+                  Vue.$log.error(`Unable to update user's profile information:`, error);
                 });
               commit("USER_INFO", { user: user });
               resolve();
@@ -1834,11 +1633,7 @@ function storeSetup(vuetify, callback) {
           "endsession?viewtype=STANDARDJSONP" +
           (config.SEND_CTX_PARAMS === "all"
             ? config.REQUEST_PARAMETERS.length > 0
-              ? "&" +
-                config.REQUEST_PARAMETERS.substring(
-                  1,
-                  config.REQUEST_PARAMETERS.length
-                )
+              ? "&" + config.REQUEST_PARAMETERS.substring(1, config.REQUEST_PARAMETERS.length)
               : ""
             : "");
 
@@ -1870,11 +1665,7 @@ function storeSetup(vuetify, callback) {
           "endsession?viewtype=STANDARDJSONP" +
           (config.SEND_CTX_PARAMS === "all"
             ? config.REQUEST_PARAMETERS.length > 0
-              ? "&" +
-                config.REQUEST_PARAMETERS.substring(
-                  1,
-                  config.REQUEST_PARAMETERS.length
-                )
+              ? "&" + config.REQUEST_PARAMETERS.substring(1, config.REQUEST_PARAMETERS.length)
               : ""
             : "");
 
@@ -1899,19 +1690,14 @@ function storeSetup(vuetify, callback) {
           })
             .then(json => {
               if ("numActiveFlows" in json.responseData.extraData) {
-                let numActiveFlows = parseInt(
-                  json.responseData.extraData.numActiveFlows
-                );
+                let numActiveFlows = parseInt(json.responseData.extraData.numActiveFlows);
                 if (numActiveFlows > 0) {
                   // mid dialog stop polling
                   context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
                   Vue.$log.debug("Stop polling - there active dialogs");
                 } else if (context.getters.isPromptPollingActive) {
                   // setup the polling again if needed
-                  if (
-                    !context.getters.showButtonOnly &&
-                    context.getters.getActivePromptInterval === null
-                  ) {
+                  if (!context.getters.showButtonOnly && context.getters.getActivePromptInterval === null) {
                     Vue.$log.debug("Start up Prompt Trigger Polling");
                     let interval = setInterval(function() {
                       context.dispatch("sendUserInput", "&command=prompt");
@@ -1919,30 +1705,19 @@ function storeSetup(vuetify, callback) {
                     context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
                   }
                 }
-              } else if (
-                !("numActiveFlows" in json.responseData.extraData) &&
-                context.getters.isPromptPollingActive
-              ) {
+              } else if (!("numActiveFlows" in json.responseData.extraData) && context.getters.isPromptPollingActive) {
                 console.groupCollapsed(
                   `%c Config Error!! ⚠ %c Leopard Chat UI 💬 %c`,
                   "background:#C60909 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",
                   "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
                   "background:transparent"
                 );
-                Vue.$log.error(
-                  "Prompt polling is active but you are not returning the numActiveFlows from Teneo"
-                );
-                Vue.$log.error(
-                  "Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
-                );
+                Vue.$log.error("Prompt polling is active but you are not returning the numActiveFlows from Teneo");
+                Vue.$log.error("Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling");
                 console.groupEnd();
               }
               context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
-              Vue.$log.debug(
-                `Login Message from Teneo: ${decodeURIComponent(
-                  json.responseData.answer
-                )}`
-              );
+              Vue.$log.debug(`Login Message from Teneo: ${decodeURIComponent(json.responseData.answer)}`);
               let hasExtraData = false;
 
               if (
@@ -1957,10 +1732,7 @@ function storeSetup(vuetify, callback) {
                 type: "reply",
                 id: uuidv1(),
                 text: md.render(
-                  decodeURIComponent(json.responseData.answer).replace(
-                    /onclick="[^"]+"/g,
-                    'class="sendInput"'
-                  )
+                  decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
                 ),
                 bodyText: "",
                 teneoResponse: json.responseData,
@@ -1999,10 +1771,7 @@ function storeSetup(vuetify, callback) {
         let currentUserInput = "";
         if (params.indexOf("command=prompt") === -1) {
           Vue.$log.debug("Updating last interaction time in localstorage");
-          localStorage.setItem(
-            STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE,
-            now.getTime()
-          );
+          localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
           currentUserInput = stripHtml(context.getters.userInput);
           context.commit("CLEAR_USER_INPUT");
           // send user input to Teneo when a live chat has not begun
@@ -2016,9 +1785,7 @@ function storeSetup(vuetify, callback) {
           // normal Teneo request needs to be made
           const teneoUrl =
             context.getters.teneoUrl +
-            (config.SEND_CTX_PARAMS === "all"
-              ? config.REQUEST_PARAMETERS + params
-              : params) +
+            (config.SEND_CTX_PARAMS === "all" ? config.REQUEST_PARAMETERS + params : params) +
             context.getters.userInformationParams +
             context.getters.timeZoneParam +
             context.getters.ctxParameters;
@@ -2031,9 +1798,7 @@ function storeSetup(vuetify, callback) {
               }
               if ("numActiveFlows" in json.responseData.extraData) {
                 // deal with polling
-                let numActiveFlows = parseInt(
-                  json.responseData.extraData.numActiveFlows
-                );
+                let numActiveFlows = parseInt(json.responseData.extraData.numActiveFlows);
                 if (numActiveFlows > 0) {
                   // mid dialog stop polling
                   context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
@@ -2051,34 +1816,22 @@ function storeSetup(vuetify, callback) {
                     }, context.getters.getPromptPollingIntervalInMilliseconds);
                     context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
                   } else if (!context.getters.isChatOpen) {
-                    Vue.$log.debug(
-                      `Stop prompt trigger polling - chat is closed`
-                    );
+                    Vue.$log.debug(`Stop prompt trigger polling - chat is closed`);
                     context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
                   }
                 }
-              } else if (
-                !("numActiveFlows" in json.responseData.extraData) &&
-                context.getters.isPromptPollingActive
-              ) {
+              } else if (!("numActiveFlows" in json.responseData.extraData) && context.getters.isPromptPollingActive) {
                 console.groupCollapsed(
                   `%c Config Error!! ⚠ %c Leopard Chat UI 💬 %c`,
                   "background:#C60909 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",
                   "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
                   "background:transparent"
                 );
-                Vue.$log.debug(
-                  "Prompt polling is active but you are not returning the numActiveFlows from Teneo"
-                );
-                Vue.$log.debug(
-                  "Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
-                );
+                Vue.$log.debug("Prompt polling is active but you are not returning the numActiveFlows from Teneo");
+                Vue.$log.debug("Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling");
                 console.groupEnd();
               }
-              if (
-                params.indexOf("command=prompt") !== -1 &&
-                json.responseData.answer.trim() === ""
-              ) {
+              if (params.indexOf("command=prompt") !== -1 && json.responseData.answer.trim() === "") {
                 Vue.$log.debug(`Poll returned nothing..`);
                 return;
               } else if (
@@ -2092,22 +1845,13 @@ function storeSetup(vuetify, callback) {
               context.commit("HIDE_CHAT_LOADING");
 
               if (json.responseData.extraData.offerFeedbackForm) {
-                const feedbackConfig = JSON.parse(
-                  decodeURIComponent(
-                    json.responseData.extraData.offerFeedbackForm
-                  )
-                );
+                const feedbackConfig = JSON.parse(decodeURIComponent(json.responseData.extraData.offerFeedbackForm));
                 context.commit("ADD_FEEDBACK_FORM", feedbackConfig);
               } else {
                 context.commit("CLEAR_FEEDBACK_FORM");
               }
-              if (
-                json.responseData.isNewSession ||
-                json.responseData.extraData.newsession
-              ) {
-                Vue.$log.debug(
-                  "Session is stale.. keep chat open and continue with the new session"
-                );
+              if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
+                Vue.$log.debug("Session is stale.. keep chat open and continue with the new session");
                 context.commit(
                   "SHOW_MESSAGE_IN_CHAT",
                   "You have been away for an extended period of time. A new session with the virtual assistant has been created."
@@ -2115,16 +1859,11 @@ function storeSetup(vuetify, callback) {
               }
 
               if ("script" in json.responseData.extraData) {
-                let theScript = decodeURIComponent(
-                  json.responseData.extraData.script
-                );
+                let theScript = decodeURIComponent(json.responseData.extraData.script);
                 sendMessageToParent("runLeopardScript|" + theScript);
               }
               // Start of delay logic
-              if (
-                "command" in json.responseData.extraData &&
-                json.responseData.extraData.command === "delay"
-              ) {
+              if ("command" in json.responseData.extraData && json.responseData.extraData.command === "delay") {
                 context.commit("SHOW_RESPONSE_DELAY");
                 context.commit("SET_USER_INPUT", "");
                 context
@@ -2132,10 +1871,7 @@ function storeSetup(vuetify, callback) {
                   .then(Vue.$log.debug(`Continue with long operation`))
                   .catch(err => {
                     Vue.$log.error("Unable to continue conversation", err);
-                    context.commit(
-                      "SHOW_MESSAGE_IN_CHAT",
-                      "We're sorry for the inconvience: " + err.message
-                    );
+                    context.commit("SHOW_MESSAGE_IN_CHAT", "We're sorry for the inconvience: " + err.message);
                   });
               }
 
@@ -2144,10 +1880,7 @@ function storeSetup(vuetify, callback) {
               }
               // end of delay logic
 
-              if (
-                "inputType" in json.responseData.extraData &&
-                json.responseData.extraData.inputType === "upload"
-              ) {
+              if ("inputType" in json.responseData.extraData && json.responseData.extraData.inputType === "upload") {
                 context.commit("SHOW_UPLOAD_BUTTON");
               }
               // look for request for location information in the response
@@ -2160,23 +1893,13 @@ function storeSetup(vuetify, callback) {
                   .getLocator()
                   .then(function(position) {
                     // we now have the user's lat and long
-                    Vue.$log.debug(
-                      `${position.coords.latitude}, ${position.coords.longitude}`
-                    );
-                    if (
-                      json.responseData.extraData.inputType ===
-                      "locationLatLong"
-                    ) {
+                    Vue.$log.debug(`${position.coords.latitude}, ${position.coords.longitude}`);
+                    if (json.responseData.extraData.inputType === "locationLatLong") {
                       // send the lat and long
                       context
                         .dispatch(
                           "sendUserInput",
-                          "&locationLatLong=" +
-                            encodeURI(
-                              position.coords.latitude +
-                                "," +
-                                position.coords.longitude
-                            )
+                          "&locationLatLong=" + encodeURI(position.coords.latitude + "," + position.coords.longitude)
                         )
                         .then(
                           Vue.$log.debug(
@@ -2184,27 +1907,20 @@ function storeSetup(vuetify, callback) {
                           )
                         )
                         .catch(err => {
-                          Vue.$log.error(
-                            "Unable to send lat and long info",
-                            err
-                          );
+                          Vue.$log.error("Unable to send lat and long info", err);
                           context.commit(
                             "SHOW_MESSAGE_IN_CHAT",
-                            "We were unable to obtain your location information.: " +
-                              err.message
+                            "We were unable to obtain your location information.: " + err.message
                           );
                         });
-                    } else if (process.env.VUE_APP_LOCATION_IQ_KEY) {
+                    } else if (window.leopardConfig.locationIqKey) {
                       // good we have a licence key we can send all location information back
-                      let locationRequestType =
-                        json.responseData.extraData.inputType;
+                      let locationRequestType = json.responseData.extraData.inputType;
                       superagent
                         .get(
-                          `https://us1.locationiq.com/v1/reverse.php?key=${
-                            process.env.VUE_APP_LOCATION_IQ_KEY
-                          }&lat=${position.coords.latitude}&lon=${
-                            position.coords.longitude
-                          }&format=json&normalizecity=1&t=${new Date().valueOf()}`
+                          `https://us1.locationiq.com/v1/reverse.php?key=${window.leopardConfig.locationIqKey}&lat=${
+                            position.coords.latitude
+                          }&lon=${position.coords.longitude}&format=json&normalizecity=1&t=${new Date().valueOf()}`
                         )
                         .accept("application/json")
                         .then(res => {
@@ -2215,9 +1931,7 @@ function storeSetup(vuetify, callback) {
                             queryParam += encodeURI(JSON.stringify(data));
                           } else if (locationRequestType === "locationZip") {
                             queryParam += encodeURI(data.address.postcode);
-                          } else if (
-                            locationRequestType === "locationCityStateZip"
-                          ) {
+                          } else if (locationRequestType === "locationCityStateZip") {
                             queryParam += encodeURI(
                               `${data.address.city}, ${data.address.state} ${data.address.postcode}`
                             );
@@ -2231,24 +1945,18 @@ function storeSetup(vuetify, callback) {
                               )
                             )
                             .catch(err => {
-                              Vue.$log.error(
-                                "Unable to send user location",
-                                err
-                              );
+                              Vue.$log.error("Unable to send user location", err);
                               context.commit(
                                 "SHOW_MESSAGE_IN_CHAT",
-                                "We were unable to obtain your location information.: " +
-                                  err.message
+                                "We were unable to obtain your location information.: " + err.message
                               );
                             });
                         })
                         .catch(err => Vue.$log.error(err));
                     } else if (
-                      !process.env.VUE_APP_LOCATION_IQ_KEY &&
+                      !window.leopardConfig.locationIqKey &&
                       json.responseData.extraData.inputType ===
-                        ("locationCityStateZip" ||
-                          "locationZip" ||
-                          "locationJson")
+                        ("locationCityStateZip" || "locationZip" || "locationJson")
                     ) {
                       // no good. Asking for location information that requires a licence  key
                       context.commit(
@@ -2267,10 +1975,7 @@ function storeSetup(vuetify, callback) {
                 userInput: currentUserInput,
                 id: uuidv1(),
                 teneoAnswer: md.render(
-                  decodeURIComponent(json.responseData.answer).replace(
-                    /onclick="[^"]+"/g,
-                    'class="sendInput"'
-                  )
+                  decodeURIComponent(json.responseData.answer).replace(/onclick="[^"]+"/g, 'class="sendInput"')
                 ),
                 teneoResponse: json.responseData
               };
@@ -2278,26 +1983,15 @@ function storeSetup(vuetify, callback) {
               if (response.teneoResponse) {
                 let ttsText = stripHtml(response.teneoAnswer);
                 if (response.teneoResponse.extraData.tts) {
-                  ttsText = stripHtml(
-                    decodeURIComponent(response.teneoResponse.extraData.tts)
-                  );
+                  ttsText = stripHtml(decodeURIComponent(response.teneoResponse.extraData.tts));
                 }
 
                 // check if this browser supports the Web Speech API
                 if (
-                  Object.prototype.hasOwnProperty.call(
-                    window,
-                    "webkitSpeechRecognition"
-                  ) &&
-                  Object.prototype.hasOwnProperty.call(
-                    window,
-                    "speechSynthesis"
-                  )
+                  Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
+                  Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
                 ) {
-                  if (
-                    context.getters.tts &&
-                    context.getters.speakBackResponses
-                  ) {
+                  if (context.getters.tts && context.getters.speakBackResponses) {
                     context.getters.tts.say(ttsText);
                   }
                 }
@@ -2319,36 +2013,20 @@ function storeSetup(vuetify, callback) {
                   context.commit("START_LIVE_CHAT");
                 }
                 if (response.teneoResponse.extraData.chatTitle) {
-                  let chatTitle = decodeURIComponent(
-                    response.teneoResponse.extraData.chatTitle
-                  );
+                  let chatTitle = decodeURIComponent(response.teneoResponse.extraData.chatTitle);
                   if (chatTitle !== "undefined") {
                     context.commit("SET_CHAT_TITLE", chatTitle);
                   }
                 }
 
                 // added on request from Mark J - switch languages based on NER language detection
-                let langInput = decodeURIComponent(
-                  response.teneoResponse.extraData.langinput
-                );
-                let langEngineUrl = decodeURIComponent(
-                  response.teneoResponse.extraData.langengineurl
-                );
-                let lang = decodeURIComponent(
-                  response.teneoResponse.extraData.lang
-                );
-                let langurl = decodeURIComponent(
-                  response.teneoResponse.extraData.langurl
-                );
+                let langInput = decodeURIComponent(response.teneoResponse.extraData.langinput);
+                let langEngineUrl = decodeURIComponent(response.teneoResponse.extraData.langengineurl);
+                let lang = decodeURIComponent(response.teneoResponse.extraData.lang);
+                let langurl = decodeURIComponent(response.teneoResponse.extraData.langurl);
 
-                if (
-                  langEngineUrl !== "undefined" &&
-                  langInput !== "undefined"
-                ) {
-                  context.commit(
-                    "UPDATE_TENEO_URL",
-                    langEngineUrl + "?viewname=STANDARDJSONP"
-                  );
+                if (langEngineUrl !== "undefined" && langInput !== "undefined") {
+                  context.commit("UPDATE_TENEO_URL", langEngineUrl + "?viewname=STANDARDJSONP");
                   context.commit("SET_USER_INPUT", langInput);
                   context.commit("SHOW_PROGRESS_BAR");
 
@@ -2363,20 +2041,12 @@ function storeSetup(vuetify, callback) {
 
                   context
                     .dispatch("sendUserInput")
-                    .then(
-                      Vue.$log.debug(
-                        "Sent original lang input to new lang specific solution"
-                      )
-                    )
+                    .then(Vue.$log.debug("Sent original lang input to new lang specific solution"))
                     .catch(err => {
-                      Vue.$log.error(
-                        "Unable to send lang input to new lang specific solution",
-                        err
-                      );
+                      Vue.$log.error("Unable to send lang input to new lang specific solution", err);
                       context.commit(
                         "SHOW_MESSAGE_IN_CHAT",
-                        "Unable to send lang input to new lang specific solution: " +
-                          err.message
+                        "Unable to send lang input to new lang specific solution: " + err.message
                       );
                     });
                 }
@@ -2389,10 +2059,7 @@ function storeSetup(vuetify, callback) {
               };
               if (err.status && err.status === 408) {
                 Vue.$log.error("Request To Teneo Timed Out: 408", errResp);
-                context.commit(
-                  "SHOW_MESSAGE_IN_CHAT",
-                  "I'm sorry but the request timed out - Please try again."
-                );
+                context.commit("SHOW_MESSAGE_IN_CHAT", "I'm sorry but the request timed out - Please try again.");
               } else if (err.status && err.status === 400) {
                 Vue.$log.error("Request To Teneo Timed Out: 400", errResp);
                 context.commit(
@@ -2405,10 +2072,7 @@ function storeSetup(vuetify, callback) {
               }
               context.commit("HIDE_PROGRESS_BAR");
             });
-        } else if (
-          context.getters.isLiveChat &&
-          params.indexOf("command=prompt") === -1
-        ) {
+        } else if (context.getters.isLiveChat && params.indexOf("command=prompt") === -1) {
           // send the input to live chat agent and save user input to history
           let newUserInput = {
             type: "userInput",
@@ -2419,16 +2083,11 @@ function storeSetup(vuetify, callback) {
           context.commit("PUSH_USER_INPUT_TO_DIALOG", newUserInput);
 
           if (!config.USE_SESSION_STORAGE) {
-            localStorage.setItem(
-              STORAGE_KEY + config.TENEO_CHAT_HISTORY,
-              JSON.stringify(context.getters.dialog)
-            );
+            localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, JSON.stringify(context.getters.dialog));
           }
           context.commit(
             "SET_DIALOG_HISTORY",
-            JSON.parse(
-              sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY)
-            )
+            JSON.parse(sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY))
           );
           if (context.getters.dialogHistory === null) {
             context.commit("SET_DIALOG_HISTORY", context.getters.dialog);
@@ -2567,13 +2226,8 @@ function receiveMessageFromParent(event) {
         store.state.ui.parent = {
           frameHeight: messageObject.frameHeight
         };
-        localStorage.setItem(
-          STORAGE_KEY + "parentHeight",
-          messageObject.frameHeight
-        );
-        Vue.$log.debug(
-          `receiveMessageFromParent: parentHeight = ${messageObject.frameHeight}`
-        );
+        localStorage.setItem(STORAGE_KEY + "parentHeight", messageObject.frameHeight);
+        Vue.$log.debug(`receiveMessageFromParent: parentHeight = ${messageObject.frameHeight}`);
         // trigger a resize event
         let evt = window.document.createEvent("UIEvents");
         evt.initUIEvent("resize", true, false, window, 0);
