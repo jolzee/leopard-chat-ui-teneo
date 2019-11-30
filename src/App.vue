@@ -243,7 +243,6 @@
                   <span @click="closeChatEmbedded">
                     <v-fab-transition>
                       <v-btn
-                        v-show="showChatButton"
                         icon
                         text
                         tile
@@ -438,6 +437,7 @@ export default {
     this.$store.dispatch("setupLiveChatAgentAssist"); // only enabled in certain scenario
   },
   mounted() {
+    logger.debug("Is embed? ", this.embed);
     window.addEventListener("resize", this.onResizeOrEmbed);
     // deal with import of solution
     const urlParams = new URLSearchParams(window.location.search);
