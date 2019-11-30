@@ -49,13 +49,13 @@ if (useInternalSolutionConfig) {
   console.log(`Solution Config = /static/default.json`);
 }
 
-const vueVariables = Object.entries(process.env).filter(k => {
-  return k[0].startsWith("VUE_APP_");
-});
-console.log(`Build Variables:`);
-vueVariables.forEach(variable => {
-  console.log(`${variable[0]}=${variable[1]}`);
-});
+// const vueVariables = Object.entries(process.env).filter(k => {
+//   return k[0].startsWith("VUE_APP_");
+// });
+// console.log(`Build Variables:`);
+// vueVariables.forEach(variable => {
+//   console.log(`${variable[0]}=${variable[1]}`);
+// });
 
 let rawdata = fs.readFileSync(`${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
 let solutionConfig = JSON.parse(rawdata);
