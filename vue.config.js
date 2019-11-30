@@ -7,7 +7,8 @@ var WebpackDeletePlugin = require("webpack-delete-plugin");
 // const prod = process.env.NODE_ENV === "production";
 // const dev = process.env.NODE_ENV === "development";
 // var const = process.env.NODE_ENV === "qa";
-const enableJavaScriptCompression = process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
+const enableJavaScriptCompression = process.env
+  .VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
   ? process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
   : false;
 
@@ -41,7 +42,8 @@ const brotliPluginTest = () => {
 console.log(`NODE_ENV = ${process.env.NODE_ENV}`);
 
 const useInternalSolutionConfig =
-  !process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG || process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG === "false";
+  !process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG ||
+  process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG === "false";
 
 if (useInternalSolutionConfig) {
   console.log(`Solution Config = ${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
@@ -97,13 +99,7 @@ let buildConfig = {
               minRatio: 0.8
             })
           ]
-        : [],
-    optimization: {
-      splitChunks: {
-        minSize: 10000,
-        maxSize: 200000
-      }
-    }
+        : []
   },
   chainWebpack: config => {
     config.externals({
@@ -126,12 +122,21 @@ let buildConfig = {
   publicPath: "./",
   assetsDir: "./assets/",
   productionSourceMap: false,
-  transpileDependencies: ["vuetify", "vue-plyr", "replace-string", "url-regex", "vue-long-press-directive"]
+  transpileDependencies: [
+    "vuetify",
+    "vue-plyr",
+    "replace-string",
+    "url-regex",
+    "vue-long-press-directive"
+  ]
 };
 
 if (useInternalSolutionConfig) {
   buildConfig.configureWebpack.plugins.push(
-    new WebpackDeletePlugin(["./dist/static/default.json", "./dist/static/embed-leopard.js.gz"])
+    new WebpackDeletePlugin([
+      "./dist/static/default.json",
+      "./dist/static/embed-leopard.js.gz"
+    ])
   );
 }
 

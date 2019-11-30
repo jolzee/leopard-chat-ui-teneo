@@ -1,13 +1,7 @@
 <template>
-  <vue-plyr
-    v-if="url"
-    class="mb-2"
-  >
+  <vue-plyr v-if="url" class="mb-2">
     <audio>
-      <source
-        :src="url"
-        :type="type"
-      />
+      <source :src="url" :type="type" />
     </audio>
   </vue-plyr>
 </template>

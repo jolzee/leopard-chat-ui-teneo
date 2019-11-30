@@ -13,7 +13,7 @@
         type="info"
         elevation="2"
         class="mx-4"
-      >{{ overlayAlertMessage }}
+        >{{ overlayAlertMessage }}
       </v-alert>
     </v-overlay>
   </v-fade-transition>
@@ -28,5 +28,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

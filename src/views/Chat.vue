@@ -1,9 +1,5 @@
 <template>
-  <v-container
-    fluid
-    id="chat-area"
-    class="chat-container"
-  >
+  <v-container fluid id="chat-area" class="chat-container">
     <ChatNoHistory v-if="noHistory && isHistoryPage"></ChatNoHistory>
 
     <!-- show the listening modal when recognizing audio input -->
@@ -12,10 +8,7 @@
       :message="$t('listening')"
     ></teneo-listening>
 
-    <v-row
-      class="mx-0"
-      no-gutters
-    >
+    <v-row class="mx-0" no-gutters>
       <v-col
         cols="12"
         class="pa-0"
@@ -99,7 +92,7 @@
               elevation="2"
               colored-border
               icon="mdi-keyboard-settings"
-            >Agent is typing a message..
+              >Agent is typing a message..
               <vue-loaders-ball-pulse-sync
                 color="#C2C2C2"
                 scale="0.5"
@@ -107,8 +100,7 @@
             </v-alert>
           </div>
         </v-expansion-panels>
-        <span ref="endChat">
-          <!-- scroll to the end --></span>
+        <span ref="endChat"> <!-- scroll to the end --></span>
       </v-col>
 
       <!-- Chat Footer - Input Field and Buttons -->
@@ -122,23 +114,11 @@
     </v-row>
     <!-- // progressBar -->
 
-    <v-row
-      class="teneo-footer"
-      :class="{ 'footer-float': float }"
-      no-gutters
-    >
+    <v-row class="teneo-footer" :class="{ 'footer-float': float }" no-gutters>
       <v-col>
-        <v-form
-          v-model="valid"
-          v-on:submit.prevent
-          ref="userInputForm"
-        >
+        <v-form v-model="valid" v-on:submit.prevent ref="userInputForm">
           <v-container class="fill-height">
-            <v-row
-              no-gutters
-              align="center"
-              justify="center"
-            >
+            <v-row no-gutters align="center" justify="center">
               <v-col class="text-center">
                 <v-text-field
                   id="teneo-input-field"
@@ -190,10 +170,7 @@
                   single-line
                   data-lpignore="true"
                 >
-                  <template
-                    v-if="showAudioInput"
-                    v-slot:append
-                  >
+                  <template v-if="showAudioInput" v-slot:append>
                     <v-btn
                       :disabled="userInput === ''"
                       @click="sendUserInput"
@@ -207,16 +184,9 @@
                     </v-btn>
                   </template>
                 </v-text-field>
-                <span
-                  v-shortkey="['esc']"
-                  @shortkey="stopAudioCapture"
-                ></span>
+                <span v-shortkey="['esc']" @shortkey="stopAudioCapture"></span>
               </v-col>
-              <v-col
-                cols="3"
-                sm="2"
-                class="text-center"
-              >
+              <v-col cols="3" sm="2" class="text-center">
                 <upload-btn
                   icon
                   aria-label="Select file for upload"
@@ -227,10 +197,7 @@
                   class="elevation-2 v-btn v-btn--contained v-btn--fab v-btn--round v-size--small primary white--text mt-3"
                 >
                   <template slot="icon">
-                    <v-icon
-                      dark
-                      class="py-2"
-                    >mdi-paperclip</v-icon>
+                    <v-icon dark class="py-2">mdi-paperclip</v-icon>
                   </template>
                 </upload-btn>
                 <v-progress-circular
@@ -292,32 +259,17 @@
 
     <!-- end -->
     <!-- Date picker dialog -->
-    <v-col
-      cols="12"
-      v-if="showDate"
-      :key="'datePicker' + uuid"
-    >
+    <v-col cols="12" v-if="showDate" :key="'datePicker' + uuid">
       <v-dialog
         ref="dialogDate"
         v-model="showDate"
         :return-value.sync="date"
         width="290px"
       >
-        <v-date-picker
-          v-model="date"
-          scrollable
-        >
+        <v-date-picker v-model="date" scrollable>
           <v-spacer></v-spacer>
-          <v-btn
-            text
-            color="primary"
-            @click="showDate = false"
-          >Cancel</v-btn>
-          <v-btn
-            text
-            color="primary"
-            @click="sendUserInput"
-          >OK</v-btn>
+          <v-btn text color="primary" @click="showDate = false">Cancel</v-btn>
+          <v-btn text color="primary" @click="sendUserInput">OK</v-btn>
         </v-date-picker>
       </v-dialog>
     </v-col>
@@ -327,52 +279,125 @@
       :show="showLeopardDialog"
       title="Hi there this is the title"
     >
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt veritatis ipsam laudantium? Consequatur tenetur voluptas facere provident magnam!</p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
+        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
+        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
+        provident magnam!
+      </p>
     </Dialog>
 
     <!-- Time picker dialog -->
-    <v-col
-      cols="12"
-      v-if="showTime"
-      :key="'timePicker' + uuid"
-    >
-      <v-dialog
-        ref="dialogTime"
-        v-model="showTime"
-        width="290px"
-      >
-        <v-time-picker
-          v-model="userInput"
-          format="24hr"
-        ></v-time-picker>
+    <v-col cols="12" v-if="showTime" :key="'timePicker' + uuid">
+      <v-dialog ref="dialogTime" v-model="showTime" width="290px">
+        <v-time-picker v-model="userInput" format="24hr"></v-time-picker>
         <v-card>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="error"
-              @click="showTime = false"
-            >Cancel</v-btn>
-            <v-btn
-              color="success"
-              @click="sendUserInput"
-            >OK</v-btn>
+            <v-btn color="error" @click="showTime = false">Cancel</v-btn>
+            <v-btn color="success" @click="sendUserInput">OK</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -574,6 +599,7 @@ export default {
   beforeDestroy() {},
   methods: {
     scrollToBottom() {
+      logger.debug("Scroll to bottom");
       const endChatTarget = this.$refs.endChat;
       const options = {
         duration: 1200,

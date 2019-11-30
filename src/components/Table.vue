@@ -15,13 +15,10 @@
     >
       <td
         v-for="(header, key) in headers"
-        :key='
-    key'
+        :key="key"
         class="text-left"
         v-html="props.item[header.value]"
-      >
-
-      </td>
+      ></td>
     </template>
     <v-alert
       slot="no-results"
@@ -31,10 +28,7 @@
     >
       Your search for "{{ search }}" found no results.
     </v-alert>
-    <template
-      v-if="footer"
-      slot="footer"
-    >
+    <template v-if="footer" slot="footer">
       <td colspan="100%">
         <strong>{{ footer }}</strong>
       </td>

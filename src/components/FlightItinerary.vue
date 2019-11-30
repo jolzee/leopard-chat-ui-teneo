@@ -1,9 +1,5 @@
-<template >
-  <v-card-text
-    v-if="itinerary"
-    scrollable
-    class="px-3 text-center"
-  >
+<template>
+  <v-card-text v-if="itinerary" scrollable class="px-3 text-center">
     <h2 class="mb-2">Flight details</h2>
     <div class="info title elevation-4 py-1">
       OUTBOUND
@@ -11,18 +7,10 @@
     <v-row class="text-center my-2">
       <v-col cols="4">
         <h2>{{ itinerary.outbound_departure_airport }}</h2>
-        <div>{{ itinerary.outbound_departure_date }}
-        </div>
-
+        <div>{{ itinerary.outbound_departure_date }}</div>
       </v-col>
-      <v-col
-        class="pt-2"
-        cols="4"
-      >
-        <v-icon
-          class="orange--text"
-          large
-        >mdi-shield-airplane</v-icon>
+      <v-col class="pt-2" cols="4">
+        <v-icon class="orange--text" large>mdi-shield-airplane</v-icon>
         <div
           class="info--text mt-1"
           v-html="itinerary.outbound_flight_number"
@@ -39,14 +27,8 @@
         <h2>{{ itinerary.inbound_departure_airport }}</h2>
         <div>{{ itinerary.inbound_departure_date }}</div>
       </v-col>
-      <v-col
-        class="pt-2"
-        cols="4"
-      >
-        <v-icon
-          class="orange--text"
-          large
-        >mdi-shield-airplane</v-icon>
+      <v-col class="pt-2" cols="4">
+        <v-icon class="orange--text" large>mdi-shield-airplane</v-icon>
         <div
           class="info--text mt-1"
           v-html="itinerary.inbound_flight_number"
@@ -74,6 +56,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
-
+<style scoped></style>

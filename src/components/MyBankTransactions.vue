@@ -5,10 +5,7 @@
     :items="items"
     :search="search"
   >
-    <template
-      slot="items"
-      slot-scope="props"
-    >
+    <template slot="items" slot-scope="props">
       <td class="text-left">{{ props.item.date }}</td>
       <td class="text-left">{{ props.item.description }}</td>
       <td class="text-left">{{ props.item.amount }}</td>

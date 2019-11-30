@@ -3,12 +3,12 @@
     <v-col cols="12">
       <v-card class="elevation-0">
         <v-card-title primary-title>
-          <h5>{{ $t('help.page.title') }}</h5>
+          <h5>{{ $t("help.page.title") }}</h5>
         </v-card-title>
       </v-card>
       <v-expansion-panels>
         <v-expansion-panel
-          v-for="(item,i) in knowledgeData"
+          v-for="(item, i) in knowledgeData"
           @click="sendUserInput(item)"
           :key="i"
         >
@@ -20,8 +20,7 @@
     </v-col>
   </v-row>
 </template>
-<style scoped>
-</style>
+<style scoped></style>
 <script>
 const logger = require("@/utils/logging")("Help.vue");
 export default {

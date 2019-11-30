@@ -7,6 +7,11 @@ import PromisedLocation from "promised-location";
 import { COLOR_NAMES } from "../constants/color-names.js";
 import Vue from "vue";
 import Vuetify from "vuetify/lib";
+Vue.use(Vuetify, {
+  directives: {
+    Ripple
+  }
+});
 
 import { ASR_CORRECTIONS } from "../constants/asr-corrections"; // fix ASR issues before they get to Teneo
 import { LiveChat } from "./live-chat";
@@ -15,12 +20,15 @@ import { STORAGE_KEY } from "../constants/solution-config-default";
 let logrocketPlugin = null;
 
 // start LogRocket Setup
-if (window.leopardConfig.isProduction && window.leopardConfig.logging.logRocket) {
-  import(/* webpackChunkName: "logrocket" */ "logrocket")
+if (
+  window.leopardConfig.isProduction &&
+  window.leopardConfig.logging.logRocket
+) {
+  import("logrocket")
     .then(({ default: LogRocket }) => {
       logger.debug(`Setting up LogRocket 🚀`);
       LogRocket.init(window.leopardConfig.logging.logRocket);
-      import(/* webpackChunkName: "logrocket" */ "logrocket-vuex").then(({ default: createPlugin }) => {
+      import("logrocket-vuex").then(({ default: createPlugin }) => {
         logrocketPlugin = createPlugin(LogRocket);
         logger.debug(`LogRocket 🚀 setup complete`);
       });
@@ -33,17 +41,19 @@ if (window.leopardConfig.isProduction && window.leopardConfig.logging.logRocket)
 
 // start sentry
 
-if (window.window.leopardConfig.isProduction && window.window.leopardConfig.logging.sentryDsn) {
-  Promise.all([
-    import(/* webpackChunkName: "sentry" */ "@sentry/browser"),
-    import(/* webpackChunkName: "sentry" */ "@sentry/integrations")
-  ]).then(([Sentry, Integrations]) => {
-    Sentry.init({
-      dsn: window.leopardConfig.logging.sentryDsn,
-      integrations: [new Integrations.Vue({ Vue, attachProps: true })],
-      logErrors: true
-    });
-  });
+if (
+  window.window.leopardConfig.isProduction &&
+  window.window.leopardConfig.logging.sentryDsn
+) {
+  Promise.all([import("@sentry/browser"), import("@sentry/integrations")]).then(
+    ([Sentry, Integrations]) => {
+      Sentry.init({
+        dsn: window.leopardConfig.logging.sentryDsn,
+        integrations: [new Integrations.Vue({ Vue, attachProps: true })],
+        logErrors: true
+      });
+    }
+  );
 }
 // end sentry
 
@@ -57,7 +67,8 @@ export default class Setup {
     this.liveChat;
     this.CHAT_TITLE = "Configure Me";
     this.IS_AGENT_ASSIST = this.doesParameterExist("plugin_id");
-    this.EMBED = this.doesParameterExist("embed") || this.doesParameterExist("button");
+    this.EMBED =
+      this.doesParameterExist("embed") || this.doesParameterExist("button");
     this.SHOW_BUTTON_ONLY = this.doesParameterExist("button");
     this.ENABLE_LIVE_CHAT = false;
     this.FLOAT = false;
@@ -102,7 +113,9 @@ export default class Setup {
             logger.debug(`Active Solution: ${this.chatConfig.activeSolution}`);
             let deepLink = this.getParameterByName("dl"); // look for deep link
             if (!deepLink) {
-              logger.debug(`No deep link found in the current url - load default solution`);
+              logger.debug(
+                `No deep link found in the current url - load default solution`
+              );
               this.activeSolution = this.chatConfig.activeSolution;
               const matchingSolutions = this.chatConfig.solutions.filter(
                 solution => solution.name === this.activeSolution
@@ -114,7 +127,9 @@ export default class Setup {
               }
             } else {
               // allow for deep linking to a specific solution ?dl=<deepLink>
-              const matchingSolutions = this.chatConfig.solutions.filter(solution => solution.deepLink === deepLink);
+              const matchingSolutions = this.chatConfig.solutions.filter(
+                solution => solution.deepLink === deepLink
+              );
               if (matchingSolutions.length > 0) {
                 this.activeSolution = matchingSolutions[0];
               } else {
@@ -130,7 +145,10 @@ export default class Setup {
                 }
               }
             }
-            this.ASR_CORRECTIONS_MERGED = this.getMergedAsrCorrections(ASR_CORRECTIONS);
+            this.ASR_CORRECTIONS_MERGED = this.getMergedAsrCorrections(
+              ASR_CORRECTIONS
+            );
+            logger.debug("Merged ASR Corrections");
             this.CHAT_TITLE = this.activeSolution.chatTitle;
             this.IFRAME_URL = this.activeSolution.iframeUrl;
             this.KNOWLEDGE_DATA = this.activeSolution.knowledgeData;
@@ -141,19 +159,26 @@ export default class Setup {
             this.SEND_CTX_PARAMS = this.activeSolution.sendContextParams
               ? this.activeSolution.sendContextParams
               : "login";
-            this.TENEO_URL = this.activeSolution.url + "?viewname=STANDARDJSONP";
+            this.TENEO_URL =
+              this.activeSolution.url + "?viewname=STANDARDJSONP";
             this.USER_ICON = this.activeSolution.userIcon;
 
             let theme = this.activeSolution.theme;
             // convert color names to their #hex equivalent
             for (const key in theme) {
-              if (theme[key].charAt(0) !== "#") theme[key] = COLOR_NAMES[theme[key]];
+              if (theme[key].charAt(0) !== "#")
+                theme[key] = COLOR_NAMES[theme[key]];
             }
             this.THEME = theme;
 
-            this.ENABLE_LIVE_CHAT = this.activeSolution.enableLiveChat && !this.doesParameterExist("plugin_id");
+            this.ENABLE_LIVE_CHAT =
+              this.activeSolution.enableLiveChat &&
+              !this.doesParameterExist("plugin_id");
             this.UNIQUE_KEY =
-              this.activeSolution.deepLink + (window.location.href.indexOf("mobile=true") > -1 ? "_mobile" : "");
+              this.activeSolution.deepLink +
+              (window.location.href.indexOf("mobile=true") > -1
+                ? "_mobile"
+                : "");
             document.title = this.activeSolution.name;
 
             let self = this;
@@ -163,7 +188,11 @@ export default class Setup {
                 contextParam.values.forEach(value => {
                   if (value.active) {
                     self.REQUEST_PARAMETERS =
-                      self.REQUEST_PARAMETERS + "&" + contextParam.name + "=" + encodeURIComponent(value.text);
+                      self.REQUEST_PARAMETERS +
+                      "&" +
+                      contextParam.name +
+                      "=" +
+                      encodeURIComponent(value.text);
                   }
                 });
               }
@@ -171,16 +200,15 @@ export default class Setup {
           }
 
           // update the IFRAME URL
-          if (!this.EMBED && !this.SHOW_BUTTON_ONLY && document.getElementById("site-frame")) {
+          if (
+            !this.EMBED &&
+            !this.SHOW_BUTTON_ONLY &&
+            document.getElementById("site-frame")
+          ) {
             document.getElementById("site-frame").src = this.IFRAME_URL;
+            logger.debug("Updated IFRAME url", this.IFRAME_URL);
           }
-
-          Vue.use(Vuetify, {
-            directives: {
-              Ripple
-            }
-          });
-
+          logger.debug("About to initialize Vuetify");
           let vuetify = new Vuetify({
             breakpoint: {
               thresholds: {
@@ -212,7 +240,10 @@ export default class Setup {
           });
           resolve(vuetify);
         })
-        .catch(message => reject(message));
+        .catch(error => {
+          console.error("Can't get Vuetify to work", error);
+          reject(error);
+        });
     });
   }
 
@@ -232,11 +263,18 @@ export default class Setup {
         logger.debug("Using internal build config");
       } else {
         logger.debug("Looking for Solution Config in localStorage first");
-        this.chatConfig = JSON.parse(localStorage.getItem(STORAGE_KEY + "config"));
+        this.chatConfig = JSON.parse(
+          localStorage.getItem(STORAGE_KEY + "config")
+        );
       }
 
-      if (!this.chatConfig || (this.chatConfig && this.chatConfig.solutions.length === 0)) {
-        logger.debug("No Solution Config found in localStorage. Continue looking..");
+      if (
+        !this.chatConfig ||
+        (this.chatConfig && this.chatConfig.solutions.length === 0)
+      ) {
+        logger.debug(
+          "No Solution Config found in localStorage. Continue looking.."
+        );
         this._loadDefaultConfig()
           .then(defaultConfig => {
             this.chatConfig = defaultConfig;
@@ -244,7 +282,9 @@ export default class Setup {
           })
           .catch(message => reject(message));
       } else {
-        logger.debug("Found Solution Config | using existing solutions in local storage | Presales Mode");
+        logger.debug(
+          "Found Solution Config | using existing solutions in local storage | Presales Mode"
+        );
         resolve(this.chatConfig);
       }
     });
@@ -265,20 +305,33 @@ export default class Setup {
           .get(defaultConfigUrl)
           .accept("application/json")
           .then(res => {
-            logger.debug("Found and loaded Solution Config from /static/default.json");
+            logger.debug(
+              "Found and loaded Solution Config from /static/default.json"
+            );
             let defaultConfig = res.body;
-            localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(defaultConfig));
+            localStorage.setItem(
+              STORAGE_KEY + "config",
+              JSON.stringify(defaultConfig)
+            );
             resolve(defaultConfig);
           })
           .catch(function(error) {
-            reject("Could not load default.json from /static/default.json: " + error.message);
+            reject(
+              "Could not load default.json from /static/default.json: " +
+                error.message
+            );
           });
       }
     });
   }
 
   setupLiveChat(store) {
-    this.liveChat = new LiveChat(store, !this.USE_SESSION_STORAGE, STORAGE_KEY, this.TENEO_CHAT_HISTORY);
+    this.liveChat = new LiveChat(
+      store,
+      !this.USE_SESSION_STORAGE,
+      STORAGE_KEY,
+      this.TENEO_CHAT_HISTORY
+    );
   }
 
   getMergedAsrCorrections(leopardDefaultCorrections) {
@@ -296,14 +349,20 @@ export default class Setup {
           }
         }
       });
-      finalCorrections = leopardDefaultCorrections.concat(solutionResplacements);
+      finalCorrections = leopardDefaultCorrections.concat(
+        solutionResplacements
+      );
     }
     return finalCorrections;
   }
 
   getUrlVars() {
     var vars = {};
-    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
+      m,
+      key,
+      value
+    ) {
       vars[key] = value;
     });
     return vars;
@@ -315,7 +374,12 @@ export default class Setup {
       urlparameter = this.getUrlVars()[parameter];
       if (urlparameter) {
         urlparameter = urlparameter.split("#")[0];
-        urlparameter = urlparameter === "true" ? true : urlparameter === "false" ? false : urlparameter;
+        urlparameter =
+          urlparameter === "true"
+            ? true
+            : urlparameter === "false"
+            ? false
+            : urlparameter;
       } else {
         urlparameter = defaultvalue;
       }

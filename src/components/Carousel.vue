@@ -6,7 +6,7 @@
     class="mb-2"
   >
     <v-carousel-item
-      v-for="(imageUrl,i) in imageItems"
+      v-for="(imageUrl, i) in imageItems"
       :key="i"
       :src="imageUrl"
     ></v-carousel-item>

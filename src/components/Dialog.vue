@@ -13,17 +13,17 @@
       scrollable
       max-width="80%"
       width="600px"
-      :fullscreen="fullscreen || $vuetify.breakpoint.xs || $vuetify.breakpoint.sm || $vuetify.breakpoint.md"
+      :fullscreen="
+        fullscreen ||
+          $vuetify.breakpoint.xs ||
+          $vuetify.breakpoint.sm ||
+          $vuetify.breakpoint.md
+      "
       content-class="leopard-dialog resizable"
     >
       <v-card class="mx-auto">
         <v-fade-transition>
-          <v-overlay
-            absolute
-            opacity="0.7"
-            :value="overlay"
-          >
-
+          <v-overlay absolute opacity="0.7" :value="overlay">
             <v-alert
               border="left"
               light
@@ -43,16 +43,14 @@
         >
           <v-spacer></v-spacer>
 
-          <v-icon @click="toggleFullscreen">{{ fullscreen ? 'mdi-window-restore' : 'mdi-window-maximize' }}</v-icon>
+          <v-icon @click="toggleFullscreen">{{
+            fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
+          }}</v-icon>
 
           <v-icon @click="close">mdi-close</v-icon>
         </v-system-bar>
 
-        <v-app-bar
-          dark
-          color="primary"
-          dense
-        >
+        <v-app-bar dark color="primary" dense>
           <v-toolbar-title>{{ title }}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-app-bar>
@@ -60,31 +58,20 @@
         <v-card-text
           style="height: 80%;"
           class="px-3 py-0"
-          :class="{'dark-scroll': dark, 'light-scroll': !dark}"
+          :class="{ 'dark-scroll': dark, 'light-scroll': !dark }"
         >
-
           <v-container fluid>
-            <v-row
-              align="start"
-              justify="start"
-            >
-              <v-col
-                cols="12"
-                class="pa-2"
-              >
+            <v-row align="start" justify="start">
+              <v-col cols="12" class="pa-2">
                 <slot>Nothing passed to the dialog</slot>
               </v-col>
             </v-row>
           </v-container>
-
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="secondary white--text"
-            @click="close"
-          >Close</v-btn>
+          <v-btn color="secondary white--text" @click="close">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

@@ -52,7 +52,8 @@ export const TRANSLATIONS = {
     "menu.logout": "Logout",
     "more.button": "plus",
     "more.info.title": "Plus d'information",
-    "no.chat.history.body": "Posez-moi quelques questions pour faire avancer les choses..",
+    "no.chat.history.body":
+      "Posez-moi quelques questions pour faire avancer les choses..",
     "no.chat.history.title": "Aucun historique de discussion",
     "input.box.label.password": "Entrer le mot de passe",
     "input.box.label.email": "Entrez email @",
@@ -84,7 +85,8 @@ export const TRANSLATIONS = {
     "menu.logout": "Logout",
     "more.button": "mehr",
     "more.info.title": "Weitere Informationen",
-    "no.chat.history.body": "Stellen Sie mir ein paar Fragen, um die Dinge ins Rollen zu bringen",
+    "no.chat.history.body":
+      "Stellen Sie mir ein paar Fragen, um die Dinge ins Rollen zu bringen",
     "no.chat.history.title": "Kein Chatverlauf",
     "input.box.label.password": "Passwort eingeben",
     "input.box.label.email": "Email eingeben @",
@@ -116,7 +118,8 @@ export const TRANSLATIONS = {
     "menu.logout": "Logout",
     "more.button": "meer",
     "more.info.title": "Meer informatie",
-    "no.chat.history.body": "Stel me een paar vragen om dingen aan het rollen te krijgen",
+    "no.chat.history.body":
+      "Stel me een paar vragen om dingen aan het rollen te krijgen",
     "no.chat.history.title": "Geen chatgeschiedenis",
     "input.box.label.password": "Voer wachtwoord in",
     "input.box.label.email": "Voer email in @",
@@ -148,7 +151,8 @@ export const TRANSLATIONS = {
     "menu.logout": "Logout",
     "more.button": "Más",
     "more.info.title": "Más información",
-    "no.chat.history.body": "Hazme algunas preguntas para que las cosas funcionen",
+    "no.chat.history.body":
+      "Hazme algunas preguntas para que las cosas funcionen",
     "no.chat.history.title": "Sin historial de chat",
     "input.box.label.password": "Introducir la contraseña",
     "input.box.label.email": "Ingrese correo electrónico @",
@@ -180,7 +184,8 @@ export const TRANSLATIONS = {
     "menu.logout": "Logout",
     "more.button": "Больше",
     "more.info.title": "Дополнительная информация",
-    "no.chat.history.body": "Задайте мне несколько вопросов, чтобы заставить вещи катиться ..",
+    "no.chat.history.body":
+      "Задайте мне несколько вопросов, чтобы заставить вещи катиться ..",
     "no.chat.history.title": "Нет истории чата",
     "input.box.label.password": "Введите пароль",
     "input.box.label.email": "Введите адрес электронной почты @",
@@ -212,7 +217,8 @@ export const TRANSLATIONS = {
     "menu.logout": "Logout",
     "more.button": "Mer",
     "more.info.title": "Mer information",
-    "no.chat.history.body": "Fråga mig några frågor för att få saker att rulla..",
+    "no.chat.history.body":
+      "Fråga mig några frågor för att få saker att rulla..",
     "no.chat.history.title": "Ingen chatthistorik",
     "input.box.label.password": "Skriv in lösenord",
     "input.box.label.email": "Skriv in e-mail @",
@@ -276,7 +282,8 @@ export const TRANSLATIONS = {
     "menu.logout": "Logout",
     "more.button": "mere",
     "more.info.title": "Mere information",
-    "no.chat.history.body": "Spørg mig et par spørgsmål for at få tingene i gang..",
+    "no.chat.history.body":
+      "Spørg mig et par spørgsmål for at få tingene i gang..",
     "no.chat.history.title": "Ingen chathistorik",
     "input.box.label.password": "Indtast adgangskode",
     "input.box.label.email": "Indtast e-mail @",
@@ -321,7 +328,8 @@ export const TRANSLATIONS = {
   },
   cn: {
     "about.page.button": "学到更多",
-    "about.page.content": "Teneo允许您的客户以自然，类似人类和智能的方式与应用程序，设备和Web服务进行通信",
+    "about.page.content":
+      "Teneo允许您的客户以自然，类似人类和智能的方式与应用程序，设备和Web服务进行通信",
     "about.page.title": "Teneo by Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/",
     "back.to.chat.button": "back to chat",
@@ -352,7 +360,8 @@ export const TRANSLATIONS = {
   },
   "cn(hk)": {
     "about.page.button": "學到更多",
-    "about.page.content": "Teneo允許您的客戶以自然，類似人類和智能的方式與應用程序，設備和Web服務進行通信",
+    "about.page.content":
+      "Teneo允許您的客戶以自然，類似人類和智能的方式與應用程序，設備和Web服務進行通信",
     "about.page.title": "Teneo by Artificial Solutions",
     "about.page.url": "https://www.artificial-solutions.com/",
     "back.to.chat.button": "back to chat",

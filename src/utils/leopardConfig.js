@@ -20,8 +20,14 @@ export default {
     buildConfig: getEnvValue("VUE_APP_SOLUTION_CONFIG", {})
   },
   hideConfigMenu: getEnvValue("VUE_APP_HIDE_CONFIG_MENU", true),
-  loadFreshConfigForNewSessions: getEnvValue("VUE_APP_LOAD_FRESH_CONFIG_FOR_NEW_SESSIONS", false),
-  mustGetStaticDefaultConfig: getEnvValue("VUE_APP_GET_STATIC_DEFAULT_CONFIG", false),
+  loadFreshConfigForNewSessions: getEnvValue(
+    "VUE_APP_LOAD_FRESH_CONFIG_FOR_NEW_SESSIONS",
+    false
+  ),
+  mustGetStaticDefaultConfig: getEnvValue(
+    "VUE_APP_GET_STATIC_DEFAULT_CONFIG",
+    false
+  ),
   liveChat: {
     licenseKey: getEnvValue("VUE_APP_LIVE_CHAT_INC_KEY"),
     agentAssistServerUrl: getEnvValue("VUE_APP_LIVE_CHAT_AGENT_ASSIST_SERVER")
@@ -42,7 +48,10 @@ export default {
     logRocket: getEnvValue("VUE_APP_LOG_ROCKET")
   },
   build: {
-    compressJavascript: getEnvValue("VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS", false),
+    compressJavascript: getEnvValue(
+      "VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS",
+      false
+    ),
     compressCss: getEnvValue("VUE_APP_BUILD_COMPRESS_CSS_ASSETS", true)
   }
 };

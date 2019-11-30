@@ -1,18 +1,10 @@
 <template>
-  <v-row
-    v-if="displayPusherMessage && pusherMessage"
-    justify="center"
-  >
-    <v-dialog
-      v-model="showPusher"
-      max-width="290"
-    >
+  <v-row v-if="displayPusherMessage && pusherMessage" justify="center">
+    <v-dialog v-model="showPusher" max-width="290">
       <v-card>
         <v-card-title class="headline">Notification</v-card-title>
 
-        <v-card-text>
-          {{ pusherMessage }}<br />
-        </v-card-text>
+        <v-card-text> {{ pusherMessage }}<br /> </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>

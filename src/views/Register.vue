@@ -1,15 +1,9 @@
 <template>
-  <v-row
-    no-gutters
-    align="start"
-    justify="start"
-    class="mx-3 fill-height"
-  >
-    <v-col
-      cols="12"
-      class="mt-2"
-    >
-      <p class="subheading font-weight-medium">Choose one of the following sign up methods.</p>
+  <v-row no-gutters align="start" justify="start" class="mx-3 fill-height">
+    <v-col cols="12" class="mt-2">
+      <p class="subheading font-weight-medium">
+        Choose one of the following sign up methods.
+      </p>
     </v-col>
     <v-col cols="12">
       <v-btn
@@ -17,46 +11,30 @@
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
         @click="loginSocial('facebook')"
       >
-        <v-icon
-          left
-          light
-          class="ml-1"
-        >mdi-facebook-box</v-icon>
+        <v-icon left light class="ml-1">mdi-facebook-box</v-icon>
         Facebook
-
       </v-btn>
       <v-btn
         color="#EE4036"
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
         @click="loginSocial('google')"
       >
-        <v-icon
-          left
-          light
-          class="ml-1"
-        >mdi-google-plus</v-icon>
+        <v-icon left light class="ml-1">mdi-google-plus</v-icon>
         Google+
-
       </v-btn>
       <v-btn
         color="#464646"
         class="white--text teneo-social-btn px-1 mr-0 mb-1"
         @click="loginSocial('facebook')"
       >
-        <v-icon
-          left
-          light
-          class="ml-1"
-        >mdi-github-circle</v-icon>
+        <v-icon left light class="ml-1">mdi-github-circle</v-icon>
         GitHub
-
       </v-btn>
     </v-col>
-    <v-col
-      cols="12"
-      class="mt-2"
-    >
-      <p class="subheading font-weight-medium">Or signup using your email address.</p>
+    <v-col cols="12" class="mt-2">
+      <p class="subheading font-weight-medium">
+        Or signup using your email address.
+      </p>
     </v-col>
     <v-form
       ref="form"
@@ -103,33 +81,19 @@
               @click:append="showPassword = !showPassword"
             ></v-text-field>
           </v-col>
-          <v-col
-            cols="6"
-            class="my-0 py-0"
-          >
-            <v-btn
-              type="submit"
-              @click="registerUser"
-              color="success"
-            >
+          <v-col cols="6" class="my-0 py-0">
+            <v-btn type="submit" @click="registerUser" color="success">
               Sign Up
             </v-btn>
           </v-col>
-          <v-col
-            v-if="errorMessage"
-            cols="6"
-          >
-            <v-alert
-              :value="true"
-              type="info"
-            >
+          <v-col v-if="errorMessage" cols="6">
+            <v-alert :value="true" type="info">
               {{ errorMessage }}
             </v-alert>
           </v-col>
         </v-row>
       </v-container>
     </v-form>
-
   </v-row>
 </template>
 

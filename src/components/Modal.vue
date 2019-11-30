@@ -20,17 +20,27 @@
       no-click-animation
       content-class="teneo-modal"
       hide-overlay
-      :width="currentModalSize === 'small' ? 360 : currentModalSize === 'medium' ? 500 : currentModalSize === 'large' ? 700 : 900"
-      :fullscreen="fullscreen || currentModalSize === 'fullscreen' || currentModalPosition === 'fullscreen' || $vuetify.breakpoint.xs || $vuetify.breakpoint.sm || $vuetify.breakpoint.md"
+      :width="
+        currentModalSize === 'small'
+          ? 360
+          : currentModalSize === 'medium'
+          ? 500
+          : currentModalSize === 'large'
+          ? 700
+          : 900
+      "
+      :fullscreen="
+        fullscreen ||
+          currentModalSize === 'fullscreen' ||
+          currentModalPosition === 'fullscreen' ||
+          $vuetify.breakpoint.xs ||
+          $vuetify.breakpoint.sm ||
+          $vuetify.breakpoint.md
+      "
     >
       <v-card>
         <v-fade-transition>
-          <v-overlay
-            absolute
-            opacity="0.7"
-            :value="overlay"
-          >
-
+          <v-overlay absolute opacity="0.7" :value="overlay">
             <v-alert
               border="left"
               light
@@ -51,34 +61,29 @@
           <v-spacer></v-spacer>
           <v-icon
             @click="toggleFullscreen"
-            v-if="currentModalPosition !== 'fullscreen' && currentModalSize !== 'fullscreen'"
-          >{{ fullscreen ? 'mdi-window-restore' : 'mdi-window-maximize' }}</v-icon>
+            v-if="
+              currentModalPosition !== 'fullscreen' &&
+                currentModalSize !== 'fullscreen'
+            "
+            >{{
+              fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
+            }}</v-icon
+          >
           <v-icon @click="hideModal">mdi-close</v-icon>
         </v-system-bar>
 
-        <v-app-bar
-          dark
-          color="primary"
-          dense
-        >
+        <v-app-bar dark color="primary" dense>
           <v-toolbar-title>{{ $t("more.info.title") }}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-app-bar>
         <v-card-text
           style="height: 80%;"
           class="px-2 mx-0 py-0"
-          :class="{'dark-scroll': dark, 'light-scroll': !dark}"
+          :class="{ 'dark-scroll': dark, 'light-scroll': !dark }"
         >
-
           <v-container fluid>
-            <v-row
-              align="start"
-              justify="start"
-            >
-              <v-col
-                cols="12"
-                class="pa-2"
-              >
+            <v-row align="start" justify="start">
+              <v-col cols="12" class="pa-2">
                 <!-- display the modal title and sub-title -->
                 <div
                   v-if="title"
@@ -102,16 +107,10 @@
                 <Audio :url="audioUrl"></Audio>
 
                 <!-- Misc Video -->
-                <Video
-                  :url="videoUrl"
-                  :type="videoType"
-                ></Video>
+                <Video :url="videoUrl" :type="videoType"></Video>
 
                 <!-- Gogle Map -->
-                <Map
-                  v-if="address"
-                  :address="address"
-                ></Map>
+                <Map v-if="address" :address="address"></Map>
 
                 <!-- show an image if available -->
                 <ImageAnimation :url="imageUrl"></ImageAnimation>
@@ -122,7 +121,12 @@
                 <!-- Show the body text, flight itineary, and any tables if available -->
                 <div
                   class="mt-3"
-                  v-if="itinerary || bodyText || transactionItems.length || tableRows.length"
+                  v-if="
+                    itinerary ||
+                      bodyText ||
+                      transactionItems.length ||
+                      tableRows.length
+                  "
                 >
                   <!-- Show the flight itinerary -->
                   <FlightItinerary :itinerary="itinerary"></FlightItinerary>
@@ -145,20 +149,13 @@
                   >
                     <!-- table title -->
                     <v-row v-if="tableTitle">
-                      <v-col
-                        cols="8"
-                        class="ml-4"
-                      >
+                      <v-col cols="8" class="ml-4">
                         <h3>{{ tableTitle }}</h3>
                       </v-col>
                     </v-row>
                     <v-spacer v-else></v-spacer>
                     <!-- show a search input box for the table -->
-                    <v-col
-                      cols="4"
-                      v-if="tableEnableSearch"
-                      class="mr-2"
-                    >
+                    <v-col cols="4" v-if="tableEnableSearch" class="mr-2">
                       <v-text-field
                         v-model="search"
                         append-icon="mdi-table-search"
@@ -199,7 +196,7 @@
             @click.native="hideModal"
             v-shortkey="['ctrl', 'alt', 'arrowleft']"
             @shortkey.native="hideModal"
-          >{{ $t("back.to.chat.button") }}
+            >{{ $t("back.to.chat.button") }}
           </v-btn>
         </v-card-actions>
       </v-card>

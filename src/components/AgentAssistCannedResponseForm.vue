@@ -1,20 +1,10 @@
 <template>
-  <v-row
-    justify="center"
-    v-if="showDialog"
-  >
-    <v-dialog
-      v-model="showDialog"
-      persistent
-      max-width="600px"
-    >
+  <v-row justify="center" v-if="showDialog">
+    <v-dialog v-model="showDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
           <span class="title">
-            <v-icon
-              class="mx-2"
-              color="primary"
-            >mdi-book-plus</v-icon> New
+            <v-icon class="mx-2" color="primary">mdi-book-plus</v-icon> New
             canned response
           </span>
         </v-card-title>
@@ -64,7 +54,9 @@
                       </v-chip>
                     </v-list-item>
                   </template>
-                  <template v-slot:selection="{ attrs, item, parent, selected }">
+                  <template
+                    v-slot:selection="{ attrs, item, parent, selected }"
+                  >
                     <v-chip
                       v-if="item === Object(item)"
                       v-bind="attrs"
@@ -73,18 +65,13 @@
                       label
                       small
                     >
-                      <v-icon
-                        small
-                        left
-                        class="mr-1"
-                      >mdi-pound</v-icon>
+                      <v-icon small left class="mr-1">mdi-pound</v-icon>
                       <span class="pr-2">
                         {{ item.text | tagify }}
                       </span>
-                      <v-icon
-                        small
-                        @click="parent.selectItem(item)"
-                      >mdi-tag-minus</v-icon>
+                      <v-icon small @click="parent.selectItem(item)"
+                        >mdi-tag-minus</v-icon
+                      >
                     </v-chip>
                   </template>
                   <template v-slot:item="{ index, item }">
@@ -109,10 +96,7 @@
                     </v-chip>
                     <v-spacer></v-spacer>
                     <v-list-item-action @click.stop>
-                      <v-btn
-                        icon
-                        @click.stop.prevent="edit(index, item)"
-                      >
+                      <v-btn icon @click.stop.prevent="edit(index, item)">
                         <v-icon>{{
                           editing !== item ? "mdi-pencil" : "mdi-check"
                         }}</v-icon>
@@ -126,16 +110,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="hideDialog"
-          >Close</v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="save"
-          >Save</v-btn>
+          <v-btn color="blue darken-1" text @click="hideDialog">Close</v-btn>
+          <v-btn color="blue darken-1" text @click="save">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -143,9 +119,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")(
-  "AgentAssistCannedResponseForm.vue"
-);
+const logger = require("@/utils/logging")("AgentAssistCannedResponseForm.vue");
 export default {
   name: "AddCannedResponseForm",
   props: ["text"],

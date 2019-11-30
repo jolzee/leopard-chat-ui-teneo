@@ -26,9 +26,19 @@ export function initializeTTS(locale) {
         "en_US"
       ];
     } else if (locale === "en-uk-male") {
-      tts.ArtyomVoicesIdentifiers["en-GB"] = ["Google UK English Male", "Google UK English Female", "en-GB", "en_GB"];
+      tts.ArtyomVoicesIdentifiers["en-GB"] = [
+        "Google UK English Male",
+        "Google UK English Female",
+        "en-GB",
+        "en_GB"
+      ];
     } else {
-      tts.ArtyomVoicesIdentifiers["en-GB"] = ["Google UK English Female", "Google UK English Male", "en-GB", "en_GB"];
+      tts.ArtyomVoicesIdentifiers["en-GB"] = [
+        "Google UK English Female",
+        "Google UK English Male",
+        "en-GB",
+        "en_GB"
+      ];
     }
 
     // artyom.ArtyomVoicesIdentifiers["en-ZA"] = ["Google US English", "en-US", "en_US"];
@@ -107,7 +117,9 @@ export function initializeASR(store, asrCorrections) {
 
         if (store.getters.userInput) {
           let fixedUserInput = store.getters.userInput;
-          logger.debug("Final Transcription from ASR: " + store.state.userInput.userInput);
+          logger.debug(
+            "Final Transcription from ASR: " + store.state.userInput.userInput
+          );
           asrCorrections.forEach(replacement => {
             let startingText = fixedUserInput;
 
@@ -118,20 +130,33 @@ export function initializeASR(store, asrCorrections) {
                 replacement[1].toLowerCase()
               );
             } else {
-              let search = replacement[0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"); // escase any special characters
+              let search = replacement[0].replace(
+                /[-[\]{}()*+?.,\\^$|#\s]/g,
+                "\\$&"
+              ); // escase any special characters
               var re = new RegExp("\\b" + search + "\\b", "gi");
               // fixedUserInput = fixedUserInput.toLowerCase().replace(re, replacement[1].toLowerCase());
               fixedUserInput = fixedUserInput.replace(re, replacement[1]);
             }
 
-            logger.debug(`Starting: ${startingText} | Ending: ${fixedUserInput}`);
+            logger.debug(
+              `Starting: ${startingText} | Ending: ${fixedUserInput}`
+            );
 
             if (startingText.toLowerCase() !== fixedUserInput.toLowerCase()) {
-              logger.debug("Made a change to ASR response: " + replacement[0] + " >> " + replacement[1]);
+              logger.debug(
+                "Made a change to ASR response: " +
+                  replacement[0] +
+                  " >> " +
+                  replacement[1]
+              );
             }
           });
 
-          if (store.getters.userInput.toLowerCase() !== fixedUserInput.toLowerCase()) {
+          if (
+            store.getters.userInput.toLowerCase() !==
+            fixedUserInput.toLowerCase()
+          ) {
             store.commit("SET_USER_INPUT", fixedUserInput);
             logger.debug(`Final Transcription: ${fixedUserInput}`);
           }

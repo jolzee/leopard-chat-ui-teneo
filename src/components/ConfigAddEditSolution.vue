@@ -4,7 +4,9 @@
     scrollable
     :persistent="true"
     max-width="calc(1200px - 10vw)"
-    :fullscreen="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm || $vuetify.breakpoint.md"
+    :fullscreen="
+      $vuetify.breakpoint.xs || $vuetify.breakpoint.sm || $vuetify.breakpoint.md
+    "
   >
     <v-card>
       <v-card-title>
@@ -24,23 +26,16 @@
               color="light-blue darken-1"
               href="https://materialdesignicons.com/"
               target="_blank"
-            >MDI Icons (mdi-icon-name)
+              >MDI Icons (mdi-icon-name)
             </v-btn>
           </div>
 
           <v-container fluid>
             <v-row>
-              <v-col
-                :cols="12"
-                :sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col :cols="12" :sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Solution Name</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-text-field
                   color="light-blue darken-1"
                   v-model.trim="solution.name"
@@ -49,17 +44,10 @@
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
               </v-col>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Solution URL</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-text-field
                   color="light-blue darken-1"
                   v-model.trim="solution.url"
@@ -69,23 +57,20 @@
                   :rules="[ruleMustHaveValue, ruleMustBeUrl]"
                 ></v-text-field>
               </v-col>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>IFRAME URL</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-switch
                   v-model="solution.useInProduction"
                   label="Use in production"
                 ></v-switch>
                 <v-text-field
-                  v-if="'useInProduction' in solution && !solution.useInProduction || !('useInProduction' in solution)"
+                  v-if="
+                    ('useInProduction' in solution &&
+                      !solution.useInProduction) ||
+                      !('useInProduction' in solution)
+                  "
                   color="light-blue darken-1"
                   v-model.trim="solution.iframeUrl"
                   validate-on-blur
@@ -95,17 +80,10 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Prompt Triggers</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-switch
                   v-model="solution.promptTriggers.enabled"
                   label="Poll for Prompt Triggers"
@@ -117,10 +95,13 @@
                   elevation="2"
                   v-if="solution.promptTriggers.enabled"
                 >
-                  You must return the number of active flows from Teneo in each response. <a
+                  You must return the number of active flows from Teneo in each
+                  response.
+                  <a
                     target="_blank"
                     href="https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
-                  >Leopard Documentation</a>
+                    >Leopard Documentation</a
+                  >
                 </v-alert>
                 <v-text-field
                   v-if="solution.promptTriggers.enabled"
@@ -131,20 +112,12 @@
                   append-icon="mdi-repeat"
                   :rules="[ruleMustHaveValue, ruleMustBeInteger]"
                 ></v-text-field>
-
               </v-col>
 
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Chat Window Title</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-text-field
                   color="light-blue darken-1"
                   validate-on-blur
@@ -153,18 +126,10 @@
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
               </v-col>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
-                <v-subheader>Deep Link (?dl=[deep-link])
-                </v-subheader>
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+                <v-subheader>Deep Link (?dl=[deep-link]) </v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-text-field
                   color="light-blue darken-1"
                   v-model.trim="solution.deepLink"
@@ -173,38 +138,24 @@
                   :rules="[ruleMustHaveValue, ruleNoSpaces, ruleDeepLinkUnique]"
                 ></v-text-field>
               </v-col>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Locale</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-select
                   :items="locales"
                   color="light-blue darken-1"
-                  :menu-props="{contentClass:'select-options'}"
+                  :menu-props="{ contentClass: 'select-options' }"
                   outlined
                   v-model="solution.locale"
                   label="Specify Chat Locale"
                   append-icon="mdi-translate"
                 ></v-select>
               </v-col>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Demo Animation</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-row
                   align="center"
                   justify="center"
@@ -228,21 +179,14 @@
                 </v-row>
               </v-col>
 
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Enter Animation</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-select
                   :items="animations.in"
                   color="light-blue darken-1"
-                  :menu-props="{contentClass:'select-options'}"
+                  :menu-props="{ contentClass: 'select-options' }"
                   outlined
                   v-model="solution.animations.in"
                   label="Specify Enter Animation"
@@ -250,21 +194,14 @@
                 ></v-select>
               </v-col>
 
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Exit Animation</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-select
                   :items="animations.out"
                   color="light-blue darken-1"
-                  :menu-props="{contentClass:'select-options'}"
+                  :menu-props="{ contentClass: 'select-options' }"
                   outlined
                   v-model="solution.animations.out"
                   label="Specify Exit Animation"
@@ -272,18 +209,10 @@
                 ></v-select>
               </v-col>
 
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Response Icon</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-                class="pb-0"
-              >
+              <v-col :cols="12" :md="8" class="pb-0">
                 <v-text-field
                   v-model.trim="solution.responseIcon"
                   validate-on-blur
@@ -293,18 +222,8 @@
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
               </v-col>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-sm-none d-md-block"
-              >
-              </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-                class="py-0"
-              >
-
+              <v-col cols="12" sm="4" class="d-sm-none d-md-block"> </v-col>
+              <v-col :cols="12" :md="8" class="py-0">
                 <v-btn
                   v-for="(icon, index) in chatIcons"
                   :key="index + 'response-icons'"
@@ -314,140 +233,89 @@
                   icon
                   color="indigo"
                 >
-                  <v-icon>{{icon}}</v-icon>
+                  <v-icon>{{ icon }}</v-icon>
                 </v-btn>
               </v-col>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>User Icon</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-                class="pb-0"
-              >
+              <v-col :cols="12" :md="8" class="pb-0">
                 <v-text-field
                   v-model.trim="solution.userIcon"
                   validate-on-blur
                   color="light-blue darken-1"
                   label="User Icon - MDI Icons (mdi-icon-name)"
-                  :aria-label="`Set the icon representing the customer in the chat UI`"
+                  :aria-label="
+                    `Set the icon representing the customer in the chat UI`
+                  "
                   :append-icon="solution.userIcon"
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
               </v-col>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-sm-none d-md-block"
-              >
-              </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-                class="py-0"
-              >
-
+              <v-col cols="12" sm="4" class="d-sm-none d-md-block"> </v-col>
+              <v-col :cols="12" :md="8" class="py-0">
                 <v-btn
                   v-for="(icon, index) in chatIcons"
                   :key="index + 'user-icons'"
-                  :aria-label="`Set the icon representing the customer to ${icon}`"
+                  :aria-label="
+                    `Set the icon representing the customer to ${icon}`
+                  "
                   @click="solution.userIcon = icon"
                   text
                   icon
                   color="indigo"
                 >
-                  <v-icon>{{icon}}</v-icon>
+                  <v-icon>{{ icon }}</v-icon>
                 </v-btn>
               </v-col>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Features</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-row no-gutters>
-                  <v-col
-                    cols="12"
-                    :lg="4"
-                    :sm="6"
-                  >
+                  <v-col cols="12" :lg="4" :sm="6">
                     <v-switch
                       v-model="solution.enableLiveChat"
                       label="Live Chat"
                     ></v-switch>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    :lg="4"
-                    :sm="6"
-                  >
+                  <v-col cols="12" :lg="4" :sm="6">
                     <v-switch
                       v-model="solution.float"
                       label="Float UI"
                     ></v-switch>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    :lg="4"
-                    :sm="6"
-                  >
+                  <v-col cols="12" :lg="4" :sm="6">
                     <v-switch
                       v-model="solution.pulseButton"
                       label="Pulse Button"
                     ></v-switch>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    :lg="4"
-                    :sm="6"
-                  >
+                  <v-col cols="12" :lg="4" :sm="6">
                     <v-switch
                       v-model="solution.longResponsesInModal"
                       label="Long Answers in Modal"
                     ></v-switch>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    :lg="4"
-                    :sm="6"
-                  >
+                  <v-col cols="12" :lg="4" :sm="6">
                     <v-switch
                       v-model="solution.showChatIcons"
                       label="Chat Icons"
                     ></v-switch>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    :lg="4"
-                    :sm="6"
-                  >
+                  <v-col cols="12" :lg="4" :sm="6">
                     <v-switch
                       v-model="solution.displayAccent"
                       label="Show Accent"
                     ></v-switch>
                   </v-col>
                 </v-row>
-
               </v-col>
               <v-divider></v-divider>
-              <v-col
-                :cols="12"
-                :lg="4"
-              >
-                <v-subheader class="mb-2">Theme
-                  <v-tooltip
-                    open-delay="600"
-                    bottom
-                  >
+              <v-col :cols="12" :lg="4">
+                <v-subheader class="mb-2"
+                  >Theme
+                  <v-tooltip open-delay="600" bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         class="mx-2"
@@ -469,10 +337,7 @@
 
                 <v-col class="flex">
                   <v-row no-gutters>
-                    <v-col
-                      cols="12"
-                      class="pt-0"
-                    >
+                    <v-col cols="12" class="pt-0">
                       <v-color-picker
                         class="pt-0 mt-0"
                         :hide-canvas="false"
@@ -484,14 +349,10 @@
                         @input="updateColor"
                       ></v-color-picker>
                     </v-col>
-
                   </v-row>
                 </v-col>
               </v-col>
-              <v-col
-                :cols="12"
-                :lg="8"
-              >
+              <v-col :cols="12" :lg="8">
                 <v-row>
                   <v-col
                     :cols="12"
@@ -503,7 +364,9 @@
                   >
                     <v-btn
                       class="mr-2"
-                      :aria-label="`Set the active color for editing to ${color}`"
+                      :aria-label="
+                        `Set the active color for editing to ${color}`
+                      "
                       fab
                       dark
                       small
@@ -522,22 +385,14 @@
                       :rules="[ruleMustHaveValue, ruleMustHaveColor]"
                     ></v-text-field>
                   </v-col>
-
                 </v-row>
               </v-col>
               <v-divider></v-divider>
               <!-- ASR Corrections -->
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Button and Toolbar Custom CSS</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-textarea
                   outlined
                   color="light-blue darken-1"
@@ -548,17 +403,10 @@
               </v-col>
               <v-divider></v-divider>
               <!-- ASR Corrections -->
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>ASR Corrections</v-subheader>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-textarea
                   outlined
                   color="light-blue darken-1"
@@ -568,10 +416,7 @@
                 ></v-textarea>
               </v-col>
               <!-- help -->
-              <v-col
-                cols="12"
-                :md="4"
-              >
+              <v-col cols="12" :md="4">
                 <v-btn
                   color="red"
                   :aria-label="`Add a help question`"
@@ -579,16 +424,10 @@
                   @click="addUserInput"
                 >
                   Help
-                  <v-icon
-                    right
-                    dark
-                  >mdi-plus-circle</v-icon>
+                  <v-icon right dark>mdi-plus-circle</v-icon>
                 </v-btn>
               </v-col>
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-row
                   v-for="(question, index) in solution.knowledgeData"
                   v-bind:key="index"
@@ -604,51 +443,33 @@
                       :rules="[ruleMustHaveValue]"
                     ></v-text-field>
                   </v-col>
-                  <v-col
-                    cols="1"
-                    class="pl-2 pt-3"
-                  >
+                  <v-col cols="1" class="pl-2 pt-3">
                     <v-icon
                       @click="solution.knowledgeData.splice(index, 1)"
                       color="red"
                       dark
-                    >mdi-minus-circle</v-icon>
+                      >mdi-minus-circle</v-icon
+                    >
                   </v-col>
                 </v-row>
               </v-col>
               <v-divider></v-divider>
               <!-- context parameters -->
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline"
-              >
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>When to send CTX params</v-subheader>
               </v-col>
 
-              <v-col
-                :cols="12"
-                :md="8"
-              >
+              <v-col :cols="12" :md="8">
                 <v-radio-group
                   label="When to send CTX params"
                   v-model="solution.sendContextParams"
                   mandatory
                 >
-                  <v-radio
-                    label="At login"
-                    value="login"
-                  ></v-radio>
-                  <v-radio
-                    label="All requests"
-                    value="all"
-                  ></v-radio>
+                  <v-radio label="At login" value="login"></v-radio>
+                  <v-radio label="All requests" value="all"></v-radio>
                 </v-radio-group>
               </v-col>
-              <v-col
-                :cols="12"
-                :lg="4"
-              >
+              <v-col :cols="12" :lg="4">
                 <v-btn
                   color="red"
                   :aria-label="`Add a new context parameter`"
@@ -656,16 +477,10 @@
                   @click="addContextParam"
                 >
                   CTX Param
-                  <v-icon
-                    right
-                    dark
-                  >mdi-plus-circle</v-icon>
+                  <v-icon right dark>mdi-plus-circle</v-icon>
                 </v-btn>
               </v-col>
-              <v-col
-                :cols="12"
-                :lg="8"
-              >
+              <v-col :cols="12" :lg="8">
                 <!-- Itterate over all CTX parameters and their values -->
                 <v-row
                   class="mb-4 grey lighten-5 pa-2 elevation-2"
@@ -674,7 +489,6 @@
                   v-for="(contextParam, index) in solution.contextParams"
                   v-bind:key="index"
                 >
-
                   <v-col :cols="10">
                     <v-text-field
                       v-model.trim="contextParam.name"
@@ -694,7 +508,8 @@
                           @click="solution.contextParams.splice(index, 1)"
                           color="red"
                           dark
-                        >mdi-minus-circle</v-icon>
+                          >mdi-minus-circle</v-icon
+                        >
                       </template>
                       <span>Remove CTX Parameter</span>
                     </v-tooltip>
@@ -706,7 +521,8 @@
                           @click="addNewContextParameterValue(index)"
                           color="green"
                           dark
-                        >mdi-plus-circle</v-icon>
+                          >mdi-plus-circle</v-icon
+                        >
                       </template>
                       <span>Add Parameter Value</span>
                     </v-tooltip>
@@ -727,7 +543,8 @@
                             @click="contextParam.values.splice(valueIndex, 1)"
                             color="red"
                             dark
-                          >mdi-minus-circle</v-icon>
+                            >mdi-minus-circle</v-icon
+                          >
                         </template>
                         <span>Delete Parameter Value</span>
                       </v-tooltip>
@@ -736,10 +553,23 @@
                           <v-icon
                             v-bind="attrs"
                             v-on="on"
-                            @click="toggleActiveContextParameterValue(value.active, index, valueIndex)"
-                            :color="value.active ? 'green' : 'blue-grey lighten-4'"
+                            @click="
+                              toggleActiveContextParameterValue(
+                                value.active,
+                                index,
+                                valueIndex
+                              )
+                            "
+                            :color="
+                              value.active ? 'green' : 'blue-grey lighten-4'
+                            "
                             dark
-                          >{{ value.active ? 'mdi-checkbox-marked': 'mdi-checkbox-blank-outline' }}</v-icon>
+                            >{{
+                              value.active
+                                ? "mdi-checkbox-marked"
+                                : "mdi-checkbox-blank-outline"
+                            }}</v-icon
+                          >
                         </template>
                         <span>Enable/Disable</span>
                       </v-tooltip>
@@ -768,23 +598,17 @@
           color="blue-grey lighten-5"
           light
           @click="closeAddNewSolutionDialog"
-        >Close</v-btn>
+          >Close</v-btn
+        >
         <v-btn
           class="mr-2"
           color="green"
           :aria-label="`Save edits to the solution`"
           @click="saveForm"
-        >Save
-          <v-icon
-            right
-            dark
-          >mdi-content-save</v-icon>
+          >Save
+          <v-icon right dark>mdi-content-save</v-icon>
         </v-btn>
-        <v-snackbar
-          :timeout="snackbarTimeout"
-          v-model="snackbar"
-          class="mb-5"
-        >
+        <v-snackbar :timeout="snackbarTimeout" v-model="snackbar" class="mb-5">
           🧟‍ Please fix all form validation errors.
         </v-snackbar>
       </v-card-actions>

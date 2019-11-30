@@ -1,10 +1,7 @@
 <template>
   <v-row justify="center">
     <v-container class="fill-height">
-      <v-row
-        justify="center"
-        align="center"
-      >
+      <v-row justify="center" align="center">
         <vue-loaders-line-scale-pulse-out-rapid
           color="#D7D7D7"
           scale="1"
@@ -23,5 +20,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

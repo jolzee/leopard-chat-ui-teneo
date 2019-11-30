@@ -5,11 +5,8 @@ const logger = require("./utils/logging")("router.js");
 Vue.use(Router);
 
 function loadView(view) {
-  return () => import(/* webpackChunkName: "view-[request]" */ `@/views/${view}.vue`);
-}
-
-function loadChatView() {
-  return () => import(/* webpackPrefetch: true */ `@/views/Chat.vue`);
+  return () =>
+    import(/* webpackChunkName: "view-[request]" */ `@/views/${view}.vue`);
 }
 
 export default new Router({
@@ -17,7 +14,7 @@ export default new Router({
     {
       path: "/",
       name: "chat",
-      component: loadChatView()
+      component: loadView("Chat")
     },
     {
       path: "/about",

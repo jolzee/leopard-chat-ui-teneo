@@ -1,11 +1,24 @@
 <template>
   <v-row justify="center" v-if="dialog">
-    <v-dialog v-model="dialog" persistent max-width="500" content-class="trainbot">
+    <v-dialog
+      v-model="dialog"
+      persistent
+      max-width="500"
+      content-class="trainbot"
+    >
       <v-card>
-        <v-card-title class="title"> <v-icon class="mr-2" color="primary">mdi-teach</v-icon> Train Bot </v-card-title>
+        <v-card-title class="title">
+          <v-icon class="mr-2" color="primary">mdi-teach</v-icon> Train Bot
+        </v-card-title>
         <v-card-text class="px-1">
           <v-col cols="12">
-            <v-alert border="top" colored-border color="success" elevation="2" icon="mdi-comment-question-outline">
+            <v-alert
+              border="top"
+              colored-border
+              color="success"
+              elevation="2"
+              icon="mdi-comment-question-outline"
+            >
               {{ question }}
             </v-alert>
           </v-col>
@@ -42,7 +55,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="$emit('close')">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="$emit('close')"
+            >Cancel</v-btn
+          >
           <v-btn color="blue darken-1" text @click="trainTeneo">Train</v-btn>
         </v-card-actions>
       </v-card>
@@ -69,9 +84,11 @@ export default {
   methods: {
     trainTeneo() {
       this.$store.commit("SET_USER_INPUT", "");
-      const params = `&command=train&question=${encodeURIComponent(this.question)}&answer=${encodeURIComponent(
-        this.answer
-      )}&comment=${encodeURIComponent(this.comment)}`;
+      const params = `&command=train&question=${encodeURIComponent(
+        this.question
+      )}&answer=${encodeURIComponent(this.answer)}&comment=${encodeURIComponent(
+        this.comment
+      )}`;
       this.$store.dispatch("sendUserInput", params);
       this.$emit("sent");
     }

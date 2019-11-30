@@ -1,27 +1,21 @@
 <template>
-  <v-card
-    class="teneo-about-card"
-    flat
-  >
+  <v-card class="teneo-about-card" flat>
     <youTube :videoId="youTubeVideoId"></youTube>
 
     <v-card-title primary-title>
       <div>
-        <h3 class="headline mb-3">{{ $t('about.page.title') }}</h3>
+        <h3 class="headline mb-3">{{ $t("about.page.title") }}</h3>
       </div>
     </v-card-title>
-    <v-card-text>{{ $t('about.page.content') }}</v-card-text>
-    <v-row
-      justify="center"
-      class="pb-3"
-    >
+    <v-card-text>{{ $t("about.page.content") }}</v-card-text>
+    <v-row justify="center" class="pb-3">
       <v-card-actions>
         <v-btn
           :loading="loading"
           color="primary"
           :href="$t('about.page.url')"
           @click="loading = !loading"
-        >{{ $t('about.page.button') }}
+          >{{ $t("about.page.button") }}
         </v-btn>
       </v-card-actions>
     </v-row>

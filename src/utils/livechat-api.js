@@ -22,9 +22,12 @@ const createApiRequest = (method, route, accessToken, login) => {
 
 const api = {
   fetchAgents: accessToken => createApiRequest(GET, "/agents", accessToken),
-  fetchAgentRatings: (login, accessToken) => createApiRequest(GET, "/ratings/week", accessToken, login),
-  fetchAgentAvailability: (login, accessToken) => createApiRequest(GET, "/availability", accessToken, login),
-  fetchChattingTime: (login, accessToken) => createApiRequest(GET, "/chatting", accessToken, login)
+  fetchAgentRatings: (login, accessToken) =>
+    createApiRequest(GET, "/ratings/week", accessToken, login),
+  fetchAgentAvailability: (login, accessToken) =>
+    createApiRequest(GET, "/availability", accessToken, login),
+  fetchChattingTime: (login, accessToken) =>
+    createApiRequest(GET, "/chatting", accessToken, login)
 };
 
 export default api;
