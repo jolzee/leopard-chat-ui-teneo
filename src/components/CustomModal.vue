@@ -83,7 +83,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("CustomModal.vue");
+const logger = require("@/utils/logging").getLogger("CustomModal.vue");
 // import Audio from "./Audio";
 // import Carousel from "./Carousel";
 // import ImageAnimation from "./ImageAnimation";

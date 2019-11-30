@@ -66,7 +66,9 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("AgentAssistTrainBotForm.vue");
+const logger = require("@/utils/logging").getLogger(
+  "AgentAssistTrainBotForm.vue"
+);
 export default {
   name: "AgentAsssitTrainBotForm",
   props: ["question"],

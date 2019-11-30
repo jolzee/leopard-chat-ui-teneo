@@ -1,11 +1,13 @@
-import utils from "./utils";
-const logger = require("consola");
+var utils = require("./utils");
+var logger = require("consola");
 logger.level =
   process.env.NODE_ENV === "production" &&
   !utils.doesParameterExist("leopardDebug")
     ? 0
     : 5;
 
-module.exports = function(tagName) {
-  return logger.withTag(tagName);
+const getLogger = tagName => logger.withTag(tagName);
+
+module.exports = {
+  getLogger
 };

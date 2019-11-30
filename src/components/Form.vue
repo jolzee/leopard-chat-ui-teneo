@@ -974,7 +974,7 @@
   </ValidationObserver>
 </template>
 <script>
-const logger = require("@/utils/logging")("Form.vue");
+const logger = require("@/utils/logging").getLogger("Form.vue");
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { mask } from "vue-the-mask";
 import { mapGetters } from "vuex";

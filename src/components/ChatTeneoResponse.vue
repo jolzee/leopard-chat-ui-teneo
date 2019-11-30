@@ -358,7 +358,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("ChatTeneoResponse.vue");
+const logger = require("@/utils/logging").getLogger("ChatTeneoResponse.vue");
 import LongPress from "vue-directive-long-press";
 import Audio from "./Audio";
 import Carousel from "./Carousel";

@@ -21,7 +21,7 @@
   </v-dialog>
 </template>
 <script>
-const logger = require("@/utils/logging")("Listening.vue");
+const logger = require("@/utils/logging").getLogger("Listening.vue");
 export default {
   name: "Loading",
   data: function() {

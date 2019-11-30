@@ -48,7 +48,7 @@
   </v-card>
 </template>
 <script>
-const logger = require("@/utils/logging")("Card.vue");
+const logger = require("@/utils/logging").getLogger("Card.vue");
 export default {
   name: "Card",
   props: ["item"],

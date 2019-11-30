@@ -1,4 +1,4 @@
-const logger = require("./logging")("setup.js");
+const logger = require("@/utils/logging").getLogger("setup.js");
 import { Ripple } from "vuetify/lib/directives";
 import replaceString from "replace-string";
 const superagent = require("superagent");

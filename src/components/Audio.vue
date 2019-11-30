@@ -7,7 +7,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("Audio.vue");
+const logger = require("@/utils/logging").getLogger("Audio.vue");
 export default {
   props: ["url", "type"],
   data() {

@@ -16,7 +16,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("ChatBroadcastMessage.vue");
+const logger = require("@/utils/logging").getLogger("ChatBroadcastMessage.vue");
 export default {
   name: "ChatBroadcastMessage",
   props: ["item"]

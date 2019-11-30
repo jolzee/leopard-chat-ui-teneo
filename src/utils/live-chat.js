@@ -1,5 +1,5 @@
 // import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk";
-const logger = require("./logging")("live-chat.js");
+const logger = require("@/utils/logging").getLogger("live-chat.js");
 import * as CustomerSDK from "@livechat/customer-sdk"; // live chat
 // customerSDK.auth.getToken().then(token => logger.debug(token));
 var stripHtml = require("striptags");

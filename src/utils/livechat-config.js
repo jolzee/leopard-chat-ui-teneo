@@ -1,4 +1,4 @@
-const logger = require("./logging")("livechat-config.js");
+const logger = require("@/utils/logging").getLogger("livechat-config.js");
 const config = {
   client_id: "3cac7818a284ebd152ff74b34f814ea8",
   server_url:

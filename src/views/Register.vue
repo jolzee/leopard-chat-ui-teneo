@@ -98,7 +98,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("Register.vue");
+const logger = require("@/utils/logging").getLogger("Register.vue");
 export default {
   name: "register",
   components: {},

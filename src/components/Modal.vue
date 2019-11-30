@@ -205,7 +205,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("Modal.vue");
+const logger = require("@/utils/logging").getLogger("Modal.vue");
 // import Audio from "./Audio";
 // import Carousel from "./Carousel";
 // import CustomModal from "./CustomModal";

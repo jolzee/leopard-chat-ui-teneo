@@ -119,7 +119,9 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("AgentAssistCannedResponseForm.vue");
+const logger = require("@/utils/logging").getLogger(
+  "AgentAssistCannedResponseForm.vue"
+);
 export default {
   name: "AddCannedResponseForm",
   props: ["text"],

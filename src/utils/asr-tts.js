@@ -1,6 +1,6 @@
 import Artyom from "artyom.js"; // for speech recognition and tts
 import replaceString from "replace-string";
-const logger = require("./logging")("asr-tts.js");
+const logger = require("@/utils/logging").getLogger("asr-tts.js");
 
 export function initializeTTS(locale) {
   let tts = null;

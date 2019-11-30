@@ -1,4 +1,4 @@
-const logger = require("./logging")("livechat-api.js");
+const logger = require("@/utils/logging").getLogger("livechat-api.js");
 import config from "./livechat-config";
 import axios from "axios";
 

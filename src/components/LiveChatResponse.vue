@@ -76,7 +76,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("LiveChatResponse.vue");
+const logger = require("@/utils/logging").getLogger("LiveChatResponse.vue");
 import { mapGetters } from "vuex";
 export default {
   name: "LiveChatResponse",

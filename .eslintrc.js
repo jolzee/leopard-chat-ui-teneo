@@ -3,12 +3,8 @@ module.exports = {
   env: {
     node: true
   },
-  extends: ["plugin:vue/essential", "eslint:recommended"],
-  plugins: ["vuetify"],
+  extends: ["plugin:vue/essential", "@vue/prettier"],
   rules: {
-    "vuetify/no-deprecated-classes": "error",
-    "vuetify/grid-unknown-attributes": "error",
-    "vuetify/no-legacy-grid": "error",
     "no-console": "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
     "no-unused-vars": ["error", { varsIgnorePattern: "logger" }]

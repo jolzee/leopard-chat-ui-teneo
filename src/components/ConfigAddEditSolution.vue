@@ -617,7 +617,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("ChatAddEditSolution.vue");
+const logger = require("@/utils/logging").getLogger("ChatAddEditSolution.vue");
 import urlRegex from "url-regex";
 import { COLOR_NAMES } from "../constants/color-names.js";
 import { SOLUTION_DEFAULT } from "../constants/solution-config-default.js";

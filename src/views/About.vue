@@ -24,7 +24,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("About.vue");
+const logger = require("@/utils/logging").getLogger("About.vue");
 import YouTube from "../components/YouTube";
 export default {
   components: {

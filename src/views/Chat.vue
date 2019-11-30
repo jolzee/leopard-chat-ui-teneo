@@ -406,7 +406,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("Chat.vue");
+const logger = require("@/utils/logging").getLogger("Chat.vue");
 import dayjs from "dayjs";
 import LongPress from "vue-directive-long-press";
 // import ChatBroadcastMessage from "../components/ChatBroadcastMessage";

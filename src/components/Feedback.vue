@@ -82,7 +82,7 @@
   </v-row>
 </template>
 <script>
-const logger = require("@/utils/logging")("Feedback.vue");
+const logger = require("@/utils/logging").getLogger("Feedback.vue");
 export default {
   name: "Feedback",
   props: ["feedbackConfig"],

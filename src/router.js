@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-const logger = require("./utils/logging")("router.js");
+const logger = require("@/utils/logging").getLogger("router.js");
 
 Vue.use(Router);
 

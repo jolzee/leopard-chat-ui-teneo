@@ -534,7 +534,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("Config.vue");
+const logger = require("@/utils/logging").getLogger("Config.vue");
 import dayjs from "dayjs";
 import copy from "copy-to-clipboard";
 import {

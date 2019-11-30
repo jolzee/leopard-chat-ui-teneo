@@ -22,7 +22,7 @@
 </template>
 <style scoped></style>
 <script>
-const logger = require("@/utils/logging")("Help.vue");
+const logger = require("@/utils/logging").getLogger("Help.vue");
 export default {
   data() {
     return {};

@@ -5,7 +5,7 @@ import "element-matches";
 import smoothscroll from "smoothscroll-polyfill";
 smoothscroll.polyfill();
 import utils from "./utils/utils";
-const logger = require("./utils/logging")("main.js");
+const logger = require("@/utils/logging").getLogger("main.js");
 import Vue from "vue";
 import "./utils/vee-validate";
 import "./utils/drag";

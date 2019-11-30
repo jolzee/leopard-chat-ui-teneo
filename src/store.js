@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import "regenerator-runtime/runtime";
-const logger = require("./utils/logging")("store.js");
+const logger = require("@/utils/logging").getLogger("store.js");
 import router from "@/router";
 import LiveChat from "@livechat/agent-app-widget-sdk";
 import { accountsSdk } from "@livechat/accounts-sdk";

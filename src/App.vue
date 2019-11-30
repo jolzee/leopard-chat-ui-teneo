@@ -348,7 +348,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging")("App.vue");
+const logger = require("@/utils/logging").getLogger("App.vue");
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "./constants/solution-config-default.js";
 import OverlayAlert from "./components/OverlayAlert";

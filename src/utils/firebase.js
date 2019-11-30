@@ -1,4 +1,4 @@
-const logger = require("./logging")("firebase.js");
+const logger = require("@/utils/logging").getLogger("firebase.js");
 
 export default class Firebase {
   static firebase;
