@@ -23,6 +23,7 @@
 <style scoped>
 </style>
 <script>
+const logger = require("@/utils/logging")("Help.vue");
 export default {
   data() {
     return {};

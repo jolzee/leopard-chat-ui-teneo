@@ -103,6 +103,7 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging")("ChatUserQuestion.vue");
 import LongPress from "vue-directive-long-press";
 import AgentAssistTrainBotForm from "./AgentAssistTrainBotForm";
 import copy from "copy-to-clipboard";

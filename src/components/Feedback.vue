@@ -82,6 +82,7 @@
   </v-row>
 </template>
 <script>
+const logger = require("@/utils/logging")("Feedback.vue");
 export default {
   name: "Feedback",
   props: ["feedbackConfig"],
@@ -100,7 +101,7 @@ export default {
       this.$emit("hideFeedback");
     },
     sendFeedback() {
-      this.$log.debug(
+      logger.debug(
         `Rating: ${this.rating} Reasons: ${this.reasons} Comment: ${this.comment}`
       );
 

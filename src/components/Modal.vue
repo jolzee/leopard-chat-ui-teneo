@@ -208,6 +208,7 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging")("Modal.vue");
 // import Audio from "./Audio";
 // import Carousel from "./Carousel";
 // import CustomModal from "./CustomModal";
@@ -298,14 +299,14 @@ export default {
   },
   mounted() {
     // if (this.pusherEnabled) {
-    //   this.$log.debug("Setting up pusher");
+    //   logger.debug("Setting up pusher");
     //   this.$pusher.subscribe("web-channel");
-    //   this.$log.debug("Subscribed to 'web-channel'");
+    //   logger.debug("Subscribed to 'web-channel'");
     //   let that = this;
     //   this.$pusher.bind(
     //     "some-event-and-possibly-some-unique-id-for-user",
     //     data => {
-    //       this.$log.debug("Message from Teneo: " + data.message);
+    //       logger.debug("Message from Teneo: " + data.message);
     //       that.pusherMessage = data.message;
     //       that.displayPusherMessage = true;
     //     },
@@ -326,14 +327,14 @@ export default {
         (this.modalItem && this.$store.getters.showModal) ||
         this.itemHasLongResponse(this.modalItem)
       ) {
-        this.$log.debug("About to RESET MODAL");
+        logger.debug("About to RESET MODAL");
         this.resetModal();
         let item = this.modalItem;
         let transcript = this.liveChatTranscript(item);
         let displayModal = false;
 
         // check if user wants to talk to a live agent
-        this.$log.debug("Live Chat? :" + this.isLiveChat);
+        logger.debug("Live Chat? :" + this.isLiveChat);
         if (transcript !== "undefined" && this.isLiveChat) {
           this.$store.commit(
             "LIVE_CHAT",
@@ -399,7 +400,7 @@ export default {
               this.transactionItems = [];
               extension.parameters.transactions.transactions.forEach(
                 transaction => {
-                  this.$log.debug(transaction);
+                  logger.debug(transaction);
                   this.transactionItems.push({
                     date: transaction.Date,
                     description: transaction.Description,
@@ -465,7 +466,7 @@ export default {
               let videoId = this.youTubeIdFromUrl(url);
               if (!videoId) {
                 videoId = this.vimeoIdFromUrl(url);
-                this.$log.debug("vimeoid: " + videoId);
+                logger.debug("vimeoid: " + videoId);
                 if (videoId) {
                   this.vimeoVideoId = videoId;
                 } else {
@@ -547,7 +548,7 @@ export default {
     },
     toolbarWidth() {
       if (this.currentModalSize !== "") {
-        this.$log.debug("Adjusted the custom modal toolbar style");
+        logger.debug("Adjusted the custom modal toolbar style");
         return `teneo-modal-${this.currentModalSize}-width`;
       }
       return "";
@@ -576,8 +577,8 @@ export default {
     },
     modalClass() {
       if (!this.fullscreen) {
-        this.$log.debug("Applying custom modal size and position");
-        this.$log.debug("Adding sizing and position styles to modal");
+        logger.debug("Applying custom modal size and position");
+        logger.debug("Adding sizing and position styles to modal");
         var modalElements = document.getElementsByClassName("teneo-modal");
         if (
           modalElements !== "undefined" &&
@@ -604,11 +605,11 @@ export default {
       }
     },
     removeCustomStylesFromModal() {
-      this.$log.debug("removing custom styles from modal");
+      logger.debug("removing custom styles from modal");
       var modalElements = document.getElementsByClassName("teneo-modal");
       if (modalElements !== "undefined") {
         for (var i = 0; i < modalElements.length; i++) {
-          this.$log.debug(
+          logger.debug(
             "Removing existing modal size and position styles - reset"
           );
           modalElements[i].classList.remove("teneo-modal-center");
@@ -622,7 +623,7 @@ export default {
       }
     },
     onHtmlClickInModal(event) {
-      this.$log.debug("html link clicked in modal");
+      logger.debug("html link clicked in modal");
       // Find the closest anchor to the target.
       const anchor = event.target.closest("a");
       if (!anchor) return;
@@ -663,7 +664,7 @@ export default {
     hideModal() {
       this.$store.commit("HIDE_CHAT_MODAL");
       let that = this;
-      this.$log.debug("About to RESET MODAL 22");
+      logger.debug("About to RESET MODAL 22");
       setTimeout(function() {
         that.resetModal();
       }, 1000); // needed to stop weird animations on the close

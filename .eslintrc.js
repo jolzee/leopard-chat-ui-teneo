@@ -10,7 +10,8 @@ module.exports = {
     "vuetify/grid-unknown-attributes": "error",
     "vuetify/no-legacy-grid": "error",
     "no-console": "off",
-    "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off"
+    "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
+    "no-unused-vars": ["error", { varsIgnorePattern: "logger" }]
   },
   parserOptions: {
     parser: "babel-eslint"

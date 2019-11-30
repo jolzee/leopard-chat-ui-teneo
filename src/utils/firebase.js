@@ -1,4 +1,4 @@
-import Vue from "vue";
+const logger = require("./logging")("firebase.js");
 
 export default class Firebase {
   static firebase;
@@ -14,7 +14,7 @@ export default class Firebase {
         ])
           .then(([firebase]) => {
             if (firebase.apps.length === 0) {
-              Vue.$log.debug("Initializing Firebase");
+              logger.debug("Initializing Firebase");
               firebase.initializeApp({
                 apiKey: window.leopardConfig.firebase.apiKey,
                 authDomain: window.leopardConfig.firebase.authDomain,

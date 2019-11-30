@@ -1,5 +1,8 @@
 <template>
-  <vue-plyr v-if="url" class="mb-2">
+  <vue-plyr
+    v-if="url"
+    class="mb-2"
+  >
     <audio>
       <source
         :src="url"
@@ -10,6 +13,7 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging")("Audio.vue");
 export default {
   props: ["url", "type"],
   data() {

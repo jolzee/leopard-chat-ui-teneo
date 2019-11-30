@@ -42,6 +42,7 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging")("ChatNoHistory.vue");
 export default {
   computed: {
     noHistoryImage() {

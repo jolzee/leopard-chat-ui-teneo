@@ -396,6 +396,7 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging")("ChatTeneoResponse.vue");
 import LongPress from "vue-directive-long-press";
 import Audio from "./Audio";
 import Carousel from "./Carousel";
@@ -709,7 +710,7 @@ export default {
       return this.hasMediaExtensions(this.item);
     },
     sendResponseMediaToLiveAgent() {
-      this.$log.debug(`Sending media to Agent`);
+      logger.debug(`Sending media to Agent`);
       let finalMessageToAgent = "";
       const extensions = this.itemExtensions(this.item);
       extensions.forEach(extension => {
@@ -728,7 +729,7 @@ export default {
             this.mapInfo(extension).address
           }`;
         } else if (this.hasInlineType(extension, "image")) {
-          this.$log.debug(this.imageUrl(extension));
+          logger.debug(this.imageUrl(extension));
           finalMessageToAgent += `\nImage: ${this.imageUrl(extension)}`;
         } else if (this.hasInlineType(extension, "carousel")) {
           finalMessageToAgent += `\nImages: ${this.carouselImageArray(
@@ -744,7 +745,7 @@ export default {
       }
     },
     createLiveChatMoment() {
-      this.$log.debug(`Create Moment`);
+      logger.debug(`Create Moment`);
     },
     handleAgentAssistCannedResponseSave() {
       this.agentAssist.cannedResponseForm = false;

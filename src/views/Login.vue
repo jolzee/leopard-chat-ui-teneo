@@ -87,6 +87,7 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging")("Login.vue");
 export default {
   name: "login",
   components: {},
@@ -144,7 +145,7 @@ export default {
             try {
               setTimeout(this.hideErrorMessage, 2000);
             } catch (e) {
-              this.$log.error(e);
+              logger.error(e);
             }
           });
       }

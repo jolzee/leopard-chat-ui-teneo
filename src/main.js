@@ -1,10 +1,11 @@
-// import "babel-polyfill";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import "custom-event-polyfill";
 import "element-matches";
 import smoothscroll from "smoothscroll-polyfill";
 smoothscroll.polyfill();
+import utils from "./utils/utils";
+const logger = require("./utils/logging")("main.js");
 import Vue from "vue";
 import "./utils/vee-validate";
 import "./utils/drag";
@@ -13,11 +14,9 @@ import "./utils/drag";
 import "vue-loaders/dist/vue-loaders.css";
 import "plyr/dist/plyr.css";
 import "vue2-animate/dist/vue2-animate.min.css";
-import VueLogger from "vuejs-logger";
 // import { getStore } from "./store";
 import App from "./App";
 import router from "./router";
-import utils from "./utils/utils";
 
 if (!utils.doesParameterExist("embed") && !utils.doesParameterExist("button")) {
   console.groupCollapsed(
@@ -34,18 +33,7 @@ if (!utils.doesParameterExist("embed") && !utils.doesParameterExist("button")) {
 
 import(/* webpackChunkName: "leopardConfig" */ "./utils/leopardConfig").then(config => {
   window.leopardConfig = config.default;
-
-  Vue.use(VueLogger, {
-    isEnabled: true,
-    logLevel: window.leopardConfig.isProduction && !utils.doesParameterExist("leopardDebug") ? "error" : "debug",
-    stringifyArguments: false,
-    showLogLevel: true,
-    showMethodName: true,
-    separator: "|",
-    showConsoleColors: true
-  });
-
-  Vue.$log.debug(`Setup > Leopard Config: `, window.leopardConfig);
+  logger.debug(`Setup > Leopard Config: `, window.leopardConfig);
 
   import("./store").then(store => {
     store.default((vuetify, store) => {

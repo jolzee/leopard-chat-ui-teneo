@@ -1,5 +1,4 @@
 <template>
-
   <v-dialog
     v-model="value"
     persistent
@@ -23,12 +22,13 @@
         <div
           v-if="message != null"
           class="display-1 font-weight-bold"
-        >{{message}}</div>
+        >{{ message }}</div>
       </v-col>
     </v-row>
   </v-dialog>
 </template>
 <script>
+const logger = require("@/utils/logging")("Listening.vue");
 export default {
   name: "Loading",
   data: function() {

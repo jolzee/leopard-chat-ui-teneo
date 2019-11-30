@@ -14,6 +14,7 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging")("Carousel.vue");
 export default {
   props: ["imageItems"],
   data() {

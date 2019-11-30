@@ -793,6 +793,7 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging")("ChatAddEditSolution.vue");
 import urlRegex from "url-regex";
 import { COLOR_NAMES } from "../constants/color-names.js";
 import { SOLUTION_DEFAULT } from "../constants/solution-config-default.js";
@@ -1010,7 +1011,7 @@ export default {
       this.globalSnackbarColor = color;
     },
     failsValidation() {
-      this.$log.debug(this.$refs.form);
+      logger.debug(this.$refs.form);
       if (!this.$refs.form.validate()) {
         this.snackbar = true;
         return true;
@@ -1044,7 +1045,7 @@ export default {
         }
         // adding a new solution config
       } else {
-        this.$log.debug("About to add a new solution");
+        logger.debug("About to add a new solution");
         this.config.solutions.push(this.cloneObject(this.solution));
         // this.selectedSolution = this.cloneObject(this.solution);
         if (this.config.solutions.length === 1) {
@@ -1130,11 +1131,11 @@ export default {
         }
       } else {
         // editing and existing solution config
-        this.$log.debug("Editing solution: checking deep link validity");
+        logger.debug("Editing solution: checking deep link validity");
         const foundSolution = this.config.solutions.find(
           solution => solution.deepLink === value
         );
-        this.$log.debug(foundSolution);
+        logger.debug(foundSolution);
         if (
           foundSolution &&
           foundSolution.name !== this.selectedSolution.name
@@ -1146,7 +1147,7 @@ export default {
       }
     },
     ruleMustBeInteger(value) {
-      this.$log.debug(`The value is ${Number(value)}`);
+      logger.debug(`The value is ${Number(value)}`);
       if (Number.isInteger(Number(value))) {
         return true;
       } else {
@@ -1178,7 +1179,7 @@ export default {
       }
     },
     ruleMustHaveValue(value) {
-      this.$log.debug(value);
+      logger.debug(value);
       if (/\S/.test(value)) {
         return true;
       }

@@ -1,3 +1,4 @@
+const logger = require("./logging")("setup.js");
 import { Ripple } from "vuetify/lib/directives";
 import replaceString from "replace-string";
 const superagent = require("superagent");
@@ -17,15 +18,15 @@ let logrocketPlugin = null;
 if (window.leopardConfig.isProduction && window.leopardConfig.logging.logRocket) {
   import(/* webpackChunkName: "logrocket" */ "logrocket")
     .then(({ default: LogRocket }) => {
-      Vue.$log.debug(`Setting up LogRocket 🚀`);
+      logger.debug(`Setting up LogRocket 🚀`);
       LogRocket.init(window.leopardConfig.logging.logRocket);
       import(/* webpackChunkName: "logrocket" */ "logrocket-vuex").then(({ default: createPlugin }) => {
         logrocketPlugin = createPlugin(LogRocket);
-        Vue.$log.debug(`LogRocket 🚀 setup complete`);
+        logger.debug(`LogRocket 🚀 setup complete`);
       });
     })
     .catch(err => {
-      Vue.$log.error(`Failed to dynamically import LogRocket 🚀`, err);
+      logger.error(`Failed to dynamically import LogRocket 🚀`, err);
     });
 }
 // End LogRocket Setup
@@ -95,13 +96,13 @@ export default class Setup {
             this.addIframeHtml();
           }
 
-          Vue.$log.debug(`Active Solution Config: `, this.chatConfig);
+          logger.debug(`Active Solution Config: `, this.chatConfig);
 
           if (this.chatConfig && this.chatConfig.activeSolution) {
-            Vue.$log.debug(`Active Solution: ${this.chatConfig.activeSolution}`);
+            logger.debug(`Active Solution: ${this.chatConfig.activeSolution}`);
             let deepLink = this.getParameterByName("dl"); // look for deep link
             if (!deepLink) {
-              Vue.$log.debug(`setup.js > No deep link found in the current url`);
+              logger.debug(`No deep link found in the current url - load default solution`);
               this.activeSolution = this.chatConfig.activeSolution;
               const matchingSolutions = this.chatConfig.solutions.filter(
                 solution => solution.name === this.activeSolution
@@ -223,19 +224,19 @@ export default class Setup {
   }
 
   getSolutionConfig() {
-    Vue.$log.debug("setup.js: getSolutionConfig ");
+    logger.debug("Begin looking for Solution Config ");
     return new Promise((resolve, reject) => {
       // Reload config for each load. Maybe there a new deployment change that you want to
       if (window.leopardConfig.loadFreshConfigForNewSessions) {
         // localStorage.removeItem(STORAGE_KEY + "config");
-        Vue.$log.debug("getSolutionConfig > Using internal build config");
+        logger.debug("Using internal build config");
       } else {
-        Vue.$log.debug("getSolutionConfig > Looking in localstorage first");
+        logger.debug("Looking for Solution Config in localStorage first");
         this.chatConfig = JSON.parse(localStorage.getItem(STORAGE_KEY + "config"));
       }
 
       if (!this.chatConfig || (this.chatConfig && this.chatConfig.solutions.length === 0)) {
-        Vue.$log.debug("setup.js > No config found in local storage: Looking for solution config...");
+        logger.debug("No Solution Config found in localStorage. Continue looking..");
         this._loadDefaultConfig()
           .then(defaultConfig => {
             this.chatConfig = defaultConfig;
@@ -243,7 +244,7 @@ export default class Setup {
           })
           .catch(message => reject(message));
       } else {
-        Vue.$log.debug("setup.js > Found and using existing solutions in local storage");
+        logger.debug("Found Solution Config | using existing solutions in local storage | Presales Mode");
         resolve(this.chatConfig);
       }
     });
@@ -252,8 +253,8 @@ export default class Setup {
   _loadDefaultConfig() {
     return new Promise((resolve, reject) => {
       if (!window.leopardConfig.mustGetStaticDefaultConfig) {
-        Vue.$log.debug(
-          "setup.js > Found and loaded build's solution environment config",
+        logger.debug(
+          "Found and loaded build's solution environment config",
           window.leopardConfig.solutionConfig.buildConfig
         );
         resolve(window.leopardConfig.solutionConfig.buildConfig);
@@ -264,13 +265,13 @@ export default class Setup {
           .get(defaultConfigUrl)
           .accept("application/json")
           .then(res => {
-            Vue.$log.debug("setup.js > Found and loaded solution config from /static/default.json");
+            logger.debug("Found and loaded Solution Config from /static/default.json");
             let defaultConfig = res.body;
             localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(defaultConfig));
             resolve(defaultConfig);
           })
           .catch(function(error) {
-            reject("setup.js > Could not load default.json from /static/default.json: " + error.message);
+            reject("Could not load default.json from /static/default.json: " + error.message);
           });
       }
     });

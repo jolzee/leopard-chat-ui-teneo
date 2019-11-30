@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import "regenerator-runtime/runtime";
-
+const logger = require("./utils/logging")("store.js");
 import router from "@/router";
 import LiveChat from "@livechat/agent-app-widget-sdk";
 import { accountsSdk } from "@livechat/accounts-sdk";
@@ -77,7 +77,7 @@ export default function getStore(callback) {
   config
     .init()
     .then(vuetify => storeSetup(vuetify, callback))
-    .catch(error => Vue.$log.error(`ERROR setting up Leopard`, error));
+    .catch(error => logger.error(`ERROR setting up Leopard`, error));
 }
 
 function storeSetup(vuetify, callback) {
@@ -210,7 +210,7 @@ function storeSetup(vuetify, callback) {
         return state.ui.showDelayedResponse;
       },
       isChatOpen(state) {
-        Vue.$log.debug(`store:getters:isChatOpen: ${state.ui.showChatWindow}`);
+        logger.debug(`store:getters:isChatOpen: ${state.ui.showChatWindow}`);
         return state.ui.showChatWindow;
       },
       hideConfigMenu(state) {
@@ -220,7 +220,7 @@ function storeSetup(vuetify, callback) {
         return uuidv1();
       },
       showButtonOnly(state) {
-        Vue.$log.debug(`store: showButtonOnly: ${state.ui.showButtonOnly}`);
+        logger.debug(`store: showButtonOnly: ${state.ui.showButtonOnly}`);
         return state.ui.showButtonOnly;
       },
       getAnimatedIn(state, getters) {
@@ -376,19 +376,19 @@ function storeSetup(vuetify, callback) {
         return gravatar.url(email, { protocol: "https" });
       },
       isVideoFile: _state => url => {
-        Vue.$log.debug("IsVideo:" + url);
+        logger.debug("IsVideo:" + url);
         const regExp = /\.(?:mp4|webm|ogg)$/i;
         const match = url.match(regExp);
         let result = match ? match[0].substring(1, match[0].length) : false;
-        Vue.$log.debug(result);
+        logger.debug(result);
         return result;
       },
       isAudioFile: _state => url => {
-        Vue.$log.debug("ISAudio:" + url);
+        logger.debug("ISAudio:" + url);
         const regExp = /\.(?:wav|mp3|ogg)$/i;
         const match = url.match(regExp);
         let result = match ? match[0].substring(1, match[0].length) : false;
-        Vue.$log.debug(result);
+        logger.debug(result);
         return result;
       },
       youTubeIdFromUrl: _state => url => {
@@ -454,12 +454,12 @@ function storeSetup(vuetify, callback) {
               for (var key in ordered) {
                 if (key.startsWith("extensions")) {
                   var value = decodeURIComponent(ordered[key]);
-                  Vue.$log.debug(`Item Extensions > Key: ${key} Value: ${value}`);
+                  logger.debug(`Item Extensions > Key: ${key} Value: ${value}`);
                   actions.push(JSON.parse(value));
                 }
               }
             } catch (e) {
-              Vue.$log.error(e);
+              logger.error(e);
               // store.commit("SHOW_MESSAGE_IN_CHAT", "Problems with extension format: " + e.message + ".");
             }
           }
@@ -688,7 +688,7 @@ function storeSetup(vuetify, callback) {
       },
       imageUrl: (_state, _getters) => extension => {
         if (extension && extension.name === "displayImage") {
-          Vue.$log.debug(`image URL ${extension.parameters.image_url}`);
+          logger.debug(`image URL ${extension.parameters.image_url}`);
           return extension.parameters.image_url;
         }
         return "";
@@ -771,24 +771,24 @@ function storeSetup(vuetify, callback) {
         return state.liveAgent.showLiveChatProcessing;
       },
       dialogs(state) {
-        Vue.$log.debug(
+        logger.debug(
           `Session Storage? ${config.USE_SESSION_STORAGE} Dialog Length ${state.conversation.dialog.length}`
         );
         if (!config.USE_SESSION_STORAGE && state.conversation.dialog.length === 0) {
-          Vue.$log.debug("Checking for stale session - embed");
+          logger.debug("Checking for stale session - embed");
           // typically here when in production embedded state
           // check if session expired
           let now = new Date();
           let lastInteractionTime = localStorage.getItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE);
           if (!lastInteractionTime) {
-            Vue.$log.debug("No previous interaction time...");
+            logger.debug("No previous interaction time...");
             state.conversation.dialog = JSON.parse(localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]"));
           } else {
-            Vue.$log.debug(`found last interaction time: ${lastInteractionTime}`);
+            logger.debug(`found last interaction time: ${lastInteractionTime}`);
             var diff = (now.getTime() - lastInteractionTime) / 1000;
             diff /= 60;
             let diffMins = Math.abs(Math.round(diff));
-            Vue.$log.debug(`Minutes Difference: ${diffMins}`);
+            logger.debug(`Minutes Difference: ${diffMins}`);
             if (diffMins > 0) {
               localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
               state.conversation.dialog = [];
@@ -927,30 +927,30 @@ function storeSetup(vuetify, callback) {
         state.modals.showCustomModal = false;
       },
       HIDE_CHAT_WINDOW_DISPLAY_EMBED(state, _getters) {
-        Vue.$log.debug(`HIDE_CHAT_WINDOW_DISPLAY_EMBED`);
+        logger.debug(`HIDE_CHAT_WINDOW_DISPLAY_EMBED`);
         sendMessageToParent("hideLeopard");
         localStorage.setItem("isChatOpen", false);
       },
       OPEN_CHAT_WINDOW_DISPLAY_EMBED(state, _getters) {
         state.ui.showChatWindow = true;
-        Vue.$log.debug(`OPEN_CHAT_WINDOW_DISPLAY_EMBED`);
+        logger.debug(`OPEN_CHAT_WINDOW_DISPLAY_EMBED`);
         sendMessageToParent("showLeopard");
         localStorage.setItem("isChatOpen", true);
       },
       TOGGLE_CHAT_WINDOW_DISPLAY(state, _getters) {
         state.ui.showChatWindow = !state.ui.showChatWindow;
-        Vue.$log.debug(
+        logger.debug(
           `store: TOGGLE_CHAT_WINDOW_DISPLAY:  state.ui.showChatWindow has toggled to: ${state.ui.showChatWindow}`
         );
         if (state.ui.embed) {
-          Vue.$log.debug(`TOGGLE_CHAT_WINDOW_DISPLAY: ${state.ui.showChatWindow}`);
+          logger.debug(`TOGGLE_CHAT_WINDOW_DISPLAY: ${state.ui.showChatWindow}`);
           localStorage.setItem("isChatOpen", state.ui.showChatWindow);
-          Vue.$log.debug(`store: TOGGLE_CHAT_WINDOW_DISPLAY: sending message to parent to ${state.ui.showChatWindow}`);
+          logger.debug(`store: TOGGLE_CHAT_WINDOW_DISPLAY: sending message to parent to ${state.ui.showChatWindow}`);
           sendMessageToParent(state.ui.showChatWindow ? "showLeopard" : "hideLeopard");
         }
       },
       SHOW_CHAT_WINDOW(state) {
-        Vue.$log.debug(`store: SHOW_CHAT_WINDOW`);
+        logger.debug(`store: SHOW_CHAT_WINDOW`);
         state.ui.showChatWindow = true;
       },
       LOGGED_INTO_TENEO(state) {
@@ -960,7 +960,7 @@ function storeSetup(vuetify, callback) {
         state.auth.hasLoggedInTeneo = false;
       },
       HIDE_CHAT_WINDOW(state) {
-        Vue.$log.debug(`store: HIDE_CHAT_WINDOW`);
+        logger.debug(`store: HIDE_CHAT_WINDOW`);
         state.ui.showChatWindow = false;
       },
       HIDE_CHAT_BUTTON(state) {
@@ -1019,7 +1019,7 @@ function storeSetup(vuetify, callback) {
         state.conversation.dialog.push(miscMessage);
       },
       PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG(state, liveChatResponse) {
-        Vue.$log.debug(`Pushing LiveChat response onto chat dialog`, liveChatResponse);
+        logger.debug(`Pushing LiveChat response onto chat dialog`, liveChatResponse);
         state.conversation.dialog.push(liveChatResponse);
       },
       CLEAR_USER_INPUT(state) {
@@ -1217,11 +1217,11 @@ function storeSetup(vuetify, callback) {
         state.conversation.feedbackFormConfig = null;
       },
       HIDE_CHAT_MODAL(state) {
-        Vue.$log.debug("hiding modal");
+        logger.debug("hiding modal");
         state.userInput.userInputReadyForSending = false;
         state.modals.showModal = false;
         state.modals.modalItem = null;
-        Vue.$log.debug("modal item should be empty");
+        logger.debug("modal item should be empty");
       },
       CLEAR_DIALOGS(state) {
         state.conversation.dialog = [];
@@ -1278,7 +1278,7 @@ function storeSetup(vuetify, callback) {
     actions: {
       liveChatAddCannedResponse(context, config) {
         // config.data.token = context.getters.liveChatApiToken;
-        Vue.$log.debug(`Adding LiveChat Canned Response`, config);
+        logger.debug(`Adding LiveChat Canned Response`, config);
 
         superagent
           .post(`${window.leopardConfig.liveChat.agentAssistServerUrl}/can`)
@@ -1287,11 +1287,11 @@ function storeSetup(vuetify, callback) {
           .send(config)
           .then(res => {
             // res.body = json, res.headers, res.status
-            Vue.$log.debug("Agent Assist: Canned Resposne Created", res.body);
+            logger.debug("Agent Assist: Canned Resposne Created", res.body);
           })
           .catch(err => {
             // err.message, err.response
-            Vue.$log.error(`Could not add LiveChat canned response`, err);
+            logger.error(`Could not add LiveChat canned response`, err);
           });
       },
       async putLiveChatAgentMessage(_context, message) {
@@ -1299,24 +1299,24 @@ function storeSetup(vuetify, callback) {
         await LiveChat.putMessage(stripHtml(message));
       },
       setupLiveChatAgentAssist(context) {
-        Vue.$log.debug(">> Before Live Agent Assist Setup");
+        logger.debug(">> Before Live Agent Assist Setup");
         if (context.getters.isLiveAgentAssist) {
-          Vue.$log.debug(`Is this an Agent Assist App?`, context.getters.isLiveAgentAssist);
-          Vue.$log.debug(">> In Live Agent Assist Setup");
+          logger.debug(`Is this an Agent Assist App?`, context.getters.isLiveAgentAssist);
+          logger.debug(">> In Live Agent Assist Setup");
           let liveChatAgentAssistLastMessage = null;
           LiveChat.init({ authorize: false })
             .then(async () => {
-              Vue.$log.debug(">> Live Agent Assist Setup");
+              logger.debug(">> Live Agent Assist Setup");
               context.commit("DISABLE_LIVE_CHAT");
 
               await LiveChat.refreshSessionId();
-              Vue.$log.debug("LiveChat Agent Assist Setup!");
+              logger.debug("LiveChat Agent Assist Setup!");
               LiveChat.on("customer_profile", profile => {
-                Vue.$log.debug("customer_profile", profile);
+                logger.debug("customer_profile", profile);
               });
 
               LiveChat.on("message", message => {
-                Vue.$log.debug("message received", message);
+                logger.debug("message received", message);
                 if (
                   message.message_source === "visitor" &&
                   message.message_id !== liveChatAgentAssistLastMessage &&
@@ -1336,7 +1336,7 @@ function storeSetup(vuetify, callback) {
                 onIdentityFetched: (_error, data) => {
                   if (data && data.access_token) {
                     context.commit("LIVE_CHAT_API_ACCESS_TOKEN", data.access_token);
-                    Vue.$log.debug("LIVE_CHAT_API_ACCESS_TOKEN", data.access_token);
+                    logger.debug("LIVE_CHAT_API_ACCESS_TOKEN", data.access_token);
                   } else {
                     window.location.href = `${liveChatConfig.account_url}?response_type=token&client_id=${liveChatConfig.client_id}&redirect_uri=${window.location.href}`;
                   }
@@ -1344,7 +1344,7 @@ function storeSetup(vuetify, callback) {
               });
             })
             .catch(err => {
-              Vue.$log.error(err);
+              logger.error(err);
               liveChatAssistConnectCount += 1;
               if (liveChatAssistConnectCount < 5) {
                 context.dispatch("setupLiveChatAgentAssist");
@@ -1373,7 +1373,7 @@ function storeSetup(vuetify, callback) {
             function() {
               // wait just a bit before animating things - need the chat button to hide first
               context.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // show the chat window
-              Vue.$log.debug(`In move button left: ${isChatUiFloating}`);
+              logger.debug(`In move button left: ${isChatUiFloating}`);
               // wait just a bit before animating things - need the chat button to hide first
               if (chatButton) {
                 if (isChatUiFloating) {
@@ -1391,12 +1391,12 @@ function storeSetup(vuetify, callback) {
             }.bind(this),
             400
           );
-          Vue.$log.debug("Toggle Chat: Send Login");
+          logger.debug("Toggle Chat: Send Login");
           if (mustLogin) {
             context
               .dispatch("login")
               .then(() => {
-                Vue.$log.debug("Successfully logged into chat");
+                logger.debug("Successfully logged into chat");
                 context.commit("LOGGED_INTO_TENEO");
                 setTimeout(
                   function() {
@@ -1407,7 +1407,7 @@ function storeSetup(vuetify, callback) {
                 ); // only show the chat button after a successful login
               })
               .catch(err => {
-                Vue.$log.error("ERROR LOGGING IN TO CHAT: ", err);
+                logger.error("ERROR LOGGING IN TO CHAT: ", err);
               });
           } else {
             context.commit("HIDE_CHAT_LOADING");
@@ -1427,7 +1427,7 @@ function storeSetup(vuetify, callback) {
             // userInput: ""
           }
         ).then(() => {
-          Vue.$log.debug("Feedback sent to Teneo");
+          logger.debug("Feedback sent to Teneo");
         });
       },
       setUserInformation({ commit, getters }) {
@@ -1435,7 +1435,7 @@ function storeSetup(vuetify, callback) {
           return;
         }
         if (getters.firebase) {
-          Vue.$log.debug(`SET USER INFORMATION > Located Firebase`);
+          logger.debug(`SET USER INFORMATION > Located Firebase`);
           getters.firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
               commit("USER_INFO", { user: user }); // user is still signed in
@@ -1447,7 +1447,7 @@ function storeSetup(vuetify, callback) {
             retyCount++;
 
             if (getters.firebase) {
-              Vue.$log.debug(`SET USER INFORMATION > Firebase > Found on retry: ${retyCount}`);
+              logger.debug(`SET USER INFORMATION > Firebase > Found on retry: ${retyCount}`);
               getters.firebase.auth().onAuthStateChanged(function(user) {
                 if (user) {
                   commit("USER_INFO", { user: user }); // user is still signed in
@@ -1457,7 +1457,7 @@ function storeSetup(vuetify, callback) {
             }
 
             if (retyCount++ > 80) {
-              Vue.$log.debug("SET USER INFORMATION > Firebase > Giving up trying waiting!!");
+              logger.debug("SET USER INFORMATION > Firebase > Giving up trying waiting!!");
               clearInterval(checkExist);
             }
           }, 100); // check every 100ms
@@ -1475,11 +1475,11 @@ function storeSetup(vuetify, callback) {
               () => {
                 commit("LOG_OUT_TENEO");
                 commit("CLEAR_USER_INFO");
-                Vue.$log.debug("Signed out of chat");
+                logger.debug("Signed out of chat");
               },
               function(error) {
                 // An error happened.
-                Vue.$log.error(error);
+                logger.error(error);
               }
             );
         }
@@ -1487,14 +1487,14 @@ function storeSetup(vuetify, callback) {
       setupFirebase(context) {
         return new Promise((resolve, _reject) => {
           if (!window.leopardConfig.firebase.apiKey) {
-            Vue.$log.debug("No configuration for Firebase - skipping");
+            logger.debug("No configuration for Firebase - skipping");
             resolve();
             return;
           }
           if (!context.getters.firebase) {
             Firebase.init().then(firebase => {
               context.commit("SET_FIREBASE", firebase);
-              Vue.$log.debug(`Firebase has been initiated`, firebase);
+              logger.debug(`Firebase has been initiated`, firebase);
               resolve(firebase);
               return;
             });
@@ -1511,7 +1511,7 @@ function storeSetup(vuetify, callback) {
             return;
           }
           let provider = null;
-          Vue.$log.debug(`Firebase Login `, socialProvider);
+          logger.debug(`Firebase Login `, socialProvider);
           switch (socialProvider) {
             case "google":
               provider = new getters.firebase.auth.GoogleAuthProvider();
@@ -1538,7 +1538,7 @@ function storeSetup(vuetify, callback) {
               // var token = result.credential.accessToken;
               // The signed-in user info.
               let user = result.user;
-              Vue.$log.debug(user);
+              logger.debug(user);
               commit("USER_INFO", {
                 user: user
               });
@@ -1590,31 +1590,31 @@ function storeSetup(vuetify, callback) {
             .createUserWithEmailAndPassword(registrationInfo.email, registrationInfo.password)
             .then(user => {
               let currentUser = getters.firebase.auth().currentUser;
-              Vue.$log.debug(registrationInfo.displayName);
-              Vue.$log.debug(registrationInfo.photoURL);
+              logger.debug(registrationInfo.displayName);
+              logger.debug(registrationInfo.photoURL);
               currentUser
                 .updateProfile({
                   displayName: registrationInfo.displayName,
                   photoURL: registrationInfo.photoURL
                 })
                 .then(function() {
-                  Vue.$log.debug("User's profile info updated");
+                  logger.debug("User's profile info updated");
                 })
                 .catch(function(error) {
-                  Vue.$log.error(`Unable to update user's profile information:`, error);
+                  logger.error(`Unable to update user's profile information:`, error);
                 });
               commit("USER_INFO", { user: user });
               resolve();
             })
             .catch(function(error) {
-              Vue.$log.error(error);
+              logger.error(error);
               reject(error.message);
             });
         });
       },
       stopAudioCapture(context) {
         if (context.getters.tts.isSpeaking()) {
-          Vue.$log.debug("muted TTS!");
+          logger.debug("muted TTS!");
           context.getters.tts.shutUp();
         }
         if (context.getters.tts.isObeying()) {
@@ -1650,7 +1650,7 @@ function storeSetup(vuetify, callback) {
             "mdi-cast-connected",
             "top"
           );
-          Vue.$log.debug("Session Ended");
+          logger.debug("Session Ended");
         });
       },
       endSession(context) {
@@ -1672,7 +1672,7 @@ function storeSetup(vuetify, callback) {
         Vue.jsonp(endSessionUrl, {}).then(() => {
           context.commit("HIDE_CHAT_LOADING");
           context.commit("HIDE_UPLOAD_BUTTON");
-          Vue.$log.debug("Session Ended");
+          logger.debug("Session Ended");
         });
       },
       login(context) {
@@ -1694,11 +1694,11 @@ function storeSetup(vuetify, callback) {
                 if (numActiveFlows > 0) {
                   // mid dialog stop polling
                   context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
-                  Vue.$log.debug("Stop polling - there active dialogs");
+                  logger.debug("Stop polling - there active dialogs");
                 } else if (context.getters.isPromptPollingActive) {
                   // setup the polling again if needed
                   if (!context.getters.showButtonOnly && context.getters.getActivePromptInterval === null) {
-                    Vue.$log.debug("Start up Prompt Trigger Polling");
+                    logger.debug("Start up Prompt Trigger Polling");
                     let interval = setInterval(function() {
                       context.dispatch("sendUserInput", "&command=prompt");
                     }, context.getters.getPromptPollingIntervalInMilliseconds);
@@ -1712,12 +1712,12 @@ function storeSetup(vuetify, callback) {
                   "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
                   "background:transparent"
                 );
-                Vue.$log.error("Prompt polling is active but you are not returning the numActiveFlows from Teneo");
-                Vue.$log.error("Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling");
+                logger.error("Prompt polling is active but you are not returning the numActiveFlows from Teneo");
+                logger.error("Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling");
                 console.groupEnd();
               }
               context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
-              Vue.$log.debug(`Login Message from Teneo: ${decodeURIComponent(json.responseData.answer)}`);
+              logger.debug(`Login Message from Teneo: ${decodeURIComponent(json.responseData.answer)}`);
               let hasExtraData = false;
 
               if (
@@ -1751,7 +1751,7 @@ function storeSetup(vuetify, callback) {
                 error: err,
                 teneoUrl: teneoUrl
               };
-              Vue.$log.debug(`Problems sending login command`, errResp);
+              logger.debug(`Problems sending login command`, errResp);
               context.commit(
                 "SHOW_MESSAGE_IN_CHAT",
                 "Problems sending login command: " +
@@ -1770,7 +1770,7 @@ function storeSetup(vuetify, callback) {
         let now = new Date();
         let currentUserInput = "";
         if (params.indexOf("command=prompt") === -1) {
-          Vue.$log.debug("Updating last interaction time in localstorage");
+          logger.debug("Updating last interaction time in localstorage");
           localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
           currentUserInput = stripHtml(context.getters.userInput);
           context.commit("CLEAR_USER_INPUT");
@@ -1802,7 +1802,7 @@ function storeSetup(vuetify, callback) {
                 if (numActiveFlows > 0) {
                   // mid dialog stop polling
                   context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
-                  Vue.$log.debug("Stop polling - there active dialogs");
+                  logger.debug("Stop polling - there active dialogs");
                 } else if (context.getters.isPromptPollingActive) {
                   // setup the polling again if needed
                   if (
@@ -1810,13 +1810,13 @@ function storeSetup(vuetify, callback) {
                     context.getters.isChatOpen &&
                     context.getters.getActivePromptInterval === null
                   ) {
-                    Vue.$log.debug("Start up Prompt Trigger Polling");
+                    logger.debug("Start up Prompt Trigger Polling");
                     let interval = setInterval(function() {
                       context.dispatch("sendUserInput", "&command=prompt");
                     }, context.getters.getPromptPollingIntervalInMilliseconds);
                     context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
                   } else if (!context.getters.isChatOpen) {
-                    Vue.$log.debug(`Stop prompt trigger polling - chat is closed`);
+                    logger.debug(`Stop prompt trigger polling - chat is closed`);
                     context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
                   }
                 }
@@ -1827,12 +1827,12 @@ function storeSetup(vuetify, callback) {
                   "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
                   "background:transparent"
                 );
-                Vue.$log.debug("Prompt polling is active but you are not returning the numActiveFlows from Teneo");
-                Vue.$log.debug("Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling");
+                logger.debug("Prompt polling is active but you are not returning the numActiveFlows from Teneo");
+                logger.debug("Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling");
                 console.groupEnd();
               }
               if (params.indexOf("command=prompt") !== -1 && json.responseData.answer.trim() === "") {
-                Vue.$log.debug(`Poll returned nothing..`);
+                logger.debug(`Poll returned nothing..`);
                 return;
               } else if (
                 params !== "" &&
@@ -1851,7 +1851,7 @@ function storeSetup(vuetify, callback) {
                 context.commit("CLEAR_FEEDBACK_FORM");
               }
               if (json.responseData.isNewSession || json.responseData.extraData.newsession) {
-                Vue.$log.debug("Session is stale.. keep chat open and continue with the new session");
+                logger.debug("Session is stale.. keep chat open and continue with the new session");
                 context.commit(
                   "SHOW_MESSAGE_IN_CHAT",
                   "You have been away for an extended period of time. A new session with the virtual assistant has been created."
@@ -1868,9 +1868,9 @@ function storeSetup(vuetify, callback) {
                 context.commit("SET_USER_INPUT", "");
                 context
                   .dispatch("sendUserInput", "&command=continue")
-                  .then(Vue.$log.debug(`Continue with long operation`))
+                  .then(logger.debug(`Continue with long operation`))
                   .catch(err => {
-                    Vue.$log.error("Unable to continue conversation", err);
+                    logger.error("Unable to continue conversation", err);
                     context.commit("SHOW_MESSAGE_IN_CHAT", "We're sorry for the inconvience: " + err.message);
                   });
               }
@@ -1893,7 +1893,7 @@ function storeSetup(vuetify, callback) {
                   .getLocator()
                   .then(function(position) {
                     // we now have the user's lat and long
-                    Vue.$log.debug(`${position.coords.latitude}, ${position.coords.longitude}`);
+                    logger.debug(`${position.coords.latitude}, ${position.coords.longitude}`);
                     if (json.responseData.extraData.inputType === "locationLatLong") {
                       // send the lat and long
                       context
@@ -1902,12 +1902,12 @@ function storeSetup(vuetify, callback) {
                           "&locationLatLong=" + encodeURI(position.coords.latitude + "," + position.coords.longitude)
                         )
                         .then(
-                          Vue.$log.debug(
+                          logger.debug(
                             `Sent user's lat and long: ${position.coords.latitude}, ${position.coords.longitude}`
                           )
                         )
                         .catch(err => {
-                          Vue.$log.error("Unable to send lat and long info", err);
+                          logger.error("Unable to send lat and long info", err);
                           context.commit(
                             "SHOW_MESSAGE_IN_CHAT",
                             "We were unable to obtain your location information.: " + err.message
@@ -1940,19 +1940,19 @@ function storeSetup(vuetify, callback) {
                           context
                             .dispatch("sendUserInput", queryParam)
                             .then(
-                              Vue.$log.debug(
+                              logger.debug(
                                 `Sent user's location information: ${data.address.city}, ${data.address.state} ${data.address.postcode}`
                               )
                             )
                             .catch(err => {
-                              Vue.$log.error("Unable to send user location", err);
+                              logger.error("Unable to send user location", err);
                               context.commit(
                                 "SHOW_MESSAGE_IN_CHAT",
                                 "We were unable to obtain your location information.: " + err.message
                               );
                             });
                         })
-                        .catch(err => Vue.$log.error(err));
+                        .catch(err => logger.error(err));
                     } else if (
                       !window.leopardConfig.locationIqKey &&
                       json.responseData.extraData.inputType ===
@@ -1966,11 +1966,11 @@ function storeSetup(vuetify, callback) {
                     }
                   })
                   .catch(function(err) {
-                    Vue.$log.error("Position Error ", err);
+                    logger.error("Position Error ", err);
                   });
               }
 
-              Vue.$log.debug(decodeURIComponent(json.responseData.answer));
+              logger.debug(decodeURIComponent(json.responseData.answer));
               const response = {
                 userInput: currentUserInput,
                 id: uuidv1(),
@@ -2041,9 +2041,9 @@ function storeSetup(vuetify, callback) {
 
                   context
                     .dispatch("sendUserInput")
-                    .then(Vue.$log.debug("Sent original lang input to new lang specific solution"))
+                    .then(logger.debug("Sent original lang input to new lang specific solution"))
                     .catch(err => {
-                      Vue.$log.error("Unable to send lang input to new lang specific solution", err);
+                      logger.error("Unable to send lang input to new lang specific solution", err);
                       context.commit(
                         "SHOW_MESSAGE_IN_CHAT",
                         "Unable to send lang input to new lang specific solution: " + err.message
@@ -2058,16 +2058,16 @@ function storeSetup(vuetify, callback) {
                 teneoUrl: teneoUrl
               };
               if (err.status && err.status === 408) {
-                Vue.$log.error("Request To Teneo Timed Out: 408", errResp);
+                logger.error("Request To Teneo Timed Out: 408", errResp);
                 context.commit("SHOW_MESSAGE_IN_CHAT", "I'm sorry but the request timed out - Please try again.");
               } else if (err.status && err.status === 400) {
-                Vue.$log.error("Request To Teneo Timed Out: 400", errResp);
+                logger.error("Request To Teneo Timed Out: 400", errResp);
                 context.commit(
                   "SHOW_MESSAGE_IN_CHAT",
                   "I'm sorry, I wasn't able to communicate with the virtual assitant. Please check your internet connection."
                 );
               } else {
-                Vue.$log.error("Could not communicate with Teneo", errResp);
+                logger.error("Could not communicate with Teneo", errResp);
                 context.commit("SHOW_MESSAGE_IN_CHAT", err.message);
               }
               context.commit("HIDE_PROGRESS_BAR");
@@ -2129,7 +2129,7 @@ function storeSetup(vuetify, callback) {
 
   // var clientId = "5e68dfc9597a892b27eb97740abe1fee";
   // var accessToken = getHashParam("access_token");
-  //Vue.$log.debug(accessToken);
+  //logger.debug(accessToken);
 
   // const configG = {
   //   client_id: "5e68dfc9597a892b27eb97740abe1fee",
@@ -2139,12 +2139,12 @@ function storeSetup(vuetify, callback) {
   // };
 
   // if (accessToken) {
-  //   Vue.$log.debug(`ACCESS TOKEN: ${accessToken}`);
+  //   logger.debug(`ACCESS TOKEN: ${accessToken}`);
   //   // Setup Live Chat
-  //   Vue.$log.debug("Store: setting up live chat");
+  //   logger.debug("Store: setting up live chat");
   //   config.setupLiveChat(store, clientId, accessToken);
   // } else {
-  //   Vue.$log.debug(window.location.href);
+  //   logger.debug(window.location.href);
   //   window.location =
   //     "https://accounts.livechatinc.com/" +
   //     "?response_type=token" +
@@ -2164,7 +2164,7 @@ function stoperror() {
 }
 
 // function isChatOpenLocalStorage() {
-//   Vue.$log.debug(`store: isChatOpenLocalStorage`);
+//   logger.debug(`store: isChatOpenLocalStorage`);
 //   let isChatOpen = localStorage.getItem("isChatOpen");
 
 //   if (isChatOpen === null) {
@@ -2173,39 +2173,39 @@ function stoperror() {
 //     isChatOpen = JSON.parse(isChatOpen);
 //   }
 
-//   Vue.$log.debug(isChatOpen);
+//   logger.debug(isChatOpen);
 //   let result = false;
 
 //   if (isChatOpen) {
-//     Vue.$log.debug(`store: isChatOpenLocalStorage: send message to parent: OPEN`);
+//     logger.debug(`store: isChatOpenLocalStorage: send message to parent: OPEN`);
 //     sendMessageToParent("showLeopard");
-//     Vue.$log.debug("Initial Chat Window State = Open");
+//     logger.debug("Initial Chat Window State = Open");
 //     result = true;
 //   } else {
 //     localStorage.setItem("isChatOpen", "false");
-//     Vue.$log.debug(`store: isChatOpenLocalStorage: send message to parent: CLOSE`);
+//     logger.debug(`store: isChatOpenLocalStorage: send message to parent: CLOSE`);
 //     sendMessageToParent("hideLeopard");
-//     Vue.$log.debug("Initial Chat Window State = Closed");
+//     logger.debug("Initial Chat Window State = Closed");
 //     result = false;
 //   }
-//   Vue.$log.debug("isChatOpenLocalStorage: " + result);
-//   Vue.$log.debug(`Local Storage Finally Thinks "isChatOpenLocalStorage": ${result}`);
+//   logger.debug("isChatOpenLocalStorage: " + result);
+//   logger.debug(`Local Storage Finally Thinks "isChatOpenLocalStorage": ${result}`);
 //   return result;
 // }
 
 function sendMessageToParent(message) {
-  Vue.$log.debug(`store: sendMessageToParent: ${message}`);
+  logger.debug(`store: sendMessageToParent: ${message}`);
   if (parent) {
     parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
-    Vue.$log.debug("Message from Leopard >> Embed : " + message);
+    logger.debug("Message from Leopard >> Embed : " + message);
   }
 }
 
 function decodeHTML(html) {
   var txt = document.createElement("textarea");
-  Vue.$log.debug(html);
+  logger.debug(html);
   txt.innerHTML = html;
-  Vue.$log.debug(txt.value);
+  logger.debug(txt.value);
   return txt.value;
 }
 
@@ -2218,8 +2218,8 @@ function receiveMessageFromParent(event) {
         return true;
       }
 
-      Vue.$log.debug("Recived a message from parent...");
-      Vue.$log.debug(messageObject);
+      logger.debug("Recived a message from parent...");
+      logger.debug(messageObject);
       // event.source.postMessage("This is a message sent back from Leopard to the site embedding Leopard", event.origin);
 
       if ("frameHeight" in messageObject) {
@@ -2227,7 +2227,7 @@ function receiveMessageFromParent(event) {
           frameHeight: messageObject.frameHeight
         };
         localStorage.setItem(STORAGE_KEY + "parentHeight", messageObject.frameHeight);
-        Vue.$log.debug(`receiveMessageFromParent: parentHeight = ${messageObject.frameHeight}`);
+        logger.debug(`receiveMessageFromParent: parentHeight = ${messageObject.frameHeight}`);
         // trigger a resize event
         let evt = window.document.createEvent("UIEvents");
         evt.initUIEvent("resize", true, false, window, 0);

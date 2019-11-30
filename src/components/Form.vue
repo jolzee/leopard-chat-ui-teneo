@@ -453,6 +453,7 @@
   </ValidationObserver>
 </template>
 <script>
+const logger = require("@/utils/logging")("Form.vue");
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { mask } from "vue-the-mask";
 import { mapGetters } from "vuex";
@@ -498,7 +499,7 @@ export default {
       this.formConfig.fields.forEach(field => {
         let fieldInfo = field[Object.keys(field)[0]];
         if (fieldInfo.initialValue) {
-          this.$log.debug(
+          logger.debug(
             `Setting default for field [${fieldInfo.name} : ${fieldInfo.initialValue}] `
           );
           this.formData[fieldInfo.name] = fieldInfo.initialValue;
@@ -546,7 +547,7 @@ export default {
             JSON.stringify(this.formData)
           )}`;
         }
-        this.$log.debug(JSON.stringify(this.formData));
+        logger.debug(JSON.stringify(this.formData));
         this.$store.dispatch("sendUserInput", params).then(() => {
           this.$emit("completed");
           this.$emit("handleFocus");

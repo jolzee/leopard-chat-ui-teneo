@@ -17,5 +17,6 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging")("ChatLoading.vue");
 export default {};
 </script>

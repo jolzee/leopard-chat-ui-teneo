@@ -366,6 +366,7 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging")("App.vue");
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "./constants/solution-config-default.js";
 import OverlayAlert from "./components/OverlayAlert";
@@ -446,7 +447,7 @@ export default {
       this.importDialogMessages.message = `Do you want to import this solution?`;
       this.importDialogMessages.name = this.importedSolution.name;
       this.importDialogMessages.deepLink = this.importedSolution.deepLink;
-      this.$log.debug(solConfig);
+      logger.debug(solConfig);
       this.importDialog = true;
     }
     // this.toggleChat(); // will automatically open the chat window on load
@@ -488,8 +489,8 @@ export default {
       "socialAuthEnabled"
     ]),
     shouldFloat() {
-      this.$log.debug(this.float);
-      this.$log.debug(this.$router.currentRoute.path !== "/config");
+      logger.debug(this.float);
+      logger.debug(this.$router.currentRoute.path !== "/config");
       if (this.float && this.$router.currentRoute.path !== "/config") {
         return true;
       } else {
@@ -583,12 +584,12 @@ export default {
       }
 
       let result = false;
-      this.$log.debug(`App.vue:isChatOpenLocalStorage: ${isChatOpen}`);
+      logger.debug(`App.vue:isChatOpenLocalStorage: ${isChatOpen}`);
       if (isChatOpen) {
         this.$store.commit("SHOW_CHAT_WINDOW");
         this.$store.commit("HIDE_CHAT_LOADING");
         this.sendMessageToParent("showLeopard");
-        this.$log.debug(
+        logger.debug(
           "App.vue:isChatOpenLocalStorage: Sent Parent Message to OPEN"
         );
         result = true;
@@ -596,22 +597,22 @@ export default {
         this.$store.commit("HIDE_CHAT_WINDOW");
         localStorage.setItem("isChatOpen", "false");
         this.sendMessageToParent("hideLeopard");
-        this.$log.debug(
+        logger.debug(
           "App.vue:isChatOpenLocalStorage: Sent Parent Message to HIDE"
         );
         result = false;
       }
-      this.$log.debug("isChatOpenLocalStorage: " + result);
-      this.$log.debug(
+      logger.debug("isChatOpenLocalStorage: " + result);
+      logger.debug(
         `App.vue:isChatOpenLocalStorage:Local Storage Thinks "isChatOpenLocalStorage": ${result}`
       );
       return result;
     },
     sendMessageToParent(message) {
-      this.$log.debug(`App.vue: sendMessageToParent: ${message}`);
+      logger.debug(`App.vue: sendMessageToParent: ${message}`);
       if (parent) {
         parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
-        this.$log.debug("Message from Leopard >> Embed : " + message);
+        logger.debug("Message from Leopard >> Embed : " + message);
       }
       return true;
     },
@@ -645,12 +646,12 @@ export default {
       this.config.activeSolution = this.importedSolution.name;
       let deepLinkUrl = `${location.protocol}//${location.host}${location.pathname}?dl=${this.importedSolution.deepLink}`;
       localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
-      this.$log.debug(deepLinkUrl);
+      logger.debug(deepLinkUrl);
       window.location.href = deepLinkUrl;
     },
     closeChatEmbedded() {
       this.calculateMobileHeight(); // only called on mobile devices
-      this.$log.debug("App.vue: closeChatEmbedded");
+      logger.debug("App.vue: closeChatEmbedded");
       this.$store.commit("HIDE_CHAT_BUTTON");
       this.$store.commit("HIDE_CHAT_WINDOW_DISPLAY_EMBED");
       setTimeout(
@@ -662,7 +663,7 @@ export default {
     },
     openEmbedButton() {
       this.calculateMobileHeight(); // only called on mobile devices
-      this.$log.debug("App.vue: openEmbedButton");
+      logger.debug("App.vue: openEmbedButton");
       this.$store.commit("HIDE_CHAT_BUTTON");
       this.$store.commit("OPEN_CHAT_WINDOW_DISPLAY_EMBED");
       setTimeout(
@@ -724,16 +725,16 @@ export default {
       if (this.isMobileDevice) {
         // on mobile devices open the chat window automatically
         // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
-        this.$log.debug("Calculating the View Height in JS");
+        logger.debug("Calculating the View Height in JS");
         let vh = null;
-        this.$log.debug(`App.vue: onResizeOrEmbed`);
+        logger.debug(`App.vue: onResizeOrEmbed`);
         if (this.embed && parent) {
           var parentHeight = parent.getLeopardElementHeight();
           // let parentHeight = localStorage.getItem(STORAGE_KEY + "parentHeight");
-          this.$log.debug(`onResizeOrEmbed >>> Frame Height: ${parentHeight}`);
+          logger.debug(`onResizeOrEmbed >>> Frame Height: ${parentHeight}`);
           vh = parentHeight * 0.01;
           this.parentHeight = parentHeight;
-          this.$log.debug(`Parent Height: ${parentHeight}`);
+          logger.debug(`Parent Height: ${parentHeight}`);
         } else {
           vh = window.innerHeight * 0.01;
         }
@@ -761,8 +762,8 @@ export default {
           !this.loginPerformed &&
           this.dialogs.length === 0)
       ) {
-        this.$log.debug("onResizeOrEmbed: Send Login");
-        this.$log.debug(
+        logger.debug("onResizeOrEmbed: Send Login");
+        logger.debug(
           `onResizeOrEmbed: Has Login Been Performed? ${this.loginPerformed}`
         );
         this.loginPerformed = true;
@@ -771,15 +772,15 @@ export default {
           .dispatch("login")
           .then(() => {
             that.loginPerformed = true;
-            this.$log.debug("Successfully established chat session");
+            logger.debug("Successfully established chat session");
           })
           .catch(err => {
-            this.$log.error("ERROR LOGGING IN TO CHAT: ", err);
+            logger.error("ERROR LOGGING IN TO CHAT: ", err);
           });
       } else {
         this.$store.commit("HIDE_CHAT_LOADING");
       }
-      this.$log.debug(
+      logger.debug(
         `onResizeOrEmbed: AGAIN Has Login Been Performed? ${this.loginPerformed}`
       );
       if (this.$router.currentRoute.path === "/config") {
@@ -789,7 +790,7 @@ export default {
         (window.innerWidth <= 480 && !this.embed) ||
         (this.embed && this.isChatOpenLocalStorage())
       ) {
-        this.$log.debug(
+        logger.debug(
           `App.vue:onResizeOrEmbed:window.innerWidth <= 480 && !this.embed`
         );
         this.$store.commit("HIDE_CHAT_BUTTON");
@@ -809,7 +810,7 @@ export default {
         let isChatUiFloating = this.float;
         setTimeout(
           function() {
-            this.$log.debug(`In move button left: ${isChatUiFloating}`);
+            logger.debug(`In move button left: ${isChatUiFloating}`);
             // wait just a bit before animating things - need the chat button to hide first
             if (chatButton && !this.embed) {
               if (isChatUiFloating) {
@@ -853,11 +854,11 @@ export default {
 
       // show chat window - button clicked - login
       if (!this.isChatOpen) {
-        this.$log.debug("Toggle Chat: Send Login");
+        logger.debug("Toggle Chat: Send Login");
         this.$store
           .dispatch("openChatWindow", true)
           .then(() => {
-            this.$log.debug("Successfully logged into chat");
+            logger.debug("Successfully logged into chat");
             setTimeout(
               function() {
                 this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
@@ -866,7 +867,7 @@ export default {
             ); // only show the chat button after a successful login
           })
           .catch(err => {
-            this.$log.error("ERROR OPENING AND LOGGING IN TO CHAT: ", err);
+            logger.error("ERROR OPENING AND LOGGING IN TO CHAT: ", err);
           });
       } else {
         let chatButton = document.getElementById("chat-open-close-button");

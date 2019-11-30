@@ -534,6 +534,7 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging")("Config.vue");
 import dayjs from "dayjs";
 import copy from "copy-to-clipboard";
 import {
@@ -609,7 +610,7 @@ export default {
     },
     getCurrentSelectedSolutionConfig() {
       const result = JSON.stringify(this.selectedSolution, null, 2);
-      this.$log.debug(result);
+      logger.debug(result);
       return result;
     },
     getFullSolutionConfig() {

@@ -1,9 +1,9 @@
 // import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk";
+const logger = require("./logging")("live-chat.js");
 import * as CustomerSDK from "@livechat/customer-sdk"; // live chat
-// customerSDK.auth.getToken().then(token => Vue.$log.debug(token));
+// customerSDK.auth.getToken().then(token => logger.debug(token));
 var stripHtml = require("striptags");
 var iterator = require("markdown-it-for-inline");
-import Vue from "vue";
 
 var md = require("markdown-it")({
   html: true, // Enable HTML tags in source
@@ -62,18 +62,18 @@ export class LiveChat {
         //   })
         // );
         // window.sdk = this.sdk;
-        Vue.$log.debug("LiveChat.inc initialized", this.sdk);
+        logger.debug("LiveChat.inc initialized", this.sdk);
 
         this.sdk.auth.getToken().then(token => (this.accessToken = token.accessToken));
 
         this.sdk.on("connected", payload => {
-          Vue.$log.debug(`LiveChat > Conected`, payload);
+          logger.debug(`LiveChat > Conected`, payload);
           if (payload.chatsSummary.length > 0) {
             this.chatId = payload.chatsSummary[0].id;
             this.lastMessage = payload.chatsSummary[0].lastEventsPerType.message.text;
             this.lastMessageAuthorId = payload.chatsSummary[0].lastEventsPerType.message.author;
-            Vue.$log.debug(`LiveChat > Last Author ID`, this.lastMessageAuthorId);
-            Vue.$log.debug(`LiveChat > Last Message Received`, this.lastMessage);
+            logger.debug(`LiveChat > Last Author ID`, this.lastMessageAuthorId);
+            logger.debug(`LiveChat > Last Message Received`, this.lastMessage);
           }
         });
 
@@ -83,11 +83,11 @@ export class LiveChat {
         this.sdk.on("customer_id", noop);
 
         this.sdk.on("disconnected", reason => {
-          Vue.$log.debug(`LiveChat > disconnected`, reason);
+          logger.debug(`LiveChat > disconnected`, reason);
         });
 
         this.sdk.on("user_data", user => {
-          Vue.$log.debug(`LiveChat > user_data`, user);
+          logger.debug(`LiveChat > user_data`, user);
           if (user.type === "agent") {
             this.agent = user;
           }
@@ -97,21 +97,21 @@ export class LiveChat {
         });
 
         this.sdk.on("user_joined_chat", ({ user, chat }) => {
-          Vue.$log.debug(`LiveChat > user_joined_chat`, user, chat);
-          Vue.$log.debug(
+          logger.debug(`LiveChat > user_joined_chat`, user, chat);
+          logger.debug(
             `LiveChat > user_joined_chat | isLiveChat? ${this.store.state.liveAgent.isLiveChat} | IsAgent? ${user ===
               this.agent.id} `
           );
           this.chatId = chat;
           if (user === this.agent.id && !this.store.state.liveAgent.isLiveChat) {
-            Vue.$log.debug(`LiveChat > Starting live chat form within - user_joined_chat`);
+            logger.debug(`LiveChat > Starting live chat form within - user_joined_chat`);
             this.startLiveChat();
           }
         });
 
         this.sdk.on("thread_summary", threadSummary => {
-          Vue.$log.debug(`LiveChat > thread_summary`, threadSummary);
-          Vue.$log.debug(`LiveChat > Thread Summary: `, threadSummary);
+          logger.debug(`LiveChat > thread_summary`, threadSummary);
+          logger.debug(`LiveChat > Thread Summary: `, threadSummary);
           this.chatId = threadSummary.chat;
           if ("lc2" in threadSummary.properties) {
             try {
@@ -132,28 +132,28 @@ export class LiveChat {
               this.store.commit("PUSH_LIVE_CHAT_STATUS_TO_DIALOG", liveChatStatus); // push the getting message onto the dialog
               this.store.commit("STOP_LIVE_CHAT"); // No need directing all inputs if no chat session started yet
             } catch (e) {
-              Vue.$log.debug(`LiveChat > No lc2 in threadSummary.properties`, e);
+              logger.debug(`LiveChat > No lc2 in threadSummary.properties`, e);
             }
           }
         });
 
         this.sdk.on("new_event", ({ chat, event }) => {
-          Vue.$log.debug(`LiveChat > new_event`, event.type);
+          logger.debug(`LiveChat > new_event`, event.type);
 
           switch (event.type) {
             case "message":
-              Vue.$log.debug(`LiveChat > Message Text`, event.text);
+              logger.debug(`LiveChat > Message Text`, event.text);
               if (!this.chatId) {
                 this.chatId = chat;
               }
-              Vue.$log.debug(`LiveChat > Is live chat enabled?`, this.store.state.liveAgent.isLiveChat);
+              logger.debug(`LiveChat > Is live chat enabled?`, this.store.state.liveAgent.isLiveChat);
 
               if (event.author === this.agent.id) {
                 if (!this.store.state.liveAgent.isLiveChat || !this.store.state.ui.showChatWindow) {
                   this.startLiveChat();
-                  Vue.$log.debug(`LiveChat > Started live chat... from within new_event`);
+                  logger.debug(`LiveChat > Started live chat... from within new_event`);
                 }
-                Vue.$log.debug("new message from agent - ", event.text);
+                logger.debug("new message from agent - ", event.text);
 
                 let liveChatResponse = {
                   type: "liveChatResponse",
@@ -194,7 +194,7 @@ export class LiveChat {
                 );
                 this.store.commit("CLEAR_USER_INPUT");
               } else {
-                Vue.$log.debug("LiveChat > new user message to agent - ", event.text);
+                logger.debug("LiveChat > new user message to agent - ", event.text);
               }
               break;
             default:
@@ -203,7 +203,7 @@ export class LiveChat {
         });
 
         this.sdk.on("user_is_typing", payload => {
-          Vue.$log.debug(`LiveChat > user_is_typing`);
+          logger.debug(`LiveChat > user_is_typing`);
           if (payload.user === this.agent.id) {
             this.store.commit("LIVE_CHAT_LOADING", true);
           } else {
@@ -212,7 +212,7 @@ export class LiveChat {
         });
 
         this.sdk.on("user_stopped_typing", payload => {
-          Vue.$log.debug(`LiveChat > user_stopped_typing`);
+          logger.debug(`LiveChat > user_stopped_typing`);
           if (payload.user === this.agent.id) {
             this.store.commit("LIVE_CHAT_LOADING", false);
           } else {
@@ -221,7 +221,7 @@ export class LiveChat {
         });
 
         this.sdk.on("thread_closed", () => {
-          Vue.$log.debug(`LiveChat > thread_closed`);
+          logger.debug(`LiveChat > thread_closed`);
           if (this.store.state.liveAgent.isLiveChat) {
             let message = "Chat with live agent ended. You are now talking with the virtual assistant. ";
             this.store.commit("RESET_CHAT_TITLE");
@@ -238,17 +238,17 @@ export class LiveChat {
               this.store
                 .dispatch("login")
                 .then(() => {
-                  Vue.$log.debug("LiveChat > Successfully established chat session");
+                  logger.debug("LiveChat > Successfully established chat session");
                 })
                 .catch(err => {
-                  Vue.$log.error("LiveChat > ERROR LOGGING IN TO CHAT: ", err);
+                  logger.error("LiveChat > ERROR LOGGING IN TO CHAT: ", err);
                 });
             }
           }
         });
       }
     } catch (e) {
-      Vue.$log.error("LiveChat > Error Setting Up Live Chat", e);
+      logger.error("LiveChat > Error Setting Up Live Chat", e);
     }
   }
 
@@ -261,7 +261,7 @@ export class LiveChat {
 
   startLiveChat() {
     if (!this.store.state.liveAgent.isLiveChat) {
-      Vue.$log.debug(`LiveChat > startLiveChat`);
+      logger.debug(`LiveChat > startLiveChat`);
       this.store.commit("CHANGE_CHAT_TITLE", `Speaking with ${this.agent.name}`);
       // show typing output agentName + ' is typing...'
 
@@ -279,7 +279,7 @@ export class LiveChat {
       this.store
         .dispatch("openChatWindow", false)
         .then(() => {
-          Vue.$log.debug("LiveChat > Successfully logged into chat");
+          logger.debug("LiveChat > Successfully logged into chat");
           setTimeout(
             function() {
               this.store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
@@ -288,7 +288,7 @@ export class LiveChat {
           ); // only show the chat button after a successful login
         })
         .catch(err => {
-          Vue.$log.error("ERROR OPENING CHAT FROM INCOMING LIVE CHAT MESSAGE: ", err);
+          logger.error("ERROR OPENING CHAT FROM INCOMING LIVE CHAT MESSAGE: ", err);
         });
     }
   }
@@ -299,7 +299,7 @@ export class LiveChat {
    * @param {*} message
    */
   sendMessage(message) {
-    Vue.$log.debug("LiveChat > Sending message to LiveChat Agent:" + message);
+    logger.debug("LiveChat > Sending message to LiveChat Agent:" + message);
     if (this.chatId) {
       this.sdk
         .sendEvent(this.chatId, {
@@ -307,7 +307,7 @@ export class LiveChat {
           text: message
         })
         .catch(error => {
-          Vue.$log.error(`LiveChat > Could not send message to Live Agent`, error);
+          logger.error(`LiveChat > Could not send message to Live Agent`, error);
         });
     } else {
       this.sdk
@@ -321,10 +321,10 @@ export class LiveChat {
         })
         .then(chat => {
           this.chatId = chat;
-          Vue.$log.debug(`Live Chat Response`, chat);
+          logger.debug(`Live Chat Response`, chat);
         })
         .catch(error => {
-          Vue.$log.error("LiveChat > Could not start a live chat message", error);
+          logger.error("LiveChat > Could not start a live chat message", error);
         });
     }
   }

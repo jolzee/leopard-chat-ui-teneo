@@ -381,6 +381,7 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging")("Chat.vue");
 import dayjs from "dayjs";
 import LongPress from "vue-directive-long-press";
 // import ChatBroadcastMessage from "../components/ChatBroadcastMessage";
@@ -557,7 +558,7 @@ export default {
         }
       }
     } catch (e) {
-      this.$log.debug(e);
+      logger.debug(e);
       // do nothing
     }
   },
@@ -621,7 +622,7 @@ export default {
           .post(config.postUrl)
           .send(formData)
           .then(res => {
-            this.$log.debug(res);
+            logger.debug(res);
             if (config.reqUserInputSuccess) {
               self.$store.commit("SET_USER_INPUT", config.reqUserInputSuccess);
             }
@@ -639,7 +640,7 @@ export default {
               "sendUserInput",
               config.teneoFailureQuery ? config.teneoFailureQuery : ""
             );
-            this.$log.error(response);
+            logger.error(response);
           });
 
         // {
@@ -668,13 +669,13 @@ export default {
               `Thanks we have successfully received your file: ${file.name}`
             );
             this.$store.dispatch("sendUserInput").then(() => {
-              this.$log.debug("Upload flag sent to Teneo");
+              logger.debug("Upload flag sent to Teneo");
             });
 
             // var reader = new FileReader();
 
             // reader.onload = function(e) {
-            //   this.$log.debug(e.target.result);
+            //   logger.debug(e.target.result);
             // };
 
             // reader.readAsDataURL(file);
@@ -683,7 +684,7 @@ export default {
         }
         this.progressValue += 10;
       }, 300);
-      this.$log.debug(file);
+      logger.debug(file);
     },
 
     stopAudioCapture() {
@@ -752,7 +753,7 @@ export default {
               }
             })
             .catch(err => {
-              this.$log.error("Error Sending User Input", err);
+              logger.error("Error Sending User Input", err);
             });
         }
         if (!this.isMobileDevice) {

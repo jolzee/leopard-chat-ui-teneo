@@ -1,6 +1,6 @@
+const logger = require("./logging")("livechat-api.js");
 import config from "./livechat-config";
 import axios from "axios";
-import Vue from "vue";
 
 const GET = "GET";
 const { server_url } = config;
@@ -16,18 +16,15 @@ const createApiRequest = (method, route, accessToken, login) => {
       Agent: login
     }
   }).catch(function(error) {
-    Vue.$log.error(error);
+    logger.error(error);
   });
 };
 
 const api = {
   fetchAgents: accessToken => createApiRequest(GET, "/agents", accessToken),
-  fetchAgentRatings: (login, accessToken) =>
-    createApiRequest(GET, "/ratings/week", accessToken, login),
-  fetchAgentAvailability: (login, accessToken) =>
-    createApiRequest(GET, "/availability", accessToken, login),
-  fetchChattingTime: (login, accessToken) =>
-    createApiRequest(GET, "/chatting", accessToken, login)
+  fetchAgentRatings: (login, accessToken) => createApiRequest(GET, "/ratings/week", accessToken, login),
+  fetchAgentAvailability: (login, accessToken) => createApiRequest(GET, "/availability", accessToken, login),
+  fetchChattingTime: (login, accessToken) => createApiRequest(GET, "/chatting", accessToken, login)
 };
 
 export default api;
