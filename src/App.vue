@@ -187,7 +187,7 @@
               style="height: inherit; border-radius: inherit"
             >
               <v-app-bar
-                elevate-on-scroll
+                elevation="4"
                 max-height="64"
                 min-height="64"
                 height="64"
