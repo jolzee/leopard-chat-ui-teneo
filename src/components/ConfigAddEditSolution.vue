@@ -618,6 +618,7 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("ChatAddEditSolution.vue");
+import utils from "@/utils/utils";
 import urlRegex from "url-regex";
 import { COLOR_NAMES } from "../constants/color-names.js";
 import { SOLUTION_DEFAULT } from "../constants/solution-config-default.js";
@@ -634,7 +635,7 @@ export default {
           : "Adding Solution",
       solution:
         this.currentModeEdit === "edit"
-          ? this.cloneObject(this.selectedSolution)
+          ? utils.cloneObject(this.selectedSolution)
           : Object.assign({}, SOLUTION_DEFAULT),
       animations: {
         in: [
@@ -862,7 +863,7 @@ export default {
             this.config.solutions.splice(
               index,
               1,
-              this.cloneObject(this.solution)
+              utils.cloneObject(this.solution)
             );
             break;
           }
@@ -870,8 +871,8 @@ export default {
         // adding a new solution config
       } else {
         logger.debug("About to add a new solution");
-        this.config.solutions.push(this.cloneObject(this.solution));
-        // this.selectedSolution = this.cloneObject(this.solution);
+        this.config.solutions.push(utils.cloneObject(this.solution));
+        // this.selectedSolution = utils.cloneObject(this.solution);
         if (this.config.solutions.length === 1) {
           // first one added. Make it active
           this.config.activeSolution = this.solution.name;

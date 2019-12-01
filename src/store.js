@@ -1,32 +1,23 @@
 /* eslint-disable no-unused-vars */
 import "regenerator-runtime/runtime";
 const logger = require("@/utils/logging").getLogger("store.js");
+import utils from "@/utils/utils";
 import router from "@/router";
 import LiveChat from "@livechat/agent-app-widget-sdk";
 import { accountsSdk } from "@livechat/accounts-sdk";
 import liveChatConfig from "./utils/livechat-config";
-
 import Firebase from "./utils/firebase";
 
 var md = require("markdown-it")({
-  html: true, // Enable HTML tags in source
-  xhtmlOut: true, // Use '/' to close single tags (<br />).
-  // This is only for full CommonMark compatibility.
-  breaks: true, // Convert '\n' in paragraphs into <br>
-  langPrefix: "language-", // CSS language prefix for fenced blocks. Can be
-  // useful for external highlighters.
-  linkify: true, // Autoconvert URL-like text to links
-
-  // Enable some language-neutral replacement + quotes beautification
+  html: true,
+  xhtmlOut: true,
+  breaks: true,
+  langPrefix: "language-",
+  linkify: true,
   typographer: true,
-
-  // Double + single quotes replacement pairs, when typographer enabled,
-  // and smartquotes on. Could be either a String or an Array.
-  //
-  // For example, you can use '«»„“' for Russian, '„“‚‘' for German,
-  // and ['«\xA0', '\xA0»', '‹\xA0', '\xA0›'] for French (including nbsp).
   quotes: "“”‘’"
 });
+
 const superagent = require("superagent");
 import gravatar from "gravatar";
 var stripHtml = require("striptags");
@@ -98,8 +89,8 @@ function storeSetup(vuetify, callback) {
       activeSolution: config.activeSolution,
       connection: {
         requestParameters: config.REQUEST_PARAMETERS,
-        ctxParameters: config.doesParameterExist("teneoCtx")
-          ? JSON.parse(config.getParameterByName("teneoCtx"))
+        ctxParameters: utils.doesParameterExist("teneoCtx")
+          ? JSON.parse(utils.getParameterByName("teneoCtx"))
           : "",
         teneoUrl: config.TENEO_URL
       },
@@ -1561,7 +1552,6 @@ function storeSetup(vuetify, callback) {
           {
             command: "feedback",
             feedback: JSON.stringify(feedback)
-            // userInput: ""
           }
         ).then(() => {
           logger.debug("Feedback sent to Teneo");
@@ -2403,43 +2393,10 @@ function storeSetup(vuetify, callback) {
   // Setup ASR
   initializeASR(store, config.ASR_CORRECTIONS_MERGED);
 
-  // function getHashParam(key) {
-  //   var params = location.hash.substring(1).split("&");
-  //   var value = params.find(function(item) {
-  //     return item.split("=")[0] === key;
-  //   });
-  //   return value ? value.split("=")[1] : "";
-  // }
+  // setup Live Chat
+  if (window.leopardConfig.liveChat.licenseKey) config.setupLiveChat(store);
 
-  // var clientId = "5e68dfc9597a892b27eb97740abe1fee";
-  // var accessToken = getHashParam("access_token");
-  //logger.debug(accessToken);
-
-  // const configG = {
-  //   client_id: "5e68dfc9597a892b27eb97740abe1fee",
-  //   server_url:
-  //     "https://us-central1-livechat-experiments.cloudfunctions.net/restApi",
-  //   account_url: "https://accounts.livechatinc.com/"
-  // };
-
-  // if (accessToken) {
-  //   logger.debug(`ACCESS TOKEN: ${accessToken}`);
-  //   // Setup Live Chat
-  //   logger.debug("Store: setting up live chat");
-  //   config.setupLiveChat(store, clientId, accessToken);
-  // } else {
-  //   logger.debug(window.location.href);
-  //   window.location =
-  //     "https://accounts.livechatinc.com/" +
-  //     "?response_type=token" +
-  //     "&client_id=" +
-  //     clientId +
-  //     "&redirect_uri=" +
-  //     "http://localhost:8080/?dl=usps-fusion";
-  // }
-
-  config.setupLiveChat(store);
-
+  // ok vuetify and store are setup
   callback(vuetify, store);
 }
 
@@ -2447,50 +2404,12 @@ function stoperror() {
   return true;
 }
 
-// function isChatOpenLocalStorage() {
-//   logger.debug(`store: isChatOpenLocalStorage`);
-//   let isChatOpen = localStorage.getItem("isChatOpen");
-
-//   if (isChatOpen === null) {
-//     isChatOpen = false;
-//   } else {
-//     isChatOpen = JSON.parse(isChatOpen);
-//   }
-
-//   logger.debug(isChatOpen);
-//   let result = false;
-
-//   if (isChatOpen) {
-//     logger.debug(`store: isChatOpenLocalStorage: send message to parent: OPEN`);
-//     sendMessageToParent("showLeopard");
-//     logger.debug("Initial Chat Window State = Open");
-//     result = true;
-//   } else {
-//     localStorage.setItem("isChatOpen", "false");
-//     logger.debug(`store: isChatOpenLocalStorage: send message to parent: CLOSE`);
-//     sendMessageToParent("hideLeopard");
-//     logger.debug("Initial Chat Window State = Closed");
-//     result = false;
-//   }
-//   logger.debug("isChatOpenLocalStorage: " + result);
-//   logger.debug(`Local Storage Finally Thinks "isChatOpenLocalStorage": ${result}`);
-//   return result;
-// }
-
 function sendMessageToParent(message) {
   logger.debug(`store: sendMessageToParent: ${message}`);
   if (parent) {
     parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
     logger.debug("Message from Leopard >> Embed : " + message);
   }
-}
-
-function decodeHTML(html) {
-  var txt = document.createElement("textarea");
-  logger.debug(html);
-  txt.innerHTML = html;
-  logger.debug(txt.value);
-  return txt.value;
 }
 
 function receiveMessageFromParent(event) {
@@ -2530,4 +2449,4 @@ function receiveMessageFromParent(event) {
   }
 }
 
-window.addEventListener("message", receiveMessageFromParent);
+if (config.EMBED) window.addEventListener("message", receiveMessageFromParent);

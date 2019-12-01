@@ -1,4 +1,5 @@
 const logger = require("@/utils/logging").getLogger("setup.js");
+import utils from "@/utils/utils";
 import { Ripple } from "vuetify/lib/directives";
 import replaceString from "replace-string";
 const superagent = require("superagent");
@@ -40,7 +41,6 @@ if (
 // End LogRocket Setup
 
 // start sentry
-
 if (
   window.window.leopardConfig.isProduction &&
   window.window.leopardConfig.logging.sentryDsn
@@ -66,10 +66,10 @@ export default class Setup {
     this.ASR_CORRECTIONS_MERGED;
     this.liveChat;
     this.CHAT_TITLE = "Configure Me";
-    this.IS_AGENT_ASSIST = this.doesParameterExist("plugin_id");
+    this.IS_AGENT_ASSIST = utils.doesParameterExist("plugin_id");
     this.EMBED =
-      this.doesParameterExist("embed") || this.doesParameterExist("button");
-    this.SHOW_BUTTON_ONLY = this.doesParameterExist("button");
+      utils.doesParameterExist("embed") || utils.doesParameterExist("button");
+    this.SHOW_BUTTON_ONLY = utils.doesParameterExist("button");
     this.ENABLE_LIVE_CHAT = false;
     this.FLOAT = false;
     this.THEME = {
@@ -111,7 +111,7 @@ export default class Setup {
 
           if (this.chatConfig && this.chatConfig.activeSolution) {
             logger.debug(`Active Solution: ${this.chatConfig.activeSolution}`);
-            let deepLink = this.getParameterByName("dl"); // look for deep link
+            let deepLink = utils.getParameterByName("dl"); // look for deep link
             if (!deepLink) {
               logger.debug(
                 `No deep link found in the current url - load default solution`
@@ -173,7 +173,7 @@ export default class Setup {
 
             this.ENABLE_LIVE_CHAT =
               this.activeSolution.enableLiveChat &&
-              !this.doesParameterExist("plugin_id");
+              !utils.doesParameterExist("plugin_id");
             this.UNIQUE_KEY =
               this.activeSolution.deepLink +
               (window.location.href.indexOf("mobile=true") > -1
@@ -417,26 +417,6 @@ export default class Setup {
       .toString()
       .replace(/^[^/]+\/\*!?/, "")
       .replace(/\*\/[^/]+$/, "");
-  }
-
-  doesParameterExist(name) {
-    var queryString = location.search;
-    var params = queryString.substring(1).split("&");
-    for (var i = 0; i < params.length; i++) {
-      var pair = params[i].split("=");
-      if (decodeURIComponent(pair[0]) == name) return true;
-    }
-    return false;
-  }
-
-  getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-      results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return "";
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
   }
 
   setupPusher() {

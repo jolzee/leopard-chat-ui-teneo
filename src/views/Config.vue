@@ -1,12 +1,6 @@
 <template>
   <div>
-    <v-dialog
-      v-model="showModal"
-      fullscreen
-      :persistent="true"
-      :hide-overlay="true"
-      light
-    >
+    <v-dialog v-model="showModal" fullscreen persistent hide-overlay light>
       <v-card style="background-color: #FAFAFA">
         <v-toolbar fixed color="grey lighten-2">
           <v-col cols="12" :sm="8">
@@ -535,6 +529,7 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("Config.vue");
+import utils from "@/utils/utils";
 import dayjs from "dayjs";
 import copy from "copy-to-clipboard";
 import {
@@ -637,10 +632,6 @@ export default {
       }
     },
     createShareLinkForSolution() {
-      // let configValue = encodeURIComponent(
-      //   JSON.stringify(this.selectedSolution)
-      // );
-
       let configValue = encodeURIComponent(
         jsonpack.pack(this.selectedSolution)
       );
@@ -665,7 +656,7 @@ export default {
       this.saveToLocalStorage();
       const self = this;
       setTimeout(function() {
-        self.solution = self.cloneObject(SOLUTION_DEFAULT);
+        self.solution = utils.cloneObject(SOLUTION_DEFAULT);
       }, 1000);
     },
     toggleDisplayOfSolutionConfig() {
@@ -789,38 +780,19 @@ export default {
         solution => solution.name === solutionName
       );
     },
-    randId() {
-      return Math.random()
-        .toString(36)
-        .replace(/[^a-z]+/g, "")
-        .substr(2, 10);
-    },
-    cloneObject(obj) {
-      // this is a deep clone
-      return JSON.parse(JSON.stringify(obj));
-    },
-    doesParameterExist(name) {
-      var queryString = location.search;
-      var params = queryString.substring(1).split("&");
-      for (var i = 0; i < params.length; i++) {
-        var pair = params[i].split("=");
-        if (decodeURIComponent(pair[0]) == name) return true;
-      }
-      return false;
-    },
     refreshBrowser() {
       this.refresh = true;
       sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
       let addtionalParams = "";
-      if (this.doesParameterExist("plugin_id")) {
+      if (utils.doesParameterExist("plugin_id")) {
         const params = new URLSearchParams(window.location.search);
         const pluginId = params.get("plugin_id");
         addtionalParams += `&plugin_id=${pluginId}`;
       }
-      if (this.doesParameterExist("embed")) {
+      if (utils.doesParameterExist("embed")) {
         addtionalParams += "&embed";
       }
-      if (this.doesParameterExist("button")) {
+      if (utils.doesParameterExist("button")) {
         addtionalParams += "&button";
       }
       window.location = `${location.protocol}//${location.host}${location.pathname}?dl=${this.selectedSolution.deepLink}${addtionalParams}`;
@@ -832,7 +804,7 @@ export default {
       if (this.selectedSolution !== null) {
         this.dialogTitle = "Editing Solution";
         this.currentModeEdit = "edit";
-        this.solution = this.cloneObject(this.selectedSolution); // make a copy - we have a save button
+        this.solution = utils.cloneObject(this.selectedSolution); // make a copy - we have a save button
         this.showAddEditDialog();
       }
     },
@@ -842,7 +814,7 @@ export default {
     },
     cloneSolution() {
       const newName = this.selectedSolution.name + " - Copy";
-      let clonedSolution = this.cloneObject(this.selectedSolution);
+      let clonedSolution = utils.cloneObject(this.selectedSolution);
       clonedSolution.name = newName;
       const duplicateSolutions = this.config.solutions.filter(
         solution => solution.name === newName
@@ -852,7 +824,7 @@ export default {
       }
       clonedSolution.deepLink = clonedSolution.deepLink + "-" + this.randId();
       this.config.solutions.push(clonedSolution);
-      this.selectedSolution = this.cloneObject(clonedSolution);
+      this.selectedSolution = utils.cloneObject(clonedSolution);
       this.displaySnackBar(
         "Solution was cloned. New name is " + clonedSolution.name,
         3000
@@ -877,10 +849,10 @@ export default {
         );
         if (this.config.solutions.length === 1) {
           this.config.activeSolution = this.config.solutions[0].name;
-          this.selectedSolution = this.cloneObject(this.config.solutions[0]);
+          this.selectedSolution = utils.cloneObject(this.config.solutions[0]);
         } else if (this.config.solutions.length > 1) {
           let self = this;
-          this.selectedSolution = this.cloneObject(
+          this.selectedSolution = utils.cloneObject(
             this.config.solutions.find(function(solution) {
               return solution.name === self.config.activeSolution;
             })
@@ -944,7 +916,7 @@ export default {
     },
     addSolution() {
       this.dialogTitle = "Creating a new solution configuration";
-      this.solution = this.cloneObject(SOLUTION_DEFAULT);
+      this.solution = utils.cloneObject(SOLUTION_DEFAULT);
       const self = this;
       this.showAddEditDialog();
       setTimeout(function() {
@@ -956,27 +928,6 @@ export default {
     },
     showUploadDialog() {
       this.uploadDialog = true;
-    },
-
-    getBase64Image(img) {
-      // bannerImage = document.getElementById("bannerImg");
-      // imgData = getBase64Image(bannerImage);
-      // localStorage.setItem("imgData", imgData);
-
-      // var dataImage = localStorage.getItem('imgData');
-      // bannerImg = document.getElementById('tableBanner');
-      // bannerImg.src = "data:image/png;base64," + dataImage;
-
-      var canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
-
-      var ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0);
-
-      var dataURL = canvas.toDataURL("image/png");
-
-      return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
     }
   }
 };
