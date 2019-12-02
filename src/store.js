@@ -70,14 +70,18 @@ Vue.component(
 Vue.config.productionTip = false;
 let liveChatAssistConnectCount = 0;
 
-export default function getStore(callback) {
-  config
-    .init()
-    .then(vuetify => storeSetup(vuetify, callback))
-    .catch(error => logger.error(`ERROR setting up Leopard`, error));
+export default function getStore() {
+  return new Promise((resolve, reject) => {
+    config
+      .init()
+      .then(vuetify => {
+        resolve(storeSetup(vuetify));
+      })
+      .catch(error => reject(error));
+  });
 }
 
-function storeSetup(vuetify, callback) {
+function storeSetup(vuetify) {
   store = new Vuex.Store({
     plugins: [...(config.logrocketPlugin ? [config.logrocketPlugin] : [])],
     state: {
@@ -1961,6 +1965,12 @@ function storeSetup(vuetify, callback) {
             context.getters.userInformationParams +
             context.getters.timeZoneParam +
             context.getters.ctxParameters;
+
+          logger.debug("Question 💬", currentUserInput.trim());
+          logger.debug(
+            "Call Teneo",
+            `${teneoUrl}&userinput=${currentUserInput.trim()}`
+          );
           Vue.jsonp(teneoUrl, {
             userinput: currentUserInput.trim()
           })
@@ -2195,7 +2205,10 @@ function storeSetup(vuetify, callback) {
                   });
               }
 
-              logger.debug(decodeURIComponent(json.responseData.answer));
+              logger.debug(
+                `Response 💬: `,
+                decodeURIComponent(json.responseData.answer)
+              );
               const response = {
                 userInput: currentUserInput,
                 id: uuidv1(),
@@ -2397,7 +2410,7 @@ function storeSetup(vuetify, callback) {
   if (window.leopardConfig.liveChat.licenseKey) config.setupLiveChat(store);
 
   // ok vuetify and store are setup
-  callback(vuetify, store);
+  return { vuetify, store };
 }
 
 function stoperror() {

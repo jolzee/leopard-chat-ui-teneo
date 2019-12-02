@@ -32,11 +32,11 @@ if (!utils.doesParameterExist("embed") && !utils.doesParameterExist("button")) {
 import(/* webpackChunkName: "leopardConfig" */ "./utils/leopardConfig").then(
   config => {
     window.leopardConfig = config.default;
-    logger.debug(`Setup > Leopard Config: `, window.leopardConfig);
+    logger.info(`🐆 Leopard Config: `, window.leopardConfig);
 
     import("./store")
-      .then(store => {
-        store.default((vuetify, store) => {
+      .then(builder => {
+        builder.default().then(({ vuetify, store }) => {
           new Vue({
             router,
             store,

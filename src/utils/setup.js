@@ -107,7 +107,7 @@ export default class Setup {
             this.addIframeHtml();
           }
 
-          logger.debug(`Active Solution Config: `, this.chatConfig);
+          logger.info(`Active Solution Config: `, this.chatConfig);
 
           if (this.chatConfig && this.chatConfig.activeSolution) {
             logger.debug(`Active Solution: ${this.chatConfig.activeSolution}`);

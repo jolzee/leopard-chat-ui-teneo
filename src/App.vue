@@ -420,7 +420,7 @@ export default {
     this.$store.dispatch("setupLiveChatAgentAssist"); // only enabled in certain scenario
   },
   mounted() {
-    logger.debug("Is embed? ", this.embed);
+    logger.debug("Is embed in production? ", this.embed);
     window.addEventListener("resize", this.onResizeOrEmbed);
     // deal with import of solution
     const urlParams = new URLSearchParams(window.location.search);
@@ -430,7 +430,7 @@ export default {
       this.importDialogMessages.message = `Do you want to import this solution?`;
       this.importDialogMessages.name = this.importedSolution.name;
       this.importDialogMessages.deepLink = this.importedSolution.deepLink;
-      logger.debug(solConfig);
+      logger.debug(`Importing the following solution config`, solConfig);
       this.importDialog = true;
     }
     // this.toggleChat(); // will automatically open the chat window on load
@@ -472,8 +472,7 @@ export default {
       "socialAuthEnabled"
     ]),
     shouldFloat() {
-      logger.debug(this.float);
-      logger.debug(this.$router.currentRoute.path !== "/config");
+      logger.debug(`Show Leopard floating?`, this.float);
       if (this.float && this.$router.currentRoute.path !== "/config") {
         return true;
       } else {
@@ -567,32 +566,24 @@ export default {
       }
 
       let result = false;
-      logger.debug(`App.vue:isChatOpenLocalStorage: ${isChatOpen}`);
+      logger.debug(`isChatOpenLocalStorage: ${isChatOpen}`);
       if (isChatOpen) {
         this.$store.commit("SHOW_CHAT_WINDOW");
         this.$store.commit("HIDE_CHAT_LOADING");
         this.sendMessageToParent("showLeopard");
-        logger.debug(
-          "App.vue:isChatOpenLocalStorage: Sent Parent Message to OPEN"
-        );
+        logger.debug("Leopard Sent Parent Message to OPEN");
         result = true;
       } else {
         this.$store.commit("HIDE_CHAT_WINDOW");
         localStorage.setItem("isChatOpen", "false");
         this.sendMessageToParent("hideLeopard");
-        logger.debug(
-          "App.vue:isChatOpenLocalStorage: Sent Parent Message to HIDE"
-        );
+        logger.debug("Leopard Sent Parent Message to HIDE");
         result = false;
       }
-      logger.debug("isChatOpenLocalStorage: " + result);
-      logger.debug(
-        `App.vue:isChatOpenLocalStorage:Local Storage Thinks "isChatOpenLocalStorage": ${result}`
-      );
+      logger.debug(`Local Storage Thinks "isChatOpenLocalStorage": ${result}`);
       return result;
     },
     sendMessageToParent(message) {
-      logger.debug(`App.vue: sendMessageToParent: ${message}`);
       if (parent) {
         parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
         logger.debug("Message from Leopard >> Embed : " + message);
@@ -624,17 +615,18 @@ export default {
         if (existingSolutionsWithName > 0) {
           this.config.solutions.splice(existingSolutionsWithName, 1);
         }
+        ``;
         this.config.solutions.push(this.importedSolution);
       }
       this.config.activeSolution = this.importedSolution.name;
       let deepLinkUrl = `${location.protocol}//${location.host}${location.pathname}?dl=${this.importedSolution.deepLink}`;
       localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
-      logger.debug(deepLinkUrl);
+      logger.debug(`Deep Link Url: `, deepLinkUrl);
       window.location.href = deepLinkUrl;
     },
     closeChatEmbedded() {
       this.calculateMobileHeight(); // only called on mobile devices
-      logger.debug("App.vue: closeChatEmbedded");
+      logger.debug("Close Chat Embedded");
       this.$store.commit("HIDE_CHAT_BUTTON");
       this.$store.commit("HIDE_CHAT_WINDOW_DISPLAY_EMBED");
       setTimeout(
@@ -646,7 +638,7 @@ export default {
     },
     openEmbedButton() {
       this.calculateMobileHeight(); // only called on mobile devices
-      logger.debug("App.vue: openEmbedButton");
+      logger.debug("Open Chat Window from Embed Button");
       this.$store.commit("HIDE_CHAT_BUTTON");
       this.$store.commit("OPEN_CHAT_WINDOW_DISPLAY_EMBED");
       setTimeout(
@@ -708,13 +700,12 @@ export default {
       if (this.isMobileDevice) {
         // on mobile devices open the chat window automatically
         // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
-        logger.debug("Calculating the View Height in JS");
+        logger.debug("Mobile device - Calculating the View Height in JS");
         let vh = null;
-        logger.debug(`App.vue: onResizeOrEmbed`);
         if (this.embed && parent) {
           var parentHeight = parent.getLeopardElementHeight();
           // let parentHeight = localStorage.getItem(STORAGE_KEY + "parentHeight");
-          logger.debug(`onResizeOrEmbed >>> Frame Height: ${parentHeight}`);
+          logger.debug(`Frame Height: ${parentHeight}`);
           vh = parentHeight * 0.01;
           this.parentHeight = parentHeight;
           logger.debug(`Parent Height: ${parentHeight}`);
@@ -745,7 +736,9 @@ export default {
           !this.loginPerformed &&
           this.dialogs.length === 0)
       ) {
-        logger.debug("onResizeOrEmbed: Send Login");
+        logger.debug(
+          "Window width is narrow. Determined that we need to send login"
+        );
         logger.debug(
           `onResizeOrEmbed: Has Login Been Performed? ${this.loginPerformed}`
         );
@@ -763,9 +756,7 @@ export default {
       } else {
         this.$store.commit("HIDE_CHAT_LOADING");
       }
-      logger.debug(
-        `onResizeOrEmbed: AGAIN Has Login Been Performed? ${this.loginPerformed}`
-      );
+      logger.debug(`AGAIN Has Login Been Performed? ${this.loginPerformed}`);
       if (this.$router.currentRoute.path === "/config") {
         return;
       }
@@ -773,9 +764,7 @@ export default {
         (window.innerWidth <= 480 && !this.embed) ||
         (this.embed && this.isChatOpenLocalStorage())
       ) {
-        logger.debug(
-          `App.vue:onResizeOrEmbed:window.innerWidth <= 480 && !this.embed`
-        );
+        logger.debug(`window.innerWidth <= 480 && !this.embed`);
         this.$store.commit("HIDE_CHAT_BUTTON");
         this.$store.commit("SHOW_CHAT_WINDOW"); // show the chat window
         //animate the IFrame
