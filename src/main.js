@@ -4,15 +4,9 @@ import "custom-event-polyfill";
 import "element-matches";
 import smoothscroll from "smoothscroll-polyfill";
 smoothscroll.polyfill();
-import utils from "@/utils/utils";
 const logger = require("@/utils/logging").getLogger("main.js");
+import utils from "@/utils/utils";
 import Vue from "vue";
-import "./utils/vee-validate";
-import "./utils/drag";
-// import "@mdi/font/css/materialdesignicons.css";
-import "vue-loaders/dist/vue-loaders.css";
-import "plyr/dist/plyr.css";
-import "vue2-animate/dist/vue2-animate.min.css";
 import App from "./App";
 import router from "./router";
 

@@ -9,6 +9,7 @@ function loadView(view) {
     import(/* webpackChunkName: "view-[request]" */ `@/views/${view}.vue`);
 }
 
+logger.debug(`Setting up Vue Router`);
 export default new Router({
   routes: [
     {

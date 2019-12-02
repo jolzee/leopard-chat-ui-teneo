@@ -1,7 +1,7 @@
 export const SOLUTION_DEFAULT = {
   asrCorrections: `
 replacethis | with that
-replacethat | with this
+replace that | with this
 okkay | ok
 `,
   chatTitle: "Teneo Chat Client",
@@ -18,8 +18,8 @@ okkay | ok
     }
   ],
   animations: {
-    in: "rotateInUpRight",
-    out: "zoomOutDown"
+    in: "slideInUp",
+    out: "flipOutY"
   },
   deepLink: "",
   enableLiveChat: true,
@@ -27,11 +27,11 @@ okkay | ok
   pulseButton: true,
   promptTriggers: {
     enabled: false,
-    pollSeconds: "5"
+    pollSeconds: "10"
   },
   iframeUrl: "",
   knowledgeData: ["What's your name?", "Who created you?"],
-  locale: "en-us-female",
+  locale: "en-uk-female",
   longResponsesInModal: false,
   name: "",
   responseIcon: "mdi-comment-account",

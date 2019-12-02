@@ -7,6 +7,13 @@ import PromisedLocation from "promised-location";
 
 import { COLOR_NAMES } from "../constants/color-names.js";
 import Vue from "vue";
+import "@/utils/vee-validate";
+import "@/utils/drag";
+import "vue-loaders/dist/vue-loaders.css";
+import "plyr/dist/plyr.css";
+import "vue2-animate/dist/vue2-animate.min.css";
+// import "@mdi/font/css/materialdesignicons.css";
+
 import Vuetify from "vuetify/lib";
 Vue.use(Vuetify, {
   directives: {
