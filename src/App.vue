@@ -675,7 +675,7 @@ export default {
       );
 
       // this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // was removed
-
+      this.loginPerformed = false;
       // now end the Teneo Session - user clicked the close button - intention is clear
       this.$store.dispatch("endSession").then(() => {
         this.$store.commit("CLEAR_CHAT_HISTORY"); // clear the dialogs once we have successfully ended the session
@@ -858,7 +858,7 @@ export default {
         //   }.bind(this),
         //   100
         // );
-
+        this.loginPerformed = false;
         // now end the Teneo Session - user clicked the close button - intention is clear
         this.$store.dispatch("endSession").then(() => {
           this.$store.commit("CLEAR_CHAT_HISTORY"); // clear the dialogs once we have successfully ended the session
@@ -1057,8 +1057,8 @@ a:focus {
 
 #chat-open-close-button {
   position: fixed;
-  bottom: 10vh;
-  right: 3vw;
+  bottom: 60px;
+  right: 60px;
 }
 
 .move-button-left-float {
