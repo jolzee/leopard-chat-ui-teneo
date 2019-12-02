@@ -5,7 +5,7 @@ var BrotliPlugin = require("brotli-webpack-plugin");
 var WebpackDeletePlugin = require("webpack-delete-plugin");
 
 // const prod = process.env.NODE_ENV === "production";
-// const dev = process.env.NODE_ENV === "development";
+const dev = process.env.NODE_ENV === "development";
 // var const = process.env.NODE_ENV === "qa";
 const enableJavaScriptCompression = process.env
   .VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
@@ -131,7 +131,7 @@ let buildConfig = {
   ]
 };
 
-if (useInternalSolutionConfig) {
+if (useInternalSolutionConfig && !dev) {
   buildConfig.configureWebpack.plugins.push(
     new WebpackDeletePlugin([
       "./dist/static/default.json",
