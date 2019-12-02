@@ -1,6 +1,13 @@
 <template>
   <div>
-    <v-dialog v-model="showModal" fullscreen persistent hide-overlay light>
+    <v-dialog
+      v-model="showModal"
+      fullscreen
+      persistent
+      no-click-animation
+      hide-overlay
+      light
+    >
       <v-card style="background-color: #FAFAFA">
         <v-toolbar fixed color="grey lighten-2">
           <v-col cols="12" :sm="8">
