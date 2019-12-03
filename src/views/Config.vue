@@ -8,7 +8,7 @@
       max-height="auto"
       no-click-animation
       hide-overlay
-      max-width="calc(1200px - 10vw)"
+      max-width="calc(900px - 10vw)"
       :fullscreen="
         fullscreen ||
           $vuetify.breakpoint.xs ||
