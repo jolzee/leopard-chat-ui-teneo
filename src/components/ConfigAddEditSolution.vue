@@ -775,6 +775,15 @@ export default {
         "id"
       ],
       chatIcons: [
+        "mdi-comment-arrow-left",
+        "mdi-comment-arrow-left-outline",
+        "mdi-comment-arrow-right",
+        "mdi-comment-arrow-right-outline ",
+        "mdi-comment-question",
+        "mdi-comment-question-outline",
+        "mdi-comment-quote",
+        "mdi-comment-quote-outline",
+        "mdi-comment-text-outline",
         "mdi-message-text",
         "mdi-message-outline",
         "mdi-message",

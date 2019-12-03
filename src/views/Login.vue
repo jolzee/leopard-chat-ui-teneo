@@ -111,6 +111,10 @@ export default {
       }
     };
   },
+  beforeRouteLeave(from, to, next) {
+    this.$emit("closeMenu");
+    next();
+  },
   methods: {
     hideErrorMessage() {
       this.errorMessage = "";
