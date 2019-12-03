@@ -7,7 +7,7 @@
       scrollable
       max-height="auto"
       no-click-animation
-      hide-overlay
+      overlay-opacity="0.7"
       max-width="calc(900px - 10vw)"
       :fullscreen="
         fullscreen ||
