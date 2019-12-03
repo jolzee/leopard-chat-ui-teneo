@@ -2,10 +2,16 @@
   <div>
     <v-dialog
       v-model="showModal"
-      fullscreen
       persistent
+      max-height="auto"
       no-click-animation
       hide-overlay
+      max-width="calc(1200px - 10vw)"
+      :fullscreen="
+        $vuetify.breakpoint.xs ||
+          $vuetify.breakpoint.sm ||
+          $vuetify.breakpoint.md
+      "
       light
     >
       <v-card style="background-color: #FAFAFA">
@@ -26,7 +32,7 @@
                   <v-icon>mdi-refresh</v-icon>
                 </v-btn>
               </v-fab-transition>
-              <v-tooltip open-delay="600" bottom>
+              <v-tooltip open-delay="300" bottom color="green">
                 <template v-slot:activator="{ on, attrs }">
                   <v-fab-transition>
                     <v-btn
@@ -48,9 +54,12 @@
                     </v-btn>
                   </v-fab-transition>
                 </template>
-                <span>Deep Link Mobile</span>
+                <span
+                  >Open mobile view in new page |
+                  {{ getSelectedSolutionName }}</span
+                >
               </v-tooltip>
-              <v-tooltip open-delay="600" bottom>
+              <v-tooltip open-delay="300" bottom color="green">
                 <template v-slot:activator="{ on, attrs }">
                   <v-fab-transition>
                     <v-btn
@@ -71,7 +80,10 @@
                     </v-btn>
                   </v-fab-transition>
                 </template>
-                <span>Deep Link Desktop</span>
+                <span
+                  >Reload page to the active solution |
+                  {{ getSelectedSolutionName }}</span
+                >
               </v-tooltip>
               <v-toolbar-title class="d-none d-sm-none d-md-inline text-left"
                 >Configuration</v-toolbar-title
@@ -115,7 +127,7 @@
                 <v-card>
                   <v-card-title primary-title>
                     <div>
-                      <h3 class="headline mb-0">Solution Config</h3>
+                      <h3 class="headline mb-0">Solution Management</h3>
                       <div>
                         <v-container fluid>
                           <v-row>
@@ -150,7 +162,7 @@
                           </v-row>
                           <v-row>
                             <v-col>
-                              <v-tooltip open-delay="600" bottom>
+                              <v-tooltip open-delay="300" bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-fab-transition>
                                     <v-btn
@@ -172,7 +184,7 @@
                               </v-tooltip>
 
                               <template v-if="selectedSolution">
-                                <v-tooltip open-delay="600" bottom>
+                                <v-tooltip open-delay="300" bottom>
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-fab-transition>
                                       <v-btn
@@ -200,12 +212,12 @@
                                     </v-fab-transition>
                                   </template>
                                   <span
-                                    >Make the selected solution the active
-                                    solution. An active solution can be accessed
-                                    without the deep link</span
+                                    >Make the "{{ getSelectedSolutionName }}"
+                                    the active solution. An active solution can
+                                    be accessed without the deep link</span
                                   >
                                 </v-tooltip>
-                                <v-tooltip open-delay="600" bottom>
+                                <v-tooltip open-delay="300" bottom>
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-fab-transition>
                                       <v-btn
@@ -224,9 +236,12 @@
                                       </v-btn>
                                     </v-fab-transition>
                                   </template>
-                                  <span>Edit selected solution</span>
+                                  <span
+                                    >Edit solution |
+                                    {{ getSelectedSolutionName }}</span
+                                  >
                                 </v-tooltip>
-                                <v-tooltip open-delay="600" bottom>
+                                <v-tooltip open-delay="300" bottom>
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-fab-transition>
                                       <v-btn
@@ -245,9 +260,12 @@
                                       </v-btn>
                                     </v-fab-transition>
                                   </template>
-                                  <span>Clone selected solution</span>
+                                  <span
+                                    >Clone solution |
+                                    {{ getSelectedSolutionName }}</span
+                                  >
                                 </v-tooltip>
-                                <v-tooltip open-delay="600" bottom>
+                                <v-tooltip open-delay="300" bottom>
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-fab-transition>
                                       <v-btn
@@ -266,9 +284,12 @@
                                       </v-btn>
                                     </v-fab-transition>
                                   </template>
-                                  <span>Delete selected solution</span>
+                                  <span
+                                    >Delete solution |
+                                    {{ getSelectedSolutionName }}</span
+                                  >
                                 </v-tooltip>
-                                <v-tooltip open-delay="600" bottom>
+                                <v-tooltip open-delay="300" bottom>
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-fab-transition>
                                       <v-btn
@@ -290,11 +311,11 @@
                                     </v-fab-transition>
                                   </template>
                                   <span
-                                    >Copy selected solution config to
-                                    clipboard</span
+                                    >Copy config to clipboard |
+                                    {{ getSelectedSolutionName }}</span
                                   >
                                 </v-tooltip>
-                                <v-tooltip open-delay="600" bottom>
+                                <v-tooltip open-delay="300" bottom>
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-fab-transition>
                                       <v-btn
@@ -314,11 +335,11 @@
                                     </v-fab-transition>
                                   </template>
                                   <span
-                                    >Download selected solution's config as a
-                                    file</span
+                                    >Download config |
+                                    {{ getSelectedSolutionName }}</span
                                   >
                                 </v-tooltip>
-                                <v-tooltip open-delay="600" bottom>
+                                <v-tooltip open-delay="300" bottom>
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-fab-transition>
                                       <v-btn
@@ -338,8 +359,8 @@
                                     </v-fab-transition>
                                   </template>
                                   <span
-                                    >Generate sharable link for team
-                                    members</span
+                                    >Generate sharable link for team members |
+                                    {{ getSelectedSolutionName }}</span
                                   >
                                 </v-tooltip>
                               </template>
@@ -357,11 +378,10 @@
                 <v-card class="pb-3">
                   <v-card-title primary-title>
                     <div>
-                      <h3 class="headline mb-3">Upload / Download / Help</h3>
+                      <h3 class="headline mb-3">Import / Export</h3>
                       <div>
                         <!-- show the nicely formatted view of the full configuration -->
-
-                        <v-tooltip open-delay="600" bottom>
+                        <v-tooltip open-delay="300" bottom>
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn
                               aria-label="Upload new or additional solution configurations"
@@ -382,7 +402,7 @@
                             backup</span
                           >
                         </v-tooltip>
-                        <v-tooltip open-delay="600" bottom>
+                        <v-tooltip open-delay="300" bottom>
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn
                               aria-label="Copy all solution configurations to the clipboard"
@@ -405,7 +425,7 @@
                             clipboard</span
                           >
                         </v-tooltip>
-                        <v-tooltip open-delay="600" bottom>
+                        <v-tooltip open-delay="300" bottom>
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn
                               aria-label="Download all solution configurations as a JSON file"
@@ -426,10 +446,10 @@
                             file</span
                           >
                         </v-tooltip>
-                        <v-tooltip open-delay="600" bottom>
+                        <v-tooltip open-delay="300" bottom>
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn
-                              aria-label="Toggle a visual display of all solution configurations as JSON Toggle a visual display of all solution configurations as JSON Toggle a visual display of all solution configurations as JSON"
+                              aria-label="Toggle a visual display of all solution configurations as JSON"
                               class="mr-2 mt-2"
                               v-bind="attrs"
                               v-on="on"
@@ -451,7 +471,7 @@
                             solutions</span
                           >
                         </v-tooltip>
-                        <v-tooltip open-delay="600" bottom>
+                        <v-tooltip open-delay="300" bottom>
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn
                               aria-label="Open documentation for Leopard's Chat UI"
@@ -465,7 +485,7 @@
                               href="https://jolzee.gitbook.io/leopard/"
                               target="_blank"
                             >
-                              <v-icon dark>mdi-lifebuoy</v-icon>
+                              <v-icon dark>mdi-comment-question</v-icon>
                             </v-btn>
                           </template>
                           <span>Help / Documentation</span>
@@ -564,6 +584,13 @@
             </v-dialog>
           </v-col>
         </v-container>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="secondary white--text" small @click="$router.push('/')"
+            >{{ $t("back.to.chat.button") }}
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <ConfigAddEditSolution
@@ -647,6 +674,14 @@ export default {
     }
   },
   computed: {
+    getSelectedSolutionName() {
+      let solutionName = "None Selected";
+      if (this.selectedSolution && this.selectedSolution.name) {
+        solutionName = this.selectedSolution.name;
+        logger.debug(`Current Solution Name`, solutionName);
+      }
+      return solutionName;
+    },
     sortedSolutions() {
       return this.config.solutions.slice().sort(this.compareSolutions);
     },
@@ -860,21 +895,25 @@ export default {
       );
     },
     refreshBrowser() {
-      this.refresh = true;
-      sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
-      let addtionalParams = "";
-      if (utils.doesParameterExist("plugin_id")) {
-        const params = new URLSearchParams(window.location.search);
-        const pluginId = params.get("plugin_id");
-        addtionalParams += `&plugin_id=${pluginId}`;
+      if (this.selectedSolution) {
+        this.refresh = true;
+        sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
+        let addtionalParams = "";
+        if (utils.doesParameterExist("plugin_id")) {
+          const params = new URLSearchParams(window.location.search);
+          const pluginId = params.get("plugin_id");
+          addtionalParams += `&plugin_id=${pluginId}`;
+        }
+        if (utils.doesParameterExist("embed")) {
+          addtionalParams += "&embed";
+        }
+        if (utils.doesParameterExist("button")) {
+          addtionalParams += "&button";
+        }
+        window.location = `${location.protocol}//${location.host}${location.pathname}?dl=${this.selectedSolution.deepLink}${addtionalParams}`;
+      } else {
+        window.location = `${location.protocol}//${location.host}${location.pathname}`;
       }
-      if (utils.doesParameterExist("embed")) {
-        addtionalParams += "&embed";
-      }
-      if (utils.doesParameterExist("button")) {
-        addtionalParams += "&button";
-      }
-      window.location = `${location.protocol}//${location.host}${location.pathname}?dl=${this.selectedSolution.deepLink}${addtionalParams}`;
     },
     saveToLocalStorage() {
       localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));

@@ -316,7 +316,7 @@
               <v-col :cols="12" :lg="4">
                 <v-subheader class="mb-2"
                   >Theme
-                  <v-tooltip open-delay="600" bottom>
+                  <v-tooltip open-delay="300" bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         class="mx-2"

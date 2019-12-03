@@ -36,6 +36,10 @@ export default {
       loading: false
     };
   },
+  beforeRouteLeave(from, to, next) {
+    this.$emit("closeMenu");
+    next();
+  },
   computed: {}
 };
 </script>

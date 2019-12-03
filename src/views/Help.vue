@@ -27,6 +27,10 @@ export default {
   data() {
     return {};
   },
+  beforeRouteLeave(from, to, next) {
+    this.$emit("closeMenu");
+    next();
+  },
   computed: {
     knowledgeData() {
       return this.$store.getters.knowledgeData;

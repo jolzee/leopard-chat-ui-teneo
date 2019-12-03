@@ -22,6 +22,9 @@
         </v-fab-transition>
       </div>
     </v-app>
+    <v-app v-else-if="['config'].indexOf($route.name) != -1">
+      <router-view v-if="['config'].indexOf($route.name) != -1" />
+    </v-app>
     <v-app
       v-else
       toolbar
@@ -291,7 +294,10 @@
                   name="page-transition"
                   enter-active-class="animation fadeIn"
                 >
-                  <router-view />
+                  <router-view
+                    @closeMenu="drawer = false"
+                    v-if="['config'].indexOf($route.name) === -1"
+                  />
                 </transition>
                 <teneo-modal></teneo-modal>
               </v-content>

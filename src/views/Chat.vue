@@ -491,6 +491,10 @@ export default {
       }
     }
   },
+  beforeRouteLeave(from, to, next) {
+    this.$emit("closeMenu");
+    next();
+  },
   computed: {
     ...mapGetters([
       "isLiveAgentAssist",
