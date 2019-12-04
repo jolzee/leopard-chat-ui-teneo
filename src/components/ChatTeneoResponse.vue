@@ -207,7 +207,7 @@
       </v-card-text>
       <!-- Line based List Options -->
 
-      <v-list v-else>
+      <v-list v-else class="mt-2 elevation-2">
         <v-list-item-group color="primary">
           <template v-for="(option, altOptionIndex) in getOptions.items">
             <v-list-item
