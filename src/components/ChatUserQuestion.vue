@@ -2,7 +2,7 @@
   <v-row
     v-if="item.type === 'userInput'"
     no-gutters
-    :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3 px-3 pt-2'  : 'px-3 pt-2'"
+    :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3 pl-3 pr-1 pt-2'  : 'pl-3 pr-1 pt-2'"
   >
     <!-- user question -->
     <v-col>
