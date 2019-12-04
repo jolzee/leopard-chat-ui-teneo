@@ -7,7 +7,7 @@
         dense
         border="left"
         prominent
-        :color="this.$vuetify.theme.dark ? 'info darken-3' : 'info lighten-2'"
+        :color="$vuetify.theme.dark ? 'info darken-3' : 'info lighten-2'"
         icon="mdi-counter"
         elevation="2"
       >{{ item.text }}</v-alert>
