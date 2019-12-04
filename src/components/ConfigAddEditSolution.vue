@@ -154,9 +154,11 @@
                   :key="index + 'response-icons'"
                   @click="solution.responseIcon = icon"
                   :aria-label="`Set the virtual assistant icon to ${icon}`"
-                  text
+                  dark
+                  small
+                  :elevation="solution.responseIcon === icon ? '2' : '0'"
                   icon
-                  color="indigo"
+                  :color="solution.responseIcon === icon ? 'success' : 'indigo'"
                 >
                   <v-icon>{{ icon }}</v-icon>
                 </v-btn>
@@ -187,9 +189,11 @@
                     `Set the icon representing the customer to ${icon}`
                   "
                   @click="solution.userIcon = icon"
-                  text
+                  dark
+                  small
+                  :elevation="solution.userIcon === icon ? '2' : '0'"
                   icon
-                  color="indigo"
+                  :color="solution.userIcon === icon ? 'success' : 'indigo'"
                 >
                   <v-icon>{{ icon }}</v-icon>
                 </v-btn>
@@ -761,6 +765,7 @@ export default {
         "id"
       ],
       chatIcons: [
+        "mdi-message-bulleted",
         "mdi-comment-arrow-left",
         "mdi-comment-arrow-left-outline",
         "mdi-comment-arrow-right",
@@ -794,8 +799,6 @@ export default {
         "mdi-face-profile-woman",
         "mdi-face-woman",
         "mdi-emoticon-outline",
-        "mdi-comment-arrow-left",
-        "mdi-comment-arrow-right",
         "mdi-cowboy",
         "mdi-cow",
         "mdi-doctor",
