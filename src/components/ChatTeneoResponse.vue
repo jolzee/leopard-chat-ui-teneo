@@ -151,7 +151,7 @@
     </div>
     <DelayedResponse v-if="showDelayedResponse && itemIndexInDialog === dialog.length - 1"></DelayedResponse>
     <!-- show any options in the response: for example Yes, No Maybe -->
-    <v-col cols="12" v-if="routerCheckList && itemIndexInDialog === dialog.length - 1" class="px-0">
+    <v-col cols="12" v-if="routerCheckList && itemIndexInDialog === dialog.length - 1" class="px-3">
       <v-card>
         <div class="d-flex flex-no-wrap justify-space-between">
           <div>
