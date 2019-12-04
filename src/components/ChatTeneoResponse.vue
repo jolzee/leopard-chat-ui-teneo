@@ -59,7 +59,7 @@
           <v-icon large>{{ getResponseIcon }}</v-icon>
         </v-btn>
       </v-col>
-      <v-col class="text-left">
+      <v-col class="text-left" :class="!showChatIcons || this.$vuetify.breakpoint.xs ? 'ml-2' : ''">
         <v-card
           :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           class="chat-card chat-card-left text-left"
@@ -142,6 +142,7 @@
         <v-col>
           <v-card
             class="chat-card chat-card-left text-left"
+            :class="!showChatIcons || this.$vuetify.breakpoint.xs ? 'ml-2' : ''"
             :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           >
             <span v-html="chunkText" class="teneo-reply"></span>
