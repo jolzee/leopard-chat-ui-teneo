@@ -1,7 +1,7 @@
 <template>
   <!-- Reply -->
   <div v-if="item.type === 'reply'" :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3'  : ''">
-    <v-row v-if="itemText !== '<p>'" justify="start" no-gutters class="pr-3 pl-1 pt-2">
+    <v-row v-if="itemText !== '<p>'" justify="start" no-gutters class="pr-3 pl-1 pt-1">
       <v-col
         cols="2"
         class="text-center d-none d-sm-block"
