@@ -533,10 +533,10 @@ export default {
     },
     dialog() {
       if (this.$route.name === "chat") {
-        return this.dialogs;
+        return this.dialogs ? this.dialogs : [];
       } else {
         // history in session storage
-        return this.getLatestDialogHistory;
+        return this.getLatestDialogHistory ? this.getLatestDialogHistory : [];
       }
     }
   },

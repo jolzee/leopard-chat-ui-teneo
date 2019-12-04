@@ -78,12 +78,13 @@ export default {
   name: "LiveChatResponse",
   props: ["item", "itemIndexInDialog"],
   computed: {
-    ...mapGetters(["showChatIcons", "dialogs"]),
+    ...mapGetters(["showChatIcons", "dialogs", "getLatestDialogHistory"]),
     dialog() {
       if (this.$route.name === "chat") {
-        return this.dialogs;
+        return this.dialogs ? this.dialogs : [];
       } else {
-        return this.getLatestDialogHistory;
+        // history in session storage
+        return this.getLatestDialogHistory ? this.getLatestDialogHistory : [];
       }
     },
     isLiveChatRelated() {
