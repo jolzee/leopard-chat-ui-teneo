@@ -4,7 +4,7 @@
     name="modal-image-transition"
     enter-active-class="animated zoomIn"
   >-->
-  <v-img v-if="url" :src="url" :max-height="determineMaxHeight()" class="elevation-4" contain></v-img>
+  <v-img v-if="url" :src="url" :max-height="determineMaxHeight()" contain></v-img>
   <!-- </transition> -->
 </template>
 <script>
