@@ -11,14 +11,10 @@
   >
     <v-card>
       <v-card-title>
-        <h3>{{ dialogTitle }}</h3>
+        <span class="title">{{ dialogTitle }}</span>
       </v-card-title>
       <v-divider></v-divider>
-      <v-card-text
-        style="height: 90vh"
-        id="add-edit"
-        class="teneo-hide-scroll-x"
-      >
+      <v-card-text style="height: 90vh" id="add-edit" class="teneo-hide-scroll-x">
         <v-form ref="form">
           <div class="d-none d-sm-inline-block">
             <v-btn
@@ -27,8 +23,7 @@
               color="light-blue darken-1"
               href="https://materialdesignicons.com/"
               target="_blank"
-              >MDI Icons (mdi-icon-name)
-            </v-btn>
+            >MDI Icons (mdi-icon-name)</v-btn>
           </div>
 
           <v-container fluid>
@@ -38,6 +33,7 @@
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-text-field
+                  filled
                   color="light-blue darken-1"
                   v-model.trim="solution.name"
                   validate-on-blur
@@ -46,10 +42,24 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+                <v-subheader>Deep Link (?dl=[deep-link])</v-subheader>
+              </v-col>
+              <v-col :cols="12" :md="8">
+                <v-text-field
+                  filled
+                  color="light-blue darken-1"
+                  v-model.trim="solution.deepLink"
+                  validate-on-blur
+                  label="Deep links can be accessed with ?dl=<deep-link>"
+                  :rules="[ruleMustHaveValue, ruleNoSpaces, ruleDeepLinkUnique]"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Solution URL</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-text-field
+                  filled
                   color="light-blue darken-1"
                   v-model.trim="solution.url"
                   validate-on-blur
@@ -62,11 +72,9 @@
                 <v-subheader>IFRAME URL</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
-                <v-switch
-                  v-model="solution.useInProduction"
-                  label="Use in production"
-                ></v-switch>
+                <v-switch v-model="solution.useInProduction" label="Use in production"></v-switch>
                 <v-text-field
+                  filled
                   v-if="
                     ('useInProduction' in solution &&
                       !solution.useInProduction) ||
@@ -82,44 +90,11 @@
               </v-col>
 
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
-                <v-subheader>Prompt Triggers</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
-                <v-switch
-                  v-model="solution.promptTriggers.enabled"
-                  label="Poll for Prompt Triggers"
-                ></v-switch>
-                <v-alert
-                  border="top"
-                  colored-border
-                  type="info"
-                  elevation="2"
-                  v-if="solution.promptTriggers.enabled"
-                >
-                  You must return the number of active flows from Teneo in each
-                  response.
-                  <a
-                    target="_blank"
-                    href="https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
-                    >Leopard Documentation</a
-                  >
-                </v-alert>
-                <v-text-field
-                  v-if="solution.promptTriggers.enabled"
-                  color="light-blue darken-1"
-                  v-model.trim="solution.promptTriggers.pollSeconds"
-                  validate-on-blur
-                  label="How often should Leopard poll in seconds?"
-                  append-icon="mdi-repeat"
-                  :rules="[ruleMustHaveValue, ruleMustBeInteger]"
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Chat Window Title</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-text-field
+                  filled
                   color="light-blue darken-1"
                   validate-on-blur
                   v-model.trim="solution.chatTitle"
@@ -128,17 +103,98 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
-                <v-subheader>Deep Link (?dl=[deep-link]) </v-subheader>
+                <v-subheader>Features</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
+                <v-card elevation-2>
+                  <v-row no-gutters class="pl-5">
+                    <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch v-model="solution.enableLiveChat" label="Live Chat"></v-switch>
+                    </v-col>
+                    <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch v-model="solution.float" label="Float UI"></v-switch>
+                    </v-col>
+                    <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch v-model="solution.pulseButton" label="Pulse Button"></v-switch>
+                    </v-col>
+                    <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch v-model="solution.showChatIcons" label="Chat Icons"></v-switch>
+                    </v-col>
+                    <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch v-model="solution.displayAccent" label="Show Accent"></v-switch>
+                    </v-col>
+                    <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch
+                        v-model="solution.longResponsesInModal"
+                        label="Long Answers in Modal"
+                      ></v-switch>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-col>
+              <v-divider></v-divider>
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+                <v-subheader>Response Icon</v-subheader>
+              </v-col>
+              <v-col :cols="12" :md="8" class="pb-0">
                 <v-text-field
-                  color="light-blue darken-1"
-                  v-model.trim="solution.deepLink"
+                  filled
+                  v-model.trim="solution.responseIcon"
                   validate-on-blur
-                  label="Deep links can be accessed with ?dl=<deep-link>"
-                  :rules="[ruleMustHaveValue, ruleNoSpaces, ruleDeepLinkUnique]"
+                  color="light-blue darken-1"
+                  label="Response Icon - MDI Icons (mdi-icon-name)"
+                  :append-icon="solution.responseIcon"
+                  :rules="[ruleMustHaveValue]"
                 ></v-text-field>
               </v-col>
+              <v-col cols="12" sm="4" class="d-sm-none d-md-block"></v-col>
+              <v-col :cols="12" :md="8" class="py-0">
+                <v-btn
+                  v-for="(icon, index) in chatIcons"
+                  :key="index + 'response-icons'"
+                  @click="solution.responseIcon = icon"
+                  :aria-label="`Set the virtual assistant icon to ${icon}`"
+                  text
+                  icon
+                  color="indigo"
+                >
+                  <v-icon>{{ icon }}</v-icon>
+                </v-btn>
+              </v-col>
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+                <v-subheader>User Icon</v-subheader>
+              </v-col>
+              <v-col :cols="12" :md="8" class="pb-0">
+                <v-text-field
+                  filled
+                  v-model.trim="solution.userIcon"
+                  validate-on-blur
+                  color="light-blue darken-1"
+                  label="User Icon - MDI Icons (mdi-icon-name)"
+                  :aria-label="
+                    `Set the icon representing the customer in the chat UI`
+                  "
+                  :append-icon="solution.userIcon"
+                  :rules="[ruleMustHaveValue]"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="4" class="d-sm-none d-md-block"></v-col>
+              <v-col :cols="12" :md="8" class="py-0">
+                <v-btn
+                  v-for="(icon, index) in chatIcons"
+                  :key="index + 'user-icons'"
+                  :aria-label="
+                    `Set the icon representing the customer to ${icon}`
+                  "
+                  @click="solution.userIcon = icon"
+                  text
+                  icon
+                  color="indigo"
+                >
+                  <v-icon>{{ icon }}</v-icon>
+                </v-btn>
+              </v-col>
+              <v-divider></v-divider>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Locale</v-subheader>
               </v-col>
@@ -147,7 +203,7 @@
                   :items="locales"
                   color="light-blue darken-1"
                   :menu-props="{ contentClass: 'select-options' }"
-                  outlined
+                  filled
                   v-model="solution.locale"
                   label="Specify Chat Locale"
                   append-icon="mdi-translate"
@@ -157,11 +213,7 @@
                 <v-subheader>Demo Animation</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
-                <v-row
-                  align="center"
-                  justify="center"
-                  style="min-height: 300px; height: 300px;"
-                >
+                <v-row align="center" justify="center" style="min-height: 300px; height: 300px;">
                   <transition
                     name="leoaprd-transition"
                     :enter-active-class="'animated ' + solution.animations.in"
@@ -188,7 +240,7 @@
                   :items="animations.in"
                   color="light-blue darken-1"
                   :menu-props="{ contentClass: 'select-options' }"
-                  outlined
+                  filled
                   v-model="solution.animations.in"
                   label="Specify Enter Animation"
                   append-icon="mdi-expand-all"
@@ -203,119 +255,16 @@
                   :items="animations.out"
                   color="light-blue darken-1"
                   :menu-props="{ contentClass: 'select-options' }"
-                  outlined
+                  filled
                   v-model="solution.animations.out"
                   label="Specify Exit Animation"
                   append-icon="mdi-collapse-all"
                 ></v-select>
               </v-col>
 
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
-                <v-subheader>Response Icon</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8" class="pb-0">
-                <v-text-field
-                  v-model.trim="solution.responseIcon"
-                  validate-on-blur
-                  color="light-blue darken-1"
-                  label="Response Icon - MDI Icons (mdi-icon-name)"
-                  :append-icon="solution.responseIcon"
-                  :rules="[ruleMustHaveValue]"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="4" class="d-sm-none d-md-block"> </v-col>
-              <v-col :cols="12" :md="8" class="py-0">
-                <v-btn
-                  v-for="(icon, index) in chatIcons"
-                  :key="index + 'response-icons'"
-                  @click="solution.responseIcon = icon"
-                  :aria-label="`Set the virtual assistant icon to ${icon}`"
-                  text
-                  icon
-                  color="indigo"
-                >
-                  <v-icon>{{ icon }}</v-icon>
-                </v-btn>
-              </v-col>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
-                <v-subheader>User Icon</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8" class="pb-0">
-                <v-text-field
-                  v-model.trim="solution.userIcon"
-                  validate-on-blur
-                  color="light-blue darken-1"
-                  label="User Icon - MDI Icons (mdi-icon-name)"
-                  :aria-label="
-                    `Set the icon representing the customer in the chat UI`
-                  "
-                  :append-icon="solution.userIcon"
-                  :rules="[ruleMustHaveValue]"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="4" class="d-sm-none d-md-block"> </v-col>
-              <v-col :cols="12" :md="8" class="py-0">
-                <v-btn
-                  v-for="(icon, index) in chatIcons"
-                  :key="index + 'user-icons'"
-                  :aria-label="
-                    `Set the icon representing the customer to ${icon}`
-                  "
-                  @click="solution.userIcon = icon"
-                  text
-                  icon
-                  color="indigo"
-                >
-                  <v-icon>{{ icon }}</v-icon>
-                </v-btn>
-              </v-col>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
-                <v-subheader>Features</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
-                <v-row no-gutters>
-                  <v-col cols="12" :lg="4" :sm="6">
-                    <v-switch
-                      v-model="solution.enableLiveChat"
-                      label="Live Chat"
-                    ></v-switch>
-                  </v-col>
-                  <v-col cols="12" :lg="4" :sm="6">
-                    <v-switch
-                      v-model="solution.float"
-                      label="Float UI"
-                    ></v-switch>
-                  </v-col>
-                  <v-col cols="12" :lg="4" :sm="6">
-                    <v-switch
-                      v-model="solution.pulseButton"
-                      label="Pulse Button"
-                    ></v-switch>
-                  </v-col>
-                  <v-col cols="12" :lg="4" :sm="6">
-                    <v-switch
-                      v-model="solution.longResponsesInModal"
-                      label="Long Answers in Modal"
-                    ></v-switch>
-                  </v-col>
-                  <v-col cols="12" :lg="4" :sm="6">
-                    <v-switch
-                      v-model="solution.showChatIcons"
-                      label="Chat Icons"
-                    ></v-switch>
-                  </v-col>
-                  <v-col cols="12" :lg="4" :sm="6">
-                    <v-switch
-                      v-model="solution.displayAccent"
-                      label="Show Accent"
-                    ></v-switch>
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-divider></v-divider>
               <v-col :cols="12" :lg="4">
-                <v-subheader class="mb-2"
-                  >Theme
+                <v-subheader class="mb-2">
+                  Theme
                   <v-tooltip open-delay="300" bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
@@ -381,6 +330,7 @@
                       @click="setActiveColor(color)"
                       validate-on-blur
                       color="light-blue darken-1"
+                      filled
                       :value="solution.theme[color]"
                       :label="color"
                       :rules="[ruleMustHaveValue, ruleMustHaveColor]"
@@ -389,13 +339,46 @@
                 </v-row>
               </v-col>
               <v-divider></v-divider>
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+                <v-subheader>Prompt Triggers</v-subheader>
+              </v-col>
+              <v-col :cols="12" :md="8">
+                <v-switch
+                  v-model="solution.promptTriggers.enabled"
+                  label="Poll for Prompt Triggers"
+                ></v-switch>
+                <v-alert
+                  border="top"
+                  colored-border
+                  type="info"
+                  elevation="2"
+                  v-if="solution.promptTriggers.enabled"
+                >
+                  You must return the number of active flows from Teneo in each
+                  response.
+                  <a
+                    target="_blank"
+                    href="https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
+                  >Leopard Documentation</a>
+                </v-alert>
+                <v-text-field
+                  v-if="solution.promptTriggers.enabled"
+                  color="light-blue darken-1"
+                  v-model.trim="solution.promptTriggers.pollSeconds"
+                  validate-on-blur
+                  filled
+                  label="How often should Leopard poll in seconds?"
+                  append-icon="mdi-repeat"
+                  :rules="[ruleMustHaveValue, ruleMustBeInteger]"
+                ></v-text-field>
+              </v-col>
               <!-- ASR Corrections -->
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Button and Toolbar Custom CSS</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-textarea
-                  outlined
+                  filled
                   color="light-blue darken-1"
                   name="input-7-4"
                   label="Custom CSS"
@@ -409,7 +392,7 @@
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-textarea
-                  outlined
+                  filled
                   color="light-blue darken-1"
                   name="input-7-4"
                   label="ASR Corrections"
@@ -429,15 +412,13 @@
                 </v-btn>
               </v-col>
               <v-col :cols="12" :md="8">
-                <v-row
-                  v-for="(question, index) in solution.knowledgeData"
-                  v-bind:key="index"
-                >
+                <v-row v-for="(question, index) in solution.knowledgeData" v-bind:key="index">
                   <v-col cols="11">
                     <v-text-field
                       v-model.trim="solution.knowledgeData[index]"
                       :value="question"
                       validate-on-blur
+                      filled
                       color="light-blue darken-1"
                       label="Example question"
                       append-icon="mdi-android-messages"
@@ -449,8 +430,7 @@
                       @click="solution.knowledgeData.splice(index, 1)"
                       color="red"
                       dark
-                      >mdi-minus-circle</v-icon
-                    >
+                    >mdi-minus-circle</v-icon>
                   </v-col>
                 </v-row>
               </v-col>
@@ -509,8 +489,7 @@
                           @click="solution.contextParams.splice(index, 1)"
                           color="red"
                           dark
-                          >mdi-minus-circle</v-icon
-                        >
+                        >mdi-minus-circle</v-icon>
                       </template>
                       <span>Remove CTX Parameter</span>
                     </v-tooltip>
@@ -522,8 +501,7 @@
                           @click="addNewContextParameterValue(index)"
                           color="green"
                           dark
-                          >mdi-plus-circle</v-icon
-                        >
+                        >mdi-plus-circle</v-icon>
                       </template>
                       <span>Add Parameter Value</span>
                     </v-tooltip>
@@ -544,8 +522,7 @@
                             @click="contextParam.values.splice(valueIndex, 1)"
                             color="red"
                             dark
-                            >mdi-minus-circle</v-icon
-                          >
+                          >mdi-minus-circle</v-icon>
                         </template>
                         <span>Delete Parameter Value</span>
                       </v-tooltip>
@@ -565,21 +542,26 @@
                               value.active ? 'green' : 'blue-grey lighten-4'
                             "
                             dark
-                            >{{
-                              value.active
-                                ? "mdi-checkbox-marked"
-                                : "mdi-checkbox-blank-outline"
-                            }}</v-icon
                           >
+                            {{
+                            value.active
+                            ? "mdi-checkbox-marked"
+                            : "mdi-checkbox-blank-outline"
+                            }}
+                          </v-icon>
                         </template>
                         <span>Enable/Disable</span>
                       </v-tooltip>
                       <!-- show input box for context parameter value -->
                       <v-text-field
                         v-model.trim="value.text"
+                        class="mt-2"
                         validate-on-blur
+                        solo
+                        outlined
                         color="light-blue darken-1"
                         label="Parameter Value"
+                        hint="Parameter Value"
                         :rules="[ruleMustHaveValue]"
                       ></v-text-field>
                     </v-col>
@@ -597,21 +579,25 @@
           class="mr-2"
           :aria-label="`Close the solution editing dialog`"
           color="blue-grey lighten-5"
+          small
           light
           @click="closeAddNewSolutionDialog"
-          >Close</v-btn
-        >
+        >Close</v-btn>
         <v-btn
           class="mr-2"
           color="green"
+          small
           :aria-label="`Save edits to the solution`"
           @click="saveForm"
-          >Save
+        >
+          Save
           <v-icon right dark>mdi-content-save</v-icon>
         </v-btn>
-        <v-snackbar :timeout="snackbarTimeout" v-model="snackbar" class="mb-5">
-          🧟‍ Please fix all form validation errors.
-        </v-snackbar>
+        <v-snackbar
+          :timeout="snackbarTimeout"
+          v-model="snackbar"
+          class="mb-5"
+        >🧟‍ Please fix all form validation errors.</v-snackbar>
       </v-card-actions>
     </v-card>
   </v-dialog>

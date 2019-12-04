@@ -1,25 +1,22 @@
 <template>
-  <v-row v-if="item.type === 'userInput'" no-gutters>
+  <v-row
+    v-if="item.type === 'userInput'"
+    no-gutters
+    :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3 px-3 pt-2'  : 'px-3 pt-2'"
+  >
     <!-- user question -->
     <v-col>
       <v-card
-        color="primary white--text"
+        :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
         class="chat-card chat-card-right text-right pr-3 align-content-end"
-      >
-        {{ item.text }}
-      </v-card>
+      >{{ item.text }}</v-card>
     </v-col>
     <v-col
       cols="2"
       class="text-center d-none d-sm-block"
       v-if="showChatIcons && !this.$vuetify.breakpoint.xs"
     >
-      <v-menu
-        v-if="isLiveAgentAssist"
-        close-on-click
-        close-on-content-click
-        offset-y
-      >
+      <v-menu v-if="isLiveAgentAssist" close-on-click close-on-content-click offset-y>
         <template v-slot:activator="{ on }">
           <v-btn
             v-on="on"
@@ -27,13 +24,14 @@
             v-long-press="1000"
             @long-press-start="swapInputButton"
             class="teneo-userinput-icon elevation-2"
-            fab
-            light
-            small
+            text
+            tile
+            icon
+            large
             color="primary white--text"
             @click="updateInputBox('')"
           >
-            <v-icon>{{ userIcon }}</v-icon>
+            <v-icon large>{{ userIcon }}</v-icon>
           </v-btn>
         </template>
 
@@ -43,14 +41,13 @@
             v-for="menuItem in agentAssist.menu"
             :key="menuItem.title"
           >
-            <v-list-item
-              @click="menuItem.method"
-              :class="hover ? 'primary' : ''"
-            >
+            <v-list-item @click="menuItem.method" :class="hover ? 'primary' : ''">
               <v-list-item-title :class="hover ? 'white--text' : ''">
-                <v-icon :color="hover ? 'secondary' : ''" class="mr-2">{{
+                <v-icon :color="hover ? 'secondary' : ''" class="mr-2">
+                  {{
                   menuItem.icon
-                }}</v-icon>
+                  }}
+                </v-icon>
                 {{ menuItem.title }}
               </v-list-item-title>
             </v-list-item>
@@ -74,31 +71,31 @@
           aria-label="Chat icon representing you"
           v-long-press="1000"
           @long-press-start="swapInputButton"
-          class="teneo-userinput-icon elevation-2"
-          fab
-          light
-          small
+          class="teneo-userinput-icon"
+          text
+          tile
+          icon
+          large
           color="primary white--text"
           @click="updateInputBox(item.text)"
         >
-          <v-icon>{{ userIcon }}</v-icon>
+          <v-icon large>{{ userIcon }}</v-icon>
         </v-btn>
       </template>
+      <v-snackbar
+        v-model="snackbar"
+        absolute
+        color="primary"
+        :timeout="snackBarTimeout"
+        top
+      >{{ snackBarText }}</v-snackbar>
+      <AgentAssistTrainBotForm
+        v-if="agentAssist.trainForm"
+        :question="agentAssist.trainFormQuestion"
+        @close="agentAssist.trainForm = false"
+        @sent="handleAgentAssistBotTrainingFinished"
+      />
     </v-col>
-    <v-snackbar
-      v-model="snackbar"
-      absolute
-      color="primary"
-      :timeout="snackBarTimeout"
-      top
-      >{{ snackBarText }}</v-snackbar
-    >
-    <AgentAssistTrainBotForm
-      v-if="agentAssist.trainForm"
-      :question="agentAssist.trainFormQuestion"
-      @close="agentAssist.trainForm = false"
-      @sent="handleAgentAssistBotTrainingFinished"
-    />
   </v-row>
 </template>
 
@@ -117,7 +114,7 @@ export default {
   directives: {
     "long-press": LongPress
   },
-  props: ["item"],
+  props: ["item", "itemIndexInDialog"],
   data() {
     return {
       snackbar: false,
@@ -190,11 +187,19 @@ export default {
     ...mapGetters([
       "isLiveAgentAssist",
       "showChatIcons",
+      "dialogs",
       "authenticated",
       "userProfileImage",
       "displayName",
       "userIcon"
-    ])
+    ]),
+    dialog() {
+      if (this.$route.name === "chat") {
+        return this.dialogs;
+      } else {
+        return this.getLatestDialogHistory;
+      }
+    }
   }
 };
 </script>

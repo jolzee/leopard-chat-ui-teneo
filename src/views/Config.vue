@@ -32,9 +32,11 @@
           <v-icon>mdi-tune</v-icon>
           <span>Leopard Configuration</span>
           <v-spacer></v-spacer>
-          <v-icon @click="toggleFullscreen">{{
+          <v-icon @click="toggleFullscreen">
+            {{
             fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
-          }}</v-icon>
+            }}
+          </v-icon>
           <v-icon @click="$router.push('/')">mdi-close</v-icon>
         </v-system-bar>
         <v-app-bar color="#2F286B" max-height="64px">
@@ -73,10 +75,10 @@
                 </v-btn>
               </v-fab-transition>
             </template>
-            <span
-              >Open mobile view in new page |
-              {{ getSelectedSolutionName }}</span
-            >
+            <span>
+              Open mobile view in new page |
+              {{ getSelectedSolutionName }}
+            </span>
           </v-tooltip>
           <v-tooltip open-delay="300" bottom color="green">
             <template v-slot:activator="{ on, attrs }">
@@ -98,10 +100,10 @@
                 </v-btn>
               </v-fab-transition>
             </template>
-            <span
-              >Reload page to the active solution |
-              {{ getSelectedSolutionName }}</span
-            >
+            <span>
+              Reload page to the active solution |
+              {{ getSelectedSolutionName }}
+            </span>
           </v-tooltip>
 
           <v-spacer></v-spacer>
@@ -114,9 +116,11 @@
             "
             class="mr-2 d-none d-sm-inline"
           >
-            <span slot="badge" style="background-color: #4051B1">{{
+            <span slot="badge" style="background-color: #4051B1">
+              {{
               config.solutions.length
-            }}</span>
+              }}
+            </span>
             <v-icon large color="grey lighten-1">mdi-settings</v-icon>
           </v-badge>
           <v-chip
@@ -205,23 +209,23 @@
                                 small
                                 @click="setActiveSolution"
                               >
-                                <v-icon dark
-                                  >{{
-                                    selectedSolution &&
-                                    config.activeSolution ===
-                                      selectedSolution.name
-                                      ? "mdi-checkbox-marked"
-                                      : "mdi-checkbox-blank-outline"
+                                <v-icon dark>
+                                  {{
+                                  selectedSolution &&
+                                  config.activeSolution ===
+                                  selectedSolution.name
+                                  ? "mdi-checkbox-marked"
+                                  : "mdi-checkbox-blank-outline"
                                   }}
                                 </v-icon>
                               </v-btn>
                             </v-fab-transition>
                           </template>
-                          <span
-                            >Make the "{{ getSelectedSolutionName }}" the active
+                          <span>
+                            Make the "{{ getSelectedSolutionName }}" the active
                             solution. An active solution can be accessed without
-                            the deep link</span
-                          >
+                            the deep link
+                          </span>
                         </v-tooltip>
                         <v-tooltip open-delay="300" bottom>
                           <template v-slot:activator="{ on, attrs }">
@@ -242,9 +246,7 @@
                               </v-btn>
                             </v-fab-transition>
                           </template>
-                          <span
-                            >Edit solution | {{ getSelectedSolutionName }}</span
-                          >
+                          <span>Edit solution | {{ getSelectedSolutionName }}</span>
                         </v-tooltip>
                         <v-tooltip open-delay="300" bottom>
                           <template v-slot:activator="{ on, attrs }">
@@ -265,10 +267,10 @@
                               </v-btn>
                             </v-fab-transition>
                           </template>
-                          <span
-                            >Clone solution |
-                            {{ getSelectedSolutionName }}</span
-                          >
+                          <span>
+                            Clone solution |
+                            {{ getSelectedSolutionName }}
+                          </span>
                         </v-tooltip>
                         <v-tooltip open-delay="300" bottom>
                           <template v-slot:activator="{ on, attrs }">
@@ -289,10 +291,10 @@
                               </v-btn>
                             </v-fab-transition>
                           </template>
-                          <span
-                            >Delete solution |
-                            {{ getSelectedSolutionName }}</span
-                          >
+                          <span>
+                            Delete solution |
+                            {{ getSelectedSolutionName }}
+                          </span>
                         </v-tooltip>
                         <v-tooltip open-delay="300" bottom>
                           <template v-slot:activator="{ on, attrs }">
@@ -309,16 +311,14 @@
                                 color="indigo"
                                 @click="copySolutionToClipboard"
                               >
-                                <v-icon dark
-                                  >mdi-clipboard-arrow-up-outline</v-icon
-                                >
+                                <v-icon dark>mdi-clipboard-arrow-up-outline</v-icon>
                               </v-btn>
                             </v-fab-transition>
                           </template>
-                          <span
-                            >Copy config to clipboard |
-                            {{ getSelectedSolutionName }}</span
-                          >
+                          <span>
+                            Copy config to clipboard |
+                            {{ getSelectedSolutionName }}
+                          </span>
                         </v-tooltip>
                         <v-tooltip open-delay="300" bottom>
                           <template v-slot:activator="{ on, attrs }">
@@ -339,10 +339,10 @@
                               </v-btn>
                             </v-fab-transition>
                           </template>
-                          <span
-                            >Download config |
-                            {{ getSelectedSolutionName }}</span
-                          >
+                          <span>
+                            Download config |
+                            {{ getSelectedSolutionName }}
+                          </span>
                         </v-tooltip>
                         <v-tooltip open-delay="300" bottom>
                           <template v-slot:activator="{ on, attrs }">
@@ -363,10 +363,10 @@
                               </v-btn>
                             </v-fab-transition>
                           </template>
-                          <span
-                            >Generate sharable link for team members |
-                            {{ getSelectedSolutionName }}</span
-                          >
+                          <span>
+                            Generate sharable link for team members |
+                            {{ getSelectedSolutionName }}
+                          </span>
                         </v-tooltip>
                       </template>
                     </v-col>
@@ -378,7 +378,7 @@
                   <v-tooltip open-delay="300" bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                        aria-label="Upload new or additional solution configurations"
+                        aria-label="Import new or additional solution configurations"
                         class="mr-2 mt-2"
                         v-bind="attrs"
                         v-on="on"
@@ -391,10 +391,10 @@
                         <v-icon dark>mdi-upload</v-icon>
                       </v-btn>
                     </template>
-                    <span
-                      >Upload an individual/multiple solutions from a
-                      backup</span
-                    >
+                    <span>
+                      Import an individual/multiple solutions from a
+                      backup
+                    </span>
                   </v-tooltip>
                   <v-tooltip open-delay="300" bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -412,10 +412,10 @@
                         <v-icon dark>mdi-clipboard-arrow-up-outline</v-icon>
                       </v-btn>
                     </template>
-                    <span
-                      >Copy the configuration for all solutions to
-                      clipboard</span
-                    >
+                    <span>
+                      Copy the configuration for all solutions to
+                      clipboard
+                    </span>
                   </v-tooltip>
                   <v-tooltip open-delay="300" bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -433,10 +433,10 @@
                         <v-icon dark>mdi-file-download</v-icon>
                       </v-btn>
                     </template>
-                    <span
-                      >Export the configuration for all solutions to a
-                      file</span
-                    >
+                    <span>
+                      Export the configuration for all solutions to a
+                      file
+                    </span>
                   </v-tooltip>
                   <v-tooltip open-delay="300" bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -451,15 +451,17 @@
                         color="deep-purple"
                         @click="toggleDisplayOfSolutionConfig"
                       >
-                        <v-icon dark>{{
+                        <v-icon dark>
+                          {{
                           displayFullSolutionConfig ? "mdi-eye" : "mdi-eye-off"
-                        }}</v-icon>
+                          }}
+                        </v-icon>
                       </v-btn>
                     </template>
-                    <span
-                      >Toggle display of the configuration for all
-                      solutions</span
-                    >
+                    <span>
+                      Toggle display of the configuration for all
+                      solutions
+                    </span>
                   </v-tooltip>
                   <v-tooltip open-delay="300" bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -495,16 +497,7 @@
                 >
                   <v-card>
                     <v-card-title>
-                      <h3>
-                        Upload Configurations
-                        <v-progress-circular
-                          v-if="showProgressUpload"
-                          :size="30"
-                          :width="3"
-                          indeterminate
-                          color="purple"
-                        ></v-progress-circular>
-                      </h3>
+                      <h3>Import Solution(s) Configurations</h3>
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
@@ -519,15 +512,15 @@
                               @click="toggleLoading"
                               @change="readConfigFile"
                             />
-                            <label
-                              for="uploadFile"
-                              class="v-btn primary upload-btn pa-2 ml-2"
-                            >
-                              Upload
-                              <v-icon dark right>mdi-publish</v-icon>
+                            <label for="uploadFile" class="v-btn primary upload-btn px-2 py-1 ml-2">
+                              Browse
+                              <v-icon small dark right>mdi-paperclip</v-icon>
                             </label>
                           </div>
                           <v-textarea
+                            clearable
+                            solo
+                            outlined
                             v-model="getUploadConfig"
                             :loading="uploadTextAreaLoading"
                             ref="newConfig"
@@ -549,21 +542,26 @@
                         class="mr-2"
                         color="blue-grey lighten-5"
                         light
+                        small
                         @click="closeUploadDialog"
-                        >Close</v-btn
+                      >Close</v-btn>
+                      <v-btn
+                        :disabled="getUploadConfig === ''"
+                        small
+                        class="mr-2"
+                        color="green"
+                        @click="saveUploadForm"
                       >
-                      <v-btn class="mr-2" color="green" @click="saveUploadForm"
-                        >Save
+                        Import
                         <v-icon right dark>mdi-content-save-move</v-icon>
                       </v-btn>
                       <v-snackbar
+                        v-if="uploadSnackbar"
+                        absolute
                         color="#2F2869"
                         :timeout="globalSnackbarTimeout"
-                        v-model="globalSnackbar"
-                        absolute
-                      >
-                        {{ globalSnackbarMessage }}
-                      </v-snackbar>
+                        v-model="uploadSnackbar"
+                      >{{ globalSnackbarMessage }}</v-snackbar>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -574,10 +572,20 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="#2F2869" dark small @click="$router.push('/')"
-            >{{ $t("back.to.chat.button") }}
-          </v-btn>
+          <v-btn
+            color="#2F2869"
+            dark
+            small
+            @click="$router.push('/')"
+          >{{ $t("back.to.chat.button") }}</v-btn>
         </v-card-actions>
+        <!-- global snackbar -->
+        <v-snackbar
+          absolute
+          :timeout="globalSnackbarTimeout"
+          v-model="globalSnackbar"
+          :color="globalSnackbarColor"
+        >{{ globalSnackbarMessage }}</v-snackbar>
       </v-card>
     </v-dialog>
     <ConfigAddEditSolution
@@ -588,16 +596,6 @@
       :selectedSolution="selectedSolution"
       key="configAddEditSolution"
     ></ConfigAddEditSolution>
-    <v-row class="mb-2">
-      <!-- global snackbar -->
-      <v-snackbar
-        :timeout="globalSnackbarTimeout"
-        v-model="globalSnackbar"
-        :color="globalSnackbarColor"
-      >
-        {{ globalSnackbarMessage }}
-      </v-snackbar>
-    </v-row>
   </div>
 </template>
 
@@ -632,6 +630,7 @@ export default {
       snackbarTimeout: 3000,
       globalSnackbarMessage: "",
       globalSnackbar: false,
+      uploadSnackbar: false,
       globalSnackbarTimeout: 2000,
       globalSnackbarColor: "#2F2869",
       uploadTextAreaLoading: false,
@@ -946,6 +945,13 @@ export default {
       );
       this.saveToLocalStorage();
     },
+    displayUploadSnackBar(message, timeout = 2000, color = "#2F2869") {
+      this.uploadSnackbar = false;
+      this.globalSnackbarMessage = message;
+      this.uploadSnackbar = true;
+      this.globalSnackbarTimeout = timeout;
+      this.globalSnackbarColor = color;
+    },
     displaySnackBar(message, timeout = 2000, color = "#2F2869") {
       this.globalSnackbar = false;
       this.globalSnackbarMessage = message;
@@ -1022,7 +1028,7 @@ export default {
         this.closeUploadDialog();
         this.saveToLocalStorage();
       } else {
-        this.displaySnackBar(
+        this.displayUploadSnackBar(
           "Please provide a valid configuration",
           3000,
           "red"

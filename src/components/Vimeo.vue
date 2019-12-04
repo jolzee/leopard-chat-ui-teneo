@@ -1,5 +1,5 @@
 <template>
-  <vue-plyr v-if="videoId" class="mb-2">
+  <vue-plyr v-if="videoId" class="mb-2 elevation-4">
     <div class="plyr__video-embed">
       <iframe
         :src="
@@ -8,8 +8,7 @@
         allowfullscreen
         allowtransparency
         allow="autoplay"
-      >
-      </iframe>
+      ></iframe>
     </div>
   </vue-plyr>
 </template>

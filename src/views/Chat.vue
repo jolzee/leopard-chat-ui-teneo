@@ -1,14 +1,11 @@
 <template>
   <v-container fluid id="chat-area" class="chat-container">
-    <ChatNoHistory v-if="noHistory && isHistoryPage"></ChatNoHistory>
+    <v-row no-gutters class="mx-0 px-0">
+      <ChatNoHistory v-if="noHistory && isHistoryPage"></ChatNoHistory>
 
-    <!-- show the listening modal when recognizing audio input -->
-    <teneo-listening
-      v-bind:value="listening"
-      :message="$t('listening')"
-    ></teneo-listening>
+      <!-- show the listening modal when recognizing audio input -->
+      <teneo-listening v-bind:value="listening" :message="$t('listening')"></teneo-listening>
 
-    <v-row class="mx-0" no-gutters>
       <v-col
         cols="12"
         class="pa-0"
@@ -30,79 +27,64 @@
           @showFeedback="showFeedback = true"
           @hideFeedback="showFeedback = false"
         />
-
-        <v-expansion-panels
-          readonly
-          :value="getCurrentItem"
-          class="chat-container-inner"
-        >
+        <v-container class="chat-container-inner">
           <transition-group
             name="chat-line-transition"
             enter-active-class="animated no-animation-today"
           >
-            <!-- item && hasCollection(item) -->
-            <v-expansion-panel
-              class="teneo-dialog pa-0"
+            <v-container
               v-for="(item, i) in dialog"
               :key="i + 'itemsIter' + uuid"
               :class="{ 'mt-0 pb-0': i === dialog.length - 1, 'pt-0': i === 0 }"
+              class="px-0 mx-0"
             >
-              <v-expansion-panel-header
-                :hide-actions="true"
-                class="px-4 pt-1 pb-1"
-              >
-                <v-container fluid>
-                  <ChatBroadcastMessage :item="item"></ChatBroadcastMessage>
+              <ChatBroadcastMessage :item="item" class="pb-1"></ChatBroadcastMessage>
 
-                  <LiveChatResponse
-                    :itemIndexInDialog="i"
-                    :item="item"
-                  ></LiveChatResponse>
+              <LiveChatResponse :itemIndexInDialog="i" :item="item" class="mt-1 pb-1"></LiveChatResponse>
 
-                  <ChatTeneoResponse
-                    :item="item"
-                    :itemIndexInDialog="i"
-                    @swapInputButton="swapInputButton"
-                    @handleFocus="handleFocus"
-                    @toggleDate="showDate = !showDate"
-                    @toggleTime="showTime = !showTime"
-                    @showFeedback="showFeedback = true"
-                  ></ChatTeneoResponse>
+              <ChatTeneoResponse
+                :item="item"
+                :itemIndexInDialog="i"
+                @swapInputButton="swapInputButton"
+                @handleFocus="handleFocus"
+                @toggleDate="showDate = !showDate"
+                @toggleTime="showTime = !showTime"
+                @showFeedback="showFeedback = true"
+              ></ChatTeneoResponse>
 
-                  <ChatUserQuestion
-                    :item="item"
-                    @clicked="updateInputBox"
-                    @swapInputButton="swapInputButton"
-                  ></ChatUserQuestion>
-                </v-container>
-              </v-expansion-panel-header>
-            </v-expansion-panel>
+              <ChatUserQuestion
+                :item="item"
+                :itemIndexInDialog="i"
+                @clicked="updateInputBox"
+                @swapInputButton="swapInputButton"
+              ></ChatUserQuestion>
+            </v-container>
           </transition-group>
+        </v-container>
 
-          <!-- live chat typing -->
-          <div
-            v-if="showLiveChatProcessing"
-            class="text-left ma-2"
-            style="background-color: transparent; align-items: left;"
+        <!-- live chat typing -->
+        <div
+          v-if="showLiveChatProcessing"
+          class="text-left ma-2"
+          style="background-color: transparent; align-items: left;"
+        >
+          <v-alert
+            min-width="100%"
+            color="info"
+            border="left"
+            elevation="2"
+            colored-border
+            icon="mdi-keyboard-settings"
           >
-            <v-alert
-              min-width="100%"
-              color="info"
-              border="left"
-              elevation="2"
-              colored-border
-              icon="mdi-keyboard-settings"
-              >Agent is typing a message..
-              <vue-loaders-ball-pulse-sync
-                color="#C2C2C2"
-                scale="0.5"
-              ></vue-loaders-ball-pulse-sync>
-            </v-alert>
-          </div>
-        </v-expansion-panels>
-        <span ref="endChat"> <!-- scroll to the end --></span>
+            Agent is typing a message..
+            <vue-loaders-ball-pulse-sync color="#C2C2C2" scale="0.5"></vue-loaders-ball-pulse-sync>
+          </v-alert>
+        </div>
+        <span ref="endChat">
+          <!-- scroll to the end -->
+        </span>
       </v-col>
-
+      <!-- // progressBar -->
       <!-- Chat Footer - Input Field and Buttons -->
       <v-progress-linear
         :indeterminate="true"
@@ -112,8 +94,6 @@
         height="4"
       ></v-progress-linear>
     </v-row>
-    <!-- // progressBar -->
-
     <v-row class="teneo-footer" :class="{ 'footer-float': float }" no-gutters>
       <v-col>
         <v-form v-model="valid" v-on:submit.prevent ref="userInputForm">
@@ -194,7 +174,7 @@
                   @file-update="fileChanged"
                   large
                   hover
-                  class="elevation-2 v-btn v-btn--contained v-btn--fab v-btn--round v-size--small primary white--text mt-3"
+                  class="elevation-2 v-btn v-btn--fab v-btn--round v-size--small primary white--text mt-3"
                 >
                   <template slot="icon">
                     <v-icon dark class="py-2">mdi-paperclip</v-icon>
@@ -208,8 +188,7 @@
                   :value="progressValue"
                   color="accent"
                   class="mt-3"
-                >
-                </v-progress-circular>
+                ></v-progress-circular>
                 <template v-if="!showUploadButton && !showUploadProgress">
                   <v-btn
                     text
@@ -260,12 +239,7 @@
     <!-- end -->
     <!-- Date picker dialog -->
     <v-col cols="12" v-if="showDate" :key="'datePicker' + uuid">
-      <v-dialog
-        ref="dialogDate"
-        v-model="showDate"
-        :return-value.sync="date"
-        width="290px"
-      >
+      <v-dialog ref="dialogDate" v-model="showDate" :return-value.sync="date" width="290px">
         <v-date-picker v-model="date" scrollable>
           <v-spacer></v-spacer>
           <v-btn text color="primary" @click="showDate = false">Cancel</v-btn>
@@ -392,12 +366,12 @@
     <!-- Time picker dialog -->
     <v-col cols="12" v-if="showTime" :key="'timePicker' + uuid">
       <v-dialog ref="dialogTime" v-model="showTime" width="290px">
-        <v-time-picker v-model="userInput" format="24hr"></v-time-picker>
         <v-card>
+          <v-time-picker v-model="userInput" format="24hr"></v-time-picker>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="error" @click="showTime = false">Cancel</v-btn>
-            <v-btn color="success" @click="sendUserInput">OK</v-btn>
+            <v-btn small color="error" @click="showTime = false">Cancel</v-btn>
+            <v-btn small color="success" @click="sendUserInput">OK</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -850,6 +824,16 @@ export default {
 }
 </style>
 <style>
+div.upload-btn {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+label.upload-btn {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
 button.v-expansion-panel-header:active {
   border-style: none !important;
 }

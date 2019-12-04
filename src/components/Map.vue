@@ -1,5 +1,5 @@
 <template>
-  <div class="map-responsive mb-2">
+  <div class="map-responsive mb-2 elevation-4">
     <iframe
       width="600"
       height="450"

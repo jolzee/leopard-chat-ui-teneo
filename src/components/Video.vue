@@ -1,5 +1,5 @@
 <template>
-  <vue-plyr v-if="url && type" class="mb-2">
+  <vue-plyr v-if="url && type" class="mb-2 elevation-4">
     <video autoplay="false">
       <source :src="url" :type="type" />
     </video>

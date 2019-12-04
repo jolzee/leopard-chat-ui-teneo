@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-app
-      :dark="$vuetify.theme.dark"
-      v-if="showButtonOnly"
-      class="application-button"
-    >
+    <v-app :dark="$vuetify.theme.dark" v-if="showButtonOnly" class="application-button">
       <div id="chat-open-close-button-embed" @click="openEmbedButton">
         <v-fab-transition>
           <v-btn
@@ -68,10 +64,7 @@
               :class="{ pulse: pulseButton && !isChatOpen }"
               :style="customCssButtonToolbar"
             >
-              <v-icon
-                dark
-                v-text="isChatOpen ? 'mdi-close' : 'mdi-message-text'"
-              ></v-icon>
+              <v-icon dark v-text="isChatOpen ? 'mdi-close' : 'mdi-message-text'"></v-icon>
             </v-btn>
           </v-fab-transition>
         </div>
@@ -109,25 +102,16 @@
               >
                 <v-row>
                   <v-col class="pa-0 ma-0 elevation-2">
-                    <div class="secondary darken-1 text-center pa-2">
-                      <div class="headline white--text font-weight-medium">
-                        Artificial Solutions
-                      </div>
+                    <div class="primary darken-2 text-center pa-2">
+                      <div class="headline white--text font-weight-medium">Artificial Solutions</div>
                     </div>
                     <div class="primary darken-1 text-center py-2 px-4">
-                      <div class="white--text body-2 pa-1">
-                        {{ $t("about.page.content") }}
-                      </div>
+                      <div class="white--text body-2 pa-1">{{ $t("about.page.content") }}</div>
                     </div>
                   </v-col>
                 </v-row>
                 <v-list class="px-2 mt-1">
-                  <v-list-item
-                    ripple
-                    value="true"
-                    key="menuItemTheme"
-                    @click="toggleBrightness"
-                  >
+                  <v-list-item ripple value="true" key="menuItemTheme" @click="toggleBrightness">
                     <v-list-item-action>
                       <v-icon
                         medium
@@ -140,13 +124,11 @@
                       ></v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                      <v-list-item-title
-                        class="subheading"
-                        :class="menuClassText"
-                        >{{
-                          $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
-                        }}</v-list-item-title
-                      >
+                      <v-list-item-title class="subheading" :class="menuClassText">
+                        {{
+                        $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
+                        }}
+                      </v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
                   <v-list-item
@@ -157,16 +139,17 @@
                     :to="menuItem.route"
                   >
                     <v-list-item-action>
-                      <v-icon medium :class="menuClass">{{
+                      <v-icon medium :class="menuClass">
+                        {{
                         menuItem.icon
-                      }}</v-icon>
+                        }}
+                      </v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
                       <v-list-item-title
                         class="subheading"
                         :class="menuClassText"
-                        >{{ $t(menuItem.titleKey) }}</v-list-item-title
-                      >
+                      >{{ $t(menuItem.titleKey) }}</v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
                 </v-list>
@@ -178,17 +161,13 @@
                       block
                       color="primary darken-1"
                       @click="logout()"
-                      >{{ $t("menu.logout") }}
-                    </v-btn>
+                    >{{ $t("menu.logout") }}</v-btn>
                   </div>
                 </template>
               </v-navigation-drawer>
             </transition>
 
-            <div
-              class="overflow-hidden"
-              style="height: inherit; border-radius: inherit"
-            >
+            <div class="overflow-hidden" style="height: inherit; border-radius: inherit">
               <v-app-bar
                 elevation="4"
                 max-height="64"
@@ -219,16 +198,15 @@
                     class="embed-button-center ml-0"
                     :style="customCssButtonToolbar"
                   >
-                    <v-icon dark>{{
+                    <v-icon dark>
+                      {{
                       drawer ? "mdi-menu-open" : "mdi-menu"
-                    }}</v-icon>
+                      }}
+                    </v-icon>
                   </v-btn>
                 </v-fab-transition>
 
-                <v-toolbar-title
-                  v-text="toolbarTitle"
-                  class="pl-0"
-                ></v-toolbar-title>
+                <v-toolbar-title v-text="toolbarTitle" class="pl-0"></v-toolbar-title>
 
                 <v-spacer></v-spacer>
                 <!-- Handle close button on production embedded sites -->
@@ -284,16 +262,9 @@
                   </v-fab-transition>
                 </template>
               </v-app-bar>
-              <v-content
-                app
-                id="scrolling-techniques content-area"
-                class="pt-0"
-              >
+              <v-content app id="scrolling-techniques content-area" class="pt-0">
                 <OverlayAlert />
-                <transition
-                  name="page-transition"
-                  enter-active-class="animation fadeIn"
-                >
+                <transition name="page-transition" enter-active-class="animation fadeIn">
                   <router-view
                     @closeMenu="drawer = false"
                     v-if="['config'].indexOf($route.name) === -1"
@@ -308,8 +279,10 @@
           <v-dialog v-model="importDialog" persistent max-width="600">
             <v-card>
               <v-card-title class="headline">Solution Import</v-card-title>
-              <v-card-text
-                >{{ importDialogMessages.message }}<br /><br />
+              <v-card-text>
+                {{ importDialogMessages.message }}
+                <br />
+                <br />
                 <v-simple-table>
                   <template v-slot:default>
                     <thead>
@@ -324,26 +297,18 @@
                         <td>{{ importDialogMessages.deepLink }}</td>
                       </tr>
                     </tbody>
-                  </template> </v-simple-table
-                ><br />
-                <v-alert
-                  border="top"
-                  colored-border
-                  type="warning"
-                  elevation="2"
-                >
+                  </template>
+                </v-simple-table>
+                <br />
+                <v-alert border="top" colored-border type="warning" elevation="2">
                   Accepting will overwrite other solutions with the same name or
                   deep link.
                 </v-alert>
               </v-card-text>
               <v-card-actions>
                 <div class="flex-grow-1"></div>
-                <v-btn color="grey lighten-5" @click="importDialog = false"
-                  >Cancel</v-btn
-                >
-                <v-btn color="green lighten-2" @click="importSolutionFromUrl"
-                  >OK</v-btn
-                >
+                <v-btn color="grey lighten-5" @click="importDialog = false">Cancel</v-btn>
+                <v-btn color="green lighten-2" @click="importSolutionFromUrl">OK</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -1036,7 +1001,7 @@ a:focus {
 .light-scroll::-webkit-scrollbar {
   height: 14px;
   width: 10px;
-  background: #ffffff;
+  background: #f5f5f5;
 }
 
 .dark-scroll::-webkit-scrollbar {
