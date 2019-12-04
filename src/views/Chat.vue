@@ -948,12 +948,12 @@ div.options-list a.v-list__tile--link {
 
 .teneo-response-icon {
   margin-left: 0px;
-  margin-right: 5px;
+  margin-right: 0px;
 }
 
 .teneo-userinput-icon {
   margin-right: 0px;
-  margin-left: 5px;
+  margin-left: 0px;
 }
 
 .teneo-dialog {

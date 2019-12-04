@@ -15,9 +15,7 @@
       width="600px"
       :fullscreen="
         fullscreen ||
-          $vuetify.breakpoint.xs ||
-          $vuetify.breakpoint.sm ||
-          $vuetify.breakpoint.md
+          $vuetify.breakpoint.mdAndDown
       "
       content-class="leopard-dialog resizable"
     >
@@ -31,21 +29,17 @@
               type="info"
               elevation="2"
               @click="overlay = false"
-            >
-              "Welcome to my dialog!!"
-            </v-alert>
+            >"Welcome to my dialog!!"</v-alert>
           </v-overlay>
         </v-fade-transition>
-        <v-system-bar
-          color="primary darken-2"
-          :class="{ 'popup-header': !fullscreen }"
-          dark
-        >
+        <v-system-bar color="primary darken-2" :class="{ 'popup-header': !fullscreen }" dark>
           <v-spacer></v-spacer>
 
-          <v-icon @click="toggleFullscreen">{{
+          <v-icon @click="toggleFullscreen">
+            {{
             fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
-          }}</v-icon>
+            }}
+          </v-icon>
 
           <v-icon @click="close">mdi-close</v-icon>
         </v-system-bar>

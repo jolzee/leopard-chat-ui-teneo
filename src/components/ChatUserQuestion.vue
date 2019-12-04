@@ -7,14 +7,15 @@
     <!-- user question -->
     <v-col>
       <v-card
-        :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
+        :color="determineCardColor()"
         class="chat-card chat-card-right text-right pr-3 align-content-end"
+        :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'mr-2' : ''"
       >{{ item.text }}</v-card>
     </v-col>
     <v-col
       cols="2"
       class="text-center d-none d-sm-block"
-      v-if="showChatIcons && !this.$vuetify.breakpoint.xs"
+      v-if="showChatIcons && !$vuetify.breakpoint.smAndDown"
     >
       <v-menu v-if="isLiveAgentAssist" close-on-click close-on-content-click offset-y>
         <template v-slot:activator="{ on }">
@@ -149,6 +150,17 @@ export default {
     };
   },
   methods: {
+    determineCardColor() {
+      let color;
+      if (this.showChatIcons && !this.$vuetify.breakpoint.smAndDown) {
+        color = this.$vuetify.theme.dark ? "#333333" : "#FFFFFF";
+      } else if (!this.showChatIcons || this.$vuetify.breakpoint.smAndDown) {
+        color = this.$vuetify.theme.dark ? "#333333" : "primary white--text";
+      } else if (this.showChatIcons && this.$vuetify.breakpoint.smAndDown) {
+        color = this.$vuetify.theme.dark ? "#333333" : "primary white--text";
+      }
+      return color;
+    },
     clearInputBox() {
       this.$emit("clicked", "");
     },

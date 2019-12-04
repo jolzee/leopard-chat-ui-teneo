@@ -356,7 +356,8 @@ export default {
         {
           icon: "mdi-history",
           titleKey: "menu.history",
-          route: "history"
+          route: "history",
+          when: this.hasDifferentHistory
         },
         {
           icon: "mdi-information-variant",
@@ -425,6 +426,7 @@ export default {
       "config",
       "isMobileDevice",
       "getActivePromptInterval",
+      "getLatestDialogHistory",
       "dialogs",
       "chatTitle",
       "customCssButtonToolbar",
@@ -442,6 +444,15 @@ export default {
       "isChatOpen",
       "socialAuthEnabled"
     ]),
+    hasDifferentHistory() {
+      if (this.getLatestDialogHistory.length !== this.dialogs.length) {
+        logger.debug(`Should show 'History' menu option`);
+        return true;
+      } else {
+        logger.debug(`Should not show 'History' menu option`);
+        return false;
+      }
+    },
     shouldFloat() {
       logger.debug(`Show Leopard floating?`, this.float);
       if (this.float && this.$router.currentRoute.path !== "/config") {
@@ -453,8 +464,17 @@ export default {
     activeMenuItems() {
       if (this.authenticated) {
         return this.menuItems.filter(menuItem => {
-          if ("when" in menuItem && menuItem.when === "authenticated") {
+          if (
+            "when" in menuItem &&
+            typeof menuItem.when === "string" &&
+            menuItem.when === "authenticated"
+          ) {
             return true;
+          } else if (
+            "when" in menuItem &&
+            typeof menuItem.when === "function"
+          ) {
+            return menuItem.when();
           } else if (menuItem.route === "config") {
             return this.hideConfigMenu ? false : true;
           } else if (!("when" in menuItem)) {
@@ -469,9 +489,15 @@ export default {
           if (
             this.socialAuthEnabled &&
             "when" in menuItem &&
+            typeof menuItem.when === "string" &&
             menuItem.when === "notAuthenticated"
           ) {
             return true;
+          } else if (
+            "when" in menuItem &&
+            typeof menuItem.when === "function"
+          ) {
+            return menuItem.when();
           } else if (menuItem.route === "config") {
             return this.hideConfigMenu ? false : true;
           } else if (!("when" in menuItem)) {

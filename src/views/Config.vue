@@ -11,9 +11,7 @@
       max-width="calc(900px - 10vw)"
       :fullscreen="
         fullscreen ||
-          $vuetify.breakpoint.xs ||
-          $vuetify.breakpoint.sm ||
-          $vuetify.breakpoint.md
+          $vuetify.breakpoint.mdAndDown
       "
       light
     >
@@ -23,10 +21,7 @@
           light
           :class="{
             'leopard-config-app-bar-fullscreen':
-              fullscreen ||
-              $vuetify.breakpoint.xs ||
-              $vuetify.breakpoint.sm ||
-              $vuetify.breakpoint.md
+              fullscreen || $vuetify.breakpoint.mdAndDown
           }"
         >
           <v-icon>mdi-tune</v-icon>

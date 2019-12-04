@@ -5,9 +5,7 @@
     :persistent="true"
     max-width="calc(1200px - 10vw)"
     no-click-animation
-    :fullscreen="
-      $vuetify.breakpoint.xs || $vuetify.breakpoint.sm || $vuetify.breakpoint.md
-    "
+    :fullscreen="$vuetify.breakpoint.mdAndDown"
   >
     <v-card>
       <v-card-title>

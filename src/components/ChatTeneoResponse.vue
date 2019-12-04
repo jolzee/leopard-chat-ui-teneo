@@ -1,11 +1,11 @@
 <template>
   <!-- Reply -->
   <div v-if="item.type === 'reply'" :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3'  : ''">
-    <v-row v-if="itemText !== '<p>'" justify="start" no-gutters class="pr-3 pl-1 pt-1">
+    <v-row v-if="itemText !== '<p>'" justify="start" no-gutters class="pr-3 pl-1 pt-2">
       <v-col
         cols="2"
         class="text-center d-none d-sm-block"
-        v-if="showChatIcons && !this.$vuetify.breakpoint.xs"
+        v-if="showChatIcons && !this.$vuetify.breakpoint.smAndDown"
       >
         <v-menu v-if="isLiveAgentAssist" close-on-click close-on-content-click offset-y>
           <template v-slot:activator="{ on }">
@@ -59,7 +59,10 @@
           <v-icon large>{{ getResponseIcon }}</v-icon>
         </v-btn>
       </v-col>
-      <v-col class="text-left" :class="!showChatIcons || this.$vuetify.breakpoint.xs ? 'ml-2' : ''">
+      <v-col
+        class="text-left"
+        :class="!showChatIcons || this.$vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
+      >
         <v-card
           :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           class="chat-card chat-card-left text-left"
@@ -142,7 +145,7 @@
         <v-col>
           <v-card
             class="chat-card chat-card-left text-left"
-            :class="!showChatIcons || this.$vuetify.breakpoint.xs ? 'ml-2' : ''"
+            :class="!showChatIcons || this.$vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
             :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           >
             <span v-html="chunkText" class="teneo-reply"></span>

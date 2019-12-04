@@ -4,11 +4,7 @@
       v-model="dialog"
       scrollable
       max-width="400px"
-      :fullscreen="
-        $vuetify.breakpoint.xs ||
-          $vuetify.breakpoint.sm ||
-          $vuetify.breakpoint.md
-      "
+      :fullscreen="$vuetify.breakpoint.mdAndDown"
     >
       <v-card>
         <v-app-bar dark color="primary" max-height="64">
@@ -27,9 +23,9 @@
                     color="primary"
                     background-color="secondary lighten-5"
                     empty-icon="$ratingFull"
-                    :x-large="$vuetify.breakpoint.lg || $vuetify.breakpoint.xl"
+                    :x-large="$vuetify.breakpoint.lgAndUp"
                     :large="$vuetify.breakpoint.md"
-                    :x-small="$vuetify.breakpoint.xs"
+                    :x-small="$vuetify.breakpoint.smAndDown"
                   ></v-rating>
                 </div>
               </v-col>

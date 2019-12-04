@@ -5,12 +5,7 @@
         v-model="dialog"
         persistent
         scrollable
-        :fullscreen="
-          fullscreen ||
-            $vuetify.breakpoint.xs ||
-            $vuetify.breakpoint.sm ||
-            $vuetify.breakpoint.md
-        "
+        :fullscreen="fullscreen || $vuetify.breakpoint.mdAndDown"
         :max-width="formConfig.maxWidth ? formConfig.maxWidth : 600"
         content-class="teneo-form resizable"
       >
@@ -26,23 +21,21 @@
                 @click="overlay = false"
               >
                 {{
-                  formConfig.validationFailedMessage
-                    ? formConfig.validationFailedMessage
-                    : "Please complete all required fields"
+                formConfig.validationFailedMessage
+                ? formConfig.validationFailedMessage
+                : "Please complete all required fields"
                 }}
               </v-alert>
             </v-overlay>
           </v-fade-transition>
-          <v-system-bar
-            color="primary darken-2"
-            :class="{ 'popup-header': !fullscreen }"
-            dark
-          >
+          <v-system-bar color="primary darken-2" :class="{ 'popup-header': !fullscreen }" dark>
             <v-spacer></v-spacer>
 
-            <v-icon @click="fullscreen = !fullscreen">{{
+            <v-icon @click="fullscreen = !fullscreen">
+              {{
               fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
-            }}</v-icon>
+              }}
+            </v-icon>
 
             <v-icon @click="close">mdi-close</v-icon>
           </v-system-bar>
@@ -72,16 +65,9 @@
                       :sm="hasColumnDescription(field) ? 4 : 12"
                       class="pl-0"
                     >
-                      <v-subheader
-                        v-html="getColumnDescription(field)"
-                        class="pa-0"
-                      ></v-subheader>
+                      <v-subheader v-html="getColumnDescription(field)" class="pa-0"></v-subheader>
                     </v-col>
-                    <v-col
-                      cols="12"
-                      :sm="hasColumnDescription(field) ? 8 : 12"
-                      class="pa-0"
-                    >
+                    <v-col cols="12" :sm="hasColumnDescription(field) ? 8 : 12" class="pa-0">
                       <v-img
                         v-if="field.image"
                         :src="field.image.src"
@@ -97,16 +83,8 @@
                         "
                       >
                         <template v-slot:placeholder>
-                          <v-row
-                            class="fill-height ma-0"
-                            align="center"
-                            justify="center"
-                          >
-                            <v-progress-circular
-                              :size="50"
-                              indeterminate
-                              color="primary"
-                            ></v-progress-circular>
+                          <v-row class="fill-height ma-0" align="center" justify="center">
+                            <v-progress-circular :size="50" indeterminate color="primary"></v-progress-circular>
                           </v-row>
                         </template>
                       </v-img>
@@ -159,9 +137,7 @@
                           field.alert.outlined ? field.alert.outlined : false
                         "
                         class="mb-0"
-                      >
-                        {{ field.alert.text }}
-                      </v-alert>
+                      >{{ field.alert.text }}</v-alert>
 
                       <ValidationProvider
                         v-if="field.textInput"
@@ -533,8 +509,7 @@
                               ? 'mdi-' + field.comboBox.icons.prependInner
                               : ''
                           "
-                        >
-                        </v-autocomplete>
+                        ></v-autocomplete>
                       </ValidationProvider>
 
                       <ValidationProvider
@@ -937,16 +912,20 @@
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn @click="close">{{
+            <v-btn @click="close">
+              {{
               formConfig.button && formConfig.button.closeButtonText
-                ? formConfig.button.closeButtonText
-                : "Close"
-            }}</v-btn>
-            <v-btn @click="clear">{{
+              ? formConfig.button.closeButtonText
+              : "Close"
+              }}
+            </v-btn>
+            <v-btn @click="clear">
+              {{
               formConfig.button && formConfig.button.clearButtonText
-                ? formConfig.button.clearButtonText
-                : "Clear"
-            }}</v-btn>
+              ? formConfig.button.clearButtonText
+              : "Clear"
+              }}
+            </v-btn>
             <v-spacer></v-spacer>
             <v-btn
               v-if="formConfig.button"
@@ -955,17 +934,13 @@
               :color="formConfig.button.color ? formConfig.button.color : ''"
             >
               {{ formConfig.button.text ? formConfig.button.text : "Submit" }}
-              <v-icon v-if="formConfig.button.icon" right dark>{{
+              <v-icon v-if="formConfig.button.icon" right dark>
+                {{
                 formConfig.button.icon ? `mdi-${formConfig.button.icon}` : ""
-              }}</v-icon>
+                }}
+              </v-icon>
             </v-btn>
-            <v-btn
-              v-else
-              color="primary"
-              @click="submit"
-              :disabled="invalid || !validated"
-              >Submit</v-btn
-            >
+            <v-btn v-else color="primary" @click="submit" :disabled="invalid || !validated">Submit</v-btn>
           </v-card-actions>
         </v-card>
         <!--div class='resizer'></div-->

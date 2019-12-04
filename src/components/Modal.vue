@@ -1,14 +1,11 @@
 <template>
   <span>
-    <CustomModal
-      :items="customModalItems"
-      :toolbarWidth="toolbarWidth"
-    ></CustomModal>
+    <CustomModal :items="customModalItems" :toolbarWidth="toolbarWidth"></CustomModal>
     <!-- Display Pusher Message -->
     <!-- <Pusher
       :displayPusherMessage="displayPusherMessage"
       :pusherMessage="pusherMessage"
-    ></Pusher> -->
+    ></Pusher>-->
 
     <!-- show normal message -->
     <v-dialog
@@ -33,9 +30,7 @@
         fullscreen ||
           currentModalSize === 'fullscreen' ||
           currentModalPosition === 'fullscreen' ||
-          $vuetify.breakpoint.xs ||
-          $vuetify.breakpoint.sm ||
-          $vuetify.breakpoint.md
+          $vuetify.breakpoint.mdAndDown
       "
     >
       <v-card>
@@ -48,16 +43,10 @@
               type="info"
               elevation="2"
               @click="overlay = false"
-            >
-              {{ overlayMessage }}
-            </v-alert>
+            >{{ overlayMessage }}</v-alert>
           </v-overlay>
         </v-fade-transition>
-        <v-system-bar
-          color="primary darken-2"
-          :class="{ 'popup-header': !fullscreen }"
-          dark
-        >
+        <v-system-bar color="primary darken-2" :class="{ 'popup-header': !fullscreen }" dark>
           <v-spacer></v-spacer>
           <v-icon
             @click="toggleFullscreen"
@@ -65,10 +54,11 @@
               currentModalPosition !== 'fullscreen' &&
                 currentModalSize !== 'fullscreen'
             "
-            >{{
-              fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
-            }}</v-icon
           >
+            {{
+            fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
+            }}
+          </v-icon>
           <v-icon @click="hideModal">mdi-close</v-icon>
         </v-system-bar>
 
@@ -85,17 +75,9 @@
             <v-row align="start" justify="start">
               <v-col cols="12" class="pa-2">
                 <!-- display the modal title and sub-title -->
-                <div
-                  v-if="title"
-                  v-html="title"
-                  class="subtitle-2 font-weight-bold"
-                ></div>
+                <div v-if="title" v-html="title" class="subtitle-2 font-weight-bold"></div>
                 <!-- Sub-Title -->
-                <div
-                  class="subtitle-2 font-weight-bold"
-                  v-if="subTitle"
-                  v-html="subTitle"
-                ></div>
+                <div class="subtitle-2 font-weight-bold" v-if="subTitle" v-html="subTitle"></div>
 
                 <!-- YouTube -->
                 <YouTube :videoId="youTubeVideoId"></YouTube>
@@ -196,8 +178,7 @@
             @click.native="hideModal"
             v-shortkey="['ctrl', 'alt', 'arrowleft']"
             @shortkey.native="hideModal"
-            >{{ $t("back.to.chat.button") }}
-          </v-btn>
+          >{{ $t("back.to.chat.button") }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
