@@ -167,7 +167,7 @@
               </v-navigation-drawer>
             </transition>
 
-            <div class="overflow-hidden" style="height: inherit; border-radius: inherit">
+            <div style="height: inherit; border-radius: inherit">
               <v-app-bar
                 elevation="4"
                 max-height="64"
