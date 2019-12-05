@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-unused-vars */
 
-const logger = require("@/utils/logging").getLogger("utils.js");
 const replaceString = require("replace-string");
 const solutionDefault = require("../constants/solution-config-default")
   .SOLUTION_DEFAULT;
@@ -14,16 +13,13 @@ const fixSolutions = allSolutions => {
 
   allSolutions.solutions.forEach(solution => {
     if (!("font" in solution)) {
-      logger.info(`added 'font' to ${solution.name}`);
       solution.font = solutionDefault.font;
     }
     if (!("lookAndFeel" in solution)) {
-      logger.info(`added 'lookAndFeel' to ${solution.name}`);
       solution.lookAndFeel = solutionDefault.lookAndFeel;
     }
 
     if (!("custom1" in solution.theme)) {
-      logger.info(`added custom colors to ${solution.name}`);
       solution.theme.dark = solutionDefault.theme.dark;
       solution.theme.custom1 = solutionDefault.theme.custom1;
       solution.theme.custom2 = solutionDefault.theme.custom2;
@@ -31,11 +27,9 @@ const fixSolutions = allSolutions => {
     }
 
     if (!("animations" in solution)) {
-      logger.info(`added 'animations' to ${solution.name}`);
       solution.animations = solutionDefault.animations;
     }
     if (!("promptTriggers" in solution)) {
-      logger.info(`added 'promptTriggers' to ${solution.name}`);
       solution.promptTriggers = solutionDefault.promptTriggers;
     }
   });
