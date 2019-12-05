@@ -823,7 +823,10 @@ export default {
     },
     optionClicked(option) {
       this.$store.commit("SHOW_PROGRESS_BAR");
-      this.$store.commit("SET_USER_INPUT", option.name);
+      this.$store.commit(
+        "SET_USER_INPUT",
+        option.text ? option.text : option.name
+      );
       let optionClickParam = "&isClick=true";
       this.$store
         .dispatch(

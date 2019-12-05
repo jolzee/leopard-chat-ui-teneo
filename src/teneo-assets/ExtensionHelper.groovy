@@ -81,7 +81,14 @@ class ExtensionHelper {
         list.eachWithIndex { button, idx ->
             if (idx > 0) {
                 def item = [:]
-                item.put('name', button)
+                if (button.contains("|")) {
+                    def buttonInfoArray = button.split("\\|");
+                    item.put('name', buttonInfoArray[0])
+                    item.put('text', buttonInfoArray[1])
+                } else {
+                    item.put('name', button)
+                }
+
                 items << item
             }
         }
