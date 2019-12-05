@@ -12,9 +12,9 @@
         <span class="title">{{ dialogTitle }}</span>
       </v-card-title>
       <v-divider></v-divider>
-      <v-card-text style="height: 90vh" id="add-edit" class="teneo-hide-scroll-x">
+      <v-card-text style="height: 90vh" id="add-edit" class="teneo-hide-scroll-x mx-0 px-0">
         <v-form ref="form">
-          <div class="d-none d-sm-inline-block">
+          <div class="d-none d-sm-inline-block ml-6">
             <v-btn
               aria-label="Open Marterial Design Icons in a new window"
               class="mr-2 mt-2"
@@ -307,12 +307,12 @@
               <v-col :cols="12" :lg="8">
                 <v-row>
                   <v-col
+                    v-for="color in themeColorsFiltered"
+                    :key="color"
                     :cols="12"
                     :sm="6"
                     :md="4"
                     :lg="3"
-                    v-for="color in themeColors"
-                    :key="color"
                   >
                     <v-btn
                       class="mr-2"
@@ -341,6 +341,151 @@
                 </v-row>
               </v-col>
               <v-divider></v-divider>
+              <!-- Colors of Responses and questions -->
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+                <v-subheader>Bot Response</v-subheader>
+              </v-col>
+
+              <v-col :cols="12" :md="8">
+                <v-row align="start" justify="start" no-gutters class="pl-1">
+                  <v-col cols="12" class="mb-2">
+                    <v-slider
+                      name="fontSlider1"
+                      v-model="font.fontIndex"
+                      color="success"
+                      :max="6"
+                      ticks
+                      step="1"
+                      tick-size="5"
+                      thumb-label="always"
+                    ></v-slider>
+                  </v-col>
+                  <v-col cols="3" :sm="2" :md="2" class="text-right">
+                    <v-btn
+                      aria-label="Chat icon representing the virtual assitant"
+                      :color="solution.theme[solution.lookAndFeel.response.iconColor]"
+                      text
+                      tile
+                      icon
+                      large
+                    >
+                      <v-icon large>{{ solution.responseIcon }}</v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="9" :sm="10" :md="7" class="text-left pl-2" :class="solution.font">
+                    <v-card
+                      :color="$vuetify.theme.dark ? '#333333' : solution.theme[solution.lookAndFeel.response.blockBgColor]"
+                      class="chat-card chat-card-left text-left mb-3"
+                      :class="solution.lookAndFeel.response.blockTextColor === 'light' ? ' white--text' : ''"
+                    >
+                      <span>Hello and welcome! My name is Leo and I’m here to answer your questions.</span>
+                    </v-card>
+                  </v-col>
+                  <v-spacer></v-spacer>
+                </v-row>
+                <v-row no-gutters class="mt-2">
+                  <v-col cols="12" :md="6" :lg="4" class="pr-1">
+                    <v-select
+                      dense
+                      :items="themeColors"
+                      v-model="solution.lookAndFeel.response.iconColor"
+                      filled
+                      label="Response Icon Color"
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12" :md="6" :lg="4" class="pr-1">
+                    <v-select
+                      dense
+                      :items="themeColors"
+                      v-model="solution.lookAndFeel.response.blockBgColor"
+                      filled
+                      label="Response Block BG Color"
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12" :md="12" :lg="4" class="pr-1">
+                    <v-select
+                      dense
+                      :items="solution.lookAndFeel.response.blockBgColor === 'white' ? ['dark'] : ['dark', 'light']"
+                      v-model="solution.lookAndFeel.response.blockTextColor"
+                      filled
+                      label="Response Block Text Color"
+                    ></v-select>
+                  </v-col>
+                </v-row>
+              </v-col>
+
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+                <v-subheader>User Question</v-subheader>
+              </v-col>
+
+              <v-col :cols="12" :md="8">
+                <v-row align="start" justify="start" no-gutters class="pl-1">
+                  <v-col cols="12" class="mb-2">
+                    <v-slider
+                      name="fontSlider2"
+                      v-model="font.fontIndex"
+                      color="success"
+                      :max="6"
+                      ticks
+                      step="1"
+                      tick-size="5"
+                      thumb-label="always"
+                    ></v-slider>
+                  </v-col>
+
+                  <v-col cols="9" :sm="10" :md="7" class="text-right pl-2" :class="solution.font">
+                    <v-card
+                      :color="$vuetify.theme.dark ? '#333333' : solution.theme[solution.lookAndFeel.question.blockBgColor]"
+                      class="chat-card chat-card-right text-right mb-3"
+                      :class="solution.lookAndFeel.question.blockTextColor === 'light' ? ' white--text' : ''"
+                    >
+                      <span>I would like to book a flight from Seattle to Cape Town</span>
+                    </v-card>
+                  </v-col>
+                  <v-col cols="3" :sm="2" :md="2" class="text-left">
+                    <v-btn
+                      aria-label="Chat icon representing you in the chat"
+                      :color="solution.theme[solution.lookAndFeel.question.iconColor]"
+                      text
+                      tile
+                      icon
+                      large
+                    >
+                      <v-icon large>{{ solution.userIcon }}</v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-spacer></v-spacer>
+                </v-row>
+                <v-row no-gutters class="mt-2">
+                  <v-col cols="12" :md="6" :lg="4" class="pr-1">
+                    <v-select
+                      dense
+                      :items="themeColors"
+                      v-model="solution.lookAndFeel.question.iconColor"
+                      filled
+                      label="User Question Icon Color"
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12" :md="6" :lg="4" class="pr-1">
+                    <v-select
+                      dense
+                      :items="themeColors"
+                      v-model="solution.lookAndFeel.question.blockBgColor"
+                      filled
+                      label="User Question Block BG Color"
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12" :md="12" :lg="4" class="pr-1">
+                    <v-select
+                      dense
+                      :items="solution.lookAndFeel.question.blockBgColor === 'white' ? ['dark'] : ['dark', 'light']"
+                      v-model="solution.lookAndFeel.question.blockTextColor"
+                      filled
+                      label="User Question Block Text Color"
+                    ></v-select>
+                  </v-col>
+                </v-row>
+              </v-col>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Prompt Triggers</v-subheader>
               </v-col>
@@ -374,7 +519,7 @@
                   :rules="[ruleMustHaveValue, ruleMustBeInteger]"
                 ></v-text-field>
               </v-col>
-              <!-- ASR Corrections -->
+
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Button and Toolbar Custom CSS</v-subheader>
               </v-col>
@@ -452,7 +597,7 @@
                   <v-radio label="All requests" value="all"></v-radio>
                 </v-radio-group>
               </v-col>
-              <v-col :cols="12" :lg="4">
+              <v-col :cols="12" :lg="4" class="pl-5">
                 <v-btn
                   color="red"
                   :aria-label="`Add a new context parameter`"
@@ -463,7 +608,7 @@
                   <v-icon right dark>mdi-plus-circle</v-icon>
                 </v-btn>
               </v-col>
-              <v-col :cols="12" :lg="8">
+              <v-col :cols="12" :lg="8" class="px-7">
                 <!-- Itterate over all CTX parameters and their values -->
                 <v-row
                   class="mb-4 grey lighten-5 pa-2 elevation-2"
@@ -724,6 +869,18 @@ export default {
           "heartBeat"
         ]
       },
+      font: {
+        fontIndex: 3,
+        ticksLabels: [
+          "leopard-font-xs",
+          "leopard-font-small",
+          "leopard-font-medium",
+          "leopard-font-normal",
+          "leopard-font-large",
+          "leopard-font-xl",
+          "leopard-font-xxl"
+        ]
+      },
       snackbar: false,
       showDialog: true,
       snackbarTimeout: 3000,
@@ -735,13 +892,18 @@ export default {
       activeColor: "",
       color: "#D60270",
       themeColors: [
+        "white",
         "primary",
         "secondary",
         "accent",
         "error",
         "info",
         "success",
-        "warning"
+        "warning",
+        "dark",
+        "custom1",
+        "custom2",
+        "custom3"
       ],
       trueFalseOptions: ["true", "false"],
       locales: [
@@ -811,7 +973,37 @@ export default {
       ]
     };
   },
-  computed: {},
+  mounted() {
+    this.font.fontIndex = this.font.ticksLabels.indexOf(this.solution.font);
+  },
+  watch: {
+    "font.fontIndex": function(newIndex) {
+      this.solution.font = this.font.ticksLabels[newIndex];
+    },
+    blockBgColor: function(newColor) {
+      if (newColor === "white") {
+        this.solution.lookAndFeel.response.blockTextColor = "dark";
+      }
+    },
+    blockTextColor: function(shade) {
+      if (shade === "light" && this.blockBgColor === "white") {
+        this.solution.lookAndFeel.response.blockTextColor = "dark";
+      }
+    }
+  },
+  computed: {
+    themeColorsFiltered() {
+      return this.themeColors.filter(function(color) {
+        return color !== "white";
+      });
+    },
+    blockBgColor() {
+      return this.solution.lookAndFeel.response.blockBgColor;
+    },
+    blockTextColor() {
+      return this.solution.lookAndFeel.response.blockTextColor;
+    }
+  },
   updated() {
     // you have to wait just a bit for the scroll to work
     setTimeout(function() {
@@ -1028,5 +1220,27 @@ export default {
 <style scoped>
 .teneo-hide-scroll-x {
   overflow-x: hidden;
+}
+
+.chat-card {
+  font-weight: 400;
+  padding: 8px !important;
+  margin-top: 4px;
+  line-height: 1.4em;
+  width: fit-content;
+  display: table;
+}
+
+.chat-card-left {
+  border-radius: 3px 13px 13px 13px !important;
+  -moz-border-radius: 3px 13px 13px 13px !important;
+  -webkit-border-radius: 3px 13px 13px 13px !important;
+}
+
+.chat-card-right {
+  border-radius: 13px 3px 13px 13px !important;
+  -moz-border-radius: 13px 3px 13px 13px !important;
+  -webkit-border-radius: 13px 3px 13px 13px !important;
+  margin-left: auto !important;
 }
 </style>

@@ -22,8 +22,9 @@ okkay | ok
     out: "flipOutY"
   },
   deepLink: "",
-  enableLiveChat: true,
+  enableLiveChat: false,
   float: true,
+  font: "leopard-font-normal",
   pulseButton: true,
   promptTriggers: {
     enabled: false,
@@ -37,6 +38,18 @@ okkay | ok
   responseIcon: "mdi-comment-account",
   sendContextParams: "login",
   showChatIcons: true,
+  lookAndFeel: {
+    response: {
+      iconColor: "secondary",
+      blockBgColor: "white",
+      blockTextColor: "dark"
+    },
+    question: {
+      iconColor: "primary",
+      blockBgColor: "white",
+      blockTextColor: "dark"
+    }
+  },
   theme: {
     accent: "#4CAF50",
     error: "#FF5252",
@@ -44,7 +57,11 @@ okkay | ok
     primary: "#0062B1",
     secondary: "#5B017B",
     success: "#4CAF50",
-    warning: "#FFC107"
+    warning: "#FFC107",
+    dark: "#0062B1",
+    custom1: "#0062B1",
+    custom2: "#0062B1",
+    custom3: "#0062B1"
   },
   displayAccent: true,
   url: "",

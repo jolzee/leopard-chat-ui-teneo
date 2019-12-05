@@ -60,10 +60,14 @@
       </v-col>
       <v-col class="text-left">
         <v-card
-          :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
+          :color="$vuetify.theme.dark ? '#333333' : `${responseLookAndFeel.blockBgColor}`"
           class="chat-card chat-card-left text-left"
         >
-          <span class="teneo-reply" v-html="item.text"></span>
+          <span
+            class="teneo-reply"
+            :class="`${leopardFont} ${responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
+            v-html="item.text"
+          ></span>
         </v-card>
       </v-col>
     </v-row>
@@ -78,7 +82,13 @@ export default {
   name: "LiveChatResponse",
   props: ["item", "itemIndexInDialog"],
   computed: {
-    ...mapGetters(["showChatIcons", "dialogs", "getLatestDialogHistory"]),
+    ...mapGetters([
+      "showChatIcons",
+      "dialogs",
+      "getLatestDialogHistory",
+      "leopardFont",
+      "responseLookAndFeel"
+    ]),
     dialog() {
       if (this.$route.name === "chat") {
         return this.dialogs ? this.dialogs : [];

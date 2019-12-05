@@ -14,8 +14,8 @@
               v-long-press="1000"
               aria-label="Chat icon representing the virtual assitant"
               @long-press-start="swapInputButton"
-              color="secondary"
-              class="teneo-response-icon elevation-2"
+              :color="`${responseLookAndFeel.iconColor}`"
+              class="teneo-response-icon"
               text
               tile
               icon
@@ -49,7 +49,7 @@
           v-long-press="1000"
           aria-label="Chat icon representing the virtual assitant"
           @long-press-start="swapInputButton"
-          color="secondary"
+          :color="`${responseLookAndFeel.iconColor}`"
           class="teneo-response-icon"
           text
           tile
@@ -64,10 +64,14 @@
         :class="!showChatIcons || this.$vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
       >
         <v-card
-          :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
+          :color="$vuetify.theme.dark ? '#333333' : `${responseLookAndFeel.blockBgColor}`"
           class="chat-card chat-card-left text-left"
         >
-          <span v-html="itemText" class="teneo-reply"></span>
+          <span
+            v-html="itemText"
+            class="teneo-reply"
+            :class="`${leopardFont} ${responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
+          ></span>
         </v-card>
       </v-col>
     </v-row>
@@ -132,8 +136,8 @@
             v-long-press="1000"
             @long-press-start="swapInputButton"
             style="opacity: 0"
-            color="secondary"
-            class="teneo-response-icon elevation-2"
+            :color="`${responseLookAndFeel.iconColor} white--text`"
+            class="teneo-response-icon"
             text
             tile
             icon
@@ -431,6 +435,8 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "leopardFont",
+      "responseLookAndFeel",
       "isLiveAgentAssist",
       "dark",
       "itemAnswerTextCropped",

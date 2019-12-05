@@ -9,8 +9,12 @@
       <v-card
         :color="determineCardColor()"
         class="chat-card chat-card-right text-right pr-3 align-content-end"
-        :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'mr-2' : ''"
-      >{{ item.text }}</v-card>
+        :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? `mr-2 ${leopardFont} ${questionLookAndFeel.blockBgColor}` : `${leopardFont} ${questionLookAndFeel.blockBgColor}`"
+      >
+        <span
+          :class="`${questionLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
+        >{{ item.text }}</span>
+      </v-card>
     </v-col>
     <v-col
       cols="2"
@@ -29,7 +33,7 @@
             tile
             icon
             large
-            color="primary white--text"
+            :color="`${responseLookAndFeel.iconColor} white--text`"
             @click="updateInputBox('')"
           >
             <v-icon large>{{ userIcon }}</v-icon>
@@ -77,7 +81,7 @@
           tile
           icon
           large
-          color="primary white--text"
+          :color="`${questionLookAndFeel.iconColor}`"
           @click="updateInputBox(item.text)"
         >
           <v-icon large>{{ userIcon }}</v-icon>
@@ -197,6 +201,8 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "leopardFont",
+      "questionLookAndFeel",
       "isLiveAgentAssist",
       "showChatIcons",
       "dialogs",

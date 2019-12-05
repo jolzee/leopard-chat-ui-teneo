@@ -1,7 +1,6 @@
 const logger = require("@/utils/logging").getLogger("setup.js");
 import utils from "@/utils/utils";
 import { Ripple } from "vuetify/lib/directives";
-import replaceString from "replace-string";
 const superagent = require("superagent");
 import PromisedLocation from "promised-location";
 
@@ -109,7 +108,7 @@ export default class Setup {
     return new Promise((resolve, reject) => {
       this.getSolutionConfig()
         .then(() => {
-          this.addressBooleans();
+          this.chatConfig = utils.fixSolutions(this.chatConfig);
           if (!this.EMBED && !this.SHOW_BUTTON_ONLY) {
             this.addIframeHtml();
           }
@@ -252,13 +251,6 @@ export default class Setup {
           reject(error);
         });
     });
-  }
-
-  addressBooleans() {
-    let origChatConfig = JSON.stringify(this.chatConfig);
-    origChatConfig = replaceString(origChatConfig, '"true"', "true");
-    origChatConfig = replaceString(origChatConfig, '"false"', "false");
-    this.chatConfig = JSON.parse(origChatConfig);
   }
 
   getSolutionConfig() {

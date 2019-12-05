@@ -180,6 +180,18 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      leopardFont(state) {
+        return state.activeSolution.font;
+      },
+      responseLookAndFeel(state) {
+        return state.activeSolution.lookAndFeel.response;
+      },
+      questionLookAndFeel(state) {
+        return state.activeSolution.lookAndFeel.question;
+      },
+      leopardFont(state) {
+        return state.activeSolution.font;
+      },
       showOverlayAlert(state) {
         return state.overlay.showOverlayAlert;
       },

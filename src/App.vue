@@ -885,6 +885,28 @@ export default {
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
+.leopard-font-xs {
+  font-size: 13px;
+}
+.leopard-font-small {
+  font-size: 14px;
+}
+.leopard-font-medium {
+  font-size: 15px;
+}
+.leopard-font-normal {
+  font-size: 16px;
+}
+.leopard-font-large {
+  font-size: 17px;
+}
+.leopard-font-xl {
+  font-size: 18px;
+}
+.leopard-font-xxl {
+  font-size: 19px;
+}
+
 p {
   white-space: normal;
   word-wrap: break-word !important;

@@ -793,7 +793,7 @@ export default {
           that.$store.commit("TTS_ENABLE", that.showAudioInput);
         })
         .catch(function(err) {
-          that.$log.debug("ASR input is not allowed", err);
+          logger.debug("ASR input is not allowed", err);
           that.$store.commit(
             "SHOW_MESSAGE_IN_CHAT",
             "ASR input is not allowed. This could be because you're not loading this website over HTTPS or you have explicity denied microphone access in your browser. ASR and TTS is supported in Chrome."

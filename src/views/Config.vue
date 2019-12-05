@@ -710,9 +710,7 @@ export default {
   updated: function() {},
   created() {
     // add new JSON config if missing
-    this.config.solutions.forEach(solution => {
-      this.fixSolution(solution);
-    });
+    this.config = utils.fixSolutions(this.config);
     this.setActiveSolutionAsSelected();
     this.saveToLocalStorage();
   },
@@ -723,14 +721,6 @@ export default {
       );
       modalElements[0].setAttribute("style", "");
       this.fullscreen = !this.fullscreen;
-    },
-    fixSolution(solution) {
-      if (!("animations" in solution)) {
-        solution.animations = SOLUTION_DEFAULT.animations;
-      }
-      if (!("promptTriggers" in solution)) {
-        solution.promptTriggers = SOLUTION_DEFAULT.promptTriggers;
-      }
     },
     createShareLinkForSolution() {
       let configValue = encodeURIComponent(
@@ -764,7 +754,6 @@ export default {
       this.displayFullSolutionConfig = !this.displayFullSolutionConfig;
     },
     importSolution(newSolution) {
-      this.fixSolution(newSolution);
       let existingSolutionsWithName = this.config.solutions.findIndex(
         solution => solution.name === newSolution.name
       );
@@ -1019,6 +1008,8 @@ export default {
           this.setSolutionAsSelected(newConfig.name);
           this.displaySnackBar("Imported as " + newConfig.name, 3000);
         }
+
+        this.config = utils.fixSolutions(this.config);
 
         this.closeUploadDialog();
         this.saveToLocalStorage();
