@@ -180,7 +180,6 @@
                   'teneo-toolbar-float': float,
                   'teneo-toolbar-embed': embed
                 }"
-                scroll-target="#teneo-chat-scroll"
                 class="teneo-leopard-header"
                 :style="toolbarStyle"
               >
