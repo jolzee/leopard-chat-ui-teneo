@@ -33,7 +33,7 @@
             tile
             icon
             large
-            :color="`${responseLookAndFeel.iconColor} white--text`"
+            :color="`${questionLookAndFeel.iconColor} white--text`"
             @click="updateInputBox('')"
           >
             <v-icon large>{{ userIcon }}</v-icon>
