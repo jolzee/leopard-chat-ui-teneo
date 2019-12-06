@@ -204,7 +204,6 @@
           <v-container fluid>
             <v-row align="start" justify="start">
               <v-col cols="12" class="pa-2 pb-0">
-                <p class="ml-4 mb-0 title">Solution Management</p>
                 <v-container fluid class="py-0">
                   <v-row>
                     <v-col cols="12" v-if="hasSolutions" class="pb-0">
