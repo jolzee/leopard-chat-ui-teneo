@@ -8,7 +8,7 @@
 
     if (
       e.button === 0 &&
-      closestDialog !== null &&
+      closestDialog &&
       ((e.target.classList.contains("v-system-bar") &&
         !e.target.classList.contains("leopard-system-bar")) ||
         e.target.classList.contains("v-toolbar__content"))
@@ -28,9 +28,10 @@
     }
   });
   document.addEventListener("mousemove", e => {
-    if (d.el === undefined) return;
+    if (!d.el) return;
     if (d.what === "chat-window") {
       const teneo = document.querySelector("#teneo");
+      if (!teneo) return;
       d.el.style.left =
         Math.min(
           Math.max(d.elStartX + e.clientX - d.mouseStartX, 0),
@@ -59,7 +60,7 @@
   setInterval(() => {
     // prevent out of bounds
     const dialog = document.querySelector(".v-dialog.v-dialog--active");
-    if (dialog === null) return;
+    if (!dialog) return;
     dialog.style.left =
       Math.min(
         parseInt(dialog.style.left),
@@ -76,7 +77,7 @@
     // prevent out of bounds
     const dialog = document.querySelector(".v-application.application-float");
     const teneo = document.querySelector("#teneo");
-    if (dialog === null || teneo === null) return;
+    if (!dialog || !teneo) return;
     // console.log("setInternal application app");
     dialog.style.left =
       Math.min(
