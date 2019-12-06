@@ -126,7 +126,7 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
   id="teneo-chat-button-container" style="display: none;"
 >
   <iframe
-    src="[leopardUrl]?button"
+    src="[leopardUrl]index.html?button"
     allowtransparency="true"
     id="teneo-chat-button"
     name="teneochatbuttonwidget"
@@ -146,7 +146,7 @@ var leopardChatTemplate = getLeopardTemplate(function() {
   id="teneo-chat-widget-container" style="display:none;"
 >
   <iframe
-    src="[leopardUrl]?embed[teneoCtxParams]"
+    src="[leopardUrl]index.html?embed[teneoCtxParams]"
     allowtransparency="true"
     id="teneo-chat-widget"
     name="teneochatwidget"

@@ -5,7 +5,7 @@
       <v-col
         cols="2"
         class="text-center d-none d-sm-block"
-        v-if="showChatIcons && !this.$vuetify.breakpoint.smAndDown"
+        v-if="showChatIcons && !$vuetify.breakpoint.smAndDown"
       >
         <v-menu v-if="isLiveAgentAssist" close-on-click close-on-content-click offset-y>
           <template v-slot:activator="{ on }">
@@ -61,7 +61,7 @@
       </v-col>
       <v-col
         class="text-left"
-        :class="!showChatIcons || this.$vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
+        :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
       >
         <v-card
           :color="$vuetify.theme.dark ? '#333333' : `${responseLookAndFeel.blockBgColor}`"
@@ -149,7 +149,7 @@
         <v-col>
           <v-card
             class="chat-card chat-card-left text-left"
-            :class="!showChatIcons || this.$vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
+            :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
             :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           >
             <span v-html="chunkText" class="teneo-reply"></span>

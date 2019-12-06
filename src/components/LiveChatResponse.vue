@@ -52,7 +52,7 @@
       <v-col
         cols="2"
         class="text-center d-none d-sm-block"
-        v-if="showChatIcons && !this.$vuetify.breakpoint.smAndDown"
+        v-if="showChatIcons && !$vuetify.breakpoint.smAndDown"
       >
         <v-avatar size="40px" class="teneo-response-icon elevation-2">
           <img :src="item.agentAvatar" :alt="item.agentName" />

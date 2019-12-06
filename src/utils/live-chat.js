@@ -363,22 +363,27 @@ export class LiveChat {
           );
         });
     } else {
-      this.sdk
-        .startChat({
-          events: [
-            {
-              type: "message",
-              text: message
-            }
-          ]
-        })
-        .then(chat => {
-          this.chatId = chat;
-          logger.debug(`Live Chat Response`, chat);
-        })
-        .catch(error => {
-          logger.error("LiveChat > Could not start a live chat message", error);
-        });
+      if (this.sdk) {
+        this.sdk
+          .startChat({
+            events: [
+              {
+                type: "message",
+                text: message
+              }
+            ]
+          })
+          .then(chat => {
+            this.chatId = chat;
+            logger.debug(`Live Chat Response`, chat);
+          })
+          .catch(error => {
+            logger.error(
+              "LiveChat > Could not start a live chat message",
+              error
+            );
+          });
+      }
     }
   }
 }

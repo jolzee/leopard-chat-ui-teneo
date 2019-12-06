@@ -27,10 +27,10 @@
           <v-icon>mdi-tune</v-icon>
           <span>
             <span class="d-none d-md-inline">Leopard Configuration</span>
-            <span
+            <span v-if="selectedSolution"
               class="white--text px-2 ml-2 py-1 elevation-2 leopard-radius d-none d-sm-inline"
               style="background-color: indigo"
-            >{{ this.selectedSolution.name }}</span>
+            >{{ selectedSolution.name }}</span>
           </span>
           <v-spacer></v-spacer>
           <v-icon @click="toggleFullscreen">
