@@ -28,7 +28,7 @@
             aria-label="Chat icon representing you"
             v-long-press="1000"
             @long-press-start="swapInputButton"
-            class="teneo-userinput-icon elevation-2"
+            class="teneo-userinput-icon"
             text
             tile
             icon

@@ -27,13 +27,13 @@ export class LiveChat {
     this.sdk;
     this.chatId;
     this.authToken;
-    this.initialize();
     this.agent = {};
     this.historyStates = {
       DONE: "DONE",
       INACTIVE: "INACTIVE",
       LOADING: "LOADING"
     };
+    this.initialize();
   }
 
   initialize() {
@@ -48,6 +48,8 @@ export class LiveChat {
           clientId: "5e68dfc9597a892b27eb97740abe1fee"
         });
 
+        logger.debug(`LiveChat sdk has been initialized`, this.sdk);
+
         // this.sdk = CustomerSDK.debug(
         //   CustomerSDK.init({
         //     license: parseInt(window.leopardConfig.liveChat.licenseKey),
@@ -55,7 +57,6 @@ export class LiveChat {
         //   })
         // );
         // window.sdk = this.sdk;
-        logger.debug("LiveChat.inc initialized", this.sdk);
 
         this.sdk.auth
           .getToken()
@@ -296,12 +297,12 @@ export class LiveChat {
     }
   }
 
-  disableLiveChat() {
-    this.sdk.disconnect();
-    this.sdk.destroy();
-    this.store.commit("RESET_CHAT_TITLE");
-    this.store.commit("STOP_LIVE_CHAT");
-  }
+  // disableLiveChat() {
+  //   this.sdk.disconnect();
+  //   this.sdk.destroy();
+  //   this.store.commit("RESET_CHAT_TITLE");
+  //   this.store.commit("STOP_LIVE_CHAT");
+  // }
 
   startLiveChat() {
     if (!this.store.state.liveAgent.isLiveChat) {
@@ -349,41 +350,42 @@ export class LiveChat {
    * @param {*} message
    */
   sendMessage(message) {
-    logger.debug("LiveChat > Sending message to LiveChat Agent:" + message);
-    if (this.chatId) {
+    if (this.chatId && this.sdk) {
+      logger.debug(
+        "Have existing chatId and Sending message to LiveChat Agent:" + message
+      );
       this.sdk
         .sendEvent(this.chatId, {
           type: "message",
           text: message
         })
         .catch(error => {
-          logger.error(
-            `LiveChat > Could not send message to Live Agent`,
-            error
-          );
+          logger.error(`Could not send message to Live Agent`, error);
+        });
+    } else if (this.sdk) {
+      logger.debug("STARTING LiveChat with message" + message);
+      this.sdk
+        .startChat({
+          events: [
+            {
+              type: "message",
+              text: message
+            }
+          ]
+        })
+        .then(chat => {
+          this.chatId = chat;
+          logger.debug(`Live Chat Response`, chat);
+        })
+        .catch(error => {
+          logger.error("LiveChat > Could not start a live chat message", error);
         });
     } else {
-      if (this.sdk) {
+      logger.error(
+        `LiveChat SDK not initialized for user`,
+        this.chatId,
         this.sdk
-          .startChat({
-            events: [
-              {
-                type: "message",
-                text: message
-              }
-            ]
-          })
-          .then(chat => {
-            this.chatId = chat;
-            logger.debug(`Live Chat Response`, chat);
-          })
-          .catch(error => {
-            logger.error(
-              "LiveChat > Could not start a live chat message",
-              error
-            );
-          });
-      }
+      );
     }
   }
 }

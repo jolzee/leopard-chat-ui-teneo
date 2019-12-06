@@ -1470,27 +1470,38 @@ function storeSetup(vuetify) {
               await LiveChat.watchMessages();
               accountsSdk.init({
                 client_id: liveChatConfig.client_id,
-                onIdentityFetched: (_error, data) => {
-                  if (data && data.access_token) {
-                    context.commit(
-                      "LIVE_CHAT_API_ACCESS_TOKEN",
-                      data.access_token
-                    );
-                    logger.debug(
-                      "LIVE_CHAT_API_ACCESS_TOKEN",
-                      data.access_token
-                    );
+                onIdentityFetched: (error, data) => {
+                  if (error) {
+                    logger.error(`Could not init LiveChat accountsSdk`, error);
                   } else {
-                    window.location.href = `${liveChatConfig.account_url}?response_type=token&client_id=${liveChatConfig.client_id}&redirect_uri=${window.location.href}`;
+                    if (data && data.access_token) {
+                      context.commit(
+                        "LIVE_CHAT_API_ACCESS_TOKEN",
+                        data.access_token
+                      );
+                      logger.debug(
+                        "LIVE_CHAT_API_ACCESS_TOKEN",
+                        data.access_token
+                      );
+                    } else {
+                      const redirectUrl = `${liveChatConfig.account_url}?response_type=token&client_id=${liveChatConfig.client_id}&redirect_uri=${window.location.href}`;
+                      logger.debug(
+                        "No LiveChat access token. Redirect page to... ",
+                        redirectUrl
+                      );
+                      window.location.href = redirectUrl;
+                    }
                   }
                 }
               });
             })
             .catch(err => {
-              logger.error(err);
+              logger.error(`Can't setup LiveChat`, err);
               liveChatAssistConnectCount += 1;
               if (liveChatAssistConnectCount < 5) {
-                context.dispatch("setupLiveChatAgentAssist");
+                setTimeout(() => {
+                  context.dispatch("setupLiveChatAgentAssist");
+                }, 2000);
               }
             });
         }
@@ -2419,10 +2430,21 @@ function storeSetup(vuetify) {
   Vue.i18n.set(config.LOCALE);
 
   // Setup ASR
-  initializeASR(store, config.ASR_CORRECTIONS_MERGED);
+  try {
+    initializeASR(store, config.ASR_CORRECTIONS_MERGED);
+  } catch (err) {
+    logger.error(`Error setting up ASR and TTS`, err);
+  }
 
   // setup Live Chat
-  if (window.leopardConfig.liveChat.licenseKey) config.setupLiveChat(store);
+  try {
+    if (window.leopardConfig.liveChat.licenseKey) {
+      logger.debug(`About to try and setup Live Chat`);
+      config.setupLiveChat(store);
+    }
+  } catch (e) {
+    logger.error(`Error setting up LiveChat`, e);
+  }
 
   // ok vuetify and store are setup
   return { vuetify, store };

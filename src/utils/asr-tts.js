@@ -83,7 +83,7 @@ export function initializeTTS(locale) {
 export function initializeASR(store, asrCorrections) {
   // let asr = null;
   let timeoutVar;
-  if (store.state.tts.tts != null) {
+  if (store.state.tts.tts !== null) {
     store.state.asr.asr = store.state.tts.tts.newDictation({
       soundex: true,
       continuous: false, // Enable continuous if HTTPS connection
