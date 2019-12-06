@@ -5,6 +5,38 @@ const replaceString = require("replace-string");
 const solutionDefault = require("../constants/solution-config-default")
   .SOLUTION_DEFAULT;
 
+const fixSolution = solution => {
+  if (!("id" in solution)) {
+    const id = uuid();
+    // TODO: I know I need to fix this...
+    // if (solution.name === allSolutions.activeSolution) {
+    //   allSolutions.activeSolution = id;
+    // }
+    solution.id = id;
+  }
+  if (!("font" in solution)) {
+    solution.font = solutionDefault.font;
+  }
+  if (!("lookAndFeel" in solution)) {
+    solution.lookAndFeel = solutionDefault.lookAndFeel;
+  }
+
+  if (!("custom1" in solution.theme)) {
+    solution.theme.dark = solutionDefault.theme.dark;
+    solution.theme.custom1 = solutionDefault.theme.custom1;
+    solution.theme.custom2 = solutionDefault.theme.custom2;
+    solution.theme.custom3 = solutionDefault.theme.custom3;
+  }
+
+  if (!("animations" in solution)) {
+    solution.animations = solutionDefault.animations;
+  }
+  if (!("promptTriggers" in solution)) {
+    solution.promptTriggers = solutionDefault.promptTriggers;
+  }
+  return solution;
+};
+
 const fixSolutions = allSolutions => {
   let origChatConfig = JSON.stringify(allSolutions);
   origChatConfig = replaceString(origChatConfig, '"true"', "true");
@@ -12,26 +44,7 @@ const fixSolutions = allSolutions => {
   allSolutions = JSON.parse(origChatConfig);
 
   allSolutions.solutions.forEach(solution => {
-    if (!("font" in solution)) {
-      solution.font = solutionDefault.font;
-    }
-    if (!("lookAndFeel" in solution)) {
-      solution.lookAndFeel = solutionDefault.lookAndFeel;
-    }
-
-    if (!("custom1" in solution.theme)) {
-      solution.theme.dark = solutionDefault.theme.dark;
-      solution.theme.custom1 = solutionDefault.theme.custom1;
-      solution.theme.custom2 = solutionDefault.theme.custom2;
-      solution.theme.custom3 = solutionDefault.theme.custom3;
-    }
-
-    if (!("animations" in solution)) {
-      solution.animations = solutionDefault.animations;
-    }
-    if (!("promptTriggers" in solution)) {
-      solution.promptTriggers = solutionDefault.promptTriggers;
-    }
+    solution = fixSolution(solution);
   });
 
   return allSolutions;
@@ -547,13 +560,29 @@ const generateRandomId = () => {
     .substr(2, 10);
 };
 
-let cloneObject = obj => {
+const cloneObject = obj => {
   // this is a deep clone
-  return JSON.parse(JSON.stringify(obj));
+  return obj ? JSON.parse(JSON.stringify(obj)) : obj;
 };
 
-const uuidv1 = require("uuid/v1");
-const uuid = () => uuidv1();
+const cloneObjectPromise = obj => {
+  return new Promise((resolve, reject) => {
+    // this is a deep clone
+    try {
+      let clonedObject = obj ? JSON.parse(JSON.stringify(obj)) : obj;
+      resolve(clonedObject);
+    } catch (e) {
+      reject(r);
+    }
+  });
+};
+
+const uuidv4 = require("uuid/v4");
+const uuid = () => uuidv4();
+
+const uuidPromise = () => {
+  return new Promise(resolve => resolve(uuidv4()));
+};
 
 const decodeHTML = html => {
   var txt = document.createElement("textarea");
@@ -609,8 +638,9 @@ const getUrlParam = (parameter, defaultvalue) => {
   return urlparameter;
 };
 
-module.exports = {
+const utils = {
   fixSolutions,
+  fixSolution,
   createSlug,
   download,
   generateRandomId,
@@ -621,8 +651,12 @@ module.exports = {
   getUrlParam,
   generateQueryParams,
   uuid,
+  uuidPromise,
   decodeHTML,
   cloneObject,
+  cloneObjectPromise,
   getBase64Image,
   wait
 };
+
+module.exports = utils;

@@ -998,6 +998,9 @@ function storeSetup(vuetify) {
           state.overlay.overlayAlertMessage = "";
         }, 2000);
       },
+      SET_CHAT_CONFIG(state, chatConfig) {
+        state.chatConfig = chatConfig;
+      },
       CLOSE_OVERY_ALERT(state) {
         state.overlay.showOverlayAlert = false;
         state.overlay.overlayAlertMessage = "";

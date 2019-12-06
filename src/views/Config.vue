@@ -25,14 +25,20 @@
           }"
         >
           <v-icon>mdi-tune</v-icon>
-          <span>Leopard Configuration</span>
+          <span>
+            <span class="d-none d-md-inline">Leopard Configuration</span>
+            <span
+              class="white--text px-2 ml-2 py-1 elevation-2 leopard-radius d-none d-sm-inline"
+              style="background-color: indigo"
+            >{{ this.selectedSolution.name }}</span>
+          </span>
           <v-spacer></v-spacer>
           <v-icon @click="toggleFullscreen">
             {{
             fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
             }}
           </v-icon>
-          <v-icon @click="$router.push('/')">mdi-close</v-icon>
+          <v-icon @click="closeConfigArea">mdi-close</v-icon>
         </v-system-bar>
         <v-app-bar color="#2F286B" max-height="64px">
           <v-fab-transition>
@@ -127,7 +133,7 @@
             <v-avatar color="#FE4E5D" class="ml-0 pl-0 mr-2 elevation-2">
               <v-icon>mdi-check</v-icon>
             </v-avatar>
-            {{ config.activeSolution }}
+            {{ getDefaultSolutionName }}
           </v-chip>
         </v-app-bar>
         <v-card-text height="80%" class="px-2 mx-0 py-0">
@@ -208,7 +214,7 @@
                                   {{
                                   selectedSolution &&
                                   config.activeSolution ===
-                                  selectedSolution.name
+                                  selectedSolution.id
                                   ? "mdi-checkbox-marked"
                                   : "mdi-checkbox-blank-outline"
                                   }}
@@ -567,12 +573,7 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="#2F2869"
-            dark
-            small
-            @click="$router.push('/')"
-          >{{ $t("back.to.chat.button") }}</v-btn>
+          <v-btn color="#2F2869" dark small @click="closeConfigArea">{{ $t("back.to.chat.button") }}</v-btn>
         </v-card-actions>
         <!-- global snackbar -->
         <v-snackbar
@@ -588,7 +589,7 @@
       v-on:result="closeAddNewSolutionDialog($event)"
       :currentModeEdit="currentModeEdit"
       :config="config"
-      :selectedSolution="selectedSolution"
+      :selectedSolution="solution"
       key="configAddEditSolution"
     ></ConfigAddEditSolution>
   </div>
@@ -656,6 +657,16 @@ export default {
     }
   },
   computed: {
+    getDefaultSolutionName() {
+      let defaultSolution = this.config.solutions.find(
+        solution => solution.id === this.config.activeSolution
+      );
+      if (defaultSolution) {
+        return defaultSolution.name;
+      } else {
+        return "No default selected";
+      }
+    },
     getSelectedSolutionName() {
       let solutionName = "None Selected";
       if (this.selectedSolution && this.selectedSolution.name) {
@@ -715,6 +726,42 @@ export default {
     this.saveToLocalStorage();
   },
   methods: {
+    closeConfigArea() {
+      if (this.$store.getters.activeSolution) {
+        const activeSolutionPast = this.$store.getters.activeSolution;
+        const activeSolutionCurrent = this.config.solutions.find(
+          solution => solution.id === activeSolutionPast.id
+        );
+        if (
+          JSON.stringify(activeSolutionPast) !==
+          JSON.stringify(activeSolutionCurrent)
+        ) {
+          this.refreshBrowserToSolution(activeSolutionCurrent);
+          return;
+        } else {
+          this.$router.push("/");
+        }
+      } else {
+        this.$router.push("/");
+      }
+    },
+    refreshBrowserToSolution(solution) {
+      this.refresh = true;
+      sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
+      let addtionalParams = "";
+      if (utils.doesParameterExist("plugin_id")) {
+        const params = new URLSearchParams(window.location.search);
+        const pluginId = params.get("plugin_id");
+        addtionalParams += `&plugin_id=${pluginId}`;
+      }
+      if (utils.doesParameterExist("embed")) {
+        addtionalParams += "&embed";
+      }
+      if (utils.doesParameterExist("button")) {
+        addtionalParams += "&button";
+      }
+      window.location = `${location.protocol}//${location.host}${location.pathname}?dl=${solution.deepLink}${addtionalParams}`;
+    },
     toggleFullscreen() {
       let modalElements = document.getElementsByClassName(
         "leopard-config-modal"
@@ -740,7 +787,7 @@ export default {
       if (result) {
         this.config = result.config;
         this.selectedSolution = this.config.solutions.find(
-          solution => solution.name === result.selectedSolutionName
+          solution => solution.id === result.selectedSolutionId
         );
       }
       this.currentModeEdit = "";
@@ -748,12 +795,17 @@ export default {
       const self = this;
       setTimeout(function() {
         self.solution = utils.cloneObject(SOLUTION_DEFAULT);
+        self.solution.id = utils.uuid();
       }, 1000);
     },
     toggleDisplayOfSolutionConfig() {
       this.displayFullSolutionConfig = !this.displayFullSolutionConfig;
     },
     importSolution(newSolution) {
+      let existingSolutionsWithId = this.config.solutions.findIndex(
+        solution => solution.id === newSolution.id
+      );
+
       let existingSolutionsWithName = this.config.solutions.findIndex(
         solution => solution.name === newSolution.name
       );
@@ -761,10 +813,26 @@ export default {
         solution => solution.deepLink === newSolution.deepLink
       );
 
-      if (existingSolutionsWithName < 0 && existingSolutionsWithDeepLink < 0) {
-        // no clashes in name or deep link
+      if (
+        existingSolutionsWithId < 0 &&
+        existingSolutionsWithName < 0 &&
+        existingSolutionsWithDeepLink < 0
+      ) {
+        // no clashes in id, name, deep link
         this.config.solutions.push(newSolution); // no conflicts
       } else if (
+        existingSolutionsWithId >= 0 &&
+        existingSolutionsWithName >= 0 &&
+        existingSolutionsWithDeepLink >= 0
+      ) {
+        // id, name and deep link clash
+        newSolution.name = newSolution.name + " [imported]";
+        newSolution.deepLink =
+          newSolution.deepLink + "-" + utils.generateRandomId();
+        newSolution.id = utils.uuid();
+        this.config.solutions.push(newSolution);
+      } else if (
+        existingSolutionsWithId < 0 &&
         existingSolutionsWithName >= 0 &&
         existingSolutionsWithDeepLink >= 0
       ) {
@@ -774,6 +842,7 @@ export default {
           newSolution.deepLink + "-" + utils.generateRandomId();
         this.config.solutions.push(newSolution);
       } else if (
+        existingSolutionsWithId < 0 &&
         existingSolutionsWithName >= 0 &&
         existingSolutionsWithDeepLink < 0
       ) {
@@ -781,6 +850,15 @@ export default {
         newSolution.name = newSolution.name + " [imported]";
         this.config.solutions.push(newSolution);
       } else if (
+        existingSolutionsWithId >= 0 &&
+        existingSolutionsWithDeepLink < 0 &&
+        existingSolutionsWithName < 0
+      ) {
+        // id clash only
+        newSolution.id = utils.uuid();
+        this.config.solutions.push(newSolution);
+      } else if (
+        existingSolutionsWithId < 0 &&
         existingSolutionsWithDeepLink >= 0 &&
         existingSolutionsWithName < 0
       ) {
@@ -863,13 +941,13 @@ export default {
       } else {
         // fallback to the default active solutions
         this.selectedSolution = this.config.solutions.find(
-          solution => solution.name === this.config.activeSolution
+          solution => solution.id === this.config.activeSolution
         );
       }
     },
-    setSolutionAsSelected(solutionName) {
+    setSolutionAsSelected(solutionId) {
       this.selectedSolution = this.config.solutions.find(
-        solution => solution.name === solutionName
+        solution => solution.id === solutionId
       );
     },
     refreshBrowser() {
@@ -894,6 +972,7 @@ export default {
       }
     },
     saveToLocalStorage() {
+      this.$store.commit("SET_CHAT_CONFIG", this.config);
       localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
     },
     editSolution() {
@@ -905,12 +984,13 @@ export default {
       }
     },
     setActiveSolution() {
-      this.config.activeSolution = this.selectedSolution.name;
+      this.config.activeSolution = this.selectedSolution.id;
       this.saveToLocalStorage();
     },
     cloneSolution() {
       const newName = this.selectedSolution.name + " - Copy";
       let clonedSolution = utils.cloneObject(this.selectedSolution);
+      clonedSolution.id = utils.uuid();
       clonedSolution.name = newName;
       const duplicateSolutions = this.config.solutions.filter(
         solution => solution.name === newName
@@ -945,28 +1025,39 @@ export default {
     },
     deleteSolutionConfig() {
       if (this.selectedSolution) {
-        const name = this.selectedSolution.name;
-        if (this.config.activeSolution === name) {
+        const theId = this.selectedSolution.id;
+        if (this.config.activeSolution === theId) {
           this.config.activeSolution = "";
         }
         this.config.solutions = this.config.solutions.filter(
           obj => JSON.stringify(obj) !== JSON.stringify(this.selectedSolution)
         );
         if (this.config.solutions.length === 1) {
-          this.config.activeSolution = this.config.solutions[0].name;
+          this.config.activeSolution = this.config.solutions[0].id;
           this.selectedSolution = utils.cloneObject(this.config.solutions[0]);
         } else if (this.config.solutions.length > 1) {
           let self = this;
           this.selectedSolution = utils.cloneObject(
             this.config.solutions.find(function(solution) {
-              return solution.name === self.config.activeSolution;
+              return solution.id === self.config.activeSolution;
             })
           );
         } else {
           this.selectedSolution = null;
         }
         this.displaySnackBar("Solution was deleted", 3000);
+        this.ensureDefaultSolutionIsSet();
         this.saveToLocalStorage();
+        this.setActiveSolutionAsSelected();
+      }
+    },
+    ensureDefaultSolutionIsSet() {
+      // this.config.activeSolution
+      let foundActiveSolution = this.config.solutions.find(
+        solution => solution.id === this.config.activeSolution
+      );
+      if (!foundActiveSolution && this.config.solutions.length > 0) {
+        this.config.activeSolution = this.config.solutions[0].id;
       }
     },
     closeUploadDialog() {
@@ -997,15 +1088,15 @@ export default {
             );
           } else {
             // current config is empty
-            this.config = newConfig;
+            this.config = utils.fixSolutions(newConfig);
             this.displaySnackBar("Imported a new full configuration", 3000);
           }
-
           this.setActiveSolutionAsSelected();
         } else if (newConfig && "name" in newConfig) {
           // uploading a single config - add it to the current solution config
-          this.importSolution(newConfig);
-          this.setSolutionAsSelected(newConfig.name);
+          newConfig = utils.fixSolution(newConfig);
+          this.importSolution(newConfig); // import individual solution
+          this.setSolutionAsSelected(newConfig.id);
           this.displaySnackBar("Imported as " + newConfig.name, 3000);
         }
 
@@ -1023,12 +1114,10 @@ export default {
     },
     addSolution() {
       this.dialogTitle = "Creating a new solution configuration";
+      this.currentModeEdit = ""; // meaning add
       this.solution = utils.cloneObject(SOLUTION_DEFAULT);
-      const self = this;
+      this.solution.id = utils.uuid();
       this.showAddEditDialog();
-      setTimeout(function() {
-        self.showAddEditDialog();
-      }, 1000);
     },
     showAddEditDialog() {
       this.displayAddEditDialog = true;
@@ -1041,6 +1130,11 @@ export default {
 </script>
 
 <style>
+.leopard-radius {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
 .leopard-config-app-bar-fullscreen {
   -webkit-border-radius: 0 !important;
   -moz-border-radius: 0 !important;

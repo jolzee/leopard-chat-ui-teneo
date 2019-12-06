@@ -124,7 +124,7 @@ export default class Setup {
               );
               this.activeSolution = this.chatConfig.activeSolution;
               const matchingSolutions = this.chatConfig.solutions.filter(
-                solution => solution.name === this.activeSolution
+                solution => solution.id === this.activeSolution
               );
               if (matchingSolutions.length > 0) {
                 this.activeSolution = matchingSolutions[0];
@@ -142,7 +142,7 @@ export default class Setup {
                 // fall back to default
                 this.activeSolution = this.chatConfig.activeSolution;
                 const matchingSolutions = this.chatConfig.solutions.filter(
-                  solution => solution.name === this.activeSolution
+                  solution => solution.id === this.activeSolution
                 );
                 if (matchingSolutions.length > 0) {
                   this.activeSolution = matchingSolutions[0];

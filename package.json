@@ -28,6 +28,7 @@
     "@sentry/browser": "^5.10.1",
     "@sentry/integrations": "^5.10.1",
     "artyom.js": "github:jolzee/artyom.js#master",
+    "bluebird": "^3.7.2",
     "consola": "^2.11.0",
     "copy-to-clipboard": "^3.2.0",
     "core-js": "^3.4.7",

@@ -24,22 +24,41 @@
             >MDI Icons (mdi-icon-name)</v-btn>
           </div>
 
-          <v-container fluid>
+          <v-container>
             <v-row>
-              <v-col :cols="12" :sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col :cols="12" :md="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Solution Name</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
-                <v-text-field
-                  filled
-                  color="light-blue darken-1"
-                  v-model.trim="solution.name"
-                  validate-on-blur
-                  label="Solution Name"
-                  :rules="[ruleMustHaveValue]"
-                ></v-text-field>
+                <v-row no-gutters>
+                  <v-col :cols="12">
+                    <v-text-field
+                      filled
+                      color="light-blue darken-1"
+                      v-model.trim="solution.name"
+                      validate-on-blur
+                      label="Solution Name"
+                      :rules="[ruleMustHaveValue]"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col :cols="12">
+                    <v-text-field
+                      disabled
+                      solo
+                      outlined
+                      dense
+                      append-icon="mdi-key"
+                      color="light-blue darken-1"
+                      v-model.trim="solution.id"
+                      validate-on-blur
+                      label="Solution Id"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
               </v-col>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+            </v-row>
+            <v-row>
+              <v-col cols="12" md="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Deep Link (?dl=[deep-link])</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -52,6 +71,8 @@
                   :rules="[ruleMustHaveValue, ruleNoSpaces, ruleDeepLinkUnique]"
                 ></v-text-field>
               </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Solution URL</v-subheader>
               </v-col>
@@ -66,6 +87,8 @@
                   :rules="[ruleMustHaveValue, ruleMustBeUrl]"
                 ></v-text-field>
               </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>IFRAME URL</v-subheader>
               </v-col>
@@ -86,7 +109,8 @@
                   :rules="[ruleMustHaveValue, ruleMustBeUrl]"
                 ></v-text-field>
               </v-col>
-
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Chat Window Title</v-subheader>
               </v-col>
@@ -100,6 +124,8 @@
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
               </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Features</v-subheader>
               </v-col>
@@ -130,7 +156,8 @@
                   </v-row>
                 </v-card>
               </v-col>
-              <v-divider></v-divider>
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Response Icon</v-subheader>
               </v-col>
@@ -145,6 +172,8 @@
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
               </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-sm-none d-md-block"></v-col>
               <v-col :cols="12" :md="8" class="py-0">
                 <v-btn
@@ -161,6 +190,8 @@
                   <v-icon>{{ icon }}</v-icon>
                 </v-btn>
               </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>User Icon</v-subheader>
               </v-col>
@@ -178,6 +209,8 @@
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
               </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-sm-none d-md-block"></v-col>
               <v-col :cols="12" :md="8" class="py-0">
                 <v-btn
@@ -196,7 +229,8 @@
                   <v-icon>{{ icon }}</v-icon>
                 </v-btn>
               </v-col>
-              <v-divider></v-divider>
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Locale</v-subheader>
               </v-col>
@@ -211,6 +245,8 @@
                   append-icon="mdi-translate"
                 ></v-select>
               </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Demo Animation</v-subheader>
               </v-col>
@@ -233,7 +269,8 @@
                   </transition>
                 </v-row>
               </v-col>
-
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Enter Animation</v-subheader>
               </v-col>
@@ -248,7 +285,8 @@
                   append-icon="mdi-expand-all"
                 ></v-select>
               </v-col>
-
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Exit Animation</v-subheader>
               </v-col>
@@ -263,7 +301,8 @@
                   append-icon="mdi-collapse-all"
                 ></v-select>
               </v-col>
-
+            </v-row>
+            <v-row>
               <v-col :cols="12" :lg="4">
                 <v-subheader class="mb-2">
                   Theme
@@ -340,7 +379,8 @@
                   </v-col>
                 </v-row>
               </v-col>
-              <v-divider></v-divider>
+            </v-row>
+            <v-row>
               <!-- Colors of Responses and questions -->
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Bot Response</v-subheader>
@@ -413,7 +453,8 @@
                   </v-col>
                 </v-row>
               </v-col>
-
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>User Question</v-subheader>
               </v-col>
@@ -486,6 +527,8 @@
                   </v-col>
                 </v-row>
               </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Prompt Triggers</v-subheader>
               </v-col>
@@ -519,7 +562,8 @@
                   :rules="[ruleMustHaveValue, ruleMustBeInteger]"
                 ></v-text-field>
               </v-col>
-
+            </v-row>
+            <v-row>
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>Button and Toolbar Custom CSS</v-subheader>
               </v-col>
@@ -532,7 +576,8 @@
                   v-model.trim="solution.customCssButtonToolbar"
                 ></v-textarea>
               </v-col>
-              <v-divider></v-divider>
+            </v-row>
+            <v-row>
               <!-- ASR Corrections -->
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>ASR Corrections</v-subheader>
@@ -546,6 +591,8 @@
                   v-model.trim="solution.asrCorrections"
                 ></v-textarea>
               </v-col>
+            </v-row>
+            <v-row>
               <!-- help -->
               <v-col cols="12" :md="4">
                 <v-btn
@@ -581,7 +628,8 @@
                   </v-col>
                 </v-row>
               </v-col>
-              <v-divider></v-divider>
+            </v-row>
+            <v-row>
               <!-- context parameters -->
               <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
                 <v-subheader>When to send CTX params</v-subheader>
@@ -767,10 +815,7 @@ export default {
         this.currentModeEdit === "edit"
           ? "Editing Solution"
           : "Adding Solution",
-      solution:
-        this.currentModeEdit === "edit"
-          ? utils.cloneObject(this.selectedSolution)
-          : Object.assign({}, SOLUTION_DEFAULT),
+      solution: this.selectedSolution,
       animations: {
         in: [
           "none",
@@ -978,15 +1023,17 @@ export default {
   },
   watch: {
     "font.fontIndex": function(newIndex) {
-      this.solution.font = this.font.ticksLabels[newIndex];
+      if (this.solution) {
+        this.solution.font = this.font.ticksLabels[newIndex];
+      }
     },
     blockBgColor: function(newColor) {
-      if (newColor === "white") {
+      if (this.solution && newColor === "white") {
         this.solution.lookAndFeel.response.blockTextColor = "dark";
       }
     },
     blockTextColor: function(shade) {
-      if (shade === "light" && this.blockBgColor === "white") {
+      if (this.solution && shade === "light" && this.blockBgColor === "white") {
         this.solution.lookAndFeel.response.blockTextColor = "dark";
       }
     }
@@ -998,10 +1045,14 @@ export default {
       });
     },
     blockBgColor() {
-      return this.solution.lookAndFeel.response.blockBgColor;
+      return this.solution
+        ? this.solution.lookAndFeel.response.blockBgColor
+        : "#FFFFFF";
     },
     blockTextColor() {
-      return this.solution.lookAndFeel.response.blockTextColor;
+      return this.solution
+        ? this.solution.lookAndFeel.response.blockTextColor
+        : "#FFFFFF";
     }
   },
   updated() {
@@ -1037,18 +1088,14 @@ export default {
       return JSON.parse(JSON.stringify(obj));
     },
     saveForm() {
+      logger.debug("Saving Solution");
       if (this.failsValidation()) {
         return;
       }
       if (this.currentModeEdit === "edit") {
+        logger.debug("About to save an edit to an existing solution");
         for (let index = 0; index < this.config.solutions.length; index++) {
-          if (
-            JSON.stringify(this.config.solutions[index]) ===
-            JSON.stringify(this.selectedSolution)
-          ) {
-            if (this.config.activeSolution === this.selectedSolution.name) {
-              this.config.activeSolution = this.solution.name;
-            }
+          if (this.config.solutions[index].id === this.solution.id) {
             this.config.solutions.splice(
               index,
               1,
@@ -1064,7 +1111,7 @@ export default {
         // this.selectedSolution = utils.cloneObject(this.solution);
         if (this.config.solutions.length === 1) {
           // first one added. Make it active
-          this.config.activeSolution = this.solution.name;
+          this.config.activeSolution = this.solution.id;
         }
       }
       this.saveAndCloseAddNewSolutionDialog();
@@ -1076,7 +1123,7 @@ export default {
     saveAndCloseAddNewSolutionDialog() {
       this.$emit("result", {
         config: this.config,
-        selectedSolutionName: this.solution.name
+        selectedSolutionId: this.solution.id
       });
       this.$refs.form.reset();
     },
@@ -1150,10 +1197,7 @@ export default {
           solution => solution.deepLink === value
         );
         logger.debug(foundSolution);
-        if (
-          foundSolution &&
-          foundSolution.name !== this.selectedSolution.name
-        ) {
+        if (foundSolution && foundSolution.id !== this.selectedSolution.id) {
           return "That deep link is already taken!!";
         } else {
           return true;
