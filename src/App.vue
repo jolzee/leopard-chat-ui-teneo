@@ -95,6 +95,7 @@
                 :clipped="clipped"
                 v-if="drawer"
                 v-model="drawer"
+                class="application-mobile"
                 enable-resize-watcher
                 temporary
                 right
