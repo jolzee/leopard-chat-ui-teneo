@@ -8,25 +8,25 @@
     :fullscreen="$vuetify.breakpoint.mdAndDown"
   >
     <v-card>
-      <v-card-title>
+      <v-card-title class="justify-center align-center">
         <span class="title">{{ dialogTitle }}</span>
+        <v-spacer></v-spacer>
+        <span class="d-none d-md-inline-block">
+          <v-btn
+            aria-label="Open Marterial Design Icons in a new window"
+            color="light-blue darken-1"
+            href="https://materialdesignicons.com/"
+            target="_blank"
+          >MDI Icons (mdi-icon-name)</v-btn>
+        </span>
       </v-card-title>
+
       <v-divider></v-divider>
       <v-card-text style="height: 90vh" id="add-edit" class="teneo-hide-scroll-x mx-0 px-0">
         <v-form ref="form">
-          <div class="d-none d-sm-inline-block ml-6">
-            <v-btn
-              aria-label="Open Marterial Design Icons in a new window"
-              class="mr-2 mt-2"
-              color="light-blue darken-1"
-              href="https://materialdesignicons.com/"
-              target="_blank"
-            >MDI Icons (mdi-icon-name)</v-btn>
-          </div>
-
           <v-container>
             <v-row>
-              <v-col :cols="12" :md="4" class="d-none d-sm-none d-md-inline">
+              <v-col :cols="12" :md="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Solution Name</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -58,7 +58,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" md="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" md="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Deep Link (?dl=[deep-link])</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -73,7 +73,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Solution URL</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -89,7 +89,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>IFRAME URL</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -111,7 +111,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Chat Window Title</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -126,7 +126,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Features</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -158,7 +158,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Response Icon</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8" class="pb-0">
@@ -174,7 +174,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-sm-none d-md-block"></v-col>
+              <v-col cols="12" sm="4" class="d-sm-none d-md-block blue-grey lighten-5"></v-col>
               <v-col :cols="12" :md="8" class="py-0">
                 <v-btn
                   v-for="(icon, index) in chatIcons"
@@ -192,7 +192,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>User Icon</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8" class="pb-0">
@@ -211,7 +211,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-sm-none d-md-block"></v-col>
+              <v-col cols="12" sm="4" class="d-sm-none d-md-block blue-grey lighten-5"></v-col>
               <v-col :cols="12" :md="8" class="py-0">
                 <v-btn
                   v-for="(icon, index) in chatIcons"
@@ -231,7 +231,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Locale</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -247,7 +247,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Demo Animation</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -271,7 +271,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Enter Animation</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -287,7 +287,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Exit Animation</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -303,7 +303,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col :cols="12" :lg="4">
+              <v-col :cols="12" :md="4" class="blue-grey lighten-5 blue-grey lighten-5">
                 <v-subheader class="mb-2">
                   Theme
                   <v-tooltip open-delay="300" bottom>
@@ -336,6 +336,7 @@
                         :hide-mode-switch="true"
                         :show-swatches="true"
                         swatches-max-height="120"
+                        :width="300"
                         v-model="color"
                         @input="updateColor"
                       ></v-color-picker>
@@ -343,14 +344,14 @@
                   </v-row>
                 </v-col>
               </v-col>
-              <v-col :cols="12" :lg="8">
+              <v-col :cols="12" :md="8">
                 <v-row>
                   <v-col
                     v-for="color in themeColorsFiltered"
                     :key="color"
                     :cols="12"
                     :sm="6"
-                    :md="4"
+                    :md="6"
                     :lg="3"
                   >
                     <v-btn
@@ -382,7 +383,7 @@
             </v-row>
             <v-row>
               <!-- Colors of Responses and questions -->
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Bot Response</v-subheader>
               </v-col>
 
@@ -455,7 +456,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>User Question</v-subheader>
               </v-col>
 
@@ -529,7 +530,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Prompt Triggers</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -564,7 +565,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>Button and Toolbar Custom CSS</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -579,7 +580,7 @@
             </v-row>
             <v-row>
               <!-- ASR Corrections -->
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>ASR Corrections</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
@@ -594,7 +595,7 @@
             </v-row>
             <v-row>
               <!-- help -->
-              <v-col cols="12" :md="4">
+              <v-col cols="12" :md="4" class="blue-grey lighten-5">
                 <v-btn
                   color="red"
                   :aria-label="`Add a help question`"
@@ -631,7 +632,7 @@
             </v-row>
             <v-row>
               <!-- context parameters -->
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline">
+              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
                 <v-subheader>When to send CTX params</v-subheader>
               </v-col>
 
@@ -645,7 +646,7 @@
                   <v-radio label="All requests" value="all"></v-radio>
                 </v-radio-group>
               </v-col>
-              <v-col :cols="12" :lg="4" class="pl-5">
+              <v-col :cols="12" :lg="4" class="pl-5 blue-grey lighten-5">
                 <v-btn
                   color="red"
                   :aria-label="`Add a new context parameter`"
