@@ -2077,8 +2077,9 @@ function storeSetup(vuetify) {
                 context.commit("CLEAR_FEEDBACK_FORM");
               }
               if (
-                json.responseData.isNewSession ||
-                json.responseData.extraData.newsession
+                params.indexOf("langSwitch") === -1 &&
+                (json.responseData.isNewSession ||
+                  json.responseData.extraData.newsession)
               ) {
                 logger.debug(
                   "Session is stale.. keep chat open and continue with the new session"
@@ -2334,7 +2335,7 @@ function storeSetup(vuetify) {
                   }
 
                   context
-                    .dispatch("sendUserInput")
+                    .dispatch("sendUserInput", "&langSwitch=true")
                     .then(
                       logger.debug(
                         "Sent original lang input to new lang specific solution"
