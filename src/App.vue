@@ -210,6 +210,24 @@
 
                 <v-spacer></v-spacer>
                 <!-- Handle close button on production embedded sites -->
+                <span v-if="$router.currentRoute.path !== '/'">
+                  <v-fab-transition>
+                    <v-btn
+                      icon
+                      text
+                      tile
+                      small
+                      ripple
+                      to="/"
+                      aria-label="Back to Chat"
+                      class="mr-2"
+                      :style="customCssButtonToolbar"
+                    >
+                      <v-icon dark>mdi-arrow-left</v-icon>
+                    </v-btn>
+                  </v-fab-transition>
+                </span>
+
                 <template v-if="embed">
                   <span @click="closeChatEmbedded">
                     <v-fab-transition>
