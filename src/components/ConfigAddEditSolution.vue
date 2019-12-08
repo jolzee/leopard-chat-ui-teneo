@@ -7,7 +7,7 @@
     no-click-animation
     :fullscreen="$vuetify.breakpoint.mdAndDown"
   >
-    <v-card>
+    <v-card color="grey lighten-4">
       <v-card-title class="justify-center align-center">
         <span class="title">{{ dialogTitle }}</span>
         <v-spacer></v-spacer>
@@ -21,13 +21,17 @@
         </span>
       </v-card-title>
 
-      <v-divider></v-divider>
-      <v-card-text style="height: 90vh" id="add-edit" class="teneo-hide-scroll-x mx-0 px-0">
+      <v-divider class="ma-0"></v-divider>
+      <v-card-text style="height: 90vh" id="add-edit" class="teneo-hide-scroll-x mx-0 px-3 py-0">
         <v-form ref="form">
-          <v-container>
+          <v-container class="px-0 pa-0">
             <v-row>
-              <v-col :cols="12" :md="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Solution Name</v-subheader>
+              <v-col
+                :cols="12"
+                :md="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Solution Name</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-row no-gutters>
@@ -58,8 +62,14 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" md="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Deep Link (?dl=[deep-link])</v-subheader>
+              <v-col
+                cols="12"
+                md="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5 red--text"
+              >
+                <v-subheader
+                  class="font-weight-bold elevation-2 grey lighten-2"
+                >Deep Link (?dl=[deep-link])</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-text-field
@@ -73,8 +83,12 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Solution URL</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Solution URL</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-text-field
@@ -89,8 +103,12 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>IFRAME URL</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">IFRAME URL</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-switch v-model="solution.useInProduction" label="Use in production"></v-switch>
@@ -111,8 +129,12 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Chat Window Title</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Chat Window Title</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-text-field
@@ -126,8 +148,12 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Features</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Features</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-card elevation-2>
@@ -158,8 +184,12 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Response Icon</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Response Icon</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8" class="pb-0">
                 <v-text-field
@@ -174,7 +204,11 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-sm-none d-md-block blue-grey lighten-5"></v-col>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-sm-none d-md-block leopard-add-edit-shadow grey lighten-5"
+              ></v-col>
               <v-col :cols="12" :md="8" class="py-0">
                 <v-btn
                   v-for="(icon, index) in chatIcons"
@@ -192,8 +226,12 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>User Icon</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">User Icon</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8" class="pb-0">
                 <v-text-field
@@ -211,7 +249,11 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-sm-none d-md-block blue-grey lighten-5"></v-col>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-sm-none d-md-block leopard-add-edit-shadow grey lighten-5"
+              ></v-col>
               <v-col :cols="12" :md="8" class="py-0">
                 <v-btn
                   v-for="(icon, index) in chatIcons"
@@ -231,8 +273,12 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Locale</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Locale</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-select
@@ -247,8 +293,12 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Demo Animation</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Demo Animation</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-row align="center" justify="center" style="min-height: 300px; height: 300px;">
@@ -271,8 +321,12 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Enter Animation</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Enter Animation</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-select
@@ -287,8 +341,12 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Exit Animation</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Exit Animation</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-select
@@ -303,7 +361,11 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col :cols="12" :md="4" class="blue-grey lighten-5 blue-grey lighten-5">
+              <v-col
+                :cols="12"
+                :md="4"
+                class="leopard-add-edit-shadow grey lighten-5 leopard-add-edit-shadow grey lighten-5"
+              >
                 <v-subheader class="mb-2">
                   Theme
                   <v-tooltip open-delay="300" bottom>
@@ -383,8 +445,12 @@
             </v-row>
             <v-row>
               <!-- Colors of Responses and questions -->
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Bot Response</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Bot Response</v-subheader>
               </v-col>
 
               <v-col :cols="12" :md="8">
@@ -456,8 +522,12 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>User Question</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">User Question</v-subheader>
               </v-col>
 
               <v-col :cols="12" :md="8">
@@ -530,8 +600,12 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Prompt Triggers</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Prompt Triggers</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-switch
@@ -565,8 +639,14 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>Button and Toolbar Custom CSS</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader
+                  class="font-weight-bold elevation-2 grey lighten-2"
+                >Button and Toolbar Custom CSS</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-textarea
@@ -580,8 +660,12 @@
             </v-row>
             <v-row>
               <!-- ASR Corrections -->
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>ASR Corrections</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">ASR Corrections</v-subheader>
               </v-col>
               <v-col :cols="12" :md="8">
                 <v-textarea
@@ -595,7 +679,7 @@
             </v-row>
             <v-row>
               <!-- help -->
-              <v-col cols="12" :md="4" class="blue-grey lighten-5">
+              <v-col cols="12" :md="4" class="leopard-add-edit-shadow grey lighten-5">
                 <v-btn
                   color="red"
                   :aria-label="`Add a help question`"
@@ -632,8 +716,14 @@
             </v-row>
             <v-row>
               <!-- context parameters -->
-              <v-col cols="12" sm="4" class="d-none d-sm-none d-md-inline blue-grey lighten-5">
-                <v-subheader>When to send CTX params</v-subheader>
+              <v-col
+                cols="12"
+                sm="4"
+                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
+              >
+                <v-subheader
+                  class="font-weight-bold elevation-2 grey lighten-2"
+                >When to send CTX params</v-subheader>
               </v-col>
 
               <v-col :cols="12" :md="8">
@@ -646,7 +736,7 @@
                   <v-radio label="All requests" value="all"></v-radio>
                 </v-radio-group>
               </v-col>
-              <v-col :cols="12" :lg="4" class="pl-5 blue-grey lighten-5">
+              <v-col :cols="12" :lg="4" class="pl-5 leopard-add-edit-shadow grey lighten-5">
                 <v-btn
                   color="red"
                   :aria-label="`Add a new context parameter`"
@@ -735,7 +825,7 @@
                               )
                             "
                             :color="
-                              value.active ? 'green' : 'blue-grey lighten-4'
+                              value.active ? 'green' : 'leopard-add-edit-shadow grey lighten-4'
                             "
                             dark
                           >
@@ -774,7 +864,7 @@
         <v-btn
           class="mr-2"
           :aria-label="`Close the solution editing dialog`"
-          color="blue-grey lighten-5"
+          color="leopard-add-edit-shadow grey lighten-5"
           small
           light
           @click="closeAddNewSolutionDialog"
@@ -1263,6 +1353,11 @@ export default {
 </script>
 
 <style scoped>
+.leopard-add-edit-shadow {
+  border-color: #acafb1 !important;
+  border-right: 2px solid #acafb1 !important;
+}
+
 .teneo-hide-scroll-x {
   overflow-x: hidden;
 }

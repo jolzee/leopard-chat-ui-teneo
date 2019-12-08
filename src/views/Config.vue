@@ -208,7 +208,7 @@
                   <v-row>
                     <v-col cols="12" v-if="hasSolutions" class="pb-0">
                       <v-autocomplete
-                        style="max-width: 452px;"
+                        style="max-width: 520px;"
                         color="#2F2869"
                         item-avatar="userIcon"
                         autofocus
@@ -235,7 +235,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col>
+                    <v-col style="min-height: 72px;">
                       <template v-if="selectedSolution">
                         <v-tooltip open-delay="300" bottom>
                           <template v-slot:activator="{ on, attrs }">
@@ -417,7 +417,7 @@
                             <v-fab-transition>
                               <v-btn
                                 class="mr-2 mb-2"
-                                :loading="!showSolutionButtons"
+                                v-show="showSolutionButtons"
                                 v-bind="attrs"
                                 v-on="on"
                                 aria-label="Open a new window showing the current selected solution embedded in a mobile view"
@@ -443,8 +443,9 @@
                             <v-fab-transition>
                               <v-btn
                                 class="mr-2 mb-2"
-                                :loading="!showSolutionButtons"
+                                v-show="showSolutionButtons"
                                 v-bind="attrs"
+                                :loading="refresh"
                                 v-on="on"
                                 aria-label="Refresh the browser to a deep link of the selected solution"
                                 fab
@@ -466,7 +467,8 @@
                         <v-fab-transition>
                           <v-btn
                             class="mr-2 mb-2"
-                            :loading="!showSolutionButtons || refresh"
+                            :loading="refresh"
+                            v-show="showSolutionButtons"
                             fab
                             small
                             dark
@@ -568,8 +570,8 @@
             </v-row>
           </v-container>
         </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
+        <v-divider class="ma-0"></v-divider>
+        <v-card-actions class="grey lighten-3">
           <v-spacer></v-spacer>
           <v-btn color="#2F2869" dark small @click="closeConfigArea">{{ $t("back.to.chat.button") }}</v-btn>
         </v-card-actions>
