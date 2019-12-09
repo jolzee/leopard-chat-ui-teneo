@@ -22,6 +22,20 @@
       d.mouseStartY = e.clientY;
       d.elStartX = d.el.getBoundingClientRect().left;
       d.elStartY = d.el.getBoundingClientRect().top;
+      if (d.what === "dialog") {
+        d.el.style.left =
+          Math.min(
+            Math.max(d.elStartX + e.clientX - d.mouseStartX, 0),
+            window.innerWidth - d.el.getBoundingClientRect().width
+          ) + "px";
+
+        d.el.style.top =
+          Math.min(
+            Math.max(d.elStartY + e.clientY - d.mouseStartY, 0),
+            window.innerHeight - d.el.getBoundingClientRect().height
+          ) + "px";
+        d.el.style.margin = 0;
+      }
       d.el.style.position = "fixed";
       d.oldTransition = d.el.style.transition;
       d.el.style.transition = "none";
