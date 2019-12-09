@@ -278,7 +278,7 @@ function animateLeopard(animationName, callback) {
 
 function updateLeopardHeight() {
   var vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty("--vh", `${vh}px`);
+  document.documentElement.style.setProperty("--vh", vh + "px");
 }
 
 window.addEventListener("message", receiveLeopardMessage, false);
