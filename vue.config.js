@@ -123,6 +123,7 @@ let buildConfig = {
   assetsDir: "./assets/",
   productionSourceMap: false,
   transpileDependencies: [
+    "ip-regex",
     "vuetify",
     "vue-plyr",
     "replace-string",

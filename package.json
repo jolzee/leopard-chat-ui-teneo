@@ -71,6 +71,7 @@
     "vuex-i18n": "^1.13.1"
   },
   "devDependencies": {
+    "@babel/plugin-transform-template-literals": "^7.7.4",
     "@vue/cli-plugin-babel": "^4.1.1",
     "@vue/cli-plugin-eslint": "^4.1.1",
     "@vue/cli-plugin-router": "^4.1.1",
