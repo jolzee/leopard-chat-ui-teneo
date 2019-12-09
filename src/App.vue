@@ -282,12 +282,10 @@
               </v-app-bar>
               <v-content app id="scrolling-techniques content-area" class="pt-0">
                 <OverlayAlert />
-                <transition name="page-transition" enter-active-class="animation fadeIn">
-                  <router-view
-                    @closeMenu="drawer = false"
-                    v-if="['config'].indexOf($route.name) === -1"
-                  />
-                </transition>
+                <router-view
+                  @closeMenu="drawer = false"
+                  v-if="['config'].indexOf($route.name) === -1"
+                />
                 <teneo-modal></teneo-modal>
               </v-content>
             </div>
