@@ -270,10 +270,20 @@ function animateLeopard(animationName, callback) {
     node.classList.remove("animated", leopardAnimations.out);
     node.classList.remove("animated", leopardAnimations.in);
     node.removeEventListener("animationend", handleAnimationEnd);
-    if (typeof callback === "function") callback();
+    if (typeof callback === "function") {
+      callback();
+    }
   }
 
   node.addEventListener("animationend", handleAnimationEnd);
+
+  var isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+
+  if (isIE11) {
+    if (node.style.display !== "none") {
+      callback();
+    }
+  }
 }
 
 function updateLeopardHeight() {
