@@ -381,6 +381,7 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("Chat.vue");
+var mobile = require("is-mobile");
 import dayjs from "dayjs";
 import LongPress from "vue-directive-long-press";
 // import ChatBroadcastMessage from "../components/ChatBroadcastMessage";
@@ -786,19 +787,28 @@ export default {
     swapInputButton() {
       // check if we have access to the mic
       let that = this;
-      navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then(function() {
-          that.showAudioInput = !that.showAudioInput;
-          that.$store.commit("TTS_ENABLE", that.showAudioInput);
-        })
-        .catch(function(err) {
-          logger.debug("ASR input is not allowed", err);
-          that.$store.commit(
-            "SHOW_MESSAGE_IN_CHAT",
-            "ASR input is not allowed. This could be because you're not loading this website over HTTPS or you have explicity denied microphone access in your browser. ASR and TTS is supported in Chrome."
-          );
-        });
+
+      if (navigator && navigator.mediaDevices && !mobile()) {
+        var isChrome =
+          /Chrome/.test(navigator.userAgent) &&
+          !/ OPR/.test(navigator.userAgent) &&
+          /Google Inc/.test(navigator.vendor);
+        if (isChrome) {
+          navigator.mediaDevices
+            .getUserMedia({ audio: true })
+            .then(function() {
+              that.showAudioInput = !that.showAudioInput;
+              that.$store.commit("TTS_ENABLE", that.showAudioInput);
+            })
+            .catch(function(err) {
+              logger.debug("ASR input is not allowed", err);
+              that.$store.commit(
+                "SHOW_MESSAGE_IN_CHAT",
+                "ASR input is not allowed. Possible reasons: website not running over HTTPS, you have denied microphone access or the chat UI has been loaded form a different domain that the website."
+              );
+            });
+        }
+      }
     }
   }
 };
