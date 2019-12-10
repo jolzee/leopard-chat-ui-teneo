@@ -25,7 +25,7 @@
     "@livechat/agent-app-widget-sdk": "github:livechat/agent-app-widget-sdk#master",
     "@livechat/customer-auth": "^0.4.0-alpha.0",
     "@livechat/customer-sdk": "^2.0.0-alpha.3",
-    "@sentry/browser": "^5.10.1",
+    "@sentry/browser": "^5.10.2",
     "@sentry/integrations": "^5.10.1",
     "artyom.js": "github:jolzee/artyom.js#master",
     "bluebird": "^3.7.2",
