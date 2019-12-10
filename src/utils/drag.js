@@ -85,7 +85,7 @@
         parseInt(dialog.style.top),
         window.innerHeight - dialog.getBoundingClientRect().height
       ) + "px";
-  }, 5000);
+  }, 1000);
 
   setInterval(() => {
     // prevent out of bounds
@@ -103,5 +103,5 @@
         parseInt(dialog.style.top),
         window.innerHeight - teneo.getBoundingClientRect().height
       ) + "px";
-  }, 5000);
+  }, 1000);
 })();
