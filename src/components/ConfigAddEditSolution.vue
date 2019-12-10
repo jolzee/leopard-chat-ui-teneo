@@ -3,7 +3,7 @@
     v-model="showDialog"
     scrollable
     :persistent="true"
-    max-width="calc(1200px - 10vw)"
+    max-width="calc(1200px - 10%)"
     no-click-animation
     :fullscreen="$vuetify.breakpoint.mdAndDown"
   >

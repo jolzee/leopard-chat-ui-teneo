@@ -8,7 +8,7 @@
       max-height="auto"
       no-click-animation
       overlay-opacity="0.7"
-      max-width="calc(700px - 10vw)"
+      max-width="calc(700px - 5%)"
       :fullscreen="
         fullscreen ||
           $vuetify.breakpoint.mdAndDown
@@ -512,7 +512,7 @@
                   scrollable
                   persistent
                   light
-                  max-width="calc(1200px - 20vw)"
+                  max-width="calc(1200px - 20%)"
                 >
                   <v-card>
                     <v-card-title>

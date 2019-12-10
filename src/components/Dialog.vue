@@ -50,7 +50,7 @@
         </v-app-bar>
 
         <v-card-text
-          style="height: 80%;"
+          style="height: 90%;"
           class="px-3 py-0"
           :class="{ 'dark-scroll': dark, 'light-scroll': !dark }"
         >

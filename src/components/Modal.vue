@@ -67,7 +67,7 @@
           <v-spacer></v-spacer>
         </v-app-bar>
         <v-card-text
-          style="height: 80%;"
+          style="height: 90%;"
           class="px-2 mx-0 py-0"
           :class="{ 'dark-scroll': dark, 'light-scroll': !dark }"
         >
@@ -778,7 +778,7 @@ export default {
 
 @media only screen and (max-width: 480px) {
   .modal-fly-out {
-    width: 100vw !important;
+    width: 100% !important;
   }
 
   .teneo-modal-right {

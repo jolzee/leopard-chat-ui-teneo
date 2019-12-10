@@ -15,8 +15,7 @@
           color="primary"
           :href="$t('about.page.url')"
           @click="loading = !loading"
-          >{{ $t("about.page.button") }}
-        </v-btn>
+        >{{ $t("about.page.button") }}</v-btn>
       </v-card-actions>
     </v-row>
     <v-divider></v-divider>
@@ -51,7 +50,7 @@ export default {
 
 @media only screen and (max-width: 480px) {
   .teneo-about-card {
-    width: 100vw !important;
+    width: 100% !important;
   }
 }
 </style>

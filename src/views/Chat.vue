@@ -259,108 +259,6 @@
         veritatis ipsam laudantium? Consequatur tenetur voluptas facere
         provident magnam!
       </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
     </Dialog>
 
     <!-- Time picker dialog -->
@@ -1044,7 +942,7 @@ span.teneo-reply ul {
   .chat-container,
   .teneo-dialog,
   .loading-ball {
-    width: 100vw !important;
+    width: 100% !important;
   }
 
   .teneo-footer {

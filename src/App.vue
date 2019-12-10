@@ -1180,7 +1180,7 @@ iframe#site-frame {
 }
 
 .contract-iframe {
-  width: calc(100vw - 360px) !important;
+  width: calc(100% - 360px) !important;
 }
 
 .v-expansion-panel__header {
@@ -1237,11 +1237,11 @@ iframe#site-frame {
   #teneo,
   .v-toolbar,
   .v-overlay {
-    width: 100vw !important;
+    width: 100% !important;
   }
 
   .v-application {
-    max-width: 100vw !important;
+    max-width: 100% !important;
     max-height: 100% !important;
     height: 100% !important;
     margin: auto;
