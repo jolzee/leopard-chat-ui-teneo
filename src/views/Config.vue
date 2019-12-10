@@ -129,6 +129,24 @@
           <v-tooltip open-delay="300" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
+                aria-label="Run audit of all TIE urls"
+                class="mr-2"
+                v-bind="attrs"
+                v-on="on"
+                fab
+                dark
+                small
+                color="orange darken-4"
+                @click="downloadSolutionConfig"
+              >
+                <v-icon dark>mdi-transit-connection-variant</v-icon>
+              </v-btn>
+            </template>
+            <span>Run audit of all TIE urls</span>
+          </v-tooltip>
+          <v-tooltip open-delay="300" bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
                 aria-label="Toggle a visual display of all solution configurations as JSON"
                 class="mr-2"
                 v-bind="attrs"
