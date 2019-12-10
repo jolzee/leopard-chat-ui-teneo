@@ -1143,7 +1143,6 @@ a:focus {
 }
 
 .v-application {
-  transition: 0.3s ease-in-out;
   max-width: 360px;
   max-height: 100vh;
   height: 100vh !important;
@@ -1242,7 +1241,6 @@ iframe#site-frame {
   }
 
   .v-application {
-    transition: 0.3s ease-in-out;
     max-width: 100% !important;
     max-height: 100% !important;
     height: 100% !important;

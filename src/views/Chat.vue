@@ -942,7 +942,7 @@ span.teneo-reply ul {
   .chat-container,
   .teneo-dialog,
   .loading-ball {
-    width: 100% !important;
+    width: 100vw !important;
   }
 
   .teneo-footer {
