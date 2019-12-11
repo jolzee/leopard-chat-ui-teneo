@@ -7,6 +7,16 @@ var WebpackDeletePlugin = require("webpack-delete-plugin");
 // const prod = process.env.NODE_ENV === "production";
 const dev = process.env.NODE_ENV === "development";
 // var const = process.env.NODE_ENV === "qa";
+
+let produceSourceMaps = false;
+if (process.env.VUE_APP_SOURCE_MAP === "true" || dev) {
+  produceSourceMaps = true;
+} else {
+  produceSourceMaps = false;
+}
+
+console.log(`produceSourceMaps: ${produceSourceMaps}`);
+
 const enableJavaScriptCompression = process.env
   .VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
   ? process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
@@ -121,7 +131,7 @@ let buildConfig = {
   },
   publicPath: "./",
   assetsDir: "./assets/",
-  productionSourceMap: false,
+  productionSourceMap: produceSourceMaps,
   transpileDependencies: [
     "ip-regex",
     "vuetify",
