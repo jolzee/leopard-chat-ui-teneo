@@ -740,6 +740,11 @@ export default {
     if (this.$router.currentRoute.path === "/config") {
       this.showModal = true;
     }
+    let siteFrame = document.getElementById("site-frame");
+
+    if (siteFrame) {
+      siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
+    }
   },
   watch: {
     selectedSolution() {

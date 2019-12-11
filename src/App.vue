@@ -833,6 +833,7 @@ export default {
       this.$store.commit("STOP_TTS"); // always reset audio to not speak when chat button is clicked
       let siteFrame;
       //animate the IFrame
+
       if (!this.embed && !this.overlayChat) {
         siteFrame = document.getElementById("site-frame");
       }
@@ -900,6 +901,10 @@ export default {
 
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
+
+/* #site-frame {
+
+} */
 
 .leopard-font-xs {
   font-size: 13px;
@@ -1180,6 +1185,11 @@ iframe#site-frame {
 }
 
 .contract-iframe {
+  transition: width 1500ms;
+  /* transition-delay: 3s; */
+  /* transition-property: all; */
+  /* transition-timing-function: linear|ease|ease-in|ease-out|ease-in-out|step-start|step-end|steps(int,start|end)|cubic-bezier(n,n,n,n)|initial|inherit; */
+  transition-timing-function: ease-out;
   width: calc(100% - 360px) !important;
 }
 

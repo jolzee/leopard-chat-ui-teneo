@@ -374,6 +374,8 @@ export default {
       "askingForPassword",
       "askingForEmail",
       "dialogs",
+      "embed",
+      "overlayChat",
       "getLatestDialogHistory",
       "dark",
       "float",
@@ -465,6 +467,14 @@ export default {
     }
   },
   mounted() {
+    let siteFrame = document.getElementById("site-frame");
+
+    if (!this.embed && !this.overlayChat && siteFrame) {
+      setTimeout(() => {
+        siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+      }, 1200);
+    }
+
     this.$el.addEventListener("click", this.onHtmlClick);
     if (!this.isMobileDevice) {
       this.$refs.userInput.focus();

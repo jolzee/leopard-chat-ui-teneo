@@ -1,27 +1,49 @@
 <template>
   <v-dialog
     v-model="showDialog"
+    id="leopard-add-edit-dialog"
     scrollable
     :persistent="true"
     max-width="calc(1200px - 10%)"
     no-click-animation
-    :fullscreen="$vuetify.breakpoint.mdAndDown"
+    :fullscreen="
+        fullscreen ||
+          $vuetify.breakpoint.mdAndDown
+      "
   >
-    <v-card color="grey lighten-4">
-      <v-card-title class="justify-center align-center">
-        <span class="title">{{ dialogTitle }}</span>
+    <v-card color>
+      <v-system-bar
+        height="25px"
+        color="primary darken-2"
+        :class="{ 'popup-header': !fullscreen }"
+        dark
+      >
+        <v-spacer style="height:30px"></v-spacer>
+
+        <v-icon @click="toggleFullscreen">
+          {{
+          fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
+          }}
+        </v-icon>
+
+        <v-icon @click="closeAddNewSolutionDialog">mdi-close</v-icon>
+      </v-system-bar>
+
+      <v-app-bar dark color="primary" dense>
+        <v-toolbar-title>{{ dialogTitle }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <span class="d-none d-md-inline-block">
           <v-btn
+            small
             aria-label="Open Marterial Design Icons in a new window"
-            color="light-blue darken-1"
-            href="https://materialdesignicons.com/"
+            color="primary darken-2"
+            href="https://petershaggynoble.github.io/MDI-Sandbox/"
             target="_blank"
+            dark
           >MDI Icons (mdi-icon-name)</v-btn>
         </span>
-      </v-card-title>
+      </v-app-bar>
 
-      <v-divider class="ma-0"></v-divider>
       <v-card-text style="height: 90vh" id="add-edit" class="teneo-hide-scroll-x mx-0 px-3 py-0">
         <v-form ref="form">
           <v-container class="px-0 pa-0">
@@ -431,6 +453,7 @@
                     </v-btn>
                     <v-text-field
                       v-model.trim="solution.theme[color]"
+                      clearable
                       @click="setActiveColor(color)"
                       validate-on-blur
                       color="light-blue darken-1"
@@ -825,7 +848,7 @@
                               )
                             "
                             :color="
-                              value.active ? 'green' : 'leopard-add-edit-shadow grey lighten-4'
+                              value.active ? 'green' : 'grey lighten-1'
                             "
                             dark
                           >
@@ -1019,6 +1042,7 @@ export default {
       },
       snackbar: false,
       showDialog: true,
+      fullscreen: false,
       snackbarTimeout: 3000,
       globalSnackbarMessage: "",
       globalSnackbar: false,
@@ -1153,6 +1177,11 @@ export default {
     }, 100);
   },
   methods: {
+    toggleFullscreen() {
+      let dialogElements = document.getElementById("leopard-add-edit-dialog");
+      dialogElements.setAttribute("style", "");
+      this.fullscreen = !this.fullscreen;
+    },
     toggleDisplayAnimationImage() {
       this.showLeopardAnimationImage = false;
       let that = this;
