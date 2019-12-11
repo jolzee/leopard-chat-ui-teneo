@@ -45,7 +45,7 @@
           @click="maximizeChat = true"
         >
           <v-icon color="secondary">mdi-message-text</v-icon>
-          <span>Agent Assist Bot</span>
+          <span>Continue conversation..</span>
           <v-spacer></v-spacer>
           <v-icon color="secondary">mdi-arrow-expand-all</v-icon>
         </v-system-bar>
@@ -248,7 +248,7 @@
                 </template>
                 <!-- Handle close button in demo mode -->
                 <template v-else>
-                  <v-fab-transition v-if="isLiveAgentAssist">
+                  <v-fab-transition v-if="!isEmbed || isLiveAgentAssist">
                     <v-btn
                       icon
                       text
@@ -561,6 +561,15 @@ export default {
   },
   methods: {
     minimizeChat() {
+      let siteFrame;
+      if (!this.embed && !this.showButtonOnly) {
+        siteFrame = document.getElementById("site-frame");
+      }
+
+      if (siteFrame) {
+        siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
+      }
+
       this.maximizeChat = false;
       setTimeout(
         function() {
@@ -863,15 +872,10 @@ export default {
           siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
         }
 
-        // setTimeout(
-        //   function() {
         this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // close the chat window - i want the iframe to resize first and then the chat window to close
         if (chatButton) {
           chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
         }
-        //   }.bind(this),
-        //   100
-        // );
         this.loginPerformed = false;
         // now end the Teneo Session - user clicked the close button - intention is clear
         this.$store.dispatch("endSession").then(() => {
@@ -940,7 +944,7 @@ p {
   position: fixed;
   right: 50px;
   bottom: 30px;
-  width: 220px;
+  width: 240px;
 }
 
 .v-overlay--active {
