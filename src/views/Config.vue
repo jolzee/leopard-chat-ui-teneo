@@ -136,7 +136,7 @@
               dark
               small
               color="orange darken-4"
-              @click="downloadSolutionConfig"
+              @click="runAudit"
             >
               <v-icon dark>mdi-transit-connection-variant</v-icon>
             </v-btn>
@@ -600,6 +600,48 @@
         :color="globalSnackbarColor"
       >{{ globalSnackbarMessage }}</v-snackbar>
     </v-card>
+    <!-- Show Audit Results for TIE Urls -->
+    <Dialog :show="audit.show" @close="closeAuditDialog" :title="audit.title" width="1500px">
+      <v-simple-table>
+        <template v-slot:default>
+          <thead>
+            <tr class="elevation-2">
+              <th class="text-left text-uppercase">Name</th>
+              <th class="text-left text-uppercase">TIE Url</th>
+              <th class="text-left text-uppercase">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="result in audit.results" :key="result.solution.id">
+              <td>{{ result.solution.name }}</td>
+              <td>
+                <a
+                  :href="result.solution.url"
+                  :title="result.solution.url"
+                  target="_blank"
+                >{{ result.solution.url }}</a>
+              </td>
+              <td>
+                <v-progress-circular
+                  v-if="result.status === 'checking'"
+                  :rotate="360"
+                  :size="35"
+                  :width="5"
+                  indeterminate
+                  color="primary"
+                ></v-progress-circular>
+                <v-icon
+                  v-else-if="result.status === 'success'"
+                  large
+                  color="green darken-2"
+                >mdi-check-network-outline</v-icon>
+                <v-icon v-else large color="error darken-2">mdi-close-network</v-icon>
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </Dialog>
     <ConfigAddEditSolution
       v-if="displayAddEditDialog"
       v-on:result="closeAddNewSolutionDialog($event)"
@@ -624,6 +666,7 @@ import "prismjs/prism";
 import "prismjs/themes/prism-funky.css";
 import "prismjs/components/prism-json.min.js";
 import ConfigAddEditSolution from "../components/ConfigAddEditSolution";
+import Dialog from "../components/Dialog";
 import Prism from "vue-prism-component";
 import jsonpack from "jsonpack/main";
 
@@ -631,12 +674,18 @@ export default {
   name: "ConfigView",
   components: {
     Prism,
-    ConfigAddEditSolution
+    ConfigAddEditSolution,
+    Dialog
   },
   data() {
     return {
       fullscreen: false,
       showSolutionButtons: true,
+      audit: {
+        title: "TIE Audit Results",
+        show: false,
+        results: []
+      },
       refresh: false,
       snackbar: false,
       snackbarTimeout: 3000,
@@ -747,6 +796,44 @@ export default {
     this.saveToLocalStorage();
   },
   methods: {
+    closeAuditDialog() {
+      this.audit.show = false;
+      this.audit.results = [];
+    },
+    testSoluton(solution) {
+      let targetReportResult = this.audit.results.find(
+        result => result.solution.id === solution.id
+      );
+      const loginUrl = `${solution.url}?viewname=STANDARDJSONP&channel=webview&command=login`;
+      this.$jsonp(
+        loginUrl,
+        {
+          command: "login"
+        },
+        3000
+      )
+        .then(json => {
+          if ("responseData" in json) {
+            targetReportResult.status = "success";
+          } else {
+            targetReportResult.status = "error";
+          }
+        })
+        .catch(err => {
+          targetReportResult.status = err.statusText;
+        });
+    },
+    runAudit() {
+      this.audit.show = true;
+      this.config.solutions.sort((a, b) => (a.name > b.name ? 1 : -1));
+      this.config.solutions.forEach(solution => {
+        this.audit.results.push({
+          status: "checking",
+          solution: solution
+        });
+        this.testSoluton(solution);
+      });
+    },
     closeConfigArea() {
       if (this.$store.getters.activeSolution) {
         const activeSolutionPast = this.$store.getters.activeSolution;

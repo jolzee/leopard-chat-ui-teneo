@@ -12,7 +12,7 @@
       persistent
       scrollable
       max-width="80%"
-      width="600px"
+      :width="width ? width : '600px'"
       :fullscreen="
         fullscreen ||
           $vuetify.breakpoint.mdAndDown
@@ -32,8 +32,13 @@
             >"Welcome to my dialog!!"</v-alert>
           </v-overlay>
         </v-fade-transition>
-        <v-system-bar color="primary darken-2" :class="{ 'popup-header': !fullscreen }" dark>
-          <v-spacer></v-spacer>
+        <v-system-bar
+          height="25px"
+          color="primary darken-2"
+          :class="{ 'popup-header': !fullscreen }"
+          dark
+        >
+          <v-spacer style="height:30px"></v-spacer>
 
           <v-icon @click="toggleFullscreen">
             {{
@@ -65,7 +70,7 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="secondary white--text" @click="close">Close</v-btn>
+          <v-btn small color="secondary white--text" @click="close">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -76,7 +81,7 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "Dialog",
-  props: ["title", "show"],
+  props: ["title", "show", "width"],
   computed: {
     ...mapGetters(["uuid", "dark"])
   },
