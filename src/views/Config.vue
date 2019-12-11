@@ -601,7 +601,7 @@
       >{{ globalSnackbarMessage }}</v-snackbar>
     </v-card>
     <!-- Show Audit Results for TIE Urls -->
-    <Dialog :show="audit.show" @close="closeAuditDialog" :title="audit.title" width="1500px">
+    <Dialog :show="audit.show" @close="closeAuditDialog" :title="audit.title" width="1000px">
       <v-simple-table>
         <template v-slot:default>
           <thead>
@@ -630,12 +630,35 @@
                   indeterminate
                   color="primary"
                 ></v-progress-circular>
-                <v-icon
-                  v-else-if="result.status === 'success'"
-                  large
-                  color="green darken-2"
-                >mdi-check-network-outline</v-icon>
-                <v-icon v-else large color="error darken-2">mdi-close-network</v-icon>
+                <v-speed-dial
+                  v-else
+                  :v-model="true"
+                  left
+                  direction="left"
+                  open-on-hover
+                  transition="slide-y-reverse-transition"
+                >
+                  <template v-slot:activator>
+                    <v-icon
+                      v-if="result.status === 'success'"
+                      large
+                      color="blue darken-2"
+                    >mdi-check-network-outline</v-icon>
+                    <v-icon v-else large color="error darken-2">mdi-close-network</v-icon>
+                  </template>
+                  <v-btn fab dark small color="red" @click="deleteSolution(result.solution.id)">
+                    <v-icon>mdi-trash-can</v-icon>
+                  </v-btn>
+                  <v-btn
+                    fab
+                    dark
+                    small
+                    color="pink darken-4"
+                    @click="editSolutionAudit(result.solution.id)"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </v-speed-dial>
               </td>
             </tr>
           </tbody>
@@ -810,7 +833,7 @@ export default {
         {
           command: "login"
         },
-        3000
+        5000
       )
         .then(json => {
           if ("responseData" in json) {
@@ -1088,6 +1111,7 @@ export default {
     saveToLocalStorage() {
       this.$store.commit("SET_CHAT_CONFIG", this.config);
       localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
+      logger.debug(`Saved all solutions to localStorage`);
     },
     editSolution() {
       if (this.selectedSolution !== null) {
@@ -1136,6 +1160,28 @@ export default {
       this.globalSnackbar = true;
       this.globalSnackbarTimeout = timeout;
       this.globalSnackbarColor = color;
+    },
+    deleteSolution(solutionId) {
+      this.config.solutions = this.config.solutions.filter(solution => {
+        return solution.id !== solutionId;
+      });
+
+      this.audit.results = this.audit.results.filter(result => {
+        return result.solution.id !== solutionId;
+      });
+
+      this.saveToLocalStorage();
+    },
+    editSolutionAudit(solutionId) {
+      let foundSolution = this.config.solutions.find(
+        solution => solution.id === solutionId
+      );
+      this.selectedSolution = foundSolution;
+      this.solution = utils.cloneObject(this.selectedSolution); // make a copy - we have a save button
+      this.dialogTitle = `Editing Solution | ${this.selectedSolution.name}`;
+      this.currentModeEdit = "edit";
+
+      this.showAddEditDialog();
     },
     deleteSolutionConfig() {
       if (this.selectedSolution) {
