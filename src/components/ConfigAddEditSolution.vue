@@ -4,7 +4,7 @@
     id="leopard-add-edit-dialog"
     scrollable
     :persistent="true"
-    max-width="calc(1200px - 10%)"
+    max-width="calc(900px - 10%)"
     no-click-animation
     :fullscreen="
         fullscreen ||
@@ -48,14 +48,7 @@
         <v-form ref="form">
           <v-container class="px-0 pa-0">
             <v-row>
-              <v-col
-                :cols="12"
-                :md="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Solution Name</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-row no-gutters>
                   <v-col :cols="12">
                     <v-text-field
@@ -84,16 +77,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                md="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5 red--text"
-              >
-                <v-subheader
-                  class="font-weight-bold elevation-2 grey lighten-2"
-                >Deep Link (?dl=[deep-link])</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-text-field
                   filled
                   color="light-blue darken-1"
@@ -105,16 +89,10 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Solution URL</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-text-field
                   filled
+                  clearable
                   color="light-blue darken-1"
                   v-model.trim="solution.url"
                   validate-on-blur
@@ -125,17 +103,11 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">IFRAME URL</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-switch v-model="solution.useInProduction" label="Use in production"></v-switch>
                 <v-text-field
                   filled
+                  clearable
                   v-if="
                     ('useInProduction' in solution &&
                       !solution.useInProduction) ||
@@ -151,16 +123,10 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Chat Window Title</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-text-field
                   filled
+                  clearable
                   color="light-blue darken-1"
                   validate-on-blur
                   v-model.trim="solution.chatTitle"
@@ -170,14 +136,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Features</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12" class="pt-0">
                 <v-card elevation-2>
                   <v-row no-gutters class="pl-5">
                     <v-col cols="12" :lg="4" :sm="6">
@@ -206,14 +165,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Response Icon</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8" class="pb-0">
+              <v-col :cols="12" class="pb-0">
                 <v-text-field
                   filled
                   v-model.trim="solution.responseIcon"
@@ -226,12 +178,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-sm-none d-md-block leopard-add-edit-shadow grey lighten-5"
-              ></v-col>
-              <v-col :cols="12" :md="8" class="py-0">
+              <v-col :cols="12" class="py-0">
                 <v-btn
                   v-for="(icon, index) in chatIcons"
                   :key="index + 'response-icons'"
@@ -248,14 +195,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">User Icon</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8" class="pb-0">
+              <v-col :cols="12" class="pb-0">
                 <v-text-field
                   filled
                   v-model.trim="solution.userIcon"
@@ -271,12 +211,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-sm-none d-md-block leopard-add-edit-shadow grey lighten-5"
-              ></v-col>
-              <v-col :cols="12" :md="8" class="py-0">
+              <v-col :cols="12" class="py-0">
                 <v-btn
                   v-for="(icon, index) in chatIcons"
                   :key="index + 'user-icons'"
@@ -295,14 +230,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Locale</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-select
                   :items="locales"
                   color="light-blue darken-1"
@@ -315,14 +243,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Demo Animation</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-row align="center" justify="center" style="min-height: 300px; height: 300px;">
                   <transition
                     name="leoaprd-transition"
@@ -343,14 +264,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Enter Animation</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-select
                   :items="animations.in"
                   color="light-blue darken-1"
@@ -363,14 +277,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Exit Animation</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-select
                   :items="animations.out"
                   color="light-blue darken-1"
@@ -383,52 +290,50 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                :cols="12"
-                :md="4"
-                class="leopard-add-edit-shadow grey lighten-5 leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="mb-2">
-                  Theme
-                  <v-tooltip open-delay="300" bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        class="mx-2"
-                        :aria-label="`Reset theme colors to default`"
-                        v-bind="attrs"
-                        v-on="on"
-                        icon
-                        dark
-                        small
-                        @click="resetColorsToDefault"
-                        color="green"
-                      >
-                        <v-icon dark>mdi-undo-variant</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>Reset Colors to Default</span>
-                  </v-tooltip>
-                </v-subheader>
-
-                <v-col class="flex">
-                  <v-row no-gutters>
-                    <v-col cols="12" class="pt-0">
-                      <v-color-picker
-                        class="pt-0 mt-0"
-                        :hide-canvas="false"
-                        :hide-inputs="true"
-                        :hide-mode-switch="true"
-                        :show-swatches="true"
-                        swatches-max-height="120"
-                        :width="300"
-                        v-model="color"
-                        @input="updateColor"
-                      ></v-color-picker>
-                    </v-col>
-                  </v-row>
-                </v-col>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12" class="pt-0">
+                <v-row>
+                  <v-col class="py-0">
+                    <v-subheader class="mb-2">
+                      Theme
+                      <v-tooltip open-delay="300" bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            class="mx-2"
+                            :aria-label="`Reset theme colors to default`"
+                            v-bind="attrs"
+                            v-on="on"
+                            icon
+                            dark
+                            small
+                            @click="resetColorsToDefault"
+                            color="green"
+                          >
+                            <v-icon dark>mdi-undo-variant</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Reset Colors to Default</span>
+                      </v-tooltip>
+                    </v-subheader>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col cols="12" class="pt-0">
+                    <v-color-picker
+                      class="pt-0 mt-0"
+                      :dot-size="15"
+                      :canvas-height="80"
+                      :hide-canvas="false"
+                      :hide-inputs="true"
+                      :hide-mode-switch="true"
+                      :show-swatches="true"
+                      swatches-max-height="98"
+                      :height="300"
+                      width="800"
+                      v-model="color"
+                      @input="updateColor"
+                    ></v-color-picker>
+                  </v-col>
+                </v-row>
                 <v-row>
                   <v-col
                     v-for="color in themeColorsFiltered"
@@ -455,10 +360,9 @@
                       v-model.trim="solution.theme[color]"
                       clearable
                       @click="setActiveColor(color)"
-                      validate-on-blur
                       color="light-blue darken-1"
                       filled
-                      :value="solution.theme[color]"
+                      :value="typeof solution.theme[color] === 'string' ? solution.theme[color] : ''"
                       :label="color"
                       :rules="[ruleMustHaveValue, ruleMustHaveColor]"
                     ></v-text-field>
@@ -468,15 +372,11 @@
             </v-row>
             <v-row>
               <!-- Colors of Responses and questions -->
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Bot Response</v-subheader>
-              </v-col>
 
-              <v-col :cols="12" :md="8">
+              <v-col cols="12">
+                <v-subheader class="font-weight-bold">Bot Response</v-subheader>
+              </v-col>
+              <v-col :cols="12">
                 <v-row align="start" justify="start" no-gutters class="pl-1">
                   <v-col cols="12" class="mb-2">
                     <v-slider
@@ -545,15 +445,11 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">User Question</v-subheader>
+              <v-col cols="12">
+                <v-subheader class="font-weight-bold">User Question</v-subheader>
               </v-col>
 
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-row align="start" justify="start" no-gutters class="pl-1">
                   <v-col cols="12" class="mb-2">
                     <v-slider
@@ -623,14 +519,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">Prompt Triggers</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-switch
                   v-model="solution.promptTriggers.enabled"
                   label="Poll for Prompt Triggers"
@@ -662,35 +551,19 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader
-                  class="font-weight-bold elevation-2 grey lighten-2"
-                >Button and Toolbar Custom CSS</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-textarea
                   filled
                   color="light-blue darken-1"
                   name="input-7-4"
-                  label="Custom CSS"
+                  label="Button and Toolbar Custom CSS"
                   v-model.trim="solution.customCssButtonToolbar"
                 ></v-textarea>
               </v-col>
             </v-row>
             <v-row>
               <!-- ASR Corrections -->
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader class="font-weight-bold elevation-2 grey lighten-2">ASR Corrections</v-subheader>
-              </v-col>
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12">
                 <v-textarea
                   filled
                   color="light-blue darken-1"
@@ -702,18 +575,22 @@
             </v-row>
             <v-row>
               <!-- help -->
-              <v-col cols="12" :md="4" class="leopard-add-edit-shadow grey lighten-5">
-                <v-btn
-                  color="red"
-                  :aria-label="`Add a help question`"
-                  class="white--text mr-2"
-                  @click="addUserInput"
-                >
-                  Help
-                  <v-icon right dark>mdi-plus-circle</v-icon>
-                </v-btn>
-              </v-col>
-              <v-col :cols="12" :md="8">
+
+              <v-col :cols="12">
+                <v-row>
+                  <v-col cols="12">
+                    <v-btn
+                      color="red"
+                      :aria-label="`Add a help question`"
+                      class="white--text mr-2"
+                      @click="addUserInput"
+                    >
+                      Help
+                      <v-icon right dark>mdi-plus-circle</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+
                 <v-row v-for="(question, index) in solution.knowledgeData" v-bind:key="index">
                   <v-col cols="11">
                     <v-text-field
@@ -739,17 +616,8 @@
             </v-row>
             <v-row>
               <!-- context parameters -->
-              <v-col
-                cols="12"
-                sm="4"
-                class="d-none d-sm-none d-md-inline leopard-add-edit-shadow grey lighten-5"
-              >
-                <v-subheader
-                  class="font-weight-bold elevation-2 grey lighten-2"
-                >When to send CTX params</v-subheader>
-              </v-col>
 
-              <v-col :cols="12" :md="8">
+              <v-col :cols="12" :lg="6" class="pt-0">
                 <v-radio-group
                   label="When to send CTX params"
                   v-model="solution.sendContextParams"
@@ -759,18 +627,22 @@
                   <v-radio label="All requests" value="all"></v-radio>
                 </v-radio-group>
               </v-col>
-              <v-col :cols="12" :lg="4" class="pl-5 leopard-add-edit-shadow grey lighten-5">
-                <v-btn
-                  color="red"
-                  :aria-label="`Add a new context parameter`"
-                  class="white--text mr-2"
-                  @click="addContextParam"
-                >
-                  CTX Param
-                  <v-icon right dark>mdi-plus-circle</v-icon>
-                </v-btn>
+              <v-spacer></v-spacer>
+              <v-col :cols="12" :lg="4">
+                <v-row align="start" justify="end">
+                  <v-btn
+                    color="red"
+                    :aria-label="`Add a new context parameter`"
+                    class="white--text mr-4"
+                    @click="addContextParam"
+                  >
+                    CTX Param
+                    <v-icon right dark>mdi-plus-circle</v-icon>
+                  </v-btn>
+                </v-row>
               </v-col>
-              <v-col :cols="12" :lg="8" class="px-7">
+
+              <v-col :cols="12" class="px-7">
                 <!-- Itterate over all CTX parameters and their values -->
                 <v-row
                   class="mb-4 grey lighten-5 pa-2 elevation-2"
@@ -887,14 +759,14 @@
         <v-btn
           class="mr-2"
           :aria-label="`Close the solution editing dialog`"
-          color="leopard-add-edit-shadow grey lighten-5"
+          color="primary lighten-2"
           small
           light
           @click="closeAddNewSolutionDialog"
         >Close</v-btn>
         <v-btn
           class="mr-2"
-          color="green"
+          color="primary darken-2"
           small
           :aria-label="`Save edits to the solution`"
           @click="saveForm"
@@ -1288,7 +1160,10 @@ export default {
     },
     setActiveColor(activeTheme) {
       this.activeColor = activeTheme;
-      this.color = this.solution.theme[activeTheme];
+      const foundColor = this.solution.theme[activeTheme];
+      if (typeof foundColor === "string") {
+        this.color = foundColor;
+      }
     },
     updateColor() {
       if (this.activeColor) {
@@ -1350,21 +1225,22 @@ export default {
       }
     },
     ruleMustHaveColor(color) {
-      if (this.isValidColor(color)) {
+      logger.debug(`Color validation`, color);
+      if (color && this.isValidColor(color)) {
         return true;
       } else {
         return "Must be HEX #8A2BE2 or named html name color";
       }
     },
     ruleMustHaveValue(value) {
-      logger.debug(value);
-      if (/\S/.test(value)) {
+      logger.debug(`ruleMustHaveValue`, value);
+      if (value && /\S/.test(value)) {
         return true;
       }
       return "You must provide a value";
     },
     isValidColor(color) {
-      if (color && color.charAt(0) === "#") {
+      if (color && typeof color === "string" && color.charAt(0) === "#") {
         color = color.substring(1);
         return (
           [3, 4, 6, 8].indexOf(color.length) > -1 && !isNaN(parseInt(color, 16))
