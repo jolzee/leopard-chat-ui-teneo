@@ -23,7 +23,6 @@
     "@livechat/accounts-sdk": "^1.3.3",
     "@livechat/agent-app-sdk": "^1.3.0",
     "@livechat/agent-app-widget-sdk": "github:livechat/agent-app-widget-sdk#master",
-    "@livechat/customer-auth": "^0.4.0-alpha.0",
     "@livechat/customer-sdk": "^2.0.0-alpha.3",
     "@sentry/browser": "^5.10.1",
     "@sentry/integrations": "^5.10.1",
