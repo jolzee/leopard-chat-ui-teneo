@@ -248,7 +248,7 @@
                 </template>
                 <!-- Handle close button in demo mode -->
                 <template v-else>
-                  <v-fab-transition v-if="!isEmbed || isLiveAgentAssist">
+                  <v-fab-transition v-if="!embed || isLiveAgentAssist">
                     <v-btn
                       icon
                       text
