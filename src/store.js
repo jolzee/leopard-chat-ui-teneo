@@ -1431,7 +1431,7 @@ function storeSetup(vuetify) {
             }
           } else {
             localStorage.setItem(STORAGE_KEY + "lastBackupDate", now.format());
-            resolve(false); // no backup needed
+            resolve(true); // backup needed
           }
         });
       },
