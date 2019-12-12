@@ -1059,40 +1059,22 @@ export default {
       return 0;
     },
     downloadSolutionConfig() {
-      this.download(
+      utils.download(
         this.getFullSolutionConfig,
         `leopard-all-config-${dayjs().format("YYYYMMDD[-]H[-]mm")}.txt`
       );
+
+      let now = dayjs();
+      localStorage.setItem(STORAGE_KEY + "lastBackupDate", now.format());
     },
     downloadSelectedSolutionConfig() {
-      this.download(
+      utils.download(
         JSON.stringify(this.selectedSolution, null, 2),
         `leopard-${this.selectedSolution.name
           .replace(/[|&;$%@"<>()+,]/g, "")
           .replace(/\s+/g, "-")
           .toLowerCase()}-config-${dayjs().format("YYYYMMDD[-]H[-]mm")}.txt`
       );
-    },
-    download(data, filename, type = "text/plain") {
-      var file = new Blob([data], {
-        type: type
-      });
-      if (window.navigator.msSaveOrOpenBlob)
-        // IE10+
-        window.navigator.msSaveOrOpenBlob(file, filename);
-      else {
-        // Others
-        var a = document.createElement("a"),
-          url = URL.createObjectURL(file);
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function() {
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
-        }, 0);
-      }
     },
     copyWholeConfigClipboard() {
       copy(JSON.stringify(this.config, null, 2));
