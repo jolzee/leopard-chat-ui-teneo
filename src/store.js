@@ -3,6 +3,7 @@ import "regenerator-runtime/runtime";
 const logger = require("@/utils/logging").getLogger("store.js");
 import utils from "@/utils/utils";
 import router from "@/router";
+import dayjs from "dayjs";
 import LiveChat from "@livechat/agent-app-widget-sdk";
 import { accountsSdk } from "@livechat/accounts-sdk";
 import liveChatConfig from "./utils/livechat-config";
@@ -1408,6 +1409,32 @@ function storeSetup(vuetify) {
       }
     },
     actions: {
+      shouldBackupSolutionsConfig() {
+        return new Promise(resolve => {
+          let now = dayjs();
+
+          let lastSolutionBackupDate = localStorage.getItem(
+            STORAGE_KEY + "lastBackupDate"
+          );
+
+          if (lastSolutionBackupDate) {
+            let pastDate = dayjs(lastSolutionBackupDate);
+            let daysDiff = now.diff(pastDate, "day");
+            if (daysDiff >= 14) {
+              localStorage.setItem(
+                STORAGE_KEY + "lastBackupDate",
+                now.format()
+              );
+              resolve(true); // backup probably needed
+            } else {
+              resolve(false); // no backup needed
+            }
+          } else {
+            localStorage.setItem(STORAGE_KEY + "lastBackupDate", now.format());
+            resolve(false); // no backup needed
+          }
+        });
+      },
       liveChatAddCannedResponse(context, config) {
         // config.data.token = context.getters.liveChatApiToken;
         logger.debug(`Adding LiveChat Canned Response`, config);

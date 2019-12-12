@@ -600,6 +600,19 @@
         :color="globalSnackbarColor"
       >{{ globalSnackbarMessage }}</v-snackbar>
     </v-card>
+    <!-- Show backup solution dialog -->
+
+    <v-dialog v-model="showBackupDialog" persistent max-width="290">
+      <v-card>
+        <v-card-title class="headline">Configuration Backup</v-card-title>
+        <v-card-text>It's been at least 2 weeks since you performed a backup of your solution configurations. Would you like to perform a backup now?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="showBackupDialog = false">No</v-btn>
+          <v-btn color="green darken-1" text @click="doBackup">Yes</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <!-- Show Audit Results for TIE Urls -->
     <Dialog :show="audit.show" @close="closeAuditDialog" :title="audit.title" width="1000px">
       <v-simple-table>
@@ -709,6 +722,7 @@ export default {
         show: false,
         results: []
       },
+      showBackupDialog: false,
       refresh: false,
       snackbar: false,
       snackbarTimeout: 3000,
@@ -741,10 +755,19 @@ export default {
       this.showModal = true;
     }
     let siteFrame = document.getElementById("site-frame");
-
     if (siteFrame) {
       siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
     }
+
+    this.$store
+      .dispatch("shouldBackupSolutionsConfig")
+      .then(shouldBackupSolution => {
+        if (shouldBackupSolution) {
+          setTimeout(() => {
+            this.showBackupDialog = true;
+          }, 2000);
+        }
+      });
   },
   watch: {
     selectedSolution() {
@@ -824,6 +847,10 @@ export default {
     this.saveToLocalStorage();
   },
   methods: {
+    doBackup() {
+      this.showBackupDialog = false;
+      this.downloadSolutionConfig();
+    },
     closeAuditDialog() {
       this.audit.show = false;
       this.audit.results = [];
