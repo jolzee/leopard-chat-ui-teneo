@@ -50,7 +50,7 @@ export default {
 
 @media only screen and (max-width: 480px) {
   .teneo-about-card {
-    width: 100% !important;
+    width: 100vw !important;
   }
 }
 </style>

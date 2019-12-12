@@ -1,24 +1,24 @@
 <template>
-  <v-row no-gutters>
-    <v-col cols="12">
-      <v-card class="elevation-0">
-        <v-card-title primary-title>
-          <h5>{{ $t("help.page.title") }}</h5>
-        </v-card-title>
-      </v-card>
-      <v-expansion-panels>
-        <v-expansion-panel
-          v-for="(item, i) in knowledgeData"
-          @click="sendUserInput(item)"
-          :key="i"
-        >
-          <v-expansion-panel-header :hide-actions="true">
-            {{ item }}
-          </v-expansion-panel-header>
-        </v-expansion-panel>
-      </v-expansion-panels>
-    </v-col>
-  </v-row>
+  <v-card class="teneo-help-card" flat>
+    <v-row no-gutters>
+      <v-col cols="12">
+        <v-card class="elevation-0">
+          <v-card-title primary-title>
+            <h5>{{ $t("help.page.title") }}</h5>
+          </v-card-title>
+        </v-card>
+        <v-expansion-panels>
+          <v-expansion-panel
+            v-for="(item, i) in knowledgeData"
+            @click="sendUserInput(item)"
+            :key="i"
+          >
+            <v-expansion-panel-header :hide-actions="true">{{ item }}</v-expansion-panel-header>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 <style scoped></style>
 <script>
@@ -50,3 +50,8 @@ export default {
   }
 };
 </script>
+<style>
+.teneo-help-card {
+  width: 100vw !important;
+}
+</style>
