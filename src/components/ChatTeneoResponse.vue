@@ -246,7 +246,7 @@
       <v-col cols="12" class="text-right mb-2">
         <v-btn color="secondary" class="mt-2" small @click="displayFeedbackForm">
           {{
-          getFeedbackFormConfig.label
+          getFeedbackFormConfig.label && getFeedbackFormConfig.label !== null
           ? getFeedbackFormConfig.label
           : "Leave Feedback"
           }}
