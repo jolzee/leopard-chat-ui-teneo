@@ -85,6 +85,8 @@
                   validate-on-blur
                   label="Deep links can be accessed with ?dl=<deep-link>"
                   :rules="[ruleMustHaveValue, ruleNoSpaces, ruleDeepLinkUnique]"
+                  append-outer-icon="mdi-link-box-outline"
+                  @click:append-outer="createSlug"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -1049,6 +1051,9 @@ export default {
     }, 100);
   },
   methods: {
+    createSlug() {
+      this.solution.deepLink = utils.createSlug(this.solution.name);
+    },
     toggleFullscreen() {
       let dialogElements = document.getElementById("leopard-add-edit-dialog");
       dialogElements.setAttribute("style", "");
