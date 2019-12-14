@@ -742,6 +742,7 @@
                         validate-on-blur
                         solo
                         outlined
+                        clearable
                         color="light-blue darken-1"
                         label="Parameter Value"
                         hint="Parameter Value"
