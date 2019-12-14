@@ -53,7 +53,7 @@
     "url-regex": "^5.0.0",
     "uuid": "^3.3.3",
     "vee-validate": "^3.1.3",
-    "vue": "^2.6.10",
+    "vue": "^2.6.11",
     "vue-directive-long-press": "^1.1.0",
     "vue-jsonp": "^0.1.8",
     "vue-loader": "^15.7.2",
@@ -90,7 +90,7 @@
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
     "vue-cli-plugin-vuetify": "^2.0.2",
-    "vue-template-compiler": "^2.6.10",
+    "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.4.3",
     "webpack-delete-plugin": "^0.1.1"
   },
