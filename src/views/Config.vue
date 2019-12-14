@@ -38,7 +38,7 @@
           fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
           }}
         </v-icon>
-        <v-icon @click="closeConfigArea">mdi-close</v-icon>
+        <v-icon @click="closeConfigArea(false)">mdi-close</v-icon>
       </v-system-bar>
       <v-app-bar color="#2F286B" max-height="64px">
         <!-- show the nicely formatted view of the full configuration -->
@@ -590,7 +590,12 @@
       <v-divider class="ma-0"></v-divider>
       <v-card-actions class="grey lighten-3">
         <v-spacer></v-spacer>
-        <v-btn color="#2F2869" dark small @click="closeConfigArea">{{ $t("back.to.chat.button") }}</v-btn>
+        <v-btn
+          color="#2F2869"
+          dark
+          small
+          @click="closeConfigArea(false)"
+        >{{ $t("back.to.chat.button") }}</v-btn>
       </v-card-actions>
       <!-- global snackbar -->
       <v-snackbar
@@ -610,6 +615,24 @@
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="showBackupDialog = false">No</v-btn>
           <v-btn color="green darken-1" text @click="doBackup">Yes</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Offer refresh on back button -->
+    <v-dialog v-model="showPossibleRefreshDialog" persistent max-width="500">
+      <v-card>
+        <v-card-title class="title">Refresh to Selected Solution?</v-card-title>
+        <v-card-text>
+          You changed the selected solution. Should I naviate to:
+          <br />
+          <br />
+          <span class="leopard-code">{{ selectedSolution.name }}</span>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="closeConfigArea(true)">No</v-btn>
+          <v-btn color="green darken-1" text @click="doRefreshToSelectedSolution">Yes</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -723,6 +746,7 @@ export default {
         results: []
       },
       showBackupDialog: false,
+      showPossibleRefreshDialog: false,
       refresh: false,
       snackbar: false,
       snackbarTimeout: 3000,
@@ -847,6 +871,10 @@ export default {
     this.saveToLocalStorage();
   },
   methods: {
+    doRefreshToSelectedSolution() {
+      this.showPossibleRefreshDialog = false;
+      this.refreshBrowserToSolution(this.selectedSolution);
+    },
     doBackup() {
       this.showBackupDialog = false;
       this.downloadSolutionConfig();
@@ -889,12 +917,21 @@ export default {
         this.testSoluton(solution);
       });
     },
-    closeConfigArea() {
+    closeConfigArea(skipRefreshDialog) {
       if (this.$store.getters.activeSolution) {
         const activeSolutionPast = this.$store.getters.activeSolution;
         const activeSolutionCurrent = this.config.solutions.find(
           solution => solution.id === activeSolutionPast.id
         );
+        if (
+          !skipRefreshDialog &&
+          activeSolutionCurrent.id !== this.selectedSolution.id
+        ) {
+          // another solution is selected than what was originally used to enter the config area
+          this.showPossibleRefreshDialog = true;
+          return;
+        }
+
         if (
           JSON.stringify(activeSolutionPast) !==
           JSON.stringify(activeSolutionCurrent)
@@ -915,6 +952,7 @@ export default {
       }
     },
     refreshBrowserToSolution(solution) {
+      this.showPossibleRefreshDialog = false;
       this.refresh = true;
       sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
       let addtionalParams = "";

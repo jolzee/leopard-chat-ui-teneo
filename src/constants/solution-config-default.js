@@ -35,7 +35,7 @@ okkay | ok
   locale: "en-uk-female",
   longResponsesInModal: false,
   name: "",
-  responseIcon: "mdi-comment-account",
+  responseIcon: "mdi-message-reply-text",
   sendContextParams: "login",
   showChatIcons: true,
   lookAndFeel: {
@@ -66,7 +66,7 @@ okkay | ok
   displayAccent: true,
   url: "",
   useLocalStorage: false,
-  userIcon: "mdi-message-text",
+  userIcon: "mdi-comment-quote-outline",
   useInProduction: false
 };
 

@@ -932,6 +932,15 @@ export default {
   font-size: 19px;
 }
 
+.leopard-code {
+  background-color: #000000;
+  color: #fafafa;
+  padding-left: 3px;
+  padding-right: 3px;
+  font-family: Fira Code, Consolas, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New;
+}
+
 p {
   white-space: normal;
   word-wrap: break-word !important;
