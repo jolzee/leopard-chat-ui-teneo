@@ -154,6 +154,7 @@
                     <v-btn
                       :disabled="userInput === ''"
                       @click="sendUserInput"
+                      aria-label="Send your question to the virtual assistant"
                       large
                       text
                       icon
@@ -535,13 +536,16 @@ export default {
           .post(config.postUrl)
           .send(formData)
           .then(res => {
-            logger.debug(res);
+            // logger.debug(res);
+            const postResultQueryParam = "&uploadResponse=" + btoa(res.text);
             if (config.reqUserInputSuccess) {
               self.$store.commit("SET_USER_INPUT", config.reqUserInputSuccess);
             }
             self.$store.dispatch(
               "sendUserInput",
-              config.teneoSuccessQuery ? config.teneoSuccessQuery : ""
+              config.teneoSuccessQuery
+                ? config.teneoSuccessQuery + postResultQueryParam
+                : postResultQueryParam
             );
           })
           .catch(function(response) {
@@ -551,7 +555,9 @@ export default {
             }
             self.$store.dispatch(
               "sendUserInput",
-              config.teneoFailureQuery ? config.teneoFailureQuery : ""
+              config.teneoFailureQuery
+                ? config.teneoFailureQuery + postResultQueryParam
+                : postResultQueryParam
             );
             logger.error(response);
           });
