@@ -206,7 +206,7 @@
                   </v-btn>
                 </v-fab-transition>
 
-                <v-toolbar-title v-text="toolbarTitle" class="pl-0"></v-toolbar-title>
+                <h1><v-toolbar-title v-text="toolbarTitle" class="pl-0"></v-toolbar-title></h1>
 
                 <v-spacer></v-spacer>
                 <!-- Handle close button on production embedded sites -->
