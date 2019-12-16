@@ -85,11 +85,13 @@
                   validate-on-blur
                   label="Deep links can be accessed with ?dl=<deep-link>"
                   :rules="[ruleMustHaveValue, ruleNoSpaces, ruleDeepLinkUnique]"
+                  append-outer-icon="mdi-link-box-outline"
+                  @click:append-outer="createSlug"
                 ></v-text-field>
               </v-col>
             </v-row>
             <v-row>
-              <v-col :cols="12">
+              <v-col :cols="12" class="pb-0">
                 <v-text-field
                   filled
                   clearable
@@ -740,6 +742,7 @@
                         validate-on-blur
                         solo
                         outlined
+                        clearable
                         color="light-blue darken-1"
                         label="Parameter Value"
                         hint="Parameter Value"
@@ -1049,6 +1052,9 @@ export default {
     }, 100);
   },
   methods: {
+    createSlug() {
+      this.solution.deepLink = utils.createSlug(this.solution.name);
+    },
     toggleFullscreen() {
       let dialogElements = document.getElementById("leopard-add-edit-dialog");
       dialogElements.setAttribute("style", "");
