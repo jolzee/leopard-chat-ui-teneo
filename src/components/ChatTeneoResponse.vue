@@ -11,6 +11,7 @@
           <template v-slot:activator="{ on }">
             <v-btn
               v-on="on"
+              tabindex="-1"
               v-long-press="1000"
               aria-label="Chat icon representing the virtual assitant"
               @long-press-start="swapInputButton"
@@ -46,6 +47,7 @@
         </v-menu>
         <v-btn
           v-else
+          tabindex="-1"
           v-long-press="1000"
           aria-label="Chat icon representing the virtual assitant"
           @long-press-start="swapInputButton"
@@ -66,6 +68,7 @@
         <v-card
           :color="$vuetify.theme.dark ? '#333333' : `${responseLookAndFeel.blockBgColor}`"
           class="chat-card chat-card-left text-left"
+          tabindex="0"
         >
           <span
             v-html="itemText"
@@ -134,6 +137,7 @@
         <v-col cols="2" class="text-center" v-if="showChatIcons">
           <v-btn
             v-long-press="1000"
+            tabindex="-1"
             @long-press-start="swapInputButton"
             style="opacity: 0"
             :color="`${responseLookAndFeel.iconColor} white--text`"
@@ -209,6 +213,7 @@
             class="option-btn mr-2 mt-2"
             x-small
             color="success"
+            :aria-label="option.name"
             @click="optionClicked(option)"
           >{{ option.name }}</v-btn>
         </span>
@@ -230,7 +235,7 @@
               </v-list-item-icon>
               <v-list-item-content class="text-left">
                 <!-- <v-list-item-title v-html="option.name"></v-list-item-title> -->
-                <v-list-item-subtitle v-html="option.name"></v-list-item-subtitle>
+                <v-list-item-subtitle v-html="option.name" :aria-label="option.name"></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -244,7 +249,13 @@
       class="mr-3"
     >
       <v-col cols="12" class="text-right mb-2">
-        <v-btn color="secondary" class="mt-2" small @click="displayFeedbackForm">
+        <v-btn
+          color="secondary"
+          aria-label="Leave Feedback"
+          class="mt-2"
+          small
+          @click="displayFeedbackForm"
+        >
           {{
           getFeedbackFormConfig.label && getFeedbackFormConfig.label !== null
           ? getFeedbackFormConfig.label
@@ -265,7 +276,7 @@
           @handleFocus="handleFocus()"
         />
 
-        <v-btn color="success" class="mt-2" small @click="showForm()">
+        <v-btn color="success" aria-label="Show Form" class="mt-2" small @click="showForm()">
           {{
           getFormConfig && getFormConfig.openFormButtonText
           ? getFormConfig.openFormButtonText
@@ -283,7 +294,7 @@
       class="mt-0 mr-3"
     >
       <v-col cols="12" class="text-right mb-1">
-        <v-btn color="success" class="mt-2" small @click="showModal">
+        <v-btn :aria-label="modalButtonText" color="success" class="mt-2" small @click="showModal">
           {{ modalButtonText }}
           <v-icon right small color="white">{{ modalButtonIcon }}</v-icon>
         </v-btn>
@@ -298,6 +309,7 @@
       <v-col class="text-right" cols="12">
         <v-btn
           small
+          aria-label="Show date picker dialog"
           fab
           class="teneo-userinput-icon elevation-2 mb-2"
           color="success"
@@ -318,6 +330,7 @@
         <v-btn
           small
           fab
+          aria-label="Show time picker dialog"
           class="teneo-userinput-icon elevation-2 mb-2"
           color="success"
           @click="toggleTime()"

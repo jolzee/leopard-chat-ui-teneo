@@ -8,6 +8,7 @@
     <v-col>
       <v-card
         :color="determineCardColor()"
+        tabindex="0"
         class="chat-card chat-card-right text-right pr-3 align-content-end"
         :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? `mr-2 ${leopardFont} ${questionLookAndFeel.blockBgColor}` : `${leopardFont} ${questionLookAndFeel.blockBgColor}`"
       >
@@ -25,6 +26,7 @@
         <template v-slot:activator="{ on }">
           <v-btn
             v-on="on"
+            tabindex="-1"
             aria-label="Chat icon representing you"
             v-long-press="1000"
             @long-press-start="swapInputButton"
@@ -73,6 +75,7 @@
         </v-avatar>
         <v-btn
           v-else
+          tabindex="-1"
           aria-label="Chat icon representing you"
           v-long-press="1000"
           @long-press-start="swapInputButton"

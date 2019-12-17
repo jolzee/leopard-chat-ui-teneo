@@ -132,6 +132,7 @@
                   required
                   solo
                   return-masked-value
+                  aria-required="true"
                   :mask="itemInputMask"
                   name="userInput"
                   ref="userInput"
@@ -519,6 +520,8 @@ export default {
     fileChanged(file) {
       this.$store.commit("HIDE_UPLOAD_BUTTON");
       this.showUploadProgress = true;
+      let successfullUpload = true;
+      let uploadProgress = 0;
       if (this.uploadConfig && Object.keys(this.uploadConfig).length) {
         let config = this.uploadConfig.parameters;
         var formData = new FormData();
@@ -531,13 +534,15 @@ export default {
         }
 
         let self = this;
-
+        let postResultQueryParam = "";
         superagent
           .post(config.postUrl)
           .send(formData)
           .then(res => {
+            logger.debug(`Upload response code: ${res.status}`);
+            uploadProgress = 100;
             // logger.debug(res);
-            const postResultQueryParam = "&uploadResponse=" + btoa(res.text);
+            postResultQueryParam = "&uploadResponse=" + btoa(res.text);
             if (config.reqUserInputSuccess) {
               self.$store.commit("SET_USER_INPUT", config.reqUserInputSuccess);
             }
@@ -549,6 +554,8 @@ export default {
             );
           })
           .catch(function(response) {
+            uploadProgress = 100;
+            successfullUpload = false;
             //handle error
             if (config.reqUserInputFailure) {
               self.$store.commit("SET_USER_INPUT", config.reqUserInputFailure);
@@ -559,7 +566,7 @@ export default {
                 ? config.teneoFailureQuery + postResultQueryParam
                 : postResultQueryParam
             );
-            logger.error(response);
+            logger.error(`Could not upload file`, response);
           });
 
         // {
@@ -579,17 +586,24 @@ export default {
       }
       // If multiple prop is true, it will return an object array of files.
       this.interval = setInterval(() => {
-        if (this.progressValue === 100) {
+        if (this.progressValue === 100 || uploadProgress === 100) {
           clearInterval(this.interval);
           this.showUploadProgress = false;
           if (!this.uploadConfig || !Object.keys(this.uploadConfig).length) {
-            this.$store.commit(
-              "SHOW_MESSAGE_IN_CHAT",
-              `Thanks we have successfully received your file: ${file.name}`
-            );
-            this.$store.dispatch("sendUserInput").then(() => {
-              logger.debug("Upload flag sent to Teneo");
-            });
+            if (successfullUpload) {
+              this.$store.commit(
+                "SHOW_MESSAGE_IN_CHAT",
+                `Thanks we have successfully received your file: ${file.name}`
+              );
+              this.$store.dispatch("sendUserInput").then(() => {
+                logger.debug("Upload flag sent to Teneo");
+              });
+            } else {
+              this.$store.commit(
+                "SHOW_MESSAGE_IN_CHAT",
+                `There was a problem uploading your file: ${file.name}`
+              );
+            }
 
             // var reader = new FileReader();
 
@@ -937,7 +951,7 @@ span.teneo-reply ul {
   position: relative;
   bottom: 0px !important;
   width: 100%;
-  /* height: 65px; */
+  height: 67px !important;
   z-index: 5;
 }
 

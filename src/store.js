@@ -90,6 +90,7 @@ function storeSetup(vuetify) {
         stopAudioCapture: false,
         asr: null
       },
+      accessibleAnouncement: "",
       chatConfig: config.chatConfig,
       activeSolution: config.activeSolution,
       connection: {
@@ -181,6 +182,9 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      accessibleAnouncement(state) {
+        return state.accessibleAnouncement;
+      },
       leopardFont(state) {
         return state.activeSolution.font;
       },
@@ -991,6 +995,9 @@ function storeSetup(vuetify) {
       }
     },
     mutations: {
+      SET_ACCESIBLE_ANOUNCEMENT(state, message) {
+        state.accessibleAnouncement = stripHtml(message);
+      },
       SHOW_OVERLAY_ALERT(state, message) {
         state.overlay.overlayAlertMessage = message;
         state.overlay.showOverlayAlert = true;
@@ -1939,6 +1946,7 @@ function storeSetup(vuetify) {
                   json.responseData.answer
                 )}`
               );
+
               let hasExtraData = false;
 
               if (
@@ -1964,6 +1972,7 @@ function storeSetup(vuetify) {
               };
               // sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(response))
               context.commit("PUSH_RESPONSE_TO_DIALOG", response); // push the getting message onto the dialog
+              context.commit("SET_ACCESIBLE_ANOUNCEMENT", response.text);
               if (hasExtraData) {
                 context.commit("SHOW_CHAT_MODAL", response);
               }
@@ -2111,10 +2120,10 @@ function storeSetup(vuetify) {
                 logger.debug(
                   "Session is stale.. keep chat open and continue with the new session"
                 );
-                context.commit(
-                  "SHOW_MESSAGE_IN_CHAT",
-                  "You have been away for an extended period of time. A new session with the virtual assistant has been created."
-                );
+                const awayMessage =
+                  "You have been away for an extended period of time. A new session with the virtual assistant has been created.";
+                context.commit("SHOW_MESSAGE_IN_CHAT");
+                context.commit("SET_ACCESIBLE_ANOUNCEMENT", awayMessage);
               }
 
               if ("script" in json.responseData.extraData) {
@@ -2282,6 +2291,11 @@ function storeSetup(vuetify) {
                     decodeURIComponent(response.teneoResponse.extraData.tts)
                   );
                 }
+
+                context.commit(
+                  "SET_ACCESIBLE_ANOUNCEMENT",
+                  "Bot Response:" + ttsText
+                );
 
                 // check if this browser supports the Web Speech API
                 if (
