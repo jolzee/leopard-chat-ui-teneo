@@ -591,30 +591,22 @@ export default {
           clearInterval(this.interval);
           this.showUploadProgress = false;
           if (!this.uploadConfig || !Object.keys(this.uploadConfig).length) {
-            if (successfullUpload) {
-              this.$store.commit(
-                "SHOW_MESSAGE_IN_CHAT",
-                `Thanks we have successfully received your file: ${file.name}`
-              );
-              if (!this.config) {
+            if (!this.config) {
+              if (successfullUpload) {
+                this.$store.commit(
+                  "SHOW_MESSAGE_IN_CHAT",
+                  `Thanks we have successfully received your file: ${file.name}`
+                );
                 this.$store.dispatch("sendUserInput").then(() => {
                   logger.debug("Upload flag sent to Teneo");
                 });
+              } else {
+                this.$store.commit(
+                  "SHOW_MESSAGE_IN_CHAT",
+                  `There was a problem uploading your file: ${file.name}`
+                );
               }
-            } else {
-              this.$store.commit(
-                "SHOW_MESSAGE_IN_CHAT",
-                `There was a problem uploading your file: ${file.name}`
-              );
             }
-
-            // var reader = new FileReader();
-
-            // reader.onload = function(e) {
-            //   logger.debug(e.target.result);
-            // };
-
-            // reader.readAsDataURL(file);
           }
           return (this.progressValue = 0);
         }
