@@ -105,6 +105,7 @@
                   aria-label="Enter your question for assistance here"
                   v-show="!showUploadButton && !showUploadProgress"
                   :disabled="progressBar || drawer"
+                  role="textbox"
                   v-shortkey="{
                     toggle1: ['ctrl', 'alt', '/'],
                     toggle2: ['ctrl', 'alt', 'arrowdown']
@@ -131,6 +132,7 @@
                   auto-grow
                   required
                   solo
+                  tabindex="0"
                   return-masked-value
                   aria-required="true"
                   :mask="itemInputMask"
@@ -157,6 +159,7 @@
                       @click="sendUserInput"
                       aria-label="Send your question to the virtual assistant"
                       large
+                      tabindex="0"
                       text
                       icon
                       ripple
@@ -171,6 +174,7 @@
               <v-col cols="3" sm="2" class="text-center">
                 <upload-btn
                   icon
+                  tabindex="0"
                   aria-label="Select file for upload"
                   v-if="showUploadButton"
                   @file-update="fileChanged"
@@ -195,6 +199,7 @@
                   <v-btn
                     text
                     icon
+                    tabindex="0"
                     :disabled="progressBar || userInput === ''"
                     :loading="progressBar"
                     v-long-press="1000"
@@ -209,13 +214,13 @@
                   </v-btn>
 
                   <v-btn
-                    fab
+                    tabindex="0"
                     aria-label="Send your question to the assistant."
                     :disabled="progressBar"
                     :loading="progressBar"
                     v-long-press="1000"
                     @long-press-start="swapInputButton"
-                    small
+                    ripple
                     v-if="showAudioInput"
                     v-shortkey="{
                       recordAudioOne: ['ctrl', 'alt', '.'],
@@ -225,10 +230,11 @@
                     @shortkey.native="captureAudio"
                     :color="audioButtonColor"
                     :class="audioButtonClasses"
-                    class="elevation-2 white--text"
+                    small
+                    fab
                     @click.native="captureAudio"
                   >
-                    <v-icon medium>mdi-microphone</v-icon>
+                    <v-icon large>mdi-microphone</v-icon>
                   </v-btn>
                 </template>
               </v-col>
@@ -341,6 +347,7 @@ export default {
       showTime: false,
       showUploadProgress: false,
       showFeedback: false,
+      audioInFocus: false,
       progressValue: 0,
       date: "",
       rules: {
@@ -445,6 +452,17 @@ export default {
     }
   },
   updated: function() {
+    let clearElements = document.getElementsByClassName("v-icon--link");
+    clearElements.forEach(clearElement => {
+      clearElement.tabIndex = 0;
+      clearElement.addEventListener("keyup", function(event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+          clearElement.click();
+        }
+      });
+    });
+
     try {
       if (this.mustScroll) {
         this.mustScroll = false;
@@ -661,8 +679,7 @@ export default {
     hideProgressBar() {
       this.$store.commit("HIDE_PROGRESS_BAR");
     },
-    sendUserInput(params = "", event) {
-      console.log(event);
+    sendUserInput(params = "") {
       if (this.valid) {
         this.$refs.userInputForm.resetValidation();
         this.audioButtonColor = "primary";

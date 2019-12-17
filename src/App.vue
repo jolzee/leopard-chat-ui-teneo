@@ -5,6 +5,7 @@
         <v-fab-transition>
           <v-btn
             v-show="showChatButton"
+            id="leopard-embed-open-close-button"
             fab
             dark
             color="primary"
@@ -42,12 +43,15 @@
       >
         <v-system-bar
           window
+          tabindex="0"
           v-if="!maximizeChat"
+          id="leopardSystemBarMinimized"
           color="primary"
           accesskey="+"
           class="white--text elevation-4 leopard-system-bar"
           style="border-left: 4px solid yellowgreen !important; border-right: 4px solid yellowgreen !important;"
           @click="maximizeChat = true"
+          v-on:keydown.enter.prevent="maximizeChat = true"
         >
           <v-icon color="secondary">mdi-message-text</v-icon>
           <span>Continue conversation..</span>
@@ -640,8 +644,10 @@ export default {
       }
 
       this.maximizeChat = false;
+
       setTimeout(
         function() {
+          document.getElementById("leopardSystemBarMinimized").focus();
           let appElement = document.getElementById("app");
           appElement.setAttribute("style", "");
         }.bind(this),
@@ -966,6 +972,12 @@ export default {
             1500
           );
         });
+
+        setTimeout(() => {
+          document
+            .getElementsByClassName("leopard-open-close-button")[0]
+            .focus();
+        }, 1700);
       }
     }
   }
@@ -977,6 +989,15 @@ export default {
 
 .chat-card:focus:active {
   color: crimson;
+}
+
+#leopardSystemBarMinimized:focus {
+  box-shadow: 0 0 0 3px rgba(17, 18, 25, 0.4) !important;
+  outline: 0;
+}
+
+.v-btn--fab:focus {
+  color: gold !important;
 }
 
 /* mouse over link */
@@ -1100,9 +1121,14 @@ div.v-input__slot:focus,
 button:focus,
 a:focus,
 div.v-list-item:focus,
-div.chat-card:focus {
-  -webkit-box-shadow: 0 0 0 3px rgba(17, 18, 25, 0.4) !important;
-  box-shadow: 0 0 0 3px rgba(17, 18, 25, 0.4) !important;
+div.chat-card:focus,
+.v-input__icon--clear:focus-within {
+  -webkit-box-shadow: 0 0 0 3px rgba(152, 52, 53, 0.4) !important;
+  box-shadow: 0 0 0 3px rgba(152, 52, 53, 0.4) !important;
+  outline: 0;
+}
+
+.v-input__icon--clear i {
   outline: 0;
 }
 

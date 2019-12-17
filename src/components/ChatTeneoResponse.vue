@@ -153,6 +153,7 @@
         <v-col>
           <v-card
             class="chat-card chat-card-left text-left"
+            tabindex="0"
             :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
             :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           >
@@ -212,6 +213,7 @@
             height="25"
             class="option-btn mr-2 mt-2"
             x-small
+            tabindex="0"
             color="success"
             :aria-label="option.name"
             @click="optionClicked(option)"
@@ -226,6 +228,7 @@
             <v-list-item
               :key="altOptionIndex + 'tile' + uuid"
               @click="optionClicked(option)"
+              tabindex="0"
               class="text-left pl-2 pr-0"
               style="height: 40px"
               dense

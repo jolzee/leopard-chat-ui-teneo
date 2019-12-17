@@ -123,13 +123,15 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
 </style>
 
 <div
-  id="teneo-chat-button-container" style="display: none;"
+  id="teneo-chat-button-container" accesskey="/" style="display: none;"
 >
   <iframe
     src="[leopardUrl]index.html?button"
     allowtransparency="true"
     id="teneo-chat-button"
     name="teneochatbuttonwidget"
+    aria-label="Open chat window with the virtual assistant"
+    accesskey="/"
     scrolling="no"
     role="application"
     aria-label="Teneo chat widget button"

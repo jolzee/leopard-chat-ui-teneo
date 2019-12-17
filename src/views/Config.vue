@@ -627,7 +627,7 @@
           You changed the selected solution. Should I naviate to:
           <br />
           <br />
-          <span class="leopard-code">{{ selectedSolution.name }}</span>
+          <span class="leopard-code">{{ selectedSolution ? selectedSolution.name : "" }}</span>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>

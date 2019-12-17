@@ -63,7 +63,7 @@
         </v-system-bar>
 
         <v-app-bar dark color="primary" dense>
-          <v-toolbar-title>{{ $t("more.info.title") }}</v-toolbar-title>
+          <h2 class="subtitle-1">{{ $t("more.info.title") }}</h2>
           <v-spacer></v-spacer>
         </v-app-bar>
         <v-card-text
@@ -175,6 +175,7 @@
           <v-btn
             color="secondary white--text"
             small
+            id="leopard-back-to-chat-button"
             @click.native="hideModal"
             v-shortkey="['ctrl', 'alt', 'arrowleft']"
             @shortkey.native="hideModal"
@@ -533,6 +534,10 @@ export default {
     }
   },
   updated() {
+    let backButton = document.getElementById("leopard-back-to-chat-button");
+    if (backButton) {
+      backButton.focus();
+    }
     this.modalClass();
     if (this.bodyText) {
       let chatModalDiv = document.getElementById("chat-modal-html");
