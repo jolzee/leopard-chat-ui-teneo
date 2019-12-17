@@ -596,7 +596,7 @@ export default {
                 "SHOW_MESSAGE_IN_CHAT",
                 `Thanks we have successfully received your file: ${file.name}`
               );
-              if (!config) {
+              if (!this.config) {
                 this.$store.dispatch("sendUserInput").then(() => {
                   logger.debug("Upload flag sent to Teneo");
                 });
