@@ -104,7 +104,7 @@
                   id="teneo-input-field"
                   aria-label="Enter your question for assistance here"
                   v-show="!showUploadButton && !showUploadProgress"
-                  :disabled="progressBar"
+                  :disabled="progressBar || drawer"
                   v-shortkey="{
                     toggle1: ['ctrl', 'alt', '/'],
                     toggle2: ['ctrl', 'alt', 'arrowdown']
@@ -137,7 +137,7 @@
                   name="userInput"
                   ref="userInput"
                   autocomplete="off"
-                  @keyup.enter.native="sendUserInput"
+                  v-on:keydown.enter.prevent="sendUserInput('', $event)"
                   v-model="userInput"
                   :label="
                     inputHelpText
@@ -312,6 +312,7 @@ if (window.Element && !Element.prototype.closest) {
 }
 
 export default {
+  props: ["drawer"],
   components: {
     ChatBroadcastMessage: () => import("../components/ChatBroadcastMessage"),
     ChatLoading,
@@ -595,9 +596,11 @@ export default {
                 "SHOW_MESSAGE_IN_CHAT",
                 `Thanks we have successfully received your file: ${file.name}`
               );
-              this.$store.dispatch("sendUserInput").then(() => {
-                logger.debug("Upload flag sent to Teneo");
-              });
+              if (!config) {
+                this.$store.dispatch("sendUserInput").then(() => {
+                  logger.debug("Upload flag sent to Teneo");
+                });
+              }
             } else {
               this.$store.commit(
                 "SHOW_MESSAGE_IN_CHAT",
@@ -666,7 +669,8 @@ export default {
     hideProgressBar() {
       this.$store.commit("HIDE_PROGRESS_BAR");
     },
-    sendUserInput(params = "") {
+    sendUserInput(params = "", event) {
+      console.log(event);
       if (this.valid) {
         this.$refs.userInputForm.resetValidation();
         this.audioButtonColor = "primary";

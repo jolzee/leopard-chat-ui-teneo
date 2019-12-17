@@ -9,6 +9,7 @@
             dark
             color="primary"
             elevation="2"
+            aria-roledescription="A Chat Interface with a Virtual Agent"
             accesskey="/"
             aria-label="Open Chat"
             tabindex="0"
@@ -20,8 +21,8 @@
         </v-fab-transition>
       </div>
     </v-app>
-    <v-app v-else-if="['config'].indexOf($route.name) != -1">
-      <router-view v-if="['config'].indexOf($route.name) != -1" />
+    <v-app v-else-if="['config'].indexOf($route.name) !== -1">
+      <router-view v-if="['config'].indexOf($route.name) !== -1" />
     </v-app>
     <v-app
       v-else
@@ -62,6 +63,7 @@
               dark
               accesskey="/"
               color="primary"
+              aria-roledescription="A Chat Interface with a Virtual Agent"
               :aria-label="isChatOpen ? 'Close Chat' : 'Open Chat'"
               elevation="2"
               @click="toggleChat"
@@ -116,6 +118,7 @@
                       tile
                       small
                       ripple
+                      id="leopardNavMenuButton"
                       accesskey="m"
                       :aria-label="
                       drawer ? 'Hide the chat menu' : 'Show the chat menu'
@@ -325,6 +328,7 @@
               <v-content app id="scrolling-techniques content-area" class="pt-0">
                 <OverlayAlert />
                 <router-view
+                  :drawer="drawer"
                   @closeMenu="drawer = false"
                   v-if="['config'].indexOf($route.name) === -1"
                 />
@@ -409,11 +413,6 @@ export default {
           route: "config"
         },
         {
-          icon: "mdi-message-text",
-          titleKey: "menu.chat",
-          route: "/"
-        },
-        {
           icon: "mdi-lifebuoy",
           titleKey: "menu.help",
           route: "help"
@@ -447,11 +446,21 @@ export default {
     };
   },
   watch: {
-    drawer: function(newDrawer) {
-      if (newDrawer) {
+    drawer: function(isDrawerOpen) {
+      if (isDrawerOpen) {
         this.$nextTick(() => {
           document.getElementById("leopard-first-drawer-item").focus();
         });
+      } else {
+        logger.debug("Nav drawer has just closed");
+        if (this.$refs.userInput) {
+          this.$refs.userInput.focus();
+        } else {
+          let navButton = document.getElementById("leopardNavMenuButton");
+          if (navButton) {
+            navButton.focus();
+          }
+        }
       }
     }
   },
