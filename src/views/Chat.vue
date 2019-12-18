@@ -452,21 +452,20 @@ export default {
   updated: function() {
     let clearElements = document.getElementsByClassName("v-icon--link");
     clearElements.forEach(clearElement => {
-      clearElement.tabIndex = 0;
       let parentEl = clearElement.parentElement;
       if (parentEl.classList.contains("v-input__icon--clear")) {
+        clearElement.tabIndex = 0;
         clearElement.setAttribute(
           "aria-label",
           "Clear the text box containing your question"
         );
+        clearElement.addEventListener("keyup", function(event) {
+          event.preventDefault();
+          if (event.keyCode === 13) {
+            clearElement.click();
+          }
+        });
       }
-
-      clearElement.addEventListener("keyup", function(event) {
-        event.preventDefault();
-        if (event.keyCode === 13) {
-          clearElement.click();
-        }
-      });
     });
 
     try {
