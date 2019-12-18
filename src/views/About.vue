@@ -1,5 +1,5 @@
 <template>
-  <v-card class="teneo-about-card" flat>
+  <v-card class="teneo-about-card leopard-alternative-views" flat>
     <youTube :videoId="youTubeVideoId"></youTube>
 
     <v-card-title primary-title>
@@ -13,12 +13,12 @@
         <v-btn
           :loading="loading"
           color="primary"
+          aria-label="Learn More about Artificial Solutions opens in a new window"
           :href="$t('about.page.url')"
-          @click="loading = !loading"
+          target="_blank"
         >{{ $t("about.page.button") }}</v-btn>
       </v-card-actions>
     </v-row>
-    <v-divider></v-divider>
   </v-card>
 </template>
 

@@ -260,6 +260,7 @@
                           <v-list-item-content>
                             <v-list-item-title
                               class="subheading"
+                              role="option"
                               :class="menuClassText"
                             >Back to chat</v-list-item-title>
                           </v-list-item-content>
@@ -284,6 +285,7 @@
                             <v-list-item-title
                               class="subheading"
                               :class="menuClassText"
+                              role="option"
                             >{{ $t(menuItem.titleKey) }}</v-list-item-title>
                           </v-list-item-content>
                         </v-list-item>
@@ -305,7 +307,11 @@
                             ></v-icon>
                           </v-list-item-action>
                           <v-list-item-content>
-                            <v-list-item-title class="subheading" :class="menuClassText">
+                            <v-list-item-title
+                              class="subheading"
+                              :class="menuClassText"
+                              role="option"
+                            >
                               {{
                               $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
                               }}
@@ -315,13 +321,24 @@
                       </v-list-item-group>
                     </v-list>
                   </nav>
-                  <template v-slot:append v-if="authenticated">
+                  <template v-slot:append>
                     <div class="pa-2">
+                      <v-btn
+                        ripple
+                        tabindex="0"
+                        block
+                        color="primary darken-1"
+                        role="option"
+                        @click="drawer=false"
+                      >Close</v-btn>
+                    </div>
+                    <div class="pa-2" v-if="authenticated">
                       <v-btn
                         ripple
                         tabindex="0"
                         to="/"
                         block
+                        role="option"
                         color="primary darken-1"
                         @click="logout()"
                       >{{ $t("menu.logout") }}</v-btn>
@@ -547,6 +564,9 @@ export default {
     activeMenuItems() {
       if (this.authenticated) {
         return this.menuItems.filter(menuItem => {
+          if (menuItem.route === this.$router.currentRoute.name) {
+            return false;
+          }
           if (
             "when" in menuItem &&
             typeof menuItem.when === "string" &&
@@ -569,6 +589,9 @@ export default {
       } else {
         // anonymous
         return this.menuItems.filter(menuItem => {
+          if (menuItem.route === this.$route.name) {
+            return false;
+          }
           if (
             this.socialAuthEnabled &&
             "when" in menuItem &&
@@ -987,8 +1010,14 @@ export default {
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
-.chat-card:focus:active {
-  color: crimson;
+.leopard-alternative-views {
+  overflow-y: auto;
+  max-height: calc(80vh - 64px);
+  overflow-x: hidden;
+}
+
+.chat-card {
+  cursor: defaul;
 }
 
 #leopardSystemBarMinimized:focus {
@@ -1330,6 +1359,12 @@ iframe#site-frame {
 }
 
 @media only screen and (max-height: 480px) {
+  .leopard-alternative-views {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100vh - 64px);
+  }
+
   .v-application {
     max-width: 360px !important;
     max-height: 100% !important;
@@ -1374,6 +1409,12 @@ iframe#site-frame {
 }
 
 @media only screen and (max-width: 480px) {
+  .leopard-alternative-views {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100vh - 64px);
+  }
+
   #teneo,
   .v-toolbar,
   .v-overlay {

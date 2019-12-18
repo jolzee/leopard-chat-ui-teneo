@@ -1,47 +1,45 @@
 <template>
-  <v-row no-gutters align="start" justify="start" class="mx-3 fill-height">
+  <v-row
+    no-gutters
+    align="start"
+    justify="start"
+    class="px-3 mx-0 fill-height leopard-alternative-views"
+  >
     <v-col cols="12" class="mt-2">
-      <p class="subheading font-weight-medium">
-        Choose one of the following sign up methods.
-      </p>
+      <p class="subheading font-weight-medium">Choose one of the following sign up methods.</p>
     </v-col>
     <v-col cols="12">
       <v-btn
         color="#375A9A"
+        aria-label="Facebook opens in a new window"
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
         @click="loginSocial('facebook')"
       >
-        <v-icon left light class="ml-1">mdi-facebook-box</v-icon>
-        Facebook
+        <v-icon left light class="ml-1">mdi-facebook-box</v-icon>Facebook
       </v-btn>
       <v-btn
         color="#EE4036"
+        aria-label="Google opens in a new window"
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
         @click="loginSocial('google')"
       >
-        <v-icon left light class="ml-1">mdi-google-plus</v-icon>
-        Google+
+        <v-icon left light class="ml-1">mdi-google-plus</v-icon>Google+
       </v-btn>
       <v-btn
         color="#464646"
+        aria-label="Github opens in a new window"
         class="white--text teneo-social-btn px-1 mr-0 mb-1"
         @click="loginSocial('facebook')"
       >
-        <v-icon left light class="ml-1">mdi-github-circle</v-icon>
-        GitHub
+        <v-icon left light class="ml-1">mdi-github-circle</v-icon>GitHub
       </v-btn>
     </v-col>
     <v-col cols="12" class="mt-2">
-      <p class="subheading font-weight-medium">
-        Or signup using your email address.
-      </p>
+      <p
+        class="subheading font-weight-medium"
+      >Or signup using your email address. (All fields required)</p>
     </v-col>
-    <v-form
-      ref="form"
-      v-model="valid"
-      lazy-validation
-      @submit.prevent="registerUser"
-    >
+    <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="registerUser">
       <v-container fluid>
         <v-row>
           <v-col cols="12">
@@ -75,21 +73,17 @@
               name="password"
               clearable
               autocomplete="off"
-              label="Password"
+              label="Password (Min 6 characters)"
               hint="At least 6 characters"
               counter
               @click:append="showPassword = !showPassword"
             ></v-text-field>
           </v-col>
           <v-col cols="6" class="my-0 py-0">
-            <v-btn type="submit" @click="registerUser" color="success">
-              Sign Up
-            </v-btn>
+            <v-btn type="submit" @click="registerUser" color="success">Sign Up</v-btn>
           </v-col>
           <v-col v-if="errorMessage" cols="6">
-            <v-alert :value="true" type="info">
-              {{ errorMessage }}
-            </v-alert>
+            <v-alert :value="true" type="info">{{ errorMessage }}</v-alert>
           </v-col>
         </v-row>
       </v-container>
@@ -111,14 +105,14 @@ export default {
       valid: false,
       showPassword: false,
       rules: {
-        required: value => !!value || "Required",
-        min: value => (value && value.length >= 6) || "Min 6 characters",
+        required: value => !!value || "Error: Required",
+        min: value => (value && value.length >= 6) || "Error: Min 6 characters",
         emailRules: value => {
           if (value) {
             const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return pattern.test(value) || "Invalid e-mail";
+            return pattern.test(value) || "Error: Invalid e-mail";
           }
-          return "Email is required";
+          return "Error: Email is required";
         }
       }
     };
@@ -126,6 +120,12 @@ export default {
   beforeRouteLeave(from, to, next) {
     this.$emit("closeMenu");
     next();
+  },
+  updated() {
+    let elements = document.getElementsByClassName("v-messages__message");
+    elements.forEach(element => {
+      element.setAttribute("aria-live", "polite");
+    });
   },
   methods: {
     hideErrorMessage() {

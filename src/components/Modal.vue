@@ -534,10 +534,35 @@ export default {
     }
   },
   updated() {
-    let backButton = document.getElementById("leopard-back-to-chat-button");
-    if (backButton) {
-      backButton.focus();
-    }
+    this.$nextTick(() => {
+      setTimeout(() => {
+        let elements = document.getElementsByClassName(
+          "plyr__control--overlaid"
+        );
+        if (elements.length > 0) {
+          elements.forEach(element => {
+            element.focus();
+          });
+        } else {
+          let backButton = document.getElementById(
+            "leopard-back-to-chat-button"
+          );
+          if (backButton) {
+            backButton.focus();
+          }
+        }
+        let iframes = document.getElementsByTagName("iframe");
+        iframes.forEach(iframe => {
+          if (iframe.hasAttribute("allow")) {
+            let allowValue = iframe.getAttribute("allow");
+            if (allowValue.indexOf("accelerometer") !== -1) {
+              iframe.setAttribute("tabindex", "-1");
+            }
+          }
+        });
+      }, 1000);
+    });
+
     this.modalClass();
     if (this.bodyText) {
       let chatModalDiv = document.getElementById("chat-modal-html");

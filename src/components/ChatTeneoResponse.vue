@@ -68,6 +68,7 @@
         <v-card
           :color="$vuetify.theme.dark ? '#333333' : `${responseLookAndFeel.blockBgColor}`"
           class="chat-card chat-card-left text-left"
+          :ripple="false"
           tabindex="0"
         >
           <span
@@ -82,6 +83,7 @@
     <Card
       v-if="hasCard(item) && itemIndexInDialog === dialog.length - 1"
       :item="item"
+      :ripple="false"
       class="mb-2"
     />
     <!-- Show Inline Components -->
@@ -154,6 +156,7 @@
           <v-card
             class="chat-card chat-card-left text-left"
             tabindex="0"
+            :ripple="false"
             :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
             :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           >

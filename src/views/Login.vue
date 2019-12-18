@@ -1,47 +1,40 @@
 <template>
-  <v-row align="start" justify="start" class="mx-2 fill-height">
+  <v-row align="start" justify="start" class="px-3 mx-0 fill-height leopard-alternative-views">
     <v-col cols="12">
-      <p class="subheading font-weight-medium">
-        Login with one of the following methods.
-      </p>
+      <p class="subheading font-weight-medium">Login with one of the following methods.</p>
     </v-col>
     <v-col cols="12">
       <v-btn
         color="#375A9A"
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
         @click="loginSocial('facebook')"
+        aria-label="Facebook opens in a new window"
       >
-        <v-icon left light class="ml-1">mdi-facebook-box</v-icon>
-        Facebook
+        <v-icon left light class="ml-1">mdi-facebook-box</v-icon>Facebook
       </v-btn>
       <v-btn
         color="#EE4036"
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
+        aria-label="Google opens in a new window"
         @click="loginSocial('google')"
       >
-        <v-icon left light class="ml-1">mdi-google-plus</v-icon>
-        Google+
+        <v-icon left light class="ml-1">mdi-google-plus</v-icon>Google+
       </v-btn>
       <v-btn
         color="#464646"
         class="white--text teneo-social-btn px-1 mb-1 mr-0"
+        aria-label="Github opens in a new window"
         @click="loginSocial('github')"
       >
-        <v-icon left light class="ml-1">mdi-github-circle</v-icon>
-        GitHub
+        <v-icon left light class="ml-1">mdi-github-circle</v-icon>GitHub
       </v-btn>
     </v-col>
     <v-col cols="12">
-      <p class="subheading font-weight-medium">
-        Alternatively use your email and password.
-      </p>
+      <p
+        class="subheading font-weight-medium"
+      >Alternatively use your email and password. (All fields required)</p>
     </v-col>
-    <v-form
-      ref="form"
-      v-model="valid"
-      @submit.prevent="loginUser"
-      lazy-validation
-    >
+    <v-form ref="form" v-model="valid" @submit.prevent="loginUser" lazy-validation>
       <v-container fluid>
         <v-row>
           <v-col cols="12">
@@ -64,21 +57,17 @@
               name="password"
               clearable
               autocomplete="off"
-              label="Password"
+              label="Password (Min 6 characters)"
               hint="At least 6 characters"
               counter
               @click:append="showPassword = !showPassword"
             ></v-text-field>
           </v-col>
           <v-col cols="12" class="ml-0">
-            <v-btn @click="loginUser" color="success" type="submit">
-              Login
-            </v-btn>
+            <v-btn @click="loginUser" color="success" type="submit">Login</v-btn>
           </v-col>
           <v-col v-if="errorMessage" cols="12">
-            <v-alert :value="true" type="info">
-              {{ errorMessage }}
-            </v-alert>
+            <v-alert :value="true" type="info">{{ errorMessage }}</v-alert>
           </v-col>
         </v-row>
       </v-container>
@@ -99,14 +88,14 @@ export default {
       valid: false,
       showPassword: false,
       rules: {
-        required: value => !!value || "Required",
-        min: value => (value && value.length >= 6) || "Min 6 characters",
+        required: value => !!value || "Error: Required",
+        min: value => (value && value.length >= 6) || "Error: Min 6 characters",
         emailRules: value => {
           if (value) {
             const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return pattern.test(value) || "Invalid e-mail";
+            return pattern.test(value) || "Error: Invalid e-mail";
           }
-          return "Email is required";
+          return "Error: Email is required";
         }
       }
     };
@@ -114,6 +103,12 @@ export default {
   beforeRouteLeave(from, to, next) {
     this.$emit("closeMenu");
     next();
+  },
+  updated() {
+    let elements = document.getElementsByClassName("v-messages__message");
+    elements.forEach(element => {
+      element.setAttribute("aria-live", "polite");
+    });
   },
   methods: {
     hideErrorMessage() {

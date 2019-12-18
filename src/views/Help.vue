@@ -1,5 +1,5 @@
 <template>
-  <v-card class="teneo-help-card" flat>
+  <v-card class="teneo-help-card leopard-alternative-views" flat>
     <v-row no-gutters>
       <v-col cols="12">
         <v-card class="elevation-0">
