@@ -105,7 +105,6 @@
                   aria-label="Enter your question for assistance here"
                   v-show="!showUploadButton && !showUploadProgress"
                   :disabled="progressBar || drawer"
-                  role="textbox"
                   v-shortkey="{
                     toggle1: ['ctrl', 'alt', '/'],
                     toggle2: ['ctrl', 'alt', 'arrowdown']
@@ -134,7 +133,6 @@
                   solo
                   tabindex="0"
                   return-masked-value
-                  aria-required="true"
                   :mask="itemInputMask"
                   name="userInput"
                   ref="userInput"
@@ -452,14 +450,17 @@ export default {
     }
   },
   updated: function() {
-    let clearElements = document.getElementsByClassName("v-input__icon--clear");
+    let clearElements = document.getElementsByClassName("v-icon--link");
     clearElements.forEach(clearElement => {
-      // v-icon--link
       clearElement.tabIndex = 0;
-      clearElement.setAttribute(
-        "aria-label",
-        "Clear the text box containing your question"
-      );
+      let parentEl = clearElement.parentElement;
+      if (parentEl.classList.contains("v-input__icon--clear")) {
+        clearElement.setAttribute(
+          "aria-label",
+          "Clear the text box containing your question"
+        );
+      }
+
       clearElement.addEventListener("keyup", function(event) {
         event.preventDefault();
         if (event.keyCode === 13) {
