@@ -2122,7 +2122,7 @@ function storeSetup(vuetify) {
                 );
                 const awayMessage =
                   "You have been away for an extended period of time. A new session with the virtual assistant has been created.";
-                context.commit("SHOW_MESSAGE_IN_CHAT");
+                context.commit("SHOW_MESSAGE_IN_CHAT", awayMessage);
                 context.commit("SET_ACCESIBLE_ANOUNCEMENT", awayMessage);
               }
 
