@@ -8,7 +8,6 @@
     <v-col>
       <v-card
         :color="determineCardColor()"
-        tabindex="0"
         :ripple="false"
         class="chat-card chat-card-right text-right pr-3 align-content-end"
         :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? `mr-2 ${leopardFont} ${questionLookAndFeel.blockBgColor}` : `${leopardFont} ${questionLookAndFeel.blockBgColor}`"

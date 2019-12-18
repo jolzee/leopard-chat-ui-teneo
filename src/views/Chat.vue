@@ -9,6 +9,7 @@
       <v-col
         cols="12"
         class="pa-0"
+        tabindex="0"
         id="teneo-chat-scroll"
         :class="{
           'grey darken-4 dark-scroll': $vuetify.theme.dark,
@@ -455,10 +456,7 @@ export default {
       let parentEl = clearElement.parentElement;
       if (parentEl.classList.contains("v-input__icon--clear")) {
         clearElement.tabIndex = 0;
-        clearElement.setAttribute(
-          "aria-label",
-          "Clear the text box containing your question"
-        );
+        clearElement.setAttribute("aria-label", "Clear the text box");
         clearElement.addEventListener("keyup", function(event) {
           event.preventDefault();
           if (event.keyCode === 13) {

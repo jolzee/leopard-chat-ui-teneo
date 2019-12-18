@@ -39,7 +39,30 @@ export default {
     this.$emit("closeMenu");
     next();
   },
-  computed: {}
+  computed: {},
+  mounted() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        let elements = document.getElementsByClassName(
+          "plyr__control--overlaid"
+        );
+        if (elements.length > 0) {
+          elements.forEach(element => {
+            element.focus();
+          });
+        }
+        let iframes = document.getElementsByTagName("iframe");
+        iframes.forEach(iframe => {
+          if (iframe.hasAttribute("allow")) {
+            let allowValue = iframe.getAttribute("allow");
+            if (allowValue.indexOf("accelerometer") !== -1) {
+              iframe.setAttribute("tabindex", "-1");
+            }
+          }
+        });
+      }, 1000);
+    });
+  }
 };
 </script>
 
