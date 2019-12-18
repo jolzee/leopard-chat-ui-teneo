@@ -52,6 +52,6 @@ export default {
 </script>
 <style>
 .teneo-help-card {
-  width: 100vw !important;
+  width: 100% !important;
 }
 </style>
