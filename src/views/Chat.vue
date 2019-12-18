@@ -764,6 +764,12 @@ export default {
 
 #teneo-chat-scroll {
   -ms-overflow-style: -ms-autohiding-scrollbar;
+  outline: 0;
+}
+
+#teneo-chat-scroll:focus {
+  box-shadow: inset 0 0 0 1px rgba(17, 18, 25, 0.2) !important;
+  outline: 0;
 }
 
 .container {
