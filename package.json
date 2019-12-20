@@ -30,7 +30,7 @@
     "bluebird": "^3.7.2",
     "consola": "^2.11.1",
     "copy-to-clipboard": "^3.2.0",
-    "core-js": "^3.5.0",
+    "core-js": "^3.6.0",
     "custom-event-polyfill": "^1.0.7",
     "dayjs": "^1.8.18",
     "element-matches": "^0.1.2",
