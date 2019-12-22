@@ -52,7 +52,7 @@
     "url-parse": "^1.4.7",
     "url-regex": "^5.0.0",
     "uuid": "^3.3.3",
-    "vee-validate": "^3.2.0",
+    "vee-validate": "^3.2.1",
     "vue": "^2.6.11",
     "vue-directive-long-press": "^1.1.0",
     "vue-jsonp": "^0.1.8",
