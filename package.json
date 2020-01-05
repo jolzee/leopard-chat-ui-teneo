@@ -87,7 +87,7 @@
     "fibers": "^4.0.2",
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
-    "sass": "^1.23.7",
+    "sass": "^1.24.2",
     "sass-loader": "^8.0.0",
     "vue-cli-plugin-vuetify": "^2.0.2",
     "vue-template-compiler": "^2.6.11",
