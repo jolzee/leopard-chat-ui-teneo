@@ -543,8 +543,10 @@ export default {
       this.$store.commit("HIDE_UPLOAD_BUTTON");
       this.showUploadProgress = true;
       let successfullUpload = true;
+      let performedActualUpload = false;
       let uploadProgress = 0;
       if (this.uploadConfig && Object.keys(this.uploadConfig).length) {
+        performedActualUpload = true;
         let config = this.uploadConfig.parameters;
         var formData = new FormData();
 
@@ -611,7 +613,7 @@ export default {
         if (this.progressValue === 100 || uploadProgress === 100) {
           clearInterval(this.interval);
           this.showUploadProgress = false;
-          if (!this.uploadConfig || !Object.keys(this.uploadConfig).length) {
+          if (!performedActualUpload) {
             if (!this.config) {
               if (successfullUpload) {
                 this.$store.commit(
