@@ -193,7 +193,7 @@
               </v-list-item>
 
               <!-- logout -->
-              <v-list-item value="true" key="menuItemLogout">
+              <v-list-item v-if="authenticated" value="true" key="menuItemLogout">
                 <v-btn
                   ripple
                   tabindex="0"
