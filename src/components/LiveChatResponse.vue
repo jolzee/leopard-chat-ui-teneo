@@ -63,11 +63,12 @@
           :color="$vuetify.theme.dark ? '#333333' : `${responseLookAndFeel.blockBgColor}`"
           class="chat-card chat-card-left text-left"
         >
-          <span
+          <p class="sr-only">Live agent said.</p>
+          <p
             class="teneo-reply"
             :class="`${leopardFont} ${responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
             v-html="item.text"
-          ></span>
+          ></p>
         </v-card>
       </v-col>
     </v-row>

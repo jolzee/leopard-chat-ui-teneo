@@ -81,6 +81,134 @@
             </v-btn>
           </v-fab-transition>
         </div>
+
+        <!-- start menu -->
+        <transition
+          name="menu-transition"
+          enter-active-class="animated slideInRight"
+          leave-active-class="animated slideOutRight"
+        >
+          <v-navigation-drawer
+            app
+            :clipped="clipped"
+            v-if="drawer && isChatOpen"
+            v-model="drawer"
+            class="application-mobile"
+            role="navigation"
+            aria-label="Main Chat Bot Menu"
+            enable-resize-watcher
+            temporary
+            right
+            width="250"
+          >
+            <v-row>
+              <v-col class="pa-0 ma-0 elevation-2">
+                <div class="primary darken-2 text-center pa-2">
+                  <h1 class="headline white--text font-weight-medium">Artificial Solutions</h1>
+                </div>
+                <div class="primary darken-1 text-center py-2 px-4">
+                  <p class="white--text body-2 pa-1">{{ $t("about.page.content") }}</p>
+                </div>
+              </v-col>
+            </v-row>
+            <v-list class="px-2 mt-1" v-model="navigationDrawerModel">
+              <v-list-item
+                id="leopard-first-drawer-item"
+                role="listitem"
+                ripple
+                aria-label="Back to Chat Bot"
+                value="true"
+                tabindex="0"
+                key="menuBackToChat"
+                @click="backToChat"
+              >
+                <v-list-item-action>
+                  <v-icon medium :class="menuClass">mdi-backburger</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title class="subheading" :class="menuClassText">Back to chat</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-list-item
+                role="listitem"
+                ripple
+                v-for="(menuItem, i) in activeMenuItems"
+                :key="i + 'menuItem'"
+                value="true"
+                tabindex="0"
+                :to="menuItem.route"
+              >
+                <v-list-item-action>
+                  <v-icon medium :class="menuClass">
+                    {{
+                    menuItem.icon
+                    }}
+                  </v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title
+                    class="subheading"
+                    :class="menuClassText"
+                  >{{ $t(menuItem.titleKey) }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <!-- toggle brightness -->
+              <v-list-item
+                ripple
+                value="true"
+                key="menuItemTheme"
+                @click="toggleBrightness"
+                role="listitem"
+              >
+                <v-list-item-action>
+                  <v-icon
+                    medium
+                    :class="menuClass"
+                    v-text="
+                          $vuetify.theme.dark
+                            ? 'mdi-brightness-5'
+                            : 'mdi-brightness-4'
+                        "
+                  ></v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title class="subheading" :class="menuClassText">
+                    {{
+                    $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
+                    }}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <!-- close button -->
+              <v-list-item value="true" key="menuItemClose" class="mt-8">
+                <v-btn
+                  ripple
+                  tabindex="0"
+                  block
+                  color="primary darken-1"
+                  @click="drawer=false"
+                  role="listitem"
+                >Close</v-btn>
+              </v-list-item>
+
+              <!-- logout -->
+              <v-list-item value="true" key="menuItemLogout">
+                <v-btn
+                  ripple
+                  tabindex="0"
+                  to="/"
+                  block
+                  color="primary darken-1"
+                  role="listitem"
+                  @click="logout()"
+                >{{ $t("menu.logout") }}</v-btn>
+              </v-list-item>
+            </v-list>
+          </v-navigation-drawer>
+        </transition>
+        <!-- end menu -->
+
         <transition
           name="chat-window-transition"
           :enter-active-class="getAnimatedIn"
@@ -88,6 +216,7 @@
         >
           <div
             id="teneo"
+            :inert="drawer ? true : false"
             v-if="isChatOpen"
             :class="{
               'elevation-2': !embed,
@@ -125,7 +254,7 @@
                       id="leopardNavMenuButton"
                       accesskey="m"
                       :aria-label="
-                      drawer ? 'Hide the chat menu' : 'Show the chat menu'
+                      drawer ? 'Hide Chat Bot Menu' : 'Chat Bot Menu'
                     "
                       @click.stop="drawer = !drawer"
                       class="embed-button-center ml-0"
@@ -139,9 +268,13 @@
                     </v-btn>
                   </v-fab-transition>
                 </nav>
-                <h1 class="ml-2 subtitle-1">
-                  <v-toolbar-title v-text="toolbarTitle" class="pl-0"></v-toolbar-title>
-                </h1>
+
+                <h1
+                  id="leopard-chat-toolbar-title"
+                  tabindex="-1"
+                  class="ml-2 subtitle-1 pl-0"
+                  v-html="toolbarTitle"
+                ></h1>
 
                 <v-spacer></v-spacer>
                 <!-- Handle close button on production embedded sites -->
@@ -217,135 +350,7 @@
                   </v-fab-transition>
                 </template>
               </v-app-bar>
-              <transition
-                name="menu-transition"
-                enter-active-class="animated slideInRight"
-                leave-active-class="animated slideOutRight"
-              >
-                <v-navigation-drawer
-                  app
-                  :clipped="clipped"
-                  v-if="drawer"
-                  v-model="drawer"
-                  class="application-mobile"
-                  enable-resize-watcher
-                  temporary
-                  right
-                  width="250"
-                >
-                  <v-row>
-                    <v-col class="pa-0 ma-0 elevation-2">
-                      <div class="primary darken-2 text-center pa-2">
-                        <h2 class="headline white--text font-weight-medium">Artificial Solutions</h2>
-                      </div>
-                      <div class="primary darken-1 text-center py-2 px-4">
-                        <h3 class="white--text body-2 pa-1">{{ $t("about.page.content") }}</h3>
-                      </div>
-                    </v-col>
-                  </v-row>
-                  <nav>
-                    <v-list class="px-2 mt-1">
-                      <v-list-item-group v-model="navigationDrawerModel" color="secondary">
-                        <v-list-item
-                          id="leopard-first-drawer-item"
-                          ripple
-                          aria-label="Close menu and go back to chat"
-                          value="true"
-                          key="menuBackToChat"
-                          @click="backToChat"
-                        >
-                          <v-list-item-action>
-                            <v-icon medium :class="menuClass">mdi-backburger</v-icon>
-                          </v-list-item-action>
-                          <v-list-item-content>
-                            <v-list-item-title
-                              class="subheading"
-                              role="option"
-                              :class="menuClassText"
-                            >Back to chat</v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
 
-                        <v-list-item
-                          ripple
-                          value="true"
-                          v-for="(menuItem, i) in activeMenuItems"
-                          tabindex="0"
-                          :key="i + 'menuItem'"
-                          :to="menuItem.route"
-                        >
-                          <v-list-item-action>
-                            <v-icon medium :class="menuClass">
-                              {{
-                              menuItem.icon
-                              }}
-                            </v-icon>
-                          </v-list-item-action>
-                          <v-list-item-content>
-                            <v-list-item-title
-                              class="subheading"
-                              :class="menuClassText"
-                              role="option"
-                            >{{ $t(menuItem.titleKey) }}</v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item
-                          ripple
-                          value="true"
-                          key="menuItemTheme"
-                          @click="toggleBrightness"
-                        >
-                          <v-list-item-action>
-                            <v-icon
-                              medium
-                              :class="menuClass"
-                              v-text="
-                          $vuetify.theme.dark
-                            ? 'mdi-brightness-5'
-                            : 'mdi-brightness-4'
-                        "
-                            ></v-icon>
-                          </v-list-item-action>
-                          <v-list-item-content>
-                            <v-list-item-title
-                              class="subheading"
-                              :class="menuClassText"
-                              role="option"
-                            >
-                              {{
-                              $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
-                              }}
-                            </v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-list-item-group>
-                    </v-list>
-                  </nav>
-                  <template v-slot:append>
-                    <div class="pa-2">
-                      <v-btn
-                        ripple
-                        tabindex="0"
-                        block
-                        color="primary darken-1"
-                        role="option"
-                        @click="drawer=false"
-                      >Close</v-btn>
-                    </div>
-                    <div class="pa-2" v-if="authenticated">
-                      <v-btn
-                        ripple
-                        tabindex="0"
-                        to="/"
-                        block
-                        role="option"
-                        color="primary darken-1"
-                        @click="logout()"
-                      >{{ $t("menu.logout") }}</v-btn>
-                    </div>
-                  </template>
-                </v-navigation-drawer>
-              </transition>
               <v-content app id="scrolling-techniques content-area" class="pt-0">
                 <OverlayAlert />
                 <router-view
@@ -403,6 +408,7 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("App.vue");
+import "wicg-inert/dist/inert.min.js";
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "./constants/solution-config-default.js";
 import OverlayAlert from "./components/OverlayAlert";
@@ -477,10 +483,10 @@ export default {
         if (this.$refs.userInput) {
           this.$refs.userInput.focus();
         } else {
-          let navButton = document.getElementById("leopardNavMenuButton");
-          if (navButton) {
-            navButton.focus();
-          }
+          // let navButton = document.getElementById("leopardNavMenuButton");
+          // if (navButton) {
+          //   navButton.focus();
+          // }
         }
       }
     }
@@ -631,16 +637,17 @@ export default {
       return "grey--text text--lighten-2";
     },
     toolbarTitle() {
+      const screenReader = `<span class="sr-only">Chat Bot </span>`;
       if (this.$route.name === "history") {
-        return this.$t("menu.history");
+        return screenReader + this.$t("menu.history");
       } else if (this.$route.name === "help") {
-        return this.$t("menu.help");
+        return screenReader + this.$t("menu.help");
       } else if (this.$route.name === "about") {
-        return this.$t("menu.about");
+        return screenReader + this.$t("menu.about");
       } else if (this.$route.name === "register") {
-        return this.$t("menu.register");
+        return screenReader + this.$t("menu.register");
       } else if (this.$route.name === "login") {
-        return this.$t("menu.login");
+        return screenReader + this.$t("menu.login");
       } else {
         return this.chatTitle;
       }
@@ -1010,6 +1017,17 @@ export default {
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css";
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
 .leopard-alternative-views {
   overflow-y: auto;
   max-height: calc(80vh - 64px);
@@ -1146,6 +1164,7 @@ blockquote p {
   display: inline;
 }
 
+#leopard-chat-toolbar-title:focus,
 div.v-input__slot:focus,
 button:focus,
 a:focus,
@@ -1155,6 +1174,16 @@ div.chat-card:focus,
   -webkit-box-shadow: 0 0 0 3px rgba(152, 52, 53, 0.4) !important;
   box-shadow: 0 0 0 3px rgba(152, 52, 53, 0.4) !important;
   outline: 0;
+}
+
+#leopard-chat-toolbar-title:focus {
+  box-shadow: 0 0 0 3px rgba(152, 52, 53, 0.4) !important;
+  outline: 0;
+  padding: 5px !important;
+  background: rgba(255, 255, 255, 0.19);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
 }
 
 .v-input__icon--clear i {

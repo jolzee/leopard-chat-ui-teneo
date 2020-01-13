@@ -103,7 +103,7 @@
               <v-col class="text-center">
                 <v-text-field
                   id="teneo-input-field"
-                  aria-label="Enter your question for assistance here"
+                  aria-label="Ask Chat Bot a Question"
                   v-show="!showUploadButton && !showUploadProgress"
                   :disabled="progressBar || drawer"
                   v-shortkey="{
@@ -127,7 +127,7 @@
                   "
                   @click:prepend-inner="showPassword = !showPassword"
                   :rules="askingForEmail ? [rules.email(userInput)] : []"
-                  clearable
+                  :clearable="userInput !== ''"
                   clear-icon="mdi-comment-remove-outline"
                   auto-grow
                   required
@@ -156,7 +156,7 @@
                     <v-btn
                       :disabled="userInput === ''"
                       @click="sendUserInput"
-                      aria-label="Send your question to the virtual assistant"
+                      aria-label="Send Question to Chat Bot"
                       large
                       tabindex="0"
                       text
@@ -174,7 +174,7 @@
                 <upload-btn
                   icon
                   tabindex="0"
-                  aria-label="Select file for upload"
+                  aria-label="Select File for Upload"
                   v-if="showUploadButton"
                   @file-update="fileChanged"
                   large
@@ -203,7 +203,7 @@
                     :loading="progressBar"
                     v-long-press="1000"
                     @long-press-start="swapInputButton"
-                    aria-label="Send your question to the assistant"
+                    aria-label="Send Question to the Chat Bot"
                     v-if="!showAudioInput"
                     large
                     color="primary"
@@ -214,7 +214,7 @@
 
                   <v-btn
                     tabindex="0"
-                    aria-label="Send your question to the assistant."
+                    aria-label="Send Question to the Chat Bot"
                     :disabled="progressBar"
                     :loading="progressBar"
                     v-long-press="1000"
@@ -456,7 +456,7 @@ export default {
       let parentEl = clearElement.parentElement;
       if (parentEl.classList.contains("v-input__icon--clear")) {
         clearElement.tabIndex = 0;
-        clearElement.setAttribute("aria-label", "Clear the text box");
+        clearElement.setAttribute("aria-label", "Clear Chat");
         clearElement.addEventListener("keyup", function(event) {
           event.preventDefault();
           if (event.keyCode === 13) {
@@ -809,7 +809,7 @@ button.v-expansion-panel-header:focus {
 }
 
 div#chat-area p {
-  margin-bottom: 5px;
+  margin-bottom: 2px;
 }
 
 div.teneo-footer .v-input__slot {

@@ -10,11 +10,13 @@
         :color="determineCardColor()"
         :ripple="false"
         class="chat-card chat-card-right text-right pr-3 align-content-end"
-        :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? `mr-2 ${leopardFont} ${questionLookAndFeel.blockBgColor}` : `${leopardFont} ${questionLookAndFeel.blockBgColor}`"
+        :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? `mr-2 ${leopardFont} ${!$vuetify.theme.dark ? questionLookAndFeel.blockBgColor : ''}` : `${leopardFont} ${!$vuetify.theme.dark ? questionLookAndFeel.blockBgColor : ''}`"
       >
-        <span
-          :class="`${questionLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
-        >{{ item.text }}</span>
+        <p class="sr-only">I said.</p>
+        <p
+          :class="`${!$vuetify.theme.dark && questionLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
+        >{{ item.text }}</p>
+        <p class="sr-only">.</p>
       </v-card>
     </v-col>
     <v-col
@@ -27,7 +29,6 @@
           <v-btn
             v-on="on"
             tabindex="-1"
-            aria-label="Chat icon representing you"
             v-long-press="1000"
             @long-press-start="swapInputButton"
             class="teneo-userinput-icon"
@@ -63,6 +64,7 @@
       </v-menu>
       <template v-else>
         <v-avatar
+          tabindex="-1"
           v-if="authenticated && userProfileImage"
           v-long-press="1000"
           @long-press-start="swapInputButton"
@@ -76,7 +78,6 @@
         <v-btn
           v-else
           tabindex="-1"
-          aria-label="Chat icon representing you"
           v-long-press="1000"
           @long-press-start="swapInputButton"
           class="teneo-userinput-icon"
@@ -84,7 +85,7 @@
           tile
           icon
           large
-          :color="`${questionLookAndFeel.iconColor}`"
+          :color="`${!$vuetify.theme.dark ? questionLookAndFeel.iconColor : 'white'}`"
           @click="updateInputBox(item.text)"
         >
           <v-icon large>{{ userIcon }}</v-icon>

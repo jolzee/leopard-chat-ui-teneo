@@ -130,11 +130,10 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
     allowtransparency="true"
     id="teneo-chat-button"
     name="teneochatbuttonwidget"
-    aria-label="Open chat window with the virtual assistant"
+    aria-label="Open Chat Bot"
     accesskey="/"
     scrolling="no"
     role="application"
-    aria-label="Teneo chat widget button"
     style="height: 100%; width: 100%; border-width: 0px; border-style: none; border-image: unset;"
     class="teneo-transparent"
   ></iframe>
@@ -154,7 +153,7 @@ var leopardChatTemplate = getLeopardTemplate(function() {
     name="teneochatwidget"
     scrolling="no"
     role="application"
-    aria-label="Teneo chat widget"
+    aria-label="Chat Bot"
     style="height: 100%; width: 100%; border-width: 0px; border-style: none; border-color: transparent; border-image: unset;"
     class="teneo-transparent"
   ></iframe>

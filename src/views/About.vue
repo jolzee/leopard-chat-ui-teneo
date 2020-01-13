@@ -17,6 +17,13 @@
           :href="$t('about.page.url')"
           target="_blank"
         >{{ $t("about.page.button") }}</v-btn>
+        <v-btn
+          color="primary"
+          outlined
+          aria-label="Back to Chat Bot"
+          ripple
+          to="/"
+        >{{ $t('back.to.chat.button') }}</v-btn>
       </v-card-actions>
     </v-row>
   </v-card>
@@ -43,14 +50,13 @@ export default {
   mounted() {
     this.$nextTick(() => {
       setTimeout(() => {
-        let elements = document.getElementsByClassName(
-          "plyr__control--overlaid"
-        );
-        if (elements.length > 0) {
-          elements.forEach(element => {
-            element.focus();
-          });
+        let element = document.getElementById("leopard-chat-toolbar-title");
+        if (element) {
+          element.focus();
         }
+      }, 100);
+
+      setTimeout(() => {
         let iframes = document.getElementsByTagName("iframe");
         iframes.forEach(iframe => {
           if (iframe.hasAttribute("allow")) {

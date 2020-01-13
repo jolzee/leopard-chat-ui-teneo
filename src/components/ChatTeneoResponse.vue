@@ -13,7 +13,6 @@
               v-on="on"
               tabindex="-1"
               v-long-press="1000"
-              aria-label="Chat icon representing the virtual assitant"
               @long-press-start="swapInputButton"
               :color="`${responseLookAndFeel.iconColor}`"
               class="teneo-response-icon"
@@ -45,21 +44,12 @@
             </v-hover>
           </v-list>
         </v-menu>
-        <v-btn
+        <v-icon
           v-else
-          tabindex="-1"
-          v-long-press="1000"
-          aria-label="Chat icon representing the virtual assitant"
-          @long-press-start="swapInputButton"
+          large
           :color="`${responseLookAndFeel.iconColor}`"
           class="teneo-response-icon"
-          text
-          tile
-          icon
-          large
-        >
-          <v-icon large>{{ getResponseIcon }}</v-icon>
-        </v-btn>
+        >{{ getResponseIcon }}</v-icon>
       </v-col>
       <v-col
         class="text-left"
@@ -70,11 +60,12 @@
           class="chat-card chat-card-left text-left"
           :ripple="false"
         >
-          <span
+          <p class="sr-only">Chat bot said.</p>
+          <p
             v-html="itemText"
             class="teneo-reply"
             :class="`${leopardFont} ${responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
-          ></span>
+          ></p>
         </v-card>
       </v-col>
     </v-row>
@@ -158,7 +149,8 @@
             :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
             :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           >
-            <span v-html="chunkText" class="teneo-reply"></span>
+            <p class="sr-only">Chat bot said.</p>
+            <p v-html="chunkText" class="teneo-reply"></p>
           </v-card>
         </v-col>
       </v-row>
@@ -311,7 +303,7 @@
       <v-col class="text-right" cols="12">
         <v-btn
           small
-          aria-label="Show date picker dialog"
+          aria-label="Open Date Picker"
           fab
           class="teneo-userinput-icon elevation-2 mb-2"
           color="success"
@@ -332,7 +324,7 @@
         <v-btn
           small
           fab
-          aria-label="Show time picker dialog"
+          aria-label="Open Time Picker"
           class="teneo-userinput-icon elevation-2 mb-2"
           color="success"
           @click="toggleTime()"

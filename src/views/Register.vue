@@ -79,11 +79,18 @@
               @click:append="showPassword = !showPassword"
             ></v-text-field>
           </v-col>
-          <v-col cols="6" class="my-0 py-0">
-            <v-btn type="submit" @click="registerUser" color="success">Sign Up</v-btn>
-          </v-col>
-          <v-col v-if="errorMessage" cols="6">
+          <v-col v-if="errorMessage" cols="12">
             <v-alert :value="true" type="info">{{ errorMessage }}</v-alert>
+          </v-col>
+          <v-col cols="12" class="my-0 py-0">
+            <v-btn type="submit" @click="registerUser" color="success" class="mr-3">Sign Up</v-btn>
+            <v-btn
+              color="primary"
+              outlined
+              aria-label="Back to Chat Bot"
+              ripple
+              to="/"
+            >{{ $t('back.to.chat.button') }}</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -116,6 +123,16 @@ export default {
         }
       }
     };
+  },
+  mounted() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        let element = document.getElementById("leopard-chat-toolbar-title");
+        if (element) {
+          element.focus();
+        }
+      }, 100);
+    });
   },
   beforeRouteLeave(from, to, next) {
     this.$emit("closeMenu");

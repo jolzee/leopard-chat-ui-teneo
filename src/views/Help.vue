@@ -4,19 +4,36 @@
       <v-col cols="12">
         <v-card class="elevation-0">
           <v-card-title primary-title>
-            <h5>{{ $t("help.page.title") }}</h5>
+            <h2 class="title">{{ $t("help.page.title") }}</h2>
           </v-card-title>
         </v-card>
-        <v-expansion-panels>
-          <v-expansion-panel
-            v-for="(item, i) in knowledgeData"
-            @click="sendUserInput(item)"
-            :key="i"
-          >
-            <v-expansion-panel-header :hide-actions="true">{{ item }}</v-expansion-panel-header>
-          </v-expansion-panel>
-        </v-expansion-panels>
+        <v-list>
+          <ul class="pl-0">
+            <v-list-item tag="li" class="pl-0" v-for="(item, i) in knowledgeData" :key="i">
+              <v-btn
+                class="ma-2 text-left"
+                style="justify-content: start; text-transform: unset;"
+                left
+                block
+                text
+                outlined
+                @click="sendUserInput(item)"
+              >{{ item }}</v-btn>
+            </v-list-item>
+          </ul>
+        </v-list>
       </v-col>
+    </v-row>
+    <v-row justify="center" class="pb-3">
+      <v-card-actions>
+        <v-btn
+          color="primary"
+          outlined
+          aria-label="Back to Chat Bot"
+          ripple
+          to="/"
+        >{{ $t('back.to.chat.button') }}</v-btn>
+      </v-card-actions>
     </v-row>
   </v-card>
 </template>
@@ -24,6 +41,16 @@
 <script>
 const logger = require("@/utils/logging").getLogger("Help.vue");
 export default {
+  mounted() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        let element = document.getElementById("leopard-chat-toolbar-title");
+        if (element) {
+          element.focus();
+        }
+      }, 100);
+    });
+  },
   data() {
     return {};
   },

@@ -3,7 +3,7 @@
 <template>
   <div class="assistive-text" :aria-live="ariaLive" aria-relevant="additions">
     <slot></slot>
-    <div v-for="(text, index) in textToRead" :key="index">{{text}}</div>
+    <p v-for="(text, index) in textToRead" :key="index">{{text}}</p>
   </div>
 </template>
 

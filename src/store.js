@@ -2017,6 +2017,11 @@ function storeSetup(vuetify) {
           }
         }
 
+        if (currentUserInput) {
+          var audio = new Audio(require("./assets/notification.mp3"));
+          audio.play();
+        }
+
         if (!context.getters.isLiveChat) {
           // normal Teneo request needs to be made
           const teneoUrl =
@@ -2033,6 +2038,7 @@ function storeSetup(vuetify) {
             "Call Teneo",
             `${teneoUrl}&userinput=${currentUserInput.trim()}`
           );
+
           Vue.jsonp(teneoUrl, {
             userinput: currentUserInput.trim()
           })
@@ -2294,7 +2300,7 @@ function storeSetup(vuetify) {
 
                 context.commit(
                   "SET_ACCESIBLE_ANOUNCEMENT",
-                  "Bot Response:" + ttsText
+                  "Chat Bot Said. " + ttsText + "."
                 );
 
                 // check if this browser supports the Web Speech API
