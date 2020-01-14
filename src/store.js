@@ -2019,7 +2019,11 @@ function storeSetup(vuetify) {
 
         if (currentUserInput) {
           var audio = new Audio(require("./assets/notification.mp3"));
-          audio.play();
+          try {
+            audio.play();
+          } catch (e) {
+            // do nothing
+          }
         }
 
         if (!context.getters.isLiveChat) {

@@ -501,6 +501,31 @@ export default {
     window.addEventListener("resize", this.onResizeOrEmbed);
     // deal with import of solution
     const urlParams = new URLSearchParams(window.location.search);
+    const initialUserInput = urlParams.get("question");
+    if (initialUserInput && !this.isChatOpen) {
+      console.log(`Boom`);
+      this.toggleChat();
+      setTimeout(() => {
+        this.$store.commit("SET_USER_INPUT", initialUserInput);
+        this.$store
+            .dispatch("sendUserInput", "")
+            .then(() => {
+              if (!this.isMobileDevice && this.$refs.userInput) {
+                this.$refs.userInput.focus();
+              } else {
+                document.activeElement.blur();
+              }
+            })
+            .catch(err => {
+              logger.error("Error Sending User Input", err);
+            });
+      }, 2000);
+      // open chat
+      // set user input
+      // send user input
+    }
+
+
     const solConfig = urlParams.get("import");
     if (solConfig) {
       this.importedSolution = jsonpack.unpack(solConfig);
