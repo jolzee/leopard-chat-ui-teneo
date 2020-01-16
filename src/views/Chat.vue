@@ -512,22 +512,29 @@ export default {
     scrollToBottom() {
       logger.debug("Scroll to bottom");
       const endChatTarget = this.$refs.endChat;
-      const options = {
-        duration: 1200,
-        offset: -50,
-        easing: "easeInQuad",
-        container: "#teneo-chat-scroll"
-      };
-      this.$vuetify.goTo(endChatTarget, options);
-      let that = this;
-      setTimeout(function() {
-        that.$vuetify.goTo(endChatTarget, {
-          duration: 500,
-          offset: 0,
+      if (endChatTarget) {
+        const options = {
+          duration: 1200,
+          offset: -50,
           easing: "easeInQuad",
           container: "#teneo-chat-scroll"
-        });
-      }, 1500);
+        };
+        try {
+          this.$vuetify.goTo(endChatTarget, options);
+          let that = this;
+          setTimeout(function() {
+            that.$vuetify.goTo(endChatTarget, {
+              duration: 500,
+              offset: 0,
+              easing: "easeInQuad",
+              container: "#teneo-chat-scroll"
+            });
+          }, 1500);
+        } catch (e) {
+          // do nothing
+        }
+
+      }
     },
     handleFocus() {
       if (!this.isMobileDevice) {

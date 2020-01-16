@@ -2108,7 +2108,11 @@ function storeSetup(vuetify) {
                 json.responseData.answer.trim() !== ""
               ) {
                 var audio = new Audio(require("./assets/notification.mp3"));
-                audio.play();
+                try {
+                  audio.play();
+                } catch (e) {
+                  // do nothing
+                }
               }
               context.commit("HIDE_CHAT_LOADING");
 
