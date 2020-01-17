@@ -1242,9 +1242,13 @@ div.chat-card:focus,
 }
 
 a.leopard-img:focus {
-  box-shadow: 0 0 0 3px rgba(17, 18, 25, 0.4) !important;
+  box-shadow: 0 0 0 3px rgba(112, 18, 25, 0.8) !important;
   outline: 0;
   display: flex;
+  background: rgba(255, 255, 255, 0.19);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
 }
 
 #leopard-chat-toolbar-title:focus {

@@ -48,17 +48,17 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
      box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
      opacity: 1;
      visibility: visible;
-     z-index: 2147483639;
+     z-index: 9000;
      position: fixed;
      right: 30px;
-     bottom: 30px;
+     bottom: 50px;
      width: 360px;
      height: 85%;
      max-width: 100%;
      max-height: 655px;
      min-height: 260px;
      min-width: 257px;
-     background-color: transparent;
+     background-color: transparent !important;
      border: 0px;
      transition: none 0s ease 0s;
      border-radius: 13px;
@@ -67,19 +67,19 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
      height: calc(var(--vh, 1vh) * 85);
 }
 
-.teneo-transparent::-moz-selection { background: transparent !important; }
-.teneo-transparent::selection { background: transparent !important; }
+.teneo-transparent::-moz-selection { background: transparent !important; background-color: transparent !important;}
+.teneo-transparent::selection { background: transparent !important; background-color: transparent !important; }
 
 #teneo-chat-button-container {
     opacity: 1;
     visibility: visible;
-    z-index: 2147483640;
+    z-index: 9000;
     position: fixed;
     bottom: 30px;
     right: 30px;
     width: 90px;
     height: 82px;
-    background-color: transparent;
+    background-color: transparent !important;
     border: 0px;
     transition: none 0s ease 0s !important;
 }
@@ -109,13 +109,13 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
   #teneo-chat-button-container {
     opacity: 1;
     visibility: visible;
-    z-index: 2147483640;
+    z-index: 9000;
     position: fixed;
     bottom: 0px;
     right: 0px;
     width: 90px;
     height: 82px;
-    background-color: transparent;
+    background-color: transparent !important;
     border: 0px;
     transition: none 0s ease 0s !important;
   }
@@ -134,7 +134,7 @@ var leopardButtonTemplate = getLeopardTemplate(function() {
     accesskey="/"
     scrolling="no"
     role="application"
-    style="height: 100%; width: 100%; border-width: 0px; border-style: none; border-image: unset;"
+    style="height: 100%; width: 100%; border-width: 0px; border-style: none; border-image: unset; background: transparent !important; background-color: transparent !important;"
     class="teneo-transparent"
   ></iframe>
 </div>
@@ -154,7 +154,7 @@ var leopardChatTemplate = getLeopardTemplate(function() {
     scrolling="no"
     role="application"
     aria-label="Chat Bot"
-    style="height: 100%; width: 100%; border-width: 0px; border-style: none; border-color: transparent; border-image: unset;"
+    style="height: 100%; width: 100%; border-width: 0px; border-style: none; border-color: transparent; border-image: unset; background: transparent !important; background-color: transparent !important;"
     class="teneo-transparent"
   ></iframe>
 </div>
@@ -179,7 +179,11 @@ if (window.TENEOCTX) {
 }
 var vh = window.innerHeight * 0.01;
 document.documentElement.style.setProperty("--vh", vh + "px");
-document.body.innerHTML += leopardButtonTemplate + leopardChatTemplate;
+
+document.body.insertAdjacentHTML(
+  "afterbegin",
+  leopardButtonTemplate + leopardChatTemplate
+);
 
 var leopardAnimations = {
   in: "flipInY",
