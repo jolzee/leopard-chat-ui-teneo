@@ -2026,9 +2026,7 @@ function storeSetup(vuetify) {
           var audio = new Audio(require("./assets/notification.mp3"));
           try {
             audio.play();
-          } catch (e) {
-            // do nothing
-          }
+          } catch {}
         }
 
         if (!context.getters.isLiveChat) {
@@ -2115,9 +2113,7 @@ function storeSetup(vuetify) {
                 var audio = new Audio(require("./assets/notification.mp3"));
                 try {
                   audio.play();
-                } catch (e) {
-                  // do nothing
-                }
+                } catch {}
               }
               context.commit("HIDE_CHAT_LOADING");
 

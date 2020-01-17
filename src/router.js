@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
+import Chat from "@/views/Chat.vue";
 const logger = require("@/utils/logging").getLogger("router.js");
 
 Vue.use(Router);
@@ -15,7 +16,7 @@ export default new Router({
     {
       path: "/",
       name: "chat",
-      component: loadView("Chat")
+      component: Chat
     },
     {
       path: "/about",

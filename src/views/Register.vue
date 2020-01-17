@@ -34,7 +34,7 @@
         <v-icon left light class="ml-1">mdi-github-circle</v-icon>GitHub
       </v-btn>
     </v-col>
-    <v-col cols="12" class="mt-2">
+    <!-- <v-col cols="12" class="mt-2">
       <p
         class="subheading font-weight-medium"
       >Or signup using your email address. (All fields required)</p>
@@ -86,7 +86,6 @@
             <v-btn type="submit" @click="registerUser" color="success" class="mr-3">Sign Up</v-btn>
             <v-btn
               color="primary"
-              outlined
               aria-label="Back to Chat Bot"
               ripple
               to="/"
@@ -94,7 +93,15 @@
           </v-col>
         </v-row>
       </v-container>
-    </v-form>
+    </v-form>-->
+    <v-col cols="12" class="my-4 py-0">
+      <v-btn
+        color="primary"
+        aria-label="Back to Chat Bot"
+        ripple
+        to="/"
+      >{{ $t('back.to.chat.button') }}</v-btn>
+    </v-col>
   </v-row>
 </template>
 

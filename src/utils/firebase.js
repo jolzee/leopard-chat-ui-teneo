@@ -8,9 +8,8 @@ export default class Firebase {
     if (!Firebase.initialized) {
       return new Promise(function(resolve, reject) {
         Promise.all([
-          import("firebase/app"),
-          import("firebase/auth"),
-          import("firebase/database")
+          import(/* webpackChunkName: "firebase" */ "firebase/app"),
+          import(/* webpackChunkName: "firebase" */ "firebase/auth")
         ])
           .then(([firebase]) => {
             if (firebase.apps.length === 0) {
@@ -18,7 +17,6 @@ export default class Firebase {
               firebase.initializeApp({
                 apiKey: window.leopardConfig.firebase.apiKey,
                 authDomain: window.leopardConfig.firebase.authDomain,
-                databaseURL: window.leopardConfig.firebase.databaseUrl,
                 projectId: window.leopardConfig.firebase.projectId,
                 storageBucket: window.leopardConfig.firebase.storageBucket,
                 messagingSenderId:

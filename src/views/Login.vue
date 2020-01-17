@@ -29,7 +29,8 @@
         <v-icon left light class="ml-1">mdi-github-circle</v-icon>GitHub
       </v-btn>
     </v-col>
-    <v-col cols="12">
+
+    <!-- <v-col cols="12">
       <p
         class="subheading font-weight-medium"
       >Alternatively use your email and password. (All fields required)</p>
@@ -70,7 +71,6 @@
             <v-btn @click="loginUser" color="success" type="submit" class="mr-3">Login</v-btn>
             <v-btn
               color="primary"
-              outlined
               aria-label="Back to Chat Bot"
               ripple
               to="/"
@@ -78,7 +78,15 @@
           </v-col>
         </v-row>
       </v-container>
-    </v-form>
+    </v-form>-->
+    <v-col cols="12" class="my-4 ml-0">
+      <v-btn
+        color="primary"
+        aria-label="Back to Chat Bot"
+        ripple
+        to="/"
+      >{{ $t('back.to.chat.button') }}</v-btn>
+    </v-col>
   </v-row>
 </template>
 

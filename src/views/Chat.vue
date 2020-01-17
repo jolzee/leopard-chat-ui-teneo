@@ -513,6 +513,7 @@ export default {
       logger.debug("Scroll to bottom");
       const endChatTarget = this.$refs.endChat;
       if (endChatTarget) {
+        let scrollToElement = document.getElementById("teneo-chat-scroll");
         const options = {
           duration: 1200,
           offset: -50,
@@ -520,20 +521,22 @@ export default {
           container: "#teneo-chat-scroll"
         };
         try {
-          this.$vuetify.goTo(endChatTarget, options);
-          let that = this;
-          setTimeout(function() {
-            that.$vuetify.goTo(endChatTarget, {
-              duration: 500,
-              offset: 0,
-              easing: "easeInQuad",
-              container: "#teneo-chat-scroll"
-            });
-          }, 1500);
-        } catch (e) {
-          // do nothing
-        }
-
+          if (scrollToElement) {
+            this.$vuetify.goTo(endChatTarget, options);
+            let that = this;
+            setTimeout(function() {
+              scrollToElement = document.getElementById("teneo-chat-scroll");
+              if (scrollToElement) {
+                that.$vuetify.goTo(endChatTarget, {
+                  duration: 500,
+                  offset: 0,
+                  easing: "easeInQuad",
+                  container: "#teneo-chat-scroll"
+                });
+              }
+            }, 1500);
+          }
+        } catch {}
       }
     },
     handleFocus() {

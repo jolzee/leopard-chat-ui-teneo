@@ -100,12 +100,13 @@ let buildConfig = {
         ? [
             new CompressionPlugin({
               test: compressionPluginTest(),
-              threshold: 8192
+              exclude: /leopardConfig(?:\..{1,10}?)??\.js/,
+              threshold: 7000
             }),
             new BrotliPlugin({
               asset: "[path].br[query]",
               test: brotliPluginTest(),
-              threshold: 10240,
+              threshold: 7000,
               minRatio: 0.8
             })
           ]

@@ -861,7 +861,9 @@ export default {
       setTimeout(
         function() {
           this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // close the chat window - i want the iframe to resize first and then the chat window to close
-          chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
+          if (chatButton) {
+            chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
+          }
         }.bind(this),
         1000
       );
