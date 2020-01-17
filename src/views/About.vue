@@ -1,11 +1,14 @@
 <template>
   <v-card class="teneo-about-card leopard-alternative-views" flat>
-    <youTube :videoId="youTubeVideoId"></youTube>
-
+    <span aria-hidden="true">
+      <youTube :videoId="youTubeVideoId"></youTube>
+    </span>
     <v-card-title primary-title>
-        <h2 class="headline mb-3">{{ $t("about.page.title") }}</h2>
+      <h2 class="headline mb-3">{{ $t("about.page.title") }}</h2>
     </v-card-title>
-    <v-card-text><p>{{ $t("about.page.content") }}</p></v-card-text>
+    <v-card-text>
+      <p>{{ $t("about.page.content") }}</p>
+    </v-card-text>
     <v-row justify="center" class="pb-3">
       <v-card-actions>
         <v-btn

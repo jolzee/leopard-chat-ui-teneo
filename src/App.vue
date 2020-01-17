@@ -101,15 +101,19 @@
             right
             width="250"
           >
-            <v-row align="center" justify="center" >
+            <v-row align="center" justify="center">
               <v-col class="primary darken-2 pa-0 ma-0 elevation-2" style="height:64px">
                 <div class="text-center pa-5 pt-4">
-                  <h1 tabindex="-1" class="headline white--text font-weight-medium" id="leopard-first-drawer-item">Chat Menu</h1>
+                  <h1
+                    tabindex="-1"
+                    class="headline white--text font-weight-medium"
+                    id="leopard-first-drawer-item"
+                  >Chat Menu</h1>
                 </div>
               </v-col>
             </v-row>
 
-            <v-list role=list class="px-2 mt-1" v-model="navigationDrawerModel">
+            <v-list role="list" class="px-2 mt-1" v-model="navigationDrawerModel">
               <v-list-item
                 role="listitem"
                 ripple
@@ -126,29 +130,22 @@
                 </v-list-item-content>
               </v-list-item>
 
-              <div role="listitem"
-                v-for="(menuItem, i) in activeMenuItems"
-                :key="i + 'menuItem'"
-                >
-              <v-list-item
-                ripple
-                :aria-label="menuItem.ariaLabel"
-                :to="menuItem.route"
-              >
-                <v-list-item-action>
-                  <v-icon medium :class="menuClass">
-                    {{
-                    menuItem.icon
-                    }}
-                  </v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title
-                    class="subheading"
-                    :class="menuClassText"
-                  >{{ $t(menuItem.titleKey) }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
+              <div role="listitem" v-for="(menuItem, i) in activeMenuItems" :key="i + 'menuItem'">
+                <v-list-item ripple :aria-label="menuItem.ariaLabel" :to="menuItem.route">
+                  <v-list-item-action>
+                    <v-icon medium :class="menuClass">
+                      {{
+                      menuItem.icon
+                      }}
+                    </v-icon>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      class="subheading"
+                      :class="menuClassText"
+                    >{{ $t(menuItem.titleKey) }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
               </div>
               <!-- toggle brightness -->
               <v-list-item
@@ -195,36 +192,53 @@
                 </v-list-item-content>
               </v-list-item>
 
-
-
               <!-- logout -->
-              <div role="listitem" v-if="authenticated">
-                <v-list-item
+              <v-list-item
                 ripple
+                v-if="authenticated"
+                role="listitem"
                 aria-label="Logout of chat bot"
                 value="true"
                 key="menuChatLogout"
-                to="/"
                 @click="logout()"
               >
                 <v-list-item-action>
                   <v-icon medium :class="menuClass">mdi-logout-variant</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                  <v-list-item-title class="subheading" :class="menuClassText">{{ $t("menu.logout") }}</v-list-item-title>
+                  <v-list-item-title
+                    class="subheading"
+                    :class="menuClassText"
+                  >{{ $t("menu.logout") }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-            </div>
-
             </v-list>
             <template v-slot:append>
-              <v-row aria-hidden="true" align="center" justify="center" class="primary darken-2" style="height:64px">
-                  <div class="pa-2">
-                    <a href="https://www.artificial-solutions.com/" class="leopard-img" target="_blank"><v-img src="../public/static/as-logo.png" contain width="150" alt="Artificial Solutions" class="text-center" ></v-img></a>
-                  </div>
+              <v-row
+                aria-hidden="true"
+                align="center"
+                justify="center"
+                class="primary darken-2"
+                style="height:64px"
+              >
+                <div class="pa-2">
+                  <a
+                    href="https://www.artificial-solutions.com/"
+                    class="leopard-img"
+                    target="_blank"
+                    title="Learn more about Artificial Solutions - opens in new window"
+                  >
+                    <v-img
+                      src="../public/static/as-logo.png"
+                      contain
+                      width="150"
+                      alt="Artificial Solutions Logo"
+                      class="text-center"
+                    ></v-img>
+                  </a>
+                </div>
               </v-row>
             </template>
-
           </v-navigation-drawer>
         </transition>
         <!-- end menu -->
@@ -535,23 +549,22 @@ export default {
       setTimeout(() => {
         this.$store.commit("SET_USER_INPUT", initialUserInput);
         this.$store
-            .dispatch("sendUserInput", "")
-            .then(() => {
-              if (!this.isMobileDevice && this.$refs.userInput) {
-                this.$refs.userInput.focus();
-              } else {
-                document.activeElement.blur();
-              }
-            })
-            .catch(err => {
-              logger.error("Error Sending User Input", err);
-            });
+          .dispatch("sendUserInput", "")
+          .then(() => {
+            if (!this.isMobileDevice && this.$refs.userInput) {
+              this.$refs.userInput.focus();
+            } else {
+              document.activeElement.blur();
+            }
+          })
+          .catch(err => {
+            logger.error("Error Sending User Input", err);
+          });
       }, 2000);
       // open chat
       // set user input
       // send user input
     }
-
 
     const solConfig = urlParams.get("import");
     if (solConfig) {
