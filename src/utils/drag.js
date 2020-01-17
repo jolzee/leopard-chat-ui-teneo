@@ -1,4 +1,4 @@
-(function() {
+const enableDrag = function() {
   // make vuetify dialogs movable
   const d = {};
   document.addEventListener("mousedown", e => {
@@ -104,4 +104,6 @@
         window.innerHeight - teneo.getBoundingClientRect().height
       ) + "px";
   }, 1000);
-})();
+};
+
+module.exports = enableDrag;

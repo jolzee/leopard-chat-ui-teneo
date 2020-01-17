@@ -8,6 +8,7 @@ import LiveChat from "@livechat/agent-app-widget-sdk";
 import { accountsSdk } from "@livechat/accounts-sdk";
 import liveChatConfig from "./utils/livechat-config";
 import Firebase from "./utils/firebase";
+import enableDrag from "@/utils/drag";
 
 var md = require("markdown-it")({
   html: true,
@@ -83,6 +84,9 @@ export default function getStore() {
 }
 
 function storeSetup(vuetify) {
+  if (!config.EMBED) {
+    enableDrag();
+  }
   store = new Vuex.Store({
     plugins: [...(config.logrocketPlugin ? [config.logrocketPlugin] : [])],
     state: {
