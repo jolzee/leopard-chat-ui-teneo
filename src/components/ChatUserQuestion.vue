@@ -12,11 +12,10 @@
         class="chat-card chat-card-right text-right pr-3 align-content-end"
         :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? `mr-2 ${leopardFont} ${!$vuetify.theme.dark ? questionLookAndFeel.blockBgColor : ''}` : `${leopardFont} ${!$vuetify.theme.dark ? questionLookAndFeel.blockBgColor : ''}`"
       >
-        <p class="sr-only">I said.</p>
+
         <p
           :class="`${!$vuetify.theme.dark && questionLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
-        >{{ item.text }}</p>
-        <p class="sr-only">.</p>
+        ><span class="sr-only">I said.</span>{{ item.text }}<span class="sr-only">.</span></p>
       </v-card>
     </v-col>
     <v-col
@@ -28,7 +27,7 @@
         <template v-slot:activator="{ on }">
           <v-btn
             v-on="on"
-            tabindex="-1"
+            aria-hidden="true"
             v-long-press="1000"
             @long-press-start="swapInputButton"
             class="teneo-userinput-icon"
@@ -77,7 +76,7 @@
         </v-avatar>
         <v-btn
           v-else
-          tabindex="-1"
+          aria-hidden="true"
           v-long-press="1000"
           @long-press-start="swapInputButton"
           class="teneo-userinput-icon"

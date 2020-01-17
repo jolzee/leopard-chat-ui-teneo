@@ -1168,6 +1168,7 @@ function storeSetup(vuetify) {
       },
       CLEAR_CHAT_HISTORY(state) {
         state.conversation.dialog = [];
+        localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]");
       },
       LIVE_CHAT(_state, transcript) {
         config.liveChat.sendMessage(transcript);

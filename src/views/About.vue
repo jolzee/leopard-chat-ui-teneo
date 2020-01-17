@@ -3,11 +3,9 @@
     <youTube :videoId="youTubeVideoId"></youTube>
 
     <v-card-title primary-title>
-      <div>
-        <h3 class="headline mb-3">{{ $t("about.page.title") }}</h3>
-      </div>
+        <h2 class="headline mb-3">{{ $t("about.page.title") }}</h2>
     </v-card-title>
-    <v-card-text>{{ $t("about.page.content") }}</v-card-text>
+    <v-card-text><p>{{ $t("about.page.content") }}</p></v-card-text>
     <v-row justify="center" class="pb-3">
       <v-card-actions>
         <v-btn
@@ -19,7 +17,6 @@
         >{{ $t("about.page.button") }}</v-btn>
         <v-btn
           color="primary"
-          outlined
           aria-label="Back to Chat Bot"
           ripple
           to="/"

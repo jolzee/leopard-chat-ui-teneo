@@ -1,7 +1,7 @@
 <template>
   <!-- Reply -->
   <div v-if="item.type === 'reply'" :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3'  : ''">
-    <v-row v-if="itemText !== '<p>'" justify="start" no-gutters class="pr-3 pl-1 pt-2">
+    <v-row v-if="itemText !== '<span>'" justify="start" no-gutters class="pr-3 pl-1 pt-2">
       <v-col
         cols="2"
         class="text-center d-none d-sm-block"
@@ -11,7 +11,7 @@
           <template v-slot:activator="{ on }">
             <v-btn
               v-on="on"
-              tabindex="-1"
+              aria-hidden="true"
               v-long-press="1000"
               @long-press-start="swapInputButton"
               :color="`${responseLookAndFeel.iconColor}`"
@@ -60,12 +60,11 @@
           class="chat-card chat-card-left text-left"
           :ripple="false"
         >
-          <p class="sr-only">Chat bot said.</p>
-          <p
-            v-html="itemText"
-            class="teneo-reply"
+
+          <span class="teneo-reply"
             :class="`${leopardFont} ${responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
-          ></p>
+          ><span v-html="addAccessibilityPrefix(itemText)"></span>
+          </span>
         </v-card>
       </v-col>
     </v-row>
@@ -149,8 +148,10 @@
             :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
             :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           >
-            <p class="sr-only">Chat bot said.</p>
-            <p v-html="chunkText" class="teneo-reply"></p>
+
+            <span class="teneo-reply">
+              <span v-html="addAccessibilityPrefix(chunkText)"></span>
+            </span>
           </v-card>
         </v-col>
       </v-row>
@@ -365,6 +366,7 @@ import Card from "./Card";
 import YouTube from "./YouTube";
 import { mapGetters } from "vuex";
 import copy from "copy-to-clipboard";
+const isHtml = require("is-html");
 var stripHtml = require("striptags");
 
 export default {
@@ -664,6 +666,19 @@ export default {
     }
   },
   methods: {
+    addAccessibilityPrefix(text) {
+        const prefix508 = `<span class="sr-only">Chat bot said.</span>`;
+        if (!isHtml(text)) {
+          text = `<p>${prefix508}${text}</p>`
+        } else {
+          if (text.startsWith("<p>")) {
+            text = `<p>${prefix508}${text.substring(3)}`;
+          } else {
+            text = `<p>${prefix508}${text}</p>`; //TODO: Don't like this as we could have nested paragraphs
+          }
+        }
+        return text;
+    },
     hasMedia() {
       return this.hasMediaExtensions(this.item);
     },

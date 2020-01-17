@@ -7,7 +7,6 @@
             <h2 class="title">{{ $t("help.page.title") }}</h2>
           </v-card-title>
         </v-card>
-        <v-list>
           <ul class="pl-0">
             <v-list-item tag="li" class="pl-0" v-for="(item, i) in knowledgeData" :key="i">
               <v-btn
@@ -21,14 +20,12 @@
               >{{ item }}</v-btn>
             </v-list-item>
           </ul>
-        </v-list>
       </v-col>
     </v-row>
     <v-row justify="center" class="pb-3">
       <v-card-actions>
         <v-btn
           color="primary"
-          outlined
           aria-label="Back to Chat Bot"
           ripple
           to="/"

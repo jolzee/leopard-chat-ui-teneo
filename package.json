@@ -36,6 +36,7 @@
     "element-matches": "^0.1.2",
     "firebase": "^7.6.1",
     "gravatar": "^1.8.0",
+    "is-html": "^2.0.0",
     "is-mobile": "^2.1.0",
     "jsonpack": "^1.1.5",
     "logrocket": "^1.0.5",

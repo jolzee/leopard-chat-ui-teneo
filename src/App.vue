@@ -101,42 +101,38 @@
             right
             width="250"
           >
-            <v-row>
-              <v-col class="pa-0 ma-0 elevation-2">
-                <div class="primary darken-2 text-center pa-2">
-                  <h1 class="headline white--text font-weight-medium">Artificial Solutions</h1>
-                </div>
-                <div class="primary darken-1 text-center py-2 px-4">
-                  <p class="white--text body-2 pa-1">{{ $t("about.page.content") }}</p>
+            <v-row align="center" justify="center" >
+              <v-col class="primary darken-2 pa-0 ma-0 elevation-2" style="height:64px">
+                <div class="text-center pa-5 pt-4">
+                  <h1 tabindex="-1" class="headline white--text font-weight-medium" id="leopard-first-drawer-item">Chat Menu</h1>
                 </div>
               </v-col>
             </v-row>
-            <v-list class="px-2 mt-1" v-model="navigationDrawerModel">
+
+            <v-list role=list class="px-2 mt-1" v-model="navigationDrawerModel">
               <v-list-item
-                id="leopard-first-drawer-item"
                 role="listitem"
                 ripple
                 aria-label="Back to Chat Bot"
                 value="true"
-                tabindex="0"
                 key="menuBackToChat"
                 @click="backToChat"
               >
                 <v-list-item-action>
-                  <v-icon medium :class="menuClass">mdi-backburger</v-icon>
+                  <v-icon medium :class="menuClass">mdi-comment-arrow-left-outline</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
                   <v-list-item-title class="subheading" :class="menuClassText">Back to chat</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
 
-              <v-list-item
-                role="listitem"
-                ripple
+              <div role="listitem"
                 v-for="(menuItem, i) in activeMenuItems"
                 :key="i + 'menuItem'"
-                value="true"
-                tabindex="0"
+                >
+              <v-list-item
+                ripple
+                :aria-label="menuItem.ariaLabel"
                 :to="menuItem.route"
               >
                 <v-list-item-action>
@@ -153,11 +149,13 @@
                   >{{ $t(menuItem.titleKey) }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
+              </div>
               <!-- toggle brightness -->
               <v-list-item
                 ripple
                 value="true"
                 key="menuItemTheme"
+                :aria-label="$vuetify.theme.dark ? 'Light Mode' : 'Dark Mode'"
                 @click="toggleBrightness"
                 role="listitem"
               >
@@ -181,42 +179,65 @@
                 </v-list-item-content>
               </v-list-item>
               <!-- close button -->
-              <v-list-item value="true" key="menuItemClose" class="mt-8">
-                <v-btn
-                  ripple
-                  tabindex="0"
-                  block
-                  color="primary darken-1"
-                  @click="drawer=false"
-                  role="listitem"
-                >Close</v-btn>
+              <v-list-item
+                role="listitem"
+                ripple
+                aria-label="Close menu"
+                value="true"
+                key="menuCloseChatMenu"
+                @click="drawer=false"
+              >
+                <v-list-item-action>
+                  <v-icon medium :class="menuClass">mdi-backburger</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title class="subheading" :class="menuClassText">Close</v-list-item-title>
+                </v-list-item-content>
               </v-list-item>
 
+
+
               <!-- logout -->
-              <v-list-item v-if="authenticated" value="true" key="menuItemLogout">
-                <v-btn
-                  ripple
-                  tabindex="0"
-                  to="/"
-                  block
-                  color="primary darken-1"
-                  role="listitem"
-                  @click="logout()"
-                >{{ $t("menu.logout") }}</v-btn>
+              <div role="listitem" v-if="authenticated">
+                <v-list-item
+                ripple
+                aria-label="Logout of chat bot"
+                value="true"
+                key="menuChatLogout"
+                to="/"
+                @click="logout()"
+              >
+                <v-list-item-action>
+                  <v-icon medium :class="menuClass">mdi-logout-variant</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title class="subheading" :class="menuClassText">{{ $t("menu.logout") }}</v-list-item-title>
+                </v-list-item-content>
               </v-list-item>
+            </div>
+
             </v-list>
+            <template v-slot:append>
+              <v-row aria-hidden="true" align="center" justify="center" class="primary darken-2" style="height:64px">
+                  <div class="pa-2">
+                    <a href="https://www.artificial-solutions.com/" class="leopard-img" target="_blank"><v-img src="../public/static/as-logo.png" contain width="150" alt="Artificial Solutions" class="text-center" ></v-img></a>
+                  </div>
+              </v-row>
+            </template>
+
           </v-navigation-drawer>
         </transition>
         <!-- end menu -->
 
         <transition
           name="chat-window-transition"
+          :aria-hidden="drawer"
           :enter-active-class="getAnimatedIn"
           :leave-active-class="getAnimatedOut"
         >
           <div
             id="teneo"
-            :inert="drawer ? true : false"
+            :inert="drawer"
             v-if="isChatOpen"
             :class="{
               'elevation-2': !embed,
@@ -437,33 +458,39 @@ export default {
         {
           icon: "mdi-message-settings-variant",
           titleKey: "menu.config",
+          ariaLabel: "Chat Bot Configuration",
           route: "config"
         },
         {
           icon: "mdi-lifebuoy",
           titleKey: "menu.help",
+          ariaLabel: "Help with Chat Bot",
           route: "help"
         },
         {
           icon: "mdi-history",
           titleKey: "menu.history",
+          ariaLabel: "Chat History",
           route: "history",
           when: this.hasDifferentHistory
         },
         {
           icon: "mdi-information-variant",
           titleKey: "menu.about",
+          ariaLabel: "Chat Bot Provider Information",
           route: "about"
         },
         {
           icon: "mdi-account-plus",
           titleKey: "menu.register",
+          ariaLabel: "Chat Bot Register",
           route: "register",
           when: "notAuthenticated"
         },
         {
           icon: "mdi-login-variant",
           titleKey: "menu.login",
+          ariaLabel: "Chat Bot Login",
           route: "login",
           when: "notAuthenticated"
         }
@@ -1199,6 +1226,12 @@ div.chat-card:focus,
   -webkit-box-shadow: 0 0 0 3px rgba(152, 52, 53, 0.4) !important;
   box-shadow: 0 0 0 3px rgba(152, 52, 53, 0.4) !important;
   outline: 0;
+}
+
+a.leopard-img:focus {
+  box-shadow: 0 0 0 3px rgba(17, 18, 25, 0.4) !important;
+  outline: 0;
+  display: flex;
 }
 
 #leopard-chat-toolbar-title:focus {

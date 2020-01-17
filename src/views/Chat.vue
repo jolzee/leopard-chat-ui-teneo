@@ -103,7 +103,7 @@
               <v-col class="text-center">
                 <v-text-field
                   id="teneo-input-field"
-                  aria-label="Ask Chat Bot a Question"
+                  aria-label="Chat bot send message"
                   v-show="!showUploadButton && !showUploadProgress"
                   :disabled="progressBar || drawer"
                   v-shortkey="{
@@ -203,7 +203,7 @@
                     :loading="progressBar"
                     v-long-press="1000"
                     @long-press-start="swapInputButton"
-                    aria-label="Send Question to the Chat Bot"
+                    aria-label="Send"
                     v-if="!showAudioInput"
                     large
                     color="primary"
@@ -214,7 +214,7 @@
 
                   <v-btn
                     tabindex="0"
-                    aria-label="Send Question to the Chat Bot"
+                    aria-label="Send"
                     :disabled="progressBar"
                     :loading="progressBar"
                     v-long-press="1000"
