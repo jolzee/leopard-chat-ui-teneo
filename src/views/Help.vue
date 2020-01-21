@@ -7,19 +7,19 @@
             <h2 class="title">{{ $t("help.page.title") }}</h2>
           </v-card-title>
         </v-card>
-          <ul class="pl-0">
-            <v-list-item tag="li" class="pl-0" v-for="(item, i) in knowledgeData" :key="i">
-              <v-btn
-                class="leopard-help-button ma-2 text-left py-2"
-                style="justify-content: start; text-transform: unset; min-height:36px; height: unset; white-space: normal; width: 200px; "
-                left
-                block
-                text
-                outlined
-                @click="sendUserInput(item)"
-              >{{ item }}</v-btn>
-            </v-list-item>
-          </ul>
+        <ul class="pl-0">
+          <v-list-item tag="li" class="pl-0" v-for="(item, i) in knowledgeData" :key="i">
+            <v-btn
+              class="leopard-help-button ma-2 text-left py-2"
+              style="justify-content: start; text-transform: unset; min-height:36px; height: unset; white-space: normal; width: 200px; "
+              left
+              block
+              text
+              outlined
+              @click="sendUserInput(item)"
+            >{{ item }}</v-btn>
+          </v-list-item>
+        </ul>
       </v-col>
     </v-row>
     <v-row justify="center" class="pb-3">
@@ -76,8 +76,15 @@ export default {
 </script>
 <style>
 .teneo-help-card {
-  width: 100% !important;
+  width: 360px;
 }
+
+@media only screen and (max-width: 480px) {
+  .teneo-help-card {
+    width: 100vw !important;
+  }
+}
+
 button.leopard-help-button span.v-btn__content {
   flex: unset;
 }

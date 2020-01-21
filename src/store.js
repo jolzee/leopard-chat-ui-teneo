@@ -176,8 +176,7 @@ function storeSetup(vuetify) {
         parent: {},
         showUploadButton: false,
         showChatWindow: false,
-        showChatButton: true,
-        showButtonOnly: config.SHOW_BUTTON_ONLY
+        showChatButton: true
       },
       userInput: {
         userInput: "",
@@ -252,8 +251,10 @@ function storeSetup(vuetify) {
         return uuidv1();
       },
       showButtonOnly(state) {
-        logger.debug(`store: showButtonOnly: ${state.ui.showButtonOnly}`);
-        return state.ui.showButtonOnly;
+        logger.debug(
+          `store: showButtonOnly: ${state.ui.embed && !state.ui.showChatWindow}`
+        );
+        return state.ui.embed && !state.ui.showChatWindow;
       },
       getAnimatedIn(state, getters) {
         let animation = "";
@@ -1041,6 +1042,7 @@ function storeSetup(vuetify) {
         state.modals.showCustomModal = false;
       },
       HIDE_CHAT_WINDOW_DISPLAY_EMBED(state, _getters) {
+        // state.ui.showChatWindow = false; DON'T ENABLE - Let embed code in prod hide leopard.
         logger.debug(`HIDE_CHAT_WINDOW_DISPLAY_EMBED`);
         sendMessageToParent("hideLeopard");
         localStorage.setItem("isChatOpen", false);

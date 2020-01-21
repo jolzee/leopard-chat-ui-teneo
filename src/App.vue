@@ -539,12 +539,14 @@ export default {
   },
   mounted() {
     logger.debug("Is embed in production? ", this.embed);
+    if (this.embed) {
+      this.isChatOpenLocalStorage();
+    }
     window.addEventListener("resize", this.onResizeOrEmbed);
     // deal with import of solution
     const urlParams = new URLSearchParams(window.location.search);
     const initialUserInput = urlParams.get("question");
     if (initialUserInput && !this.isChatOpen) {
-      console.log(`Boom`);
       this.toggleChat();
       setTimeout(() => {
         this.$store.commit("SET_USER_INPUT", initialUserInput);

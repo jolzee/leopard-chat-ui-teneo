@@ -77,8 +77,7 @@ export default class Setup {
     this.liveChat;
     this.CHAT_TITLE = "Configure Me";
     this.IS_AGENT_ASSIST = doesParameterExist("plugin_id");
-    this.EMBED = doesParameterExist("embed") || doesParameterExist("button");
-    this.SHOW_BUTTON_ONLY = doesParameterExist("button");
+    this.EMBED = doesParameterExist("embed");
     this.ENABLE_LIVE_CHAT = false;
     this.FLOAT = false;
     this.THEME = {
@@ -112,7 +111,7 @@ export default class Setup {
       this.getSolutionConfig()
         .then(() => {
           this.chatConfig = fixSolutions(this.chatConfig);
-          if (!this.EMBED && !this.SHOW_BUTTON_ONLY) {
+          if (!this.EMBED) {
             this.addIframeHtml();
           }
 
@@ -209,11 +208,7 @@ export default class Setup {
           }
 
           // update the IFRAME URL
-          if (
-            !this.EMBED &&
-            !this.SHOW_BUTTON_ONLY &&
-            document.getElementById("site-frame")
-          ) {
+          if (!this.EMBED && document.getElementById("site-frame")) {
             document.getElementById("site-frame").src = this.IFRAME_URL;
             logger.debug("Updated IFRAME url", this.IFRAME_URL);
           }

@@ -136,6 +136,7 @@ let buildConfig = {
   transpileDependencies: [
     "ip-regex",
     "vuetify",
+    "is-html",
     "vue-plyr",
     "replace-string",
     "url-regex",
