@@ -31,10 +31,10 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("About.vue");
-import YouTube from "../components/YouTube";
+// import YouTube from "../components/YouTube";
 export default {
   components: {
-    YouTube
+    YouTube: () => import("../components/YouTube")
   },
   data() {
     return {

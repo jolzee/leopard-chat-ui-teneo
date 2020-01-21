@@ -60,10 +60,11 @@
           class="chat-card chat-card-left text-left"
           :ripple="false"
         >
-
-          <span class="teneo-reply"
+          <span
+            class="teneo-reply"
             :class="`${leopardFont} ${responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
-          ><span v-html="addAccessibilityPrefix(itemText)"></span>
+          >
+            <span v-html="addAccessibilityPrefix(itemText)"></span>
           </span>
         </v-card>
       </v-col>
@@ -148,7 +149,6 @@
             :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
             :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           >
-
             <span class="teneo-reply">
               <span v-html="addAccessibilityPrefix(chunkText)"></span>
             </span>
@@ -354,16 +354,16 @@
 <script>
 const logger = require("@/utils/logging").getLogger("ChatTeneoResponse.vue");
 import LongPress from "vue-directive-long-press";
-import Audio from "./Audio";
-import Carousel from "./Carousel";
-import ImageAnimation from "./ImageAnimation";
-import DelayedResponse from "./DelayedResponse";
-import Video from "./Video";
-import AgentAssistCannedResponseForm from "./AgentAssistCannedResponseForm";
-import Map from "./Map";
-import Vimeo from "./Vimeo";
-import Card from "./Card";
-import YouTube from "./YouTube";
+// import Audio from "./Audio";
+// import Carousel from "./Carousel";
+// import ImageAnimation from "./ImageAnimation";
+// import DelayedResponse from "./DelayedResponse";
+// import Video from "./Video";
+// import AgentAssistCannedResponseForm from "./AgentAssistCannedResponseForm";
+// import Map from "./Map";
+// import Vimeo from "./Vimeo";
+// import Card from "./Card";
+// import YouTube from "./YouTube";
 import { mapGetters } from "vuex";
 import copy from "copy-to-clipboard";
 const isHtml = require("is-html");
@@ -375,16 +375,17 @@ export default {
     "long-press": LongPress
   },
   components: {
-    Audio,
-    AgentAssistCannedResponseForm,
-    Carousel,
-    Card,
-    ImageAnimation,
-    DelayedResponse,
-    Map,
-    Video,
-    Vimeo,
-    YouTube,
+    Audio: () => import("./Audio"),
+    AgentAssistCannedResponseForm: () =>
+      import("./AgentAssistCannedResponseForm"),
+    Carousel: () => import("./Carousel"),
+    Card: () => import("./Card"),
+    ImageAnimation: () => import("./ImageAnimation"),
+    DelayedResponse: () => import("./DelayedResponse"),
+    Map: () => import("./Map"),
+    Video: () => import("./Video"),
+    Vimeo: () => import("./Vimeo"),
+    YouTube: () => import("./YouTube"),
     Form: () => import("./Form")
   },
   props: ["item", "itemIndexInDialog"],
@@ -667,17 +668,17 @@ export default {
   },
   methods: {
     addAccessibilityPrefix(text) {
-        const prefix508 = `<span class="sr-only">Chat bot said.</span>`;
-        if (!isHtml(text)) {
-          text = `<p>${prefix508}${text}</p>`
+      const prefix508 = `<span class="sr-only">Chat bot said.</span>`;
+      if (!isHtml(text)) {
+        text = `<p>${prefix508}${text}</p>`;
+      } else {
+        if (text.startsWith("<p>")) {
+          text = `<p>${prefix508}${text.substring(3)}`;
         } else {
-          if (text.startsWith("<p>")) {
-            text = `<p>${prefix508}${text.substring(3)}`;
-          } else {
-            text = `<p>${prefix508}${text}</p>`; //TODO: Don't like this as we could have nested paragraphs
-          }
+          text = `<p>${prefix508}${text}</p>`; //TODO: Don't like this as we could have nested paragraphs
         }
-        return text;
+      }
+      return text;
     },
     hasMedia() {
       return this.hasMediaExtensions(this.item);

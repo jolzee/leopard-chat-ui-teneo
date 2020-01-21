@@ -12,10 +12,13 @@
         class="chat-card chat-card-right text-right pr-3 align-content-end"
         :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? `mr-2 ${leopardFont} ${!$vuetify.theme.dark ? questionLookAndFeel.blockBgColor : ''}` : `${leopardFont} ${!$vuetify.theme.dark ? questionLookAndFeel.blockBgColor : ''}`"
       >
-
         <p
           :class="`${!$vuetify.theme.dark && questionLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
-        ><span class="sr-only">I said.</span>{{ item.text }}<span class="sr-only">.</span></p>
+        >
+          <span class="sr-only">I said.</span>
+          {{ item.text }}
+          <span class="sr-only">.</span>
+        </p>
       </v-card>
     </v-col>
     <v-col
@@ -110,14 +113,14 @@
 <script>
 const logger = require("@/utils/logging").getLogger("ChatUserQuestion.vue");
 import LongPress from "vue-directive-long-press";
-import AgentAssistTrainBotForm from "./AgentAssistTrainBotForm";
+// import AgentAssistTrainBotForm from "./AgentAssistTrainBotForm";
 import copy from "copy-to-clipboard";
 var stripHtml = require("striptags");
 import { mapGetters } from "vuex";
 export default {
   name: "ChatUserQuestion",
   components: {
-    AgentAssistTrainBotForm
+    AgentAssistTrainBotForm: () => import("./AgentAssistTrainBotForm")
   },
   directives: {
     "long-press": LongPress

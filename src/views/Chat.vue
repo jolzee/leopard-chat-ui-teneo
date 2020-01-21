@@ -290,11 +290,11 @@ var mobile = require("is-mobile");
 import dayjs from "dayjs";
 import LongPress from "vue-directive-long-press";
 // import ChatBroadcastMessage from "../components/ChatBroadcastMessage";
-import ChatLoading from "../components/ChatLoading";
+// import ChatLoading from "../components/ChatLoading";
 // import ChatNoHistory from "../components/ChatNoHistory";
 import ChatTeneoResponse from "../components/ChatTeneoResponse";
 import ChatUserQuestion from "../components/ChatUserQuestion";
-import Dialog from "../components/Dialog";
+// import Dialog from "../components/Dialog";
 
 // import LiveChatResponse from "../components/LiveChatResponse";
 import UploadButton from "vuetify-upload-button";
@@ -320,8 +320,8 @@ export default {
   props: ["drawer"],
   components: {
     ChatBroadcastMessage: () => import("../components/ChatBroadcastMessage"),
-    ChatLoading,
-    Dialog,
+    ChatLoading: () => import("../components/ChatLoading"),
+    Dialog: () => import("../components/Dialog"),
     ChatNoHistory: () => import("../components/ChatNoHistory"),
     ChatUserQuestion,
     ChatTeneoResponse,

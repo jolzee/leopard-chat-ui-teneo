@@ -13,10 +13,11 @@
   </vue-plyr>
 </template>
 <script>
-import VuePlyr from "vue-plyr";
+// import VuePlyr from "vue-plyr";
+// const VuePlyr = () => import("vue-plyr");
 import "plyr/dist/plyr.css";
 export default {
-  components: { VuePlyr },
+  components: { VuePlyr: () => import("vue-plyr") },
   props: ["videoId"],
   data() {
     return {};

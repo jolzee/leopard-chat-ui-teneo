@@ -732,17 +732,17 @@ import {
 import "prismjs/prism";
 import "prismjs/themes/prism-funky.css";
 import "prismjs/components/prism-json.min.js";
-import ConfigAddEditSolution from "../components/ConfigAddEditSolution";
-import Dialog from "../components/Dialog";
-import Prism from "vue-prism-component";
+// import ConfigAddEditSolution from "../components/ConfigAddEditSolution";
+// import Dialog from "../components/Dialog";
+// import Prism from "vue-prism-component";
 import jsonpack from "jsonpack/main";
 
 export default {
   name: "ConfigView",
   components: {
-    Prism,
-    ConfigAddEditSolution,
-    Dialog
+    Prism: () => import("vue-prism-component"),
+    ConfigAddEditSolution: () => import("../components/ConfigAddEditSolution"),
+    Dialog: () => import("../components/Dialog")
   },
   data() {
     return {

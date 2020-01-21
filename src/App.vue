@@ -446,7 +446,7 @@ const logger = require("@/utils/logging").getLogger("App.vue");
 import "wicg-inert/dist/inert.min.js";
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "./constants/solution-config-default.js";
-import OverlayAlert from "./components/OverlayAlert";
+const OverlayAlert = () => import("./components/OverlayAlert");
 import AssistiveText from "./components/AssistiveText.vue";
 import jsonpack from "jsonpack/main";
 
