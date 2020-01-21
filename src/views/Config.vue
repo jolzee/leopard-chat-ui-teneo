@@ -714,8 +714,16 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("Config.vue");
-import utils from "@/utils/utils";
+import {
+  doesParameterExist,
+  fixSolutions,
+  cloneObject,
+  uuid,
+  generateRandomId,
+  download
+} from "@/utils/utils";
 import dayjs from "dayjs";
+// import Prism from "prismjs";
 import copy from "copy-to-clipboard";
 import {
   STORAGE_KEY,
@@ -866,7 +874,7 @@ export default {
   updated: function() {},
   created() {
     // add new JSON config if missing
-    this.config = utils.fixSolutions(this.config);
+    this.config = fixSolutions(this.config);
     this.setActiveSolutionAsSelected();
     this.saveToLocalStorage();
   },
@@ -956,15 +964,15 @@ export default {
       this.refresh = true;
       sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
       let addtionalParams = "";
-      if (utils.doesParameterExist("plugin_id")) {
+      if (doesParameterExist("plugin_id")) {
         const params = new URLSearchParams(window.location.search);
         const pluginId = params.get("plugin_id");
         addtionalParams += `&plugin_id=${pluginId}`;
       }
-      if (utils.doesParameterExist("embed")) {
+      if (doesParameterExist("embed")) {
         addtionalParams += "&embed";
       }
-      if (utils.doesParameterExist("button")) {
+      if (doesParameterExist("button")) {
         addtionalParams += "&button";
       }
       window.location = `${location.protocol}//${location.host}${location.pathname}?dl=${solution.deepLink}${addtionalParams}`;
@@ -1001,8 +1009,8 @@ export default {
       this.saveToLocalStorage();
       const self = this;
       setTimeout(function() {
-        self.solution = utils.cloneObject(SOLUTION_DEFAULT);
-        self.solution.id = utils.uuid();
+        self.solution = cloneObject(SOLUTION_DEFAULT);
+        self.solution.id = uuid();
       }, 1000);
     },
     toggleDisplayOfSolutionConfig() {
@@ -1034,9 +1042,8 @@ export default {
       ) {
         // id, name and deep link clash
         newSolution.name = newSolution.name + " [imported]";
-        newSolution.deepLink =
-          newSolution.deepLink + "-" + utils.generateRandomId();
-        newSolution.id = utils.uuid();
+        newSolution.deepLink = newSolution.deepLink + "-" + generateRandomId();
+        newSolution.id = uuid();
         this.config.solutions.push(newSolution);
       } else if (
         existingSolutionsWithId < 0 &&
@@ -1045,8 +1052,7 @@ export default {
       ) {
         // name and deep link clash
         newSolution.name = newSolution.name + " [imported]";
-        newSolution.deepLink =
-          newSolution.deepLink + "-" + utils.generateRandomId();
+        newSolution.deepLink = newSolution.deepLink + "-" + generateRandomId();
         this.config.solutions.push(newSolution);
       } else if (
         existingSolutionsWithId < 0 &&
@@ -1062,7 +1068,7 @@ export default {
         existingSolutionsWithName < 0
       ) {
         // id clash only
-        newSolution.id = utils.uuid();
+        newSolution.id = uuid();
         this.config.solutions.push(newSolution);
       } else if (
         existingSolutionsWithId < 0 &&
@@ -1070,8 +1076,7 @@ export default {
         existingSolutionsWithName < 0
       ) {
         // deeplink clash only
-        newSolution.deepLink =
-          newSolution.deepLink + "-" + utils.generateRandomId();
+        newSolution.deepLink = newSolution.deepLink + "-" + generateRandomId();
         this.config.solutions.push(newSolution);
       }
     },
@@ -1097,7 +1102,7 @@ export default {
       return 0;
     },
     downloadSolutionConfig() {
-      utils.download(
+      download(
         this.getFullSolutionConfig,
         `leopard-all-config-${dayjs().format("YYYYMMDD[-]H[-]mm")}.txt`
       );
@@ -1106,7 +1111,7 @@ export default {
       localStorage.setItem(STORAGE_KEY + "lastBackupDate", now.format());
     },
     downloadSelectedSolutionConfig() {
-      utils.download(
+      download(
         JSON.stringify(this.selectedSolution, null, 2),
         `leopard-${this.selectedSolution.name
           .replace(/[|&;$%@"<>()+,]/g, "")
@@ -1144,15 +1149,15 @@ export default {
         this.refresh = true;
         sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
         let addtionalParams = "";
-        if (utils.doesParameterExist("plugin_id")) {
+        if (doesParameterExist("plugin_id")) {
           const params = new URLSearchParams(window.location.search);
           const pluginId = params.get("plugin_id");
           addtionalParams += `&plugin_id=${pluginId}`;
         }
-        if (utils.doesParameterExist("embed")) {
+        if (doesParameterExist("embed")) {
           addtionalParams += "&embed";
         }
-        if (utils.doesParameterExist("button")) {
+        if (doesParameterExist("button")) {
           addtionalParams += "&button";
         }
         window.location = `${location.protocol}//${location.host}${location.pathname}?dl=${this.selectedSolution.deepLink}${addtionalParams}`;
@@ -1169,7 +1174,7 @@ export default {
       if (this.selectedSolution !== null) {
         this.dialogTitle = "Editing Solution";
         this.currentModeEdit = "edit";
-        this.solution = utils.cloneObject(this.selectedSolution); // make a copy - we have a save button
+        this.solution = cloneObject(this.selectedSolution); // make a copy - we have a save button
         this.showAddEditDialog();
       }
     },
@@ -1179,20 +1184,20 @@ export default {
     },
     cloneSolution() {
       const newName = this.selectedSolution.name + " - Copy";
-      let clonedSolution = utils.cloneObject(this.selectedSolution);
-      clonedSolution.id = utils.uuid();
+      let clonedSolution = cloneObject(this.selectedSolution);
+      clonedSolution.id = uuid();
       clonedSolution.name = newName;
       const duplicateSolutions = this.config.solutions.filter(
         solution => solution.name === newName
       );
       if (duplicateSolutions.length > 0) {
         clonedSolution.name =
-          clonedSolution.name + " [" + utils.generateRandomId() + "]";
+          clonedSolution.name + " [" + generateRandomId() + "]";
       }
       clonedSolution.deepLink =
-        clonedSolution.deepLink + "-" + utils.generateRandomId();
+        clonedSolution.deepLink + "-" + generateRandomId();
       this.config.solutions.push(clonedSolution);
-      this.selectedSolution = utils.cloneObject(clonedSolution);
+      this.selectedSolution = cloneObject(clonedSolution);
       this.displaySnackBar(
         "Solution was cloned. New name is " + clonedSolution.name,
         3000
@@ -1229,7 +1234,7 @@ export default {
         solution => solution.id === solutionId
       );
       this.selectedSolution = foundSolution;
-      this.solution = utils.cloneObject(this.selectedSolution); // make a copy - we have a save button
+      this.solution = cloneObject(this.selectedSolution); // make a copy - we have a save button
       this.dialogTitle = `Editing Solution | ${this.selectedSolution.name}`;
       this.currentModeEdit = "edit";
 
@@ -1246,10 +1251,10 @@ export default {
         );
         if (this.config.solutions.length === 1) {
           this.config.activeSolution = this.config.solutions[0].id;
-          this.selectedSolution = utils.cloneObject(this.config.solutions[0]);
+          this.selectedSolution = cloneObject(this.config.solutions[0]);
         } else if (this.config.solutions.length > 1) {
           let self = this;
-          this.selectedSolution = utils.cloneObject(
+          this.selectedSolution = cloneObject(
             this.config.solutions.find(function(solution) {
               return solution.id === self.config.activeSolution;
             })
@@ -1300,19 +1305,19 @@ export default {
             );
           } else {
             // current config is empty
-            this.config = utils.fixSolutions(newConfig);
+            this.config = fixSolutions(newConfig);
             this.displaySnackBar("Imported a new full configuration", 3000);
           }
           this.setActiveSolutionAsSelected();
         } else if (newConfig && "name" in newConfig) {
           // uploading a single config - add it to the current solution config
-          newConfig = utils.fixSolution(newConfig);
+          newConfig = fixSolution(newConfig);
           this.importSolution(newConfig); // import individual solution
           this.setSolutionAsSelected(newConfig.id);
           this.displaySnackBar("Imported as " + newConfig.name, 3000);
         }
 
-        this.config = utils.fixSolutions(this.config);
+        this.config = fixSolutions(this.config);
 
         this.closeUploadDialog();
         this.saveToLocalStorage();
@@ -1327,8 +1332,8 @@ export default {
     addSolution() {
       this.dialogTitle = "Creating a new solution configuration";
       this.currentModeEdit = ""; // meaning add
-      this.solution = utils.cloneObject(SOLUTION_DEFAULT);
-      this.solution.id = utils.uuid();
+      this.solution = cloneObject(SOLUTION_DEFAULT);
+      this.solution.id = uuid();
       this.showAddEditDialog();
     },
     showAddEditDialog() {

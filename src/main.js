@@ -5,12 +5,12 @@ import "element-matches";
 import smoothscroll from "smoothscroll-polyfill";
 smoothscroll.polyfill();
 const logger = require("@/utils/logging").getLogger("main.js");
-import utils from "@/utils/utils";
+import { doesParameterExist } from "@/utils/utils";
 import Vue from "vue";
 import App from "./App";
 import router from "./router";
 
-if (!utils.doesParameterExist("embed") && !utils.doesParameterExist("button")) {
+if (!doesParameterExist("embed") && !doesParameterExist("button")) {
   console.groupCollapsed(
     `%c Powered by %c Leopard Chat UI 💬 %c`,
     "background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",

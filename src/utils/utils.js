@@ -5,7 +5,7 @@ const replaceString = require("replace-string");
 const solutionDefault = require("../constants/solution-config-default")
   .SOLUTION_DEFAULT;
 
-const fixSolution = solution => {
+export const fixSolution = solution => {
   if (!("id" in solution)) {
     const id = uuid();
     // TODO: I know I need to fix this...
@@ -37,7 +37,7 @@ const fixSolution = solution => {
   return solution;
 };
 
-const fixSolutions = allSolutions => {
+export const fixSolutions = allSolutions => {
   let origChatConfig = JSON.stringify(allSolutions);
   origChatConfig = replaceString(origChatConfig, '"true"', "true");
   origChatConfig = replaceString(origChatConfig, '"false"', "false");
@@ -64,18 +64,18 @@ Math.easeInOutQuad = function(t, b, c, d) {
 };
 
 Math.easeInCubic = function(t, b, c, d) {
-  var tc = (t /= d) * t * t;
+  let tc = (t /= d) * t * t;
   return b + c * tc;
 };
 
 Math.inOutQuintic = function(t, b, c, d) {
-  var ts = (t /= d) * t,
+  let ts = (t /= d) * t,
     tc = ts * t;
   return b + c * (6 * tc * ts + -15 * ts * ts + 10 * tc);
 };
 
 // requestAnimationFrame for Smart Animating http://goo.gl/sx5sts
-var requestAnimFrame = (function() {
+export let requestAnimFrame = (function() {
   return (
     window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
@@ -86,7 +86,7 @@ var requestAnimFrame = (function() {
   );
 })();
 
-const scrollTo = (to, callback, duration) => {
+export const scrollTo = (to, callback, duration) => {
   // because it's so fucking difficult to detect the scrolling element, just move them all
   function move(amount) {
     document.documentElement.scrollTop = amount;
@@ -100,16 +100,16 @@ const scrollTo = (to, callback, duration) => {
       document.body.scrollTop
     );
   }
-  var start = position(),
+  let start = position(),
     change = to - start,
     currentTime = 0,
     increment = 20;
   duration = typeof duration === "undefined" ? 500 : duration;
-  var animateScroll = function() {
+  let animateScroll = function() {
     // increment the time
     currentTime += increment;
     // find the value with the quadratic in-out easing function
-    var val = Math.easeInOutQuad(currentTime, start, change, duration);
+    let val = Math.easeInOutQuad(currentTime, start, change, duration);
     // move the document.body
     move(val);
     // do the animation unless its over
@@ -126,21 +126,21 @@ const scrollTo = (to, callback, duration) => {
 };
 // end smooth scroll
 
-const lowerCase = str => {
+export const lowerCase = str => {
   return str.toLowerCase();
 };
 
 /**
  * "Safer" String.toUpperCase()
  */
-const upperCase = str => {
+export const upperCase = str => {
   return str.toUpperCase();
 };
 
 /**
  * Convert string to camelCase text.
  */
-const camelCase = str => {
+export const camelCase = str => {
   str = replaceAccents(str);
   str = removeNonWord(str)
     .replace(/\-/g, " ") //convert all hyphens to spaces
@@ -153,7 +153,7 @@ const camelCase = str => {
 /**
  * Add space between camelCase text.
  */
-const unCamelCase = str => {
+export const unCamelCase = str => {
   str = str.replace(/([a-z\xE0-\xFF])([A-Z\xC0\xDF])/g, "$1 $2");
   str = str.toLowerCase(); //add space between camelCase text
   return str;
@@ -162,21 +162,21 @@ const unCamelCase = str => {
 /**
  * UPPERCASE first char of each word.
  */
-const properCase = str => {
+export const properCase = str => {
   return lowerCase(str).replace(/^\w|\s\w/g, upperCase);
 };
 
 /**
  * camelCase + UPPERCASE first char
  */
-const pascalCase = str => {
+export const pascalCase = str => {
   return camelCase(str).replace(/^[a-z]/, upperCase);
 };
 
 /**
  * UPPERCASE first char of each sentence and lowercase other chars.
  */
-const sentenceCase = str => {
+export const sentenceCase = str => {
   // Replace first char of each sentence (new line or after '.\s+') to
   // UPPERCASE
   return lowerCase(str).replace(/(^\w)|\.\s+(\w)/gm, upperCase);
@@ -187,7 +187,7 @@ const sentenceCase = str => {
  * replace spaces with the specified delimeter.
  * Does not split camelCase text.
  */
-const slugify = (str, delimeter) => {
+export const slugify = (str, delimeter) => {
   if (delimeter == null) {
     delimeter = "-";
   }
@@ -204,7 +204,7 @@ const slugify = (str, delimeter) => {
 /**
  * Replaces spaces with hyphens, split camelCase text, remove non-word chars, remove accents and convert to lower case.
  */
-const hyphenate = str => {
+export const hyphenate = str => {
   str = unCamelCase(str);
   return slugify(str, "-");
 };
@@ -212,7 +212,7 @@ const hyphenate = str => {
 /**
  * Replaces hyphens with spaces. (only hyphens between word chars)
  */
-const unhyphenate = str => {
+export const unhyphenate = str => {
   return str.replace(/(\w)(-)(\w)/g, "$1 $3");
 };
 
@@ -220,7 +220,7 @@ const unhyphenate = str => {
  * Replaces spaces with underscores, split camelCase text, remove
  * non-word chars, remove accents and convert to lower case.
  */
-const underscore = str => {
+export const underscore = str => {
   str = unCamelCase(str);
   return slugify(str, "_");
 };
@@ -228,14 +228,14 @@ const underscore = str => {
 /**
  * Remove non-word chars.
  */
-const removeNonWord = str => {
+export const removeNonWord = str => {
   return str.replace(/[^0-9a-zA-Z\xC0-\xFF \-]/g, "");
 };
 
 /**
  * Convert line-breaks from DOS/MAC to a single standard (UNIX by default)
  */
-const normalizeLineBreaks = (str, lineEnd) => {
+export const normalizeLineBreaks = (str, lineEnd) => {
   lineEnd = lineEnd || "\n";
 
   return str
@@ -247,7 +247,7 @@ const normalizeLineBreaks = (str, lineEnd) => {
 /**
  * Replaces all accented chars with regular ones
  */
-const replaceAccents = str => {
+export const replaceAccents = str => {
   // verifies if the String has accents and replace them
   if (str.search(/[\xC0-\xFF]/g) > -1) {
     str = str
@@ -280,29 +280,29 @@ const replaceAccents = str => {
 /**
  * Searches for a given substring
  */
-const contains = (str, substring, fromIndex) => {
+export const contains = (str, substring, fromIndex) => {
   return str.indexOf(substring, fromIndex) !== -1;
 };
 
 /**
  * Truncate string at full words.
  */
-const crop = (str, maxChars, append) => {
+export const crop = (str, maxChars, append) => {
   return truncate(str, maxChars, append, true);
 };
 
 /**
  * Escape RegExp string chars.
  */
-const escapeRegExp = str => {
-  var ESCAPE_CHARS = /[\\.+*?\^$\[\](){}\/'#]/g;
+export const escapeRegExp = str => {
+  let ESCAPE_CHARS = /[\\.+*?\^$\[\](){}\/'#]/g;
   return str.replace(ESCAPE_CHARS, "\\$&");
 };
 
 /**
  * Escapes a string for insertion into HTML.
  */
-const escapeHtml = str => {
+export const escapeHtml = str => {
   str = str
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -316,7 +316,7 @@ const escapeHtml = str => {
 /**
  * Unescapes HTML special chars
  */
-const unescapeHtml = str => {
+export const unescapeHtml = str => {
   str = str
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
@@ -329,7 +329,7 @@ const unescapeHtml = str => {
 /**
  * Escape string into unicode sequences
  */
-const escapeUnicode = (str, shouldEscapePrintable) => {
+export const escapeUnicode = (str, shouldEscapePrintable) => {
   return str.replace(/[\s\S]/g, function(ch) {
     // skip printable ASCII chars if we should not escape them
     if (!shouldEscapePrintable && /[\x20-\x7E]/.test(ch)) {
@@ -344,14 +344,14 @@ const escapeUnicode = (str, shouldEscapePrintable) => {
 /**
  * Remove HTML tags from string.
  */
-const stripHtmlTags = str => {
+export const stripHtmlTags = str => {
   return str.replace(/<[^>]*>/g, "");
 };
 
 /**
  * Remove non-printable ASCII chars
  */
-const removeNonASCII = str => {
+export const removeNonASCII = str => {
   // Matches non-printable ASCII chars -
   // http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
   return str.replace(/[^\x20-\x7E]/g, "");
@@ -360,7 +360,7 @@ const removeNonASCII = str => {
 /**
  * Pad string with `char` if its' length is smaller than `minLen`
  */
-const rpad = (str, minLen, ch) => {
+export const rpad = (str, minLen, ch) => {
   ch = ch || " ";
   return str.length < minLen ? str + repeat(ch, minLen - str.length) : str;
 };
@@ -368,7 +368,7 @@ const rpad = (str, minLen, ch) => {
 /**
  * Pad string with `char` if its' length is smaller than `minLen`
  */
-const lpad = (str, minLen, ch) => {
+export const lpad = (str, minLen, ch) => {
   ch = ch || " ";
 
   return str.length < minLen ? repeat(ch, minLen - str.length) + str : str;
@@ -377,14 +377,14 @@ const lpad = (str, minLen, ch) => {
 /**
  * Repeat string n times
  */
-const repeat = (str, n) => {
+export const repeat = (str, n) => {
   return new Array(n + 1).join(str);
 };
 
 /**
  * Limit number of chars.
  */
-const truncate = (str, maxChars, append, onlyFullWords) => {
+export const truncate = (str, maxChars, append, onlyFullWords) => {
   append = append || "...";
   maxChars = onlyFullWords ? maxChars + 1 : maxChars;
 
@@ -398,7 +398,7 @@ const truncate = (str, maxChars, append, onlyFullWords) => {
   return str + append;
 };
 
-var WHITE_SPACES = [
+let WHITE_SPACES = [
   " ",
   "\n",
   "\r",
@@ -429,10 +429,10 @@ var WHITE_SPACES = [
 /**
  * Remove chars from beginning of string.
  */
-const ltrim = (str, chars) => {
+export const ltrim = (str, chars) => {
   chars = chars || WHITE_SPACES;
 
-  var start = 0,
+  let start = 0,
     len = str.length,
     charLen = chars.length,
     found = true,
@@ -459,10 +459,10 @@ const ltrim = (str, chars) => {
 /**
  * Remove chars from end of string.
  */
-const rtrim = (str, chars) => {
+export const rtrim = (str, chars) => {
   chars = chars || WHITE_SPACES;
 
-  var end = str.length - 1,
+  let end = str.length - 1,
     charLen = chars.length,
     found = true,
     i,
@@ -488,7 +488,7 @@ const rtrim = (str, chars) => {
 /**
  * Remove white-spaces from beginning and end of string.
  */
-const trim = (str, chars) => {
+export const trim = (str, chars) => {
   chars = chars || WHITE_SPACES;
   return ltrim(rtrim(str, chars), chars);
 };
@@ -497,19 +497,19 @@ const trim = (str, chars) => {
  * Capture all capital letters following a word boundary (in case the
  * input is in all caps)
  */
-const abbreviate = str => {
+export const abbreviate = str => {
   return str.match(/\b([A-Z])/g).join("");
 };
 
-const includeFile = file => {
-  var script = document.createElement("script");
+export const includeFile = file => {
+  let script = document.createElement("script");
   script.src = file;
   script.type = "text/javascript";
   script.defer = true;
   document.head.appendChild(script);
 };
 
-var isUndefined = e => typeof e === "undefined",
+export let isUndefined = e => typeof e === "undefined",
   isconst = e => typeof e === "function",
   isNumber = e => typeof e === "number" && isFinite(e),
   isObject = e => typeof e === "object",
@@ -519,7 +519,7 @@ var isUndefined = e => typeof e === "undefined",
   isInt = e => Number(e) === e && e % 1 === 0,
   isFloat = e => Number(e) === e && e % 1 !== 0;
 
-const createSlug = text => {
+export const createSlug = text => {
   return text
     .toString()
     .toLowerCase()
@@ -530,7 +530,7 @@ const createSlug = text => {
     .replace(/-+$/, ""); // Trim - from end of text
 };
 
-const loadScript = src => {
+export const loadScript = src => {
   return new Promise((resolve, reject) => {
     const script = document.createElement("script");
 
@@ -546,20 +546,20 @@ const loadScript = src => {
 // wait(1000).then(() => {
 //   console.log("b");
 // });
-const wait = (ms = 0) => {
+export const wait = (ms = 0) => {
   return new Promise(r => setTimeout(r, ms));
 };
 
-const queryParametersAsObject = () => {
-  var query_string = {};
-  var query = window.location.search.substring(1);
-  var vars = query.split("&");
-  for (var i = 0; i < vars.length; i++) {
-    var pair = vars[i].split("=");
+export const queryParametersAsObject = () => {
+  let query_string = {};
+  let query = window.location.search.substring(1);
+  let vars = query.split("&");
+  for (let i = 0; i < vars.length; i++) {
+    let pair = vars[i].split("=");
     if (typeof query_string[pair[0]] === "undefined") {
       query_string[pair[0]] = decodeURIComponent(pair[1]);
     } else if (typeof query_string[pair[0]] === "string") {
-      var arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
+      let arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
       query_string[pair[0]] = arr;
     } else {
       query_string[pair[0]].push(decodeURIComponent(pair[1]));
@@ -568,7 +568,7 @@ const queryParametersAsObject = () => {
   return query_string;
 };
 
-const setFullscreen = fullscreen => {
+export const setFullscreen = fullscreen => {
   let el = document.documentElement;
   if (fullscreen) {
     let rfs =
@@ -587,18 +587,18 @@ const setFullscreen = fullscreen => {
   }
 };
 
-const doesParameterExist = paramName => {
-  var queryString = location.search;
-  var params = queryString.substring(1).split("&");
-  for (var i = 0; i < params.length; i++) {
-    var pair = params[i].split("=");
+export const doesParameterExist = paramName => {
+  let queryString = location.search;
+  let params = queryString.substring(1).split("&");
+  for (let i = 0; i < params.length; i++) {
+    let pair = params[i].split("=");
     if (decodeURIComponent(pair[0]) == paramName) return true;
   }
   return false;
 };
 
-const download = (data, filename, type = "text/plain") => {
-  var file = new Blob([data], {
+export const download = (data, filename, type = "text/plain") => {
+  let file = new Blob([data], {
     type: type
   });
   if (window.navigator.msSaveOrOpenBlob)
@@ -606,7 +606,7 @@ const download = (data, filename, type = "text/plain") => {
     window.navigator.msSaveOrOpenBlob(file, filename);
   else {
     // Others
-    var a = document.createElement("a"),
+    let a = document.createElement("a"),
       url = URL.createObjectURL(file);
     a.href = url;
     a.download = filename;
@@ -619,29 +619,29 @@ const download = (data, filename, type = "text/plain") => {
   }
 };
 
-const getBase64Image = img => {
-  var canvas = document.createElement("canvas");
+export const getBase64Image = img => {
+  let canvas = document.createElement("canvas");
   canvas.width = img.width;
   canvas.height = img.height;
-  var ctx = canvas.getContext("2d");
+  let ctx = canvas.getContext("2d");
   ctx.drawImage(img, 0, 0);
-  var dataURL = canvas.toDataURL("image/png");
+  let dataURL = canvas.toDataURL("image/png");
   return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 };
 
-const generateRandomId = () => {
+export const generateRandomId = () => {
   return Math.random()
     .toString(36)
     .replace(/[^a-z]+/g, "")
     .substr(2, 10);
 };
 
-const cloneObject = obj => {
+export const cloneObject = obj => {
   // this is a deep clone
   return obj ? JSON.parse(JSON.stringify(obj)) : obj;
 };
 
-const cloneObjectPromise = obj => {
+export const cloneObjectPromise = obj => {
   return new Promise((resolve, reject) => {
     // this is a deep clone
     try {
@@ -653,36 +653,36 @@ const cloneObjectPromise = obj => {
   });
 };
 
-const uuidv4 = require("uuid/v4");
-const uuid = () => uuidv4();
+export const uuidv4 = require("uuid/v4");
+export const uuid = () => uuidv4();
 
-const uuidPromise = () => {
+export const uuidPromise = () => {
   return new Promise(resolve => resolve(uuidv4()));
 };
 
-const decodeHTML = html => {
-  var txt = document.createElement("textarea");
+export const decodeHTML = html => {
+  let txt = document.createElement("textarea");
   txt.innerHTML = html;
   return txt.value;
 };
 
-const generateQueryParams = jsObject =>
+export const generateQueryParams = jsObject =>
   Object.keys(jsObject)
     .map(key => key + "=" + jsObject[key])
     .join("&");
 
-const getParameterByName = (name, url) => {
+export const getParameterByName = (name, url) => {
   if (!url) url = window.location.href;
   name = name.replace(/[\]]/g, "\\$&");
-  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+  let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
     results = regex.exec(url);
   if (!results) return null;
   if (!results[2]) return "";
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
 
-const getUrlVarsAsObj = () => {
-  var vars = {};
+export const getUrlVarsAsObj = () => {
+  let vars = {};
   window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
     m,
     key,
@@ -693,7 +693,7 @@ const getUrlVarsAsObj = () => {
   return vars;
 };
 
-const getUrlParam = (parameter, defaultvalue) => {
+export const getUrlParam = (parameter, defaultvalue) => {
   let urlparameter = "";
   if (window.location.href.indexOf(parameter) > -1) {
     urlparameter = this.getUrlVars()[parameter];
@@ -713,27 +713,3 @@ const getUrlParam = (parameter, defaultvalue) => {
   }
   return urlparameter;
 };
-
-const utils = {
-  fixSolutions,
-  fixSolution,
-  createSlug,
-  download,
-  generateRandomId,
-  doesParameterExist,
-  queryParametersAsObject,
-  getUrlVarsAsObj,
-  getParameterByName,
-  getUrlParam,
-  generateQueryParams,
-  uuid,
-  uuidPromise,
-  decodeHTML,
-  cloneObject,
-  cloneObjectPromise,
-  getBase64Image,
-  wait,
-  scrollTo
-};
-
-module.exports = utils;

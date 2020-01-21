@@ -789,7 +789,7 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("ChatAddEditSolution.vue");
-import utils from "@/utils/utils";
+import {createSlug, cloneObject} from "@/utils/utils";
 import urlRegex from "url-regex";
 import { COLOR_NAMES } from "../constants/color-names.js";
 import { SOLUTION_DEFAULT } from "../constants/solution-config-default.js";
@@ -1053,7 +1053,7 @@ export default {
   },
   methods: {
     createSlug() {
-      this.solution.deepLink = utils.createSlug(this.solution.name);
+      this.solution.deepLink = createSlug(this.solution.name);
     },
     toggleFullscreen() {
       let dialogElements = document.getElementById("leopard-add-edit-dialog");
@@ -1097,7 +1097,7 @@ export default {
             this.config.solutions.splice(
               index,
               1,
-              utils.cloneObject(this.solution)
+              cloneObject(this.solution)
             );
             break;
           }
@@ -1105,8 +1105,8 @@ export default {
         // adding a new solution config
       } else {
         logger.debug("About to add a new solution");
-        this.config.solutions.push(utils.cloneObject(this.solution));
-        // this.selectedSolution = utils.cloneObject(this.solution);
+        this.config.solutions.push(cloneObject(this.solution));
+        // this.selectedSolution = cloneObject(this.solution);
         if (this.config.solutions.length === 1) {
           // first one added. Make it active
           this.config.activeSolution = this.solution.id;

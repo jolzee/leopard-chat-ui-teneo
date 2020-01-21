@@ -6,7 +6,10 @@
   </vue-plyr>
 </template>
 <script>
+import VuePlyr from "vue-plyr";
+import "plyr/dist/plyr.css";
 export default {
+  components: { VuePlyr },
   props: ["url", "type"],
   data() {
     return {};

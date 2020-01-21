@@ -1,7 +1,11 @@
 const logger = require("@/utils/logging").getLogger("setup.js");
-import utils from "@/utils/utils";
+import {
+  doesParameterExist,
+  getParameterByName,
+  fixSolutions
+} from "@/utils/utils";
 import { Ripple } from "vuetify/lib/directives";
-const superagent = require("superagent");
+import superagent from "superagent";
 import PromisedLocation from "promised-location";
 
 import { COLOR_NAMES } from "../constants/color-names.js";
@@ -9,7 +13,7 @@ import Vue from "vue";
 import "@/utils/vee-validate";
 
 import "vue-loaders/dist/vue-loaders.css";
-import "plyr/dist/plyr.css";
+
 import "vue2-animate/dist/vue2-animate.min.css";
 // import "@mdi/font/css/materialdesignicons.css";
 
@@ -72,10 +76,9 @@ export default class Setup {
     this.ASR_CORRECTIONS_MERGED;
     this.liveChat;
     this.CHAT_TITLE = "Configure Me";
-    this.IS_AGENT_ASSIST = utils.doesParameterExist("plugin_id");
-    this.EMBED =
-      utils.doesParameterExist("embed") || utils.doesParameterExist("button");
-    this.SHOW_BUTTON_ONLY = utils.doesParameterExist("button");
+    this.IS_AGENT_ASSIST = doesParameterExist("plugin_id");
+    this.EMBED = doesParameterExist("embed") || doesParameterExist("button");
+    this.SHOW_BUTTON_ONLY = doesParameterExist("button");
     this.ENABLE_LIVE_CHAT = false;
     this.FLOAT = false;
     this.THEME = {
@@ -108,7 +111,7 @@ export default class Setup {
     return new Promise((resolve, reject) => {
       this.getSolutionConfig()
         .then(() => {
-          this.chatConfig = utils.fixSolutions(this.chatConfig);
+          this.chatConfig = fixSolutions(this.chatConfig);
           if (!this.EMBED && !this.SHOW_BUTTON_ONLY) {
             this.addIframeHtml();
           }
@@ -117,7 +120,7 @@ export default class Setup {
 
           if (this.chatConfig && this.chatConfig.activeSolution) {
             logger.debug(`Active Solution: ${this.chatConfig.activeSolution}`);
-            let deepLink = utils.getParameterByName("dl"); // look for deep link
+            let deepLink = getParameterByName("dl"); // look for deep link
             if (!deepLink) {
               logger.debug(
                 `No deep link found in the current url - load default solution`
@@ -179,7 +182,7 @@ export default class Setup {
 
             this.ENABLE_LIVE_CHAT =
               this.activeSolution.enableLiveChat &&
-              !utils.doesParameterExist("plugin_id");
+              !doesParameterExist("plugin_id");
             this.UNIQUE_KEY =
               this.activeSolution.deepLink +
               (window.location.href.indexOf("mobile=true") > -1

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import "regenerator-runtime/runtime";
 const logger = require("@/utils/logging").getLogger("store.js");
-import utils from "@/utils/utils";
+import { doesParameterExist, getParameterByName } from "@/utils/utils";
 import router from "@/router";
 import dayjs from "dayjs";
 import LiveChat from "@livechat/agent-app-widget-sdk";
@@ -30,10 +30,10 @@ import Vue from "vue";
 import VueJsonp from "vue-jsonp";
 import Vuex from "vuex";
 import vuexI18n from "vuex-i18n"; // i18n the leopard interface
-import VuePlyr from "vue-plyr";
+// import VuePlyr from "vue-plyr";
 import Listening from "./components/Listening.vue"; // component dialog that shows then capturing audio
 import Modal from "./components/Modal.vue";
-import Prism from "prismjs";
+
 import VueLoadersBallPulseSync from "vue-loaders/dist/loaders/ball-pulse-sync";
 import VueLoadersLineScale from "vue-loaders/dist/loaders/line-scale";
 import VueLoadersLineScalePulseOutRapid from "vue-loaders/dist/loaders/line-scale-pulse-out-rapid";
@@ -49,8 +49,7 @@ let config = new Setup();
 Vue.use(VueJsonp, 20000);
 Vue.use(Vuex);
 
-Vue.use(VuePlyr);
-Vue.use(Prism);
+// Vue.use(VuePlyr);
 
 Vue.use(require("vue-shortkey"));
 
@@ -99,8 +98,8 @@ function storeSetup(vuetify) {
       activeSolution: config.activeSolution,
       connection: {
         requestParameters: config.REQUEST_PARAMETERS,
-        ctxParameters: utils.doesParameterExist("teneoCtx")
-          ? JSON.parse(utils.getParameterByName("teneoCtx"))
+        ctxParameters: doesParameterExist("teneoCtx")
+          ? JSON.parse(getParameterByName("teneoCtx"))
           : "",
         teneoUrl: config.TENEO_URL
       },
