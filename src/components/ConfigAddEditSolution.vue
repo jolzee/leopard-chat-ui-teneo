@@ -1150,7 +1150,7 @@ export default {
         values: [
           {
             text: "",
-            active: false
+            active: true
           }
         ]
       });
