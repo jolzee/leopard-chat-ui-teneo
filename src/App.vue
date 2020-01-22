@@ -845,30 +845,34 @@ export default {
     logout() {
       this.drawer = false;
       document.activeElement.blur();
-      let chatButton = document.getElementById("chat-open-close-button");
-      let siteFrame;
-      if (!this.embed && !this.showButtonOnly) {
-        siteFrame = document.getElementById("site-frame");
+      if (this.embed) {
+        this.closeChatEmbedded();
+        this.$store.dispatch("logoutSocial");
+      } else {
+        let chatButton = document.getElementById("chat-open-close-button");
+        let siteFrame;
+        if (!this.embed && !this.showButtonOnly) {
+          siteFrame = document.getElementById("site-frame");
+        }
+        this.drawer = false;
+        this.$store.commit("HIDE_CHAT_MODAL");
+        this.$store.dispatch("logoutSocial");
+
+        // hide chat window - button clicked - logout
+
+        if (!this.embed && !this.overlayChat && siteFrame) {
+          siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
+        }
+        setTimeout(
+          function() {
+            this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // close the chat window - i want the iframe to resize first and then the chat window to close
+            if (chatButton) {
+              chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
+            }
+          }.bind(this),
+          1000
+        );
       }
-      this.drawer = false;
-      this.$store.commit("HIDE_CHAT_MODAL");
-      this.$store.dispatch("logoutSocial");
-
-      // hide chat window - button clicked - logout
-
-      if (!this.embed && !this.overlayChat && siteFrame) {
-        siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
-      }
-
-      setTimeout(
-        function() {
-          this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // close the chat window - i want the iframe to resize first and then the chat window to close
-          if (chatButton) {
-            chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
-          }
-        }.bind(this),
-        1000
-      );
 
       // this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // was removed
       this.loginPerformed = false;
