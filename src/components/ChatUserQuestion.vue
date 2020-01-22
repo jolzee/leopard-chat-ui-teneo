@@ -67,6 +67,7 @@
       <template v-else>
         <v-avatar
           tabindex="-1"
+          aria-hidden="true"
           v-if="authenticated && userProfileImage"
           v-long-press="1000"
           @long-press-start="swapInputButton"
@@ -80,6 +81,7 @@
         <v-btn
           v-else
           aria-hidden="true"
+          tabindex="-1"
           v-long-press="1000"
           @long-press-start="swapInputButton"
           class="teneo-userinput-icon"
