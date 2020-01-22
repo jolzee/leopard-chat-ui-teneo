@@ -49,17 +49,20 @@
         <v-system-bar color="primary darken-2" :class="{ 'popup-header': !fullscreen }" dark>
           <v-spacer></v-spacer>
           <v-icon
+            tabindex="0"
+            tag="button"
+            :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
             @click="toggleFullscreen"
             v-if="
               currentModalPosition !== 'fullscreen' &&
-                currentModalSize !== 'fullscreen'
+                currentModalSize !== 'fullscreen' && !embed
             "
           >
             {{
             fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
             }}
           </v-icon>
-          <v-icon @click="hideModal">mdi-close</v-icon>
+          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="hideModal">mdi-close</v-icon>
         </v-system-bar>
 
         <v-app-bar dark color="primary" dense>

@@ -33,12 +33,23 @@
           >{{ selectedSolution.name }}</span>-->
         </span>
         <v-spacer></v-spacer>
-        <v-icon @click="toggleFullscreen">
+        <v-icon
+          v-if="!embed"
+          tabindex="0"
+          tag="button"
+          :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
+          @click="toggleFullscreen"
+        >
           {{
           fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
           }}
         </v-icon>
-        <v-icon @click="closeConfigArea(false)">mdi-close</v-icon>
+        <v-icon
+          tabindex="0"
+          tag="button"
+          aria-label="Close Config Area"
+          @click="closeConfigArea(false)"
+        >mdi-close</v-icon>
       </v-system-bar>
       <v-app-bar color="#2F286B" max-height="64px">
         <!-- show the nicely formatted view of the full configuration -->
@@ -732,6 +743,7 @@ import {
 import "prismjs/prism";
 import "prismjs/themes/prism-funky.css";
 import "prismjs/components/prism-json.min.js";
+import { mapGetters } from "vuex";
 // import ConfigAddEditSolution from "../components/ConfigAddEditSolution";
 // import Dialog from "../components/Dialog";
 // import Prism from "vue-prism-component";
@@ -810,6 +822,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(["embed"]),
     getDefaultSolutionName() {
       let defaultSolution = this.config.solutions.find(
         solution => solution.id === this.config.activeSolution

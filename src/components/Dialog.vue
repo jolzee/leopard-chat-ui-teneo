@@ -40,13 +40,19 @@
         >
           <v-spacer style="height:30px"></v-spacer>
 
-          <v-icon @click="toggleFullscreen">
+          <v-icon
+            tabindex="0"
+            tag="button"
+            v-if="!embed"
+            :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
+            @click="toggleFullscreen"
+          >
             {{
             fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
             }}
           </v-icon>
 
-          <v-icon @click="close">mdi-close</v-icon>
+          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close">mdi-close</v-icon>
         </v-system-bar>
 
         <v-app-bar dark color="primary" dense>
@@ -83,7 +89,7 @@ export default {
   name: "Dialog",
   props: ["title", "show", "width"],
   computed: {
-    ...mapGetters(["uuid", "dark"])
+    ...mapGetters(["uuid", "dark", "embed"])
   },
   data() {
     return {

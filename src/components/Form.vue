@@ -31,13 +31,19 @@
           <v-system-bar color="primary darken-2" :class="{ 'popup-header': !fullscreen }" dark>
             <v-spacer></v-spacer>
 
-            <v-icon @click="fullscreen = !fullscreen">
+            <v-icon
+              v-if="!embed"
+              tabindex="0"
+              tag="button"
+              :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
+              @click="fullscreen = !fullscreen"
+            >
               {{
               fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
               }}
             </v-icon>
 
-            <v-icon @click="close">mdi-close</v-icon>
+            <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close">mdi-close</v-icon>
           </v-system-bar>
 
           <v-app-bar dark color="primary" dense>
@@ -963,7 +969,7 @@ export default {
   },
   props: ["formConfig"],
   computed: {
-    ...mapGetters(["uuid", "dark"])
+    ...mapGetters(["uuid", "dark", "embed"])
   },
   mounted() {
     this.setDefaults();

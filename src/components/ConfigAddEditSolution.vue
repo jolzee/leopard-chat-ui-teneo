@@ -20,13 +20,24 @@
       >
         <v-spacer style="height:30px"></v-spacer>
 
-        <v-icon @click="toggleFullscreen">
+        <v-icon
+          tabindex="0"
+          tag="button"
+          v-if="!embed"
+          :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
+          @click="toggleFullscreen"
+        >
           {{
           fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
           }}
         </v-icon>
 
-        <v-icon @click="closeAddNewSolutionDialog">mdi-close</v-icon>
+        <v-icon
+          tag="button"
+          aria-label="Close dialog"
+          tabindex="0"
+          @click="closeAddNewSolutionDialog"
+        >mdi-close</v-icon>
       </v-system-bar>
 
       <v-app-bar dark color="primary" dense>
@@ -802,6 +813,7 @@
 const logger = require("@/utils/logging").getLogger("ChatAddEditSolution.vue");
 import { createSlug, cloneObject } from "@/utils/utils";
 import urlRegex from "url-regex";
+import { mapGetters } from "vuex";
 import { COLOR_NAMES } from "../constants/color-names.js";
 import { SOLUTION_DEFAULT } from "../constants/solution-config-default.js";
 export default {
@@ -1045,6 +1057,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(["embed"]),
     themeColorsFiltered() {
       return this.themeColors.filter(function(color) {
         return color !== "white";
