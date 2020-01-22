@@ -245,6 +245,17 @@
               </v-col>
             </v-row>
             <v-row>
+              <v-col cols="12" class="my-0">
+                <v-subheader class="pb-10">Delay Teneo Responses in Milliseconds</v-subheader>
+                <v-slider
+                  v-model="solution.responseDelay"
+                  :min="responseDelay.min"
+                  :max="responseDelay.max"
+                  thumb-label="always"
+                ></v-slider>
+              </v-col>
+            </v-row>
+            <v-row>
               <v-col :cols="12">
                 <v-row align="center" justify="center" style="min-height: 300px; height: 300px;">
                   <transition
@@ -789,7 +800,7 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("ChatAddEditSolution.vue");
-import {createSlug, cloneObject} from "@/utils/utils";
+import { createSlug, cloneObject } from "@/utils/utils";
 import urlRegex from "url-regex";
 import { COLOR_NAMES } from "../constants/color-names.js";
 import { SOLUTION_DEFAULT } from "../constants/solution-config-default.js";
@@ -919,6 +930,11 @@ export default {
       showDialog: true,
       fullscreen: false,
       snackbarTimeout: 3000,
+      responseDelay: {
+        setting: 0,
+        min: 0,
+        max: 2000
+      },
       globalSnackbarMessage: "",
       globalSnackbar: false,
       globalSnackbarTimeout: 2000,
@@ -1094,11 +1110,7 @@ export default {
         logger.debug("About to save an edit to an existing solution");
         for (let index = 0; index < this.config.solutions.length; index++) {
           if (this.config.solutions[index].id === this.solution.id) {
-            this.config.solutions.splice(
-              index,
-              1,
-              cloneObject(this.solution)
-            );
+            this.config.solutions.splice(index, 1, cloneObject(this.solution));
             break;
           }
         }

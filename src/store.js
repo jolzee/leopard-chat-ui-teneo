@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import "regenerator-runtime/runtime";
 const logger = require("@/utils/logging").getLogger("store.js");
-import { doesParameterExist, getParameterByName } from "@/utils/utils";
+import { doesParameterExist, getParameterByName, sleep } from "@/utils/utils";
 import router from "@/router";
 import dayjs from "dayjs";
 import LiveChat from "@livechat/agent-app-widget-sdk";
@@ -186,6 +186,9 @@ function storeSetup(vuetify) {
     getters: {
       accessibleAnouncement(state) {
         return state.accessibleAnouncement;
+      },
+      responseDelay(state) {
+        return state.activeSolution.responseDelay;
       },
       leopardFont(state) {
         return state.activeSolution.font;
@@ -2001,7 +2004,7 @@ function storeSetup(vuetify) {
             });
         });
       },
-      sendUserInput(context, params = "") {
+      async sendUserInput(context, params = "") {
         // important because sometimes some weird object gets injected from chrome browser extensions
         if (typeof params !== "string") {
           params = "";
@@ -2024,8 +2027,8 @@ function storeSetup(vuetify) {
         }
 
         if (currentUserInput) {
-          var audio = new Audio(require("./assets/notification.mp3"));
           try {
+            var audio = new Audio(require("./assets/notification.mp3"));
             audio.play();
           } catch {}
         }
@@ -2046,6 +2049,8 @@ function storeSetup(vuetify) {
             "Call Teneo",
             `${teneoUrl}&userinput=${currentUserInput.trim()}`
           );
+
+          await sleep(context.getters.responseDelay); // delay responses if needed
 
           Vue.jsonp(teneoUrl, {
             userinput: currentUserInput.trim()
@@ -2111,8 +2116,8 @@ function storeSetup(vuetify) {
                 params.indexOf("command=prompt") !== -1 &&
                 json.responseData.answer.trim() !== ""
               ) {
-                var audio = new Audio(require("./assets/notification.mp3"));
                 try {
+                  var audio = new Audio(require("./assets/notification.mp3"));
                   audio.play();
                 } catch {}
               }

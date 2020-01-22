@@ -22,6 +22,7 @@ okkay | ok
     out: "flipOutY"
   },
   deepLink: "",
+  responseDelay: 0,
   enableLiveChat: false,
   float: true,
   font: "leopard-font-normal",

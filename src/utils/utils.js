@@ -14,6 +14,9 @@ export const fixSolution = solution => {
     // }
     solution.id = id;
   }
+  if (!("responseDelay" in solution)) {
+    solution.responseDelay = 0;
+  }
   if (!("font" in solution)) {
     solution.font = solutionDefault.font;
   }
@@ -547,6 +550,10 @@ export const loadScript = src => {
 //   console.log("b");
 // });
 export const wait = (ms = 0) => {
+  return new Promise(r => setTimeout(r, ms));
+};
+
+export const sleep = (ms = 0) => {
   return new Promise(r => setTimeout(r, ms));
 };
 
