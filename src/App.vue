@@ -952,7 +952,10 @@ export default {
             logger.debug("Successfully established chat session");
           })
           .catch(err => {
-            logger.error("ERROR LOGGING IN TO CHAT: ", err);
+            logger.debug(
+              "ERROR LOGGING IN TO CHAT - Could not login to: ",
+              err.teneoUrl
+            );
           });
       } else {
         this.$store.commit("HIDE_CHAT_LOADING");

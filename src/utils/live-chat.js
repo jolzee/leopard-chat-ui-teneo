@@ -281,12 +281,10 @@ export class LiveChat {
               this.store
                 .dispatch("login")
                 .then(() => {
-                  logger.debug(
-                    "LiveChat > Successfully established chat session"
-                  );
+                  logger.debug("Successfully established chat session");
                 })
                 .catch(err => {
-                  logger.error("LiveChat > ERROR LOGGING IN TO CHAT: ", err);
+                  logger.debug("ERROR LOGGING IN TO CHAT: ", err.teneoUrl);
                 });
             }
           }

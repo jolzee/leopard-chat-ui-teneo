@@ -1605,7 +1605,7 @@ function storeSetup(vuetify) {
                 ); // only show the chat button after a successful login
               })
               .catch(err => {
-                logger.error("ERROR LOGGING IN TO CHAT: ", err);
+                logger.debug("ERROR LOGGING IN TO CHAT: ", err.teneoUrl);
               });
           } else {
             context.commit("HIDE_CHAT_LOADING");
