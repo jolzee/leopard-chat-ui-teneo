@@ -97,6 +97,7 @@
             role="navigation"
             aria-label="Main Chat Bot Menu"
             enable-resize-watcher
+            overlay-opacity="0.07"
             temporary
             right
             width="250"
@@ -219,7 +220,7 @@
                 align="center"
                 justify="center"
                 class="primary darken-2"
-                style="height:64px"
+                style="height:67px"
               >
                 <div class="pa-2">
                   <a

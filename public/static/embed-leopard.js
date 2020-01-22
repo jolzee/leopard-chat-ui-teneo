@@ -86,6 +86,7 @@ var leopardChatTemplate = getLeopardTemplate(function() {
 
 @media only screen and (max-width: 480px) {
   .teneo-chat-widget {
+     z-index: 10000;
      top: 0;
      left: 0;
      -webkit-box-shadow: none;
