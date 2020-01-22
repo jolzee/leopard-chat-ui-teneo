@@ -227,7 +227,7 @@
                 class="primary darken-2"
                 style="height:67px"
               >
-                <div class="pa-2">
+                <div class="pa-2" role="img">
                   <a
                     href="https://www.artificial-solutions.com/"
                     class="leopard-img"
