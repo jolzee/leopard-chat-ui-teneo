@@ -208,7 +208,7 @@
             class="option-btn mr-2 mt-2"
             x-small
             color="success"
-            :aria-label="option.name"
+            :aria-label="option.aria ? option.aria : option.name"
             @click="optionClicked(option)"
           >{{ option.name }}</v-btn>
         </span>
@@ -219,8 +219,10 @@
         <v-list-item-group color="primary">
           <template v-for="(option, altOptionIndex) in getOptions.items">
             <v-list-item
+              tag="a"
               :key="altOptionIndex + 'tile' + uuid"
               @click="optionClicked(option)"
+              :aria-label="option.aria ? option.aria : option.name"
               class="text-left pl-2 pr-0"
               style="height: 40px"
               dense
@@ -230,7 +232,7 @@
               </v-list-item-icon>
               <v-list-item-content class="text-left">
                 <!-- <v-list-item-title v-html="option.name"></v-list-item-title> -->
-                <v-list-item-subtitle v-html="option.name" :aria-label="option.name"></v-list-item-subtitle>
+                <v-list-item-subtitle v-html="option.name"></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </template>
