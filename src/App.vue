@@ -35,7 +35,7 @@
         'application-mobile': isMobileDevice
       }"
     >
-      <AssistiveText ref="assistiveText" v-model="accessibleAnouncement"></AssistiveText>
+      <!-- <AssistiveText ref="assistiveText" v-model="accessibleAnouncement"></AssistiveText> -->
       <transition
         name="system-bar-transition"
         enter-active-class="animated fadeInRightBig"
@@ -115,22 +115,23 @@
             </v-row>
 
             <v-list role="list" class="px-2 mt-1" v-model="navigationDrawerModel">
-              <v-list-item
-                role="listitem"
-                ripple
-                aria-label="Back to Chat Bot"
-                value="true"
-                key="menuBackToChat"
-                @click="backToChat"
-              >
-                <v-list-item-action>
-                  <v-icon medium :class="menuClass">mdi-comment-arrow-left-outline</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title class="subheading" :class="menuClassText">Back to chat</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-
+              <div role="listitem">
+                <v-list-item
+                  ripple
+                  tag="a"
+                  aria-label="Back to Chat Bot"
+                  value="true"
+                  key="menuBackToChat"
+                  @click="backToChat"
+                >
+                  <v-list-item-action>
+                    <v-icon medium :class="menuClass">mdi-comment-arrow-left-outline</v-icon>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title class="subheading" :class="menuClassText">Back to chat</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </div>
               <div role="listitem" v-for="(menuItem, i) in activeMenuItems" :key="i + 'menuItem'">
                 <v-list-item ripple :aria-label="menuItem.ariaLabel" :to="menuItem.route">
                   <v-list-item-action>
@@ -149,49 +150,53 @@
                 </v-list-item>
               </div>
               <!-- toggle brightness -->
-              <v-list-item
-                ripple
-                value="true"
-                key="menuItemTheme"
-                :aria-label="$vuetify.theme.dark ? 'Light Mode' : 'Dark Mode'"
-                @click="toggleBrightness"
-                role="listitem"
-              >
-                <v-list-item-action>
-                  <v-icon
-                    medium
-                    :class="menuClass"
-                    v-text="
+              <div role="listitem">
+                <v-list-item
+                  ripple
+                  tag="a"
+                  value="true"
+                  key="menuItemTheme"
+                  :aria-label="$vuetify.theme.dark ? 'Light Mode' : 'Dark Mode'"
+                  @click="toggleBrightness"
+                >
+                  <v-list-item-action>
+                    <v-icon
+                      medium
+                      :class="menuClass"
+                      v-text="
                           $vuetify.theme.dark
                             ? 'mdi-brightness-5'
                             : 'mdi-brightness-4'
                         "
-                  ></v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title class="subheading" :class="menuClassText">
-                    {{
-                    $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
-                    }}
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
+                    ></v-icon>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title class="subheading" :class="menuClassText">
+                      {{
+                      $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
+                      }}
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </div>
               <!-- close button -->
-              <v-list-item
-                role="listitem"
-                ripple
-                aria-label="Close menu"
-                value="true"
-                key="menuCloseChatMenu"
-                @click="drawer=false"
-              >
-                <v-list-item-action>
-                  <v-icon medium :class="menuClass">mdi-backburger</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title class="subheading" :class="menuClassText">Close</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
+              <div role="listitem">
+                <v-list-item
+                  tag="a"
+                  ripple
+                  aria-label="Close menu"
+                  value="true"
+                  key="menuCloseChatMenu"
+                  @click="drawer=false"
+                >
+                  <v-list-item-action>
+                    <v-icon medium :class="menuClass">mdi-backburger</v-icon>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title class="subheading" :class="menuClassText">Close</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </div>
 
               <!-- logout -->
               <v-list-item
@@ -448,14 +453,14 @@ import "wicg-inert/dist/inert.min.js";
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "./constants/solution-config-default.js";
 const OverlayAlert = () => import("./components/OverlayAlert");
-import AssistiveText from "./components/AssistiveText.vue";
+// import AssistiveText from "./components/AssistiveText.vue";
 import jsonpack from "jsonpack/main";
 
 // import { createDetailsWidget } from "@livechat/agent-app-sdk";
 // import { createMessageBoxWidget } from "@livechat/agent-app-sdk";
 
 export default {
-  components: { OverlayAlert, AssistiveText },
+  components: { OverlayAlert },
   data() {
     return {
       liveChatAccessToken: null,
@@ -492,7 +497,7 @@ export default {
         {
           icon: "mdi-information-variant",
           titleKey: "menu.about",
-          ariaLabel: "Chat Bot Provider Information",
+          ariaLabel: "About Chat Bot",
           route: "about"
         },
         {
