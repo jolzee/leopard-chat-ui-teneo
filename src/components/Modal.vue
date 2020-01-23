@@ -439,9 +439,6 @@ export default {
 
             // check for panel card action
             if (extension.name === "displayPanelCard") {
-              if (!this.title) {
-                this.title = this.getFirstChunk(item.text);
-              }
               this.bodyText = extension.parameters.content;
             }
 
@@ -489,10 +486,12 @@ export default {
               } else {
                 this.youTubeVideoId = videoId;
               }
-
-              if (!this.title) {
-                this.title = this.getFirstChunk(item.text);
-              }
+            }
+            if (this.title) {
+              this.subTitle = this.getFirstChunk(item.text);
+            }
+            if (!this.title) {
+              this.title = this.getFirstChunk(item.text);
             }
           });
         }
@@ -790,7 +789,7 @@ export default {
 }
 
 .cardText table thead th {
-  font-size: 1.2em;
+  font-size: 1em;
   border-left: 1px solid black;
   color: white;
   background-color: rgb(152, 52, 53);
