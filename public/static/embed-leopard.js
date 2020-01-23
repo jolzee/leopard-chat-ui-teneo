@@ -124,6 +124,7 @@ var leopardChatTemplate = getLeopardTemplate(function() {
   <iframe
     src="[leopardUrl]index.html?embed[teneoCtxParams]"
     allowtransparency="true"
+    allowfullscreen="allowfullscreen"
     id="teneo-chat-widget"
     name="teneochatwidget"
     scrolling="no"
