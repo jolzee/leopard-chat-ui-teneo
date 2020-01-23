@@ -65,8 +65,11 @@
           <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="hideModal">mdi-close</v-icon>
         </v-system-bar>
 
-        <v-app-bar dark color="primary" dense>
-          <h2 class="subtitle-1">{{ $t("more.info.title") }}</h2>
+        <v-app-bar dark color="primary">
+          <h2
+            class="subtitle-1"
+            :aria-label="aria ? aria : title ? title : $t('more.info.title')"
+          >{{ title ? title : $t("more.info.title") }}</h2>
           <v-spacer></v-spacer>
         </v-app-bar>
         <v-card-text
@@ -78,7 +81,7 @@
             <v-row align="start" justify="start">
               <v-col cols="12" class="pa-2">
                 <!-- display the modal title and sub-title -->
-                <div v-if="title" v-html="title" class="subtitle-2 font-weight-bold"></div>
+
                 <!-- Sub-Title -->
                 <div class="subtitle-2 font-weight-bold" v-if="subTitle" v-html="subTitle"></div>
 
@@ -249,6 +252,7 @@ export default {
       tableEnableSearch: false,
       tableRowsPerPage: [5, 10, 25],
       title: "",
+      aria: "",
       transactionHeaders: [
         {
           align: "left",
@@ -344,6 +348,13 @@ export default {
             this.transactionItems = [];
             displayModal = true;
 
+            if (extension.title) {
+              this.title = extension.title;
+            }
+            if (extension.aria) {
+              this.aria = extension.aria;
+            }
+
             // check for modal sizes and positions
             if (this.modalSize(item) !== "undefined") {
               this.currentModalSize = this.modalSize(item);
@@ -355,7 +366,7 @@ export default {
 
             // check for flight itinerary
             if (extension.name === "displayItinerary") {
-              this.title = this.getFirstChunk(item.text);
+              this.subTitle = this.getFirstChunk(item.text);
               this.itinerary = extension.parameters;
             }
 
@@ -367,7 +378,9 @@ export default {
               ) {
                 this.title = extension.parameters.title;
               } else {
-                this.title = this.getFirstChunk(item.text);
+                if (!this.title) {
+                  this.title = this.getFirstChunk(item.text);
+                }
                 this.tableTitle = extension.parameters.title;
               }
               this.tableEnableSearch = extension.parameters.enableSearch;
@@ -378,7 +391,9 @@ export default {
 
             // check for displayTranactionTable - myBank
             if (extension.name === "displayTransactionsTable") {
-              this.title = this.getFirstChunk(item.text);
+              if (!this.title) {
+                this.title = this.getFirstChunk(item.text);
+              }
               this.transactionItems = [];
               extension.parameters.transactions.transactions.forEach(
                 transaction => {
@@ -394,13 +409,17 @@ export default {
 
             // check for display image action
             if (extension.name === "displayImage") {
-              this.title = this.getFirstChunk(item.text);
+              if (!this.title) {
+                this.title = this.getFirstChunk(item.text);
+              }
               this.imageUrl = extension.parameters.image_url;
             }
 
             // check for display image action
             if (extension.name === "displayImageCarousel") {
-              this.title = this.getFirstChunk(item.text);
+              if (!this.title) {
+                this.title = this.getFirstChunk(item.text);
+              }
               this.images = extension.parameters.images;
             }
 
@@ -419,7 +438,9 @@ export default {
 
             // check for panel card action
             if (extension.name === "displayPanelCard") {
-              this.title = this.getFirstChunk(item.text);
+              if (!this.title) {
+                this.title = this.getFirstChunk(item.text);
+              }
               this.bodyText = extension.parameters.content;
             }
 
@@ -468,7 +489,9 @@ export default {
                 this.youTubeVideoId = videoId;
               }
 
-              this.title = this.getFirstChunk(item.text);
+              if (!this.title) {
+                this.title = this.getFirstChunk(item.text);
+              }
             }
           });
         }
@@ -706,6 +729,7 @@ export default {
       this.tableEnableSearch = false;
       this.tableRowsPerPage = [5, 10, 25];
       this.title = "";
+      this.aria = "";
       this.transactionItems = [];
       this.videoType = "";
       this.videoUrl = "";

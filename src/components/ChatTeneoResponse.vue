@@ -538,7 +538,7 @@ export default {
         }
       });
       if (countOfNonInlines > 1) {
-        return this.$t("button.more");
+        return this.$t("button.more"); // fallback to "more" when there could be multiple
       }
       return buttonLabel;
     },

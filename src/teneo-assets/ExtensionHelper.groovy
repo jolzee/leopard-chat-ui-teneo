@@ -102,7 +102,7 @@ class ExtensionHelper {
 
     static String displayImage(Map config) {
         Map params = [image_url: config.imageUrl]
-        Map attachment = [name: 'displayImage', parameters: params, inline: config.get('inline', true)]
+        Map attachment = [name: 'displayImage', title: config.get("title", ""), aria: config.get("aria", config.get("title", "Displaying an Image")), parameters: params, inline: config.get('inline', true)]
         JsonOutput.toJson(attachment)
     }
 
@@ -112,15 +112,27 @@ class ExtensionHelper {
         JsonOutput.toJson(attachment)
     }
 
+    static String displayImage(def title, def aria, def imageUrl, def channel, def inline = false) {
+        Map params = [image_url: imageUrl]
+        Map attachment = [name: 'displayImage', title: title, aria: aria, parameters: params, inline: inline]
+        JsonOutput.toJson(attachment)
+    }
+
     static String displayImageCarousel(Map config) {
         Map params = [images: config.images]
-        Map attachment = [name: 'displayImageCarousel', parameters: params, inline: config.get('inline', true)]
+        Map attachment = [name: 'displayImageCarousel', title: config.get("title", ""), aria: config.get("aria", config.get("title", "Showing an Image Caroucel")), parameters: params, inline: config.get('inline', true)]
         JsonOutput.toJson(attachment)
     }
 
     static String displayImageCarousel(def images, def channel, def inline = false) {
         Map params = [images: images]
         Map attachment = [name: 'displayImageCarousel', parameters: params, inline: inline]
+        JsonOutput.toJson(attachment)
+    }
+
+    static String displayImageCarousel(def title, def aria, def images, def channel, def inline = false) {
+        Map params = [images: images]
+        Map attachment = [name: 'displayImageCarousel', title: title, aria: aria, parameters: params, inline: inline]
         JsonOutput.toJson(attachment)
     }
 
@@ -144,15 +156,35 @@ class ExtensionHelper {
         return result
     }
 
+    static String displayModal(def title, def aria, def model, String template) {
+        def result = ""
+        def items = []
+
+        try {
+            Pattern regex = Pattern.compile("(?:\\s|^)(\\w*)\\.(\\w*)", Pattern.CANON_EQ)
+            Matcher regexMatcher = regex.matcher(template)
+            while (regexMatcher.find()) {
+                def item = [type: regexMatcher.group(1), value: model[regexMatcher.group(2),]]
+                items.add(item)
+
+            }
+            Map attachment = ['name': 'displayModal', title: title, aria: aria, 'items': items]
+            result = JsonOutput.toJson(attachment)
+        } catch (PatternSyntaxException ex) {
+            ex.printStackTrace()
+        }
+        return result
+    }
+
     static String displayVideo(Map config) {
         Map params = [video_url: config.videoUrl]
-        Map attachment = [name: 'displayVideo', parameters: params, inline: config.get('inline', true)]
+        Map attachment = [name: 'displayVideo', title: config.get("title", ""), aria: config.get("aria", config.get("title", "Displaying a Video")), parameters: params, inline: config.get('inline', true)]
         JsonOutput.toJson(attachment)
     }
 
     static String displayMap(Map config) {
         Map params = [address: config.address]
-        Map attachment = [name: 'displayMap', parameters: params, inline: config.get('inline', true)]
+        Map attachment = [name: 'displayMap', title: config.get("title", ""), aria: config.get("aria", config.get("title", "Displaying a Map")), parameters: params, inline: config.get('inline', true)]
         JsonOutput.toJson(attachment)
     }
 
@@ -162,9 +194,15 @@ class ExtensionHelper {
         JsonOutput.toJson(attachment)
     }
 
+    static String displayMap(def title, def aria, def address, def channel, def inline = false) {
+        Map params = [address: address]
+        Map attachment = [name: 'displayMap', title: title, aria: aria, parameters: params, inline: inline]
+        JsonOutput.toJson(attachment)
+    }
+
     static String displayAudio(Map config) {
         Map params = [video_url: config.videoUrl]
-        Map attachment = [name: 'displayVideo', parameters: params, inline: config.get('inline', true)]
+        Map attachment = [name: 'displayVideo', title: config.get("title", ""), aria: config.get("aria", config.get("title", "Displaying a Video")), parameters: params, inline: config.get('inline', true)]
         JsonOutput.toJson(attachment)
     }
 
@@ -174,15 +212,33 @@ class ExtensionHelper {
         JsonOutput.toJson(attachment)
     }
 
+    static String displayVideo(def title, def aria, def videoUrl, def channel, def inline = false) {
+        Map params = [video_url: videoUrl]
+        Map attachment = [name: 'displayVideo', title: title, aria: aria, parameters: params, inline: inline]
+        JsonOutput.toJson(attachment)
+    }
+
     static String displayPanel(Map config) {
         Map params = ['content': config.content]
-        Map attachment = [name: 'displayPanelCard', parameters: params]
+        Map attachment = [name: 'displayPanelCard', title: config.get("title", ""), aria: config.get("aria", config.get("title", "Displaying a Panel")), parameters: params]
         JsonOutput.toJson(attachment)
     }
 
     static String displayPanel(def content, def channel) {
         Map params = ['content': content]
         Map attachment = [name: 'displayPanelCard', parameters: params]
+        JsonOutput.toJson(attachment)
+    }
+
+    static String displayPanel(def title, def aria, def content, def channel) {
+        Map params = ['content': content]
+        Map attachment = [name: 'displayPanelCard', title: title, aria: aria, parameters: params]
+        JsonOutput.toJson(attachment)
+    }
+
+    static String displayPanel(def title, def content, def channel) {
+        Map params = ['content': content]
+        Map attachment = [name: 'displayPanelCard', title: title, aria: title, parameters: params]
         JsonOutput.toJson(attachment)
     }
 
@@ -215,7 +271,7 @@ class ExtensionHelper {
                     color = 'error'
                     icon = 'mdi-alert-decagram-outline'
                 }
-                def theStep = [label : label, color: color, icon: icon]
+                def theStep = [label: label, color: color, icon: icon]
                 items.push(theStep)
         }
 
