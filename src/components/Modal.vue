@@ -776,6 +776,11 @@ export default {
   font-size: 0.7em;
 }
 
+#chat-modal-html {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
 .cardText table {
   width: 100%;
   border-spacing: 0;
