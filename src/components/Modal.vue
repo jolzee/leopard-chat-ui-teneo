@@ -778,34 +778,33 @@ export default {
 }
 
 .cardText table {
-  border-collapse: collapse;
-  text-align: left;
   width: 100%;
-  border: 3px solid rgb(105, 104, 104);
+  border-spacing: 0;
+  border: 1px solid;
 }
 
 .cardText table td,
 .cardText table th {
   padding: 3px 10px;
+  font-size: 1em;
 }
 
 .cardText table thead th {
-  background-color: #8e8e93b5;
-  font-size: 11px;
-  font-weight: 700;
-  border-left: 1px solid #333;
+  font-size: 1.2em;
+  border-left: 1px solid black;
+  color: white;
+  background-color: rgb(152, 52, 53);
 }
 
 .cardText table td.summaryHeader {
-  border-top: 1px solid #8e8e93;
-  border-bottom: 1px solid #8e8e93;
-  background-color: #fafafa;
+  background-color: rgb(22, 54, 102, 0.8);
+  color: white;
 }
 
 .cardText table tbody td {
-  border-left: 1px solid #8e8e93;
+  border-left: 1px solid black;
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 700;
 }
 
 .cardText table tbody td:first-child {
