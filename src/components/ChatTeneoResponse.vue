@@ -117,6 +117,33 @@
           <Carousel :imageItems="carouselImageArray(extension)" class="mt-2"></Carousel>
         </v-col>
       </v-row>
+      <v-row v-if="hasInlineType(extension, 'table')" no-gutters class="px-3 pt-2">
+        <v-col cols="12">
+          <v-simple-table
+            class="elevation-2"
+            :dense="extension.dense"
+            :fixed-header="extension.fixedHeader"
+            :height="extension.maxHeight ? extension.maxHeight : undefined"
+          >
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th
+                    class="text-left"
+                    v-for="header in extension.headers"
+                    :key="header + uuid"
+                  >{{header}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row, index) in extension.rows" :key="index + uuid">
+                  <td v-for="(column, colIndex) in row" :key="colIndex + uuid">{{ column }}</td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-col>
+      </v-row>
     </span>
     <!-- Additional Response Chunks -->
     <div v-if="responseHasChunks">
@@ -393,6 +420,17 @@ export default {
   props: ["item", "itemIndexInDialog"],
   data() {
     return {
+      simpleTable: {
+        name: "displaySimpleTable",
+        dense: false,
+        maxHeight: null,
+        fixedHeader: false,
+        headers: ["Account", "Balance"],
+        rows: [
+          ["Current", "$1271.21"],
+          ["Private", "$137.54"]
+        ]
+      },
       snackbar: false,
       snackBarTimeout: 1500,
       snackBarText: "Success",

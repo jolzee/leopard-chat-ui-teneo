@@ -673,6 +673,11 @@ function storeSetup(vuetify) {
                 return true;
               }
               break;
+            case "table":
+              if (extension.name === "displaySimpleTable") {
+                return true;
+              }
+              break;
             case "image":
               if (getters.imageUrl(extension)) {
                 return true;
