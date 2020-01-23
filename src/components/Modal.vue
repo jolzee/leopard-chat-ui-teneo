@@ -514,6 +514,11 @@ export default {
           );
         }
         this.showModal = displayModal;
+
+        if (this.title.length > 90) {
+          this.subTitle = this.title;
+          this.title = "";
+        }
       } else {
         this.showModal = false;
       }
