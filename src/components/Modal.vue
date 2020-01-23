@@ -194,6 +194,7 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("Modal.vue");
+import { stripHtmlTags } from "@/utils/utils";
 // import Audio from "./Audio";
 // import Carousel from "./Carousel";
 // import CustomModal from "./CustomModal";
@@ -519,6 +520,7 @@ export default {
           this.subTitle = this.title;
           this.title = "";
         }
+        this.title = stripHtmlTags(this.title);
       } else {
         this.showModal = false;
       }
