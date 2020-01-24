@@ -728,6 +728,7 @@ const logger = require("@/utils/logging").getLogger("Config.vue");
 import {
   doesParameterExist,
   fixSolutions,
+  fixSolution,
   cloneObject,
   uuid,
   generateRandomId,

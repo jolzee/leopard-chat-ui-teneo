@@ -1420,6 +1420,7 @@ function storeSetup(vuetify) {
       },
       USER_INFO(state, userInfo) {
         state.auth.userInfo.user = userInfo.user;
+        // TODO: tell sentry and logrocket
       },
       CHANGE_ASR_TTS(state, lang) {
         state.tts.tts = initializeTTS(lang);

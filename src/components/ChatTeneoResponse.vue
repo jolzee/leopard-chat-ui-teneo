@@ -176,7 +176,7 @@
             :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
             :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           >
-            <span class="teneo-reply">
+            <span class="teneo-reply" :class="`${leopardFont} ${responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`">
               <span v-html="addAccessibilityPrefix(chunkText)"></span>
             </span>
           </v-card>
