@@ -4,6 +4,7 @@
 const replaceString = require("replace-string");
 const solutionDefault = require("../constants/solution-config-default")
   .SOLUTION_DEFAULT;
+const jsonpack = require("jsonpack/main");
 
 export const fixSolution = solution => {
   if (!("id" in solution)) {
@@ -349,6 +350,12 @@ export const escapeUnicode = (str, shouldEscapePrintable) => {
  */
 export const stripHtmlTags = str => {
   return str.replace(/<[^>]*>/g, "");
+};
+
+export const createSharableLink = solution => {
+  return `${location.protocol}//${location.host}${
+    location.pathname
+  }?import=${encodeURIComponent(jsonpack.pack(solution))}`;
 };
 
 /**

@@ -25,7 +25,7 @@
     <v-row justify="center" class="pb-3">
       <v-card-actions>
         <v-btn
-          color="primary"
+          color="secondary"
           aria-label="Back to Chat Bot"
           ripple
           to="/"

@@ -300,7 +300,13 @@
           @handleFocus="handleFocus()"
         />
 
-        <v-btn color="success" aria-label="Show Form" class="mt-2" small @click="showForm()">
+        <v-btn
+          color="success"
+          aria-label="Form needs filling opens in a new window"
+          class="mt-2"
+          small
+          @click="showForm()"
+        >
           {{
           getFormConfig && getFormConfig.openFormButtonText
           ? getFormConfig.openFormButtonText
@@ -318,8 +324,14 @@
       class="mt-0 mr-3"
     >
       <v-col cols="12" class="text-right mb-1">
-        <v-btn :aria-label="modalButtonText" color="success" class="mt-2" small @click="showModal">
-          {{ modalButtonText }}
+        <v-btn
+          :aria-label="modalButtonText.aria"
+          color="success"
+          class="mt-2"
+          small
+          @click="showModal"
+        >
+          {{ modalButtonText.text }}
           <v-icon right small color="white">{{ modalButtonIcon }}</v-icon>
         </v-btn>
       </v-col>
@@ -554,31 +566,75 @@ export default {
       return filtered;
     },
     modalButtonText() {
+      let response = {
+        text: this.$t("button.more"),
+        aria: this.$t("button.more")
+      };
+
       if (this.itemHasLongResponse(this.item)) {
-        return this.$t("button.more");
+        response.aria = "Read full response will open in a new window.";
+        return response;
       }
       let extensions = this.itemExtensions(this.item);
       let countOfNonInlines = 0;
       let buttonLabel = this.$t("button.more");
-      extensions.forEach(extension => {
-        if (!extension.inline || this.item.teneoResponse.link.href !== "") {
-          countOfNonInlines++;
-        }
+      let aria = this.$t("button.more");
+
+      if (this.item.teneoResponse.link.href !== "") {
+        aria = `Website ${aria}`;
+        buttonLabel = this.$t("button.page");
+      }
+
+      let externalExtensions = extensions.filter(
+        extension =>
+          this.item.teneoResponse.link.href === "" &&
+          (!extension.name.startsWith("displayCollection") ||
+            ("inline" in extension && !extension.inline))
+      );
+
+      externalExtensions.forEach(extension => {
+        let ariaButtonLabel = extension.title
+          ? extension.title
+          : extension.aria
+          ? extension.aria
+          : "";
+        aria = ariaButtonLabel
+          ? `about "${ariaButtonLabel}" will open in a new window`
+          : `available will open in a new window`;
+
+        countOfNonInlines++;
         if (extension.name.startsWith("displayVideo")) {
           buttonLabel = this.$t("button.video");
+          aria = `Video ${aria}`;
+        } else if (extension.name.startsWith("displayPanel")) {
+          buttonLabel = this.$t("button.more");
+          aria = `More information ${aria}`;
         } else if (extension.name.startsWith("displayImage")) {
           buttonLabel = this.$t("button.image");
+          aria = `Image ${aria}`;
+        } else if (extension.name.startsWith("displayImageCarousel")) {
+          buttonLabel = this.$t("button.image");
+          aria = `Image carousel ${aria}`;
+        } else if (extension.name.startsWith("displayModal")) {
+          buttonLabel = this.$t("button.more");
+          aria = `More information ${aria}`;
+        } else if (extension.name.startsWith("displayMap")) {
+          buttonLabel = this.$t("button.map");
+          aria = `Map ${aria}`;
         } else if (extension.name.startsWith("displayTable")) {
+          aria = `Table ${aria}`;
           buttonLabel = this.$t("button.table");
-        }
-        if (this.item.teneoResponse.link.href !== "") {
-          buttonLabel = this.$t("button.page");
         }
       });
       if (countOfNonInlines > 1) {
-        return this.$t("button.more"); // fallback to "more" when there could be multiple
+        aria = "More information will open in a new window";
+        buttonLabel = this.$t("button.more"); // fallback to "more" when there could be multiple
       }
-      return buttonLabel;
+      response.aria = !aria.startsWith("available")
+        ? aria
+        : "More information will open in a new window";
+      response.text = buttonLabel ? buttonLabel : this.$t("button.more");
+      return response;
     },
     modalButtonIcon() {
       let extensions = this.itemExtensions(this.item);
@@ -595,6 +651,12 @@ export default {
           iconName = "mdi-file-image";
         } else if (extension.name.startsWith("displayTable")) {
           iconName = "mdi-table-large";
+        } else if (extension.name.startsWith("displayMap")) {
+          iconName = "mdi-google-maps";
+        } else if (extension.name.startsWith("displayAudio")) {
+          iconName = "mdi-music-box";
+        } else if (extension.name.startsWith("displayImageCarousel")) {
+          iconName = "mdi-file-image";
         }
 
         if (this.item.teneoResponse.link.href !== "") {

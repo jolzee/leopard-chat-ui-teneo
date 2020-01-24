@@ -731,7 +731,8 @@ import {
   cloneObject,
   uuid,
   generateRandomId,
-  download
+  download,
+  createSharableLink
 } from "@/utils/utils";
 import dayjs from "dayjs";
 // import Prism from "prismjs";
@@ -747,7 +748,6 @@ import { mapGetters } from "vuex";
 // import ConfigAddEditSolution from "../components/ConfigAddEditSolution";
 // import Dialog from "../components/Dialog";
 // import Prism from "vue-prism-component";
-import jsonpack from "jsonpack/main";
 
 export default {
   name: "ConfigView",
@@ -998,12 +998,7 @@ export default {
       this.fullscreen = !this.fullscreen;
     },
     createShareLinkForSolution() {
-      let configValue = encodeURIComponent(
-        jsonpack.pack(this.selectedSolution)
-      );
-
-      const sharableLink = `${location.protocol}//${location.host}${location.pathname}?import=${configValue}`;
-      copy(sharableLink);
+      copy(createSharableLink(this.selectedSolution));
       this.displaySnackBar(
         "📋 Copied Solution Sharable Import Link to Clipboard 🔗"
       );

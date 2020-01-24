@@ -2,7 +2,8 @@ const logger = require("@/utils/logging").getLogger("setup.js");
 import {
   doesParameterExist,
   getParameterByName,
-  fixSolutions
+  fixSolutions,
+  createSharableLink
 } from "@/utils/utils";
 import { Ripple } from "vuetify/lib/directives";
 import superagent from "superagent";
@@ -29,6 +30,8 @@ import { LiveChat } from "./live-chat";
 import { STORAGE_KEY } from "../constants/solution-config-default";
 
 let logrocketPlugin = null;
+let logRocket = null;
+let sentry = null;
 
 // start LogRocket Setup
 if (
@@ -37,6 +40,7 @@ if (
 ) {
   import("logrocket")
     .then(({ default: LogRocket }) => {
+      logRocket = LogRocket;
       logger.debug(`Setting up LogRocket 🚀`);
       LogRocket.init(window.leopardConfig.logging.logRocket);
       import("logrocket-vuex").then(({ default: createPlugin }) => {
@@ -62,6 +66,7 @@ if (
         integrations: [new Integrations.Vue({ Vue, attachProps: true })],
         logErrors: true
       });
+      sentry = Sentry;
     }
   );
 }
@@ -229,7 +234,7 @@ export default class Setup {
                 light: this.THEME,
                 dark: {
                   primary: "#161616",
-                  secondary: "#575757",
+                  secondary: "#0F6695",
                   accent: "#00FF00",
                   error: "#FF4B4B",
                   info: "#1E92D0",
@@ -242,6 +247,19 @@ export default class Setup {
               Ripple
             }
           });
+          setTimeout(() => {
+            if (logRocket && sentry) {
+              logRocket.getSessionURL(sessionURL => {
+                sentry.configureScope(scope => {
+                  scope.setExtra(
+                    "teneoSolutionURL",
+                    createSharableLink(this.activeSolution)
+                  );
+                  scope.setExtra("sessionURL", sessionURL);
+                });
+              });
+            }
+          }, 2000);
           resolve(vuetify);
         })
         .catch(error => {

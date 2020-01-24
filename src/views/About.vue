@@ -13,13 +13,13 @@
       <v-card-actions>
         <v-btn
           :loading="loading"
-          color="primary"
+          color="secondary"
           aria-label="Learn More about Artificial Solutions opens in a new window"
           :href="$t('about.page.url')"
           target="_blank"
         >{{ $t("about.page.button") }}</v-btn>
         <v-btn
-          color="primary"
+          color="secondary"
           aria-label="Back to Chat Bot"
           ripple
           to="/"

@@ -29,7 +29,8 @@ export const TRANSLATIONS = {
     "button.table": "Results Table",
     "button.page": "Page",
     "button.more": "More",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   },
   fr: {
     "about.page.button": "Apprendre encore plus",
@@ -62,7 +63,8 @@ export const TRANSLATIONS = {
     "button.table": "Tableau de résultats",
     "button.page": "Page",
     "button.more": "Plus",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   },
   de: {
     "about.page.button": "Erfahren Sie mehr",
@@ -95,7 +97,8 @@ export const TRANSLATIONS = {
     "button.table": "Ergebnistabelle",
     "button.page": "Seite",
     "button.more": "Mehr",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   },
   nl: {
     "about.page.button": "Meer informatie",
@@ -128,7 +131,8 @@ export const TRANSLATIONS = {
     "button.table": "Tabel met resultaten",
     "button.page": "Pagina",
     "button.more": "Meer",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   },
   es: {
     "about.page.button": "Aprende más",
@@ -161,7 +165,8 @@ export const TRANSLATIONS = {
     "button.table": "Tabla de resultados",
     "button.page": "Página",
     "button.more": "Más",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   },
   ru: {
     "about.page.button": "Учить больше",
@@ -194,7 +199,8 @@ export const TRANSLATIONS = {
     "button.table": "Таблица результатов",
     "button.page": "страница",
     "button.more": "Больше",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   },
   sv: {
     "about.page.button": "Läs mer",
@@ -227,7 +233,8 @@ export const TRANSLATIONS = {
     "button.table": "Resultat tabell",
     "button.page": "Sida",
     "button.more": "Mer",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   },
   no: {
     "about.page.button": "Lære mer",
@@ -259,7 +266,8 @@ export const TRANSLATIONS = {
     "button.table": "Resultater Tabell",
     "button.page": "Side",
     "button.more": "Mer",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   },
   da: {
     "about.page.button": "Lær mere",
@@ -292,7 +300,8 @@ export const TRANSLATIONS = {
     "button.table": "Resultatabel",
     "button.page": "Side",
     "button.more": "Mere",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   },
   jp: {
     "about.page.button": "詳しく",
@@ -324,7 +333,8 @@ export const TRANSLATIONS = {
     "button.table": "Results Table",
     "button.page": "Page",
     "button.more": "More",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   },
   cn: {
     "about.page.button": "学到更多",
@@ -356,7 +366,8 @@ export const TRANSLATIONS = {
     "button.table": "Results Table",
     "button.page": "Page",
     "button.more": "More",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   },
   "cn(hk)": {
     "about.page.button": "學到更多",
@@ -388,7 +399,8 @@ export const TRANSLATIONS = {
     "button.table": "Results Table",
     "button.page": "Page",
     "button.more": "More",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   },
   id: {
     "about.page.button": "Belajarlah lagi",
@@ -420,6 +432,7 @@ export const TRANSLATIONS = {
     "button.table": "Results Table",
     "button.page": "Page",
     "button.more": "More",
-    "button.pdf": "PDF"
+    "button.pdf": "PDF",
+    "button.map": "Map"
   }
 };
