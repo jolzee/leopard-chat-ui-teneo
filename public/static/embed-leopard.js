@@ -127,6 +127,7 @@ var leopardChatTemplate = getLeopardTemplate(function() {
     allowfullscreen="allowfullscreen"
     id="teneo-chat-widget"
     name="teneochatwidget"
+    title="Chatbot"
     scrolling="no"
     role="application"
     aria-label="Chat Bot"

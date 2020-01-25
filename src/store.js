@@ -354,6 +354,7 @@ function storeSetup(vuetify) {
             itemInputMask = mask;
           }
         }
+        logger.debug("Input Mask: ", itemInputMask);
         return itemInputMask;
       },
       askingForEmail(_state, getters) {
@@ -2157,7 +2158,12 @@ function storeSetup(vuetify) {
                 let theScript = decodeURIComponent(
                   json.responseData.extraData.script
                 );
-                sendMessageToParent("runLeopardScript|" + theScript);
+                if (context.getters.embed) {
+                  sendMessageToParent("runLeopardScript|" + theScript);
+                } else {
+                  // run locally
+                  eval(theScript);
+                }
               }
               // Start of delay logic
               if (

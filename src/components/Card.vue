@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="isValidCard" class="mx-auto mt-2" max-width="400">
+  <v-card v-if="isValidCard" class="mx-2 mt-2" max-width="400">
     <v-img v-if="config.imageUrl" class="white--text align-end" contain :src="config.imageUrl"></v-img>
     <v-card-title
       class="subtitle-2 white--text primary cardTitleBackground mb-5"

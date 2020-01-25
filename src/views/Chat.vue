@@ -134,7 +134,7 @@
                   solo
                   tabindex="0"
                   return-masked-value
-                  :mask="itemInputMask"
+                  v-mask="itemInputMask || nomask"
                   name="userInput"
                   ref="userInput"
                   autocomplete="off"
@@ -289,6 +289,7 @@ const logger = require("@/utils/logging").getLogger("Chat.vue");
 var mobile = require("is-mobile");
 import dayjs from "dayjs";
 import LongPress from "vue-directive-long-press";
+import { mask } from "vue-the-mask";
 // import ChatBroadcastMessage from "../components/ChatBroadcastMessage";
 // import ChatLoading from "../components/ChatLoading";
 // import ChatNoHistory from "../components/ChatNoHistory";
@@ -330,10 +331,17 @@ export default {
     "upload-btn": UploadButton
   },
   directives: {
-    "long-press": LongPress
+    "long-press": LongPress,
+    mask
   },
   data() {
     return {
+      nomask: {
+        mask: "*".repeat(333),
+        tokens: {
+          "*": { pattern: /./ }
+        }
+      },
       showLeopardDialog: false,
       interval: {},
       mustScroll: true,

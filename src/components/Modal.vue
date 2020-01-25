@@ -65,7 +65,7 @@
           <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="hideModal">mdi-close</v-icon>
         </v-system-bar>
 
-        <v-app-bar dark color="primary">
+        <v-app-bar :dense="title.length < 43" dark color="primary">
           <h2
             class="subtitle-1"
             :aria-label="aria ? aria : title ? title : $t('more.info.title')"
@@ -410,17 +410,11 @@ export default {
 
             // check for display image action
             if (extension.name === "displayImage") {
-              if (!this.title) {
-                this.title = this.getFirstChunk(item.text);
-              }
               this.imageUrl = extension.parameters.image_url;
             }
 
             // check for display image action
             if (extension.name === "displayImageCarousel") {
-              if (!this.title) {
-                this.title = this.getFirstChunk(item.text);
-              }
               this.images = extension.parameters.images;
             }
 
