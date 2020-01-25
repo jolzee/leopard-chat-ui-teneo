@@ -176,7 +176,10 @@
             :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
             :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           >
-            <span class="teneo-reply" :class="`${leopardFont} ${responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`">
+            <span
+              class="teneo-reply"
+              :class="`${leopardFont} ${responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
+            >
               <span v-html="addAccessibilityPrefix(chunkText)"></span>
             </span>
           </v-card>
@@ -250,8 +253,8 @@
               :key="altOptionIndex + 'tile' + uuid"
               @click="optionClicked(option)"
               :aria-label="option.aria ? option.aria : option.name"
-              class="text-left pl-2 pr-0"
-              style="height: 40px"
+              class="text-left pl-2 pr-2"
+              style="height: 40px;"
               dense
             >
               <v-list-item-icon class="mr-4">
@@ -259,7 +262,7 @@
               </v-list-item-icon>
               <v-list-item-content class="text-left">
                 <!-- <v-list-item-title v-html="option.name"></v-list-item-title> -->
-                <v-list-item-subtitle v-html="option.name"></v-list-item-subtitle>
+                <v-list-item-subtitle v-html="option.name" style="white-space: unset;"></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </template>
