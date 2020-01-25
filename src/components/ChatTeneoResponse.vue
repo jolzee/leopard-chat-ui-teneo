@@ -240,7 +240,10 @@
             color="success"
             :aria-label="option.aria ? option.aria : option.name"
             @click="optionClicked(option)"
-          >{{ option.name }}</v-btn>
+          >
+            <v-icon v-if="option.icon" left style="padding-top: 2px">{{`mdi-${option.icon}`}}</v-icon>
+            {{ option.name }}
+          </v-btn>
         </span>
       </v-card-text>
       <!-- Line based List Options -->
