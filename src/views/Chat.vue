@@ -247,10 +247,10 @@
     <!-- Date picker dialog -->
     <v-col cols="12" v-if="showDate" :key="'datePicker' + uuid">
       <v-dialog ref="dialogDate" v-model="showDate" :return-value.sync="date" width="290px">
-        <v-date-picker v-model="date" scrollable>
+        <v-date-picker header-color="primary" color="secondary" v-model="date" scrollable>
           <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="showDate = false">Cancel</v-btn>
-          <v-btn text color="primary" @click="sendUserInput">OK</v-btn>
+          <v-btn small color="secondary" @click="showDate = false">Cancel</v-btn>
+          <v-btn small color="success" @click="sendUserInput">OK</v-btn>
         </v-date-picker>
       </v-dialog>
     </v-col>
@@ -272,10 +272,10 @@
     <v-col cols="12" v-if="showTime" :key="'timePicker' + uuid">
       <v-dialog ref="dialogTime" v-model="showTime" width="290px">
         <v-card>
-          <v-time-picker v-model="userInput" format="24hr"></v-time-picker>
+          <v-time-picker header-color="primary" color="secondary" v-model="userInput" format="24hr"></v-time-picker>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn small color="error" @click="showTime = false">Cancel</v-btn>
+            <v-btn small color="secondary" @click="showTime = false">Cancel</v-btn>
             <v-btn small color="success" @click="sendUserInput">OK</v-btn>
           </v-card-actions>
         </v-card>
