@@ -627,7 +627,10 @@ export default {
         } else if (extension.name.startsWith("displayMap")) {
           buttonLabel = this.$t("button.map");
           aria = `Map ${aria}`;
-        } else if (extension.name.startsWith("displayTable")) {
+        } else if (
+          extension.name.startsWith("displayTable") ||
+          extension.name.startsWith("displayTransactionsTable")
+        ) {
           aria = `Table ${aria}`;
           buttonLabel = this.$t("button.table");
         }
@@ -655,7 +658,10 @@ export default {
           iconName = "mdi-youtube";
         } else if (extension.name.startsWith("displayImage")) {
           iconName = "mdi-file-image";
-        } else if (extension.name.startsWith("displayTable")) {
+        } else if (
+          extension.name.startsWith("displayTable") ||
+          extension.name.startsWith("displayTransactionsTable")
+        ) {
           iconName = "mdi-table-large";
         } else if (extension.name.startsWith("displayMap")) {
           iconName = "mdi-google-maps";
