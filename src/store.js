@@ -1,7 +1,12 @@
 /* eslint-disable no-unused-vars */
 import "regenerator-runtime/runtime";
 const logger = require("@/utils/logging").getLogger("store.js");
-import { doesParameterExist, getParameterByName, sleep } from "@/utils/utils";
+import {
+  doesParameterExist,
+  getParameterByName,
+  sleep,
+  cleanEmptyChunks
+} from "@/utils/utils";
 import router from "@/router";
 import dayjs from "dayjs";
 import LiveChat from "@livechat/agent-app-widget-sdk";
@@ -1257,7 +1262,7 @@ function storeSetup(vuetify) {
         let newReply = {
           type: "reply",
           id: uuidv1(),
-          text: payload.response.teneoAnswer,
+          text: cleanEmptyChunks(payload.response.teneoAnswer),
           bodyText: "",
           teneoResponse: payload.response.teneoResponse,
           hasExtraData: hasExtraData
@@ -1959,7 +1964,7 @@ function storeSetup(vuetify) {
               context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
               logger.debug(
                 `Login Message from Teneo: ${decodeURIComponent(
-                  json.responseData.answer
+                  cleanEmptyChunks(json.responseData.answer)
                 )}`
               );
 
@@ -1977,9 +1982,11 @@ function storeSetup(vuetify) {
                 type: "reply",
                 id: uuidv1(),
                 text: md.render(
-                  decodeURIComponent(json.responseData.answer).replace(
-                    /onclick="[^"]+"/g,
-                    'class="sendInput"'
+                  cleanEmptyChunks(
+                    decodeURIComponent(json.responseData.answer).replace(
+                      /onclick="[^"]+"/g,
+                      'class="sendInput"'
+                    )
                   )
                 ),
                 bodyText: "",
@@ -2114,14 +2121,14 @@ function storeSetup(vuetify) {
               }
               if (
                 params.indexOf("command=prompt") !== -1 &&
-                json.responseData.answer.trim() === ""
+                cleanEmptyChunks(json.responseData.answer) === ""
               ) {
                 logger.debug(`Poll returned nothing..`);
                 return;
               } else if (
                 params !== "" &&
                 params.indexOf("command=prompt") !== -1 &&
-                json.responseData.answer.trim() !== ""
+                cleanEmptyChunks(json.responseData.answer) !== ""
               ) {
                 try {
                   var audio = new Audio(require("./assets/notification.mp3"));
@@ -2303,22 +2310,24 @@ function storeSetup(vuetify) {
 
               logger.debug(
                 `Response 💬: `,
-                decodeURIComponent(json.responseData.answer)
+                decodeURIComponent(cleanEmptyChunks(json.responseData.answer))
               );
               const response = {
                 userInput: currentUserInput,
                 id: uuidv1(),
                 teneoAnswer: md.render(
-                  decodeURIComponent(json.responseData.answer).replace(
-                    /onclick="[^"]+"/g,
-                    'class="sendInput"'
+                  cleanEmptyChunks(
+                    decodeURIComponent(json.responseData.answer).replace(
+                      /onclick="[^"]+"/g,
+                      'class="sendInput"'
+                    )
                   )
                 ),
                 teneoResponse: json.responseData
               };
 
               if (response.teneoResponse) {
-                let ttsText = stripHtml(response.teneoAnswer);
+                let ttsText = stripHtml(cleanEmptyChunks(response.teneoAnswer));
                 if (response.teneoResponse.extraData.tts) {
                   ttsText = stripHtml(
                     decodeURIComponent(response.teneoResponse.extraData.tts)

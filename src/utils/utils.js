@@ -130,6 +130,22 @@ export const scrollTo = (to, callback, duration) => {
 };
 // end smooth scroll
 
+export const cleanEmptyChunks = answerText => {
+  let finalAnswerText = "";
+  let chunks = answerText.split("||");
+  chunks.forEach(chunk => {
+    let trimmedChunk = chunk.trim();
+    console.log(trimmedChunk);
+    if (trimmedChunk) {
+      finalAnswerText += `||${trimmedChunk}`;
+    }
+  });
+  if (finalAnswerText.startsWith("||")) {
+    finalAnswerText = finalAnswerText.substring(2);
+  }
+  return finalAnswerText.trim();
+};
+
 export const lowerCase = str => {
   return str.toLowerCase();
 };
