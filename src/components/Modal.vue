@@ -377,11 +377,11 @@ export default {
                 "overrideTitle" in extension.parameters &&
                 extension.parameters.overrideTitle
               ) {
-                this.title = extension.parameters.title;
+                // this.title = extension.parameters.title;
               } else {
-                if (!this.title) {
-                  this.title = this.getFirstChunk(item.text);
-                }
+                // if (!this.title) {
+                //   this.title = this.getFirstChunk(item.text);
+                // }
                 this.tableTitle = extension.parameters.title;
               }
               this.tableEnableSearch = extension.parameters.enableSearch;
@@ -392,9 +392,9 @@ export default {
 
             // check for displayTranactionTable - myBank
             if (extension.name === "displayTransactionsTable") {
-              if (!this.title) {
-                this.title = this.getFirstChunk(item.text);
-              }
+              // if (!this.title) {
+              //   this.title = this.getFirstChunk(item.text);
+              // }
               this.transactionItems = [];
               extension.parameters.transactions.transactions.forEach(
                 transaction => {
