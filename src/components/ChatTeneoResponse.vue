@@ -615,12 +615,12 @@ export default {
         } else if (extension.name.startsWith("displayPanel")) {
           buttonLabel = this.$t("button.more");
           aria = `More information ${aria}`;
-        } else if (extension.name.startsWith("displayImage")) {
-          buttonLabel = this.$t("button.image");
-          aria = `Image ${aria}`;
         } else if (extension.name.startsWith("displayImageCarousel")) {
           buttonLabel = this.$t("button.image");
           aria = `Image carousel ${aria}`;
+        } else if (extension.name.startsWith("displayImage")) {
+          buttonLabel = this.$t("button.image");
+          aria = `Image ${aria}`;
         } else if (extension.name.startsWith("displayModal")) {
           buttonLabel = this.$t("button.more");
           aria = `More information ${aria}`;
@@ -656,6 +656,8 @@ export default {
 
         if (extension.name.startsWith("displayVideo")) {
           iconName = "mdi-youtube";
+        } else if (extension.name.startsWith("displayImageCarousel")) {
+          iconName = "mdi-view-carousel";
         } else if (extension.name.startsWith("displayImage")) {
           iconName = "mdi-file-image";
         } else if (
@@ -667,8 +669,6 @@ export default {
           iconName = "mdi-google-maps";
         } else if (extension.name.startsWith("displayAudio")) {
           iconName = "mdi-music-box";
-        } else if (extension.name.startsWith("displayImageCarousel")) {
-          iconName = "mdi-file-image";
         }
 
         if (this.item.teneoResponse.link.href !== "") {
