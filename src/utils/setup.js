@@ -1,4 +1,6 @@
 const logger = require("@/utils/logging").getLogger("setup.js");
+import "@mdi/font/css/materialdesignicons.css";
+// import "typeface-roboto";
 import {
   doesParameterExist,
   getParameterByName,
@@ -8,15 +10,12 @@ import {
 import { Ripple } from "vuetify/lib/directives";
 import superagent from "superagent";
 import PromisedLocation from "promised-location";
-
 import { COLOR_NAMES } from "../constants/color-names.js";
 import Vue from "vue";
 import "@/utils/vee-validate";
 
 import "vue-loaders/dist/vue-loaders.css";
-
 import "vue2-animate/dist/vue2-animate.min.css";
-// import "@mdi/font/css/materialdesignicons.css";
 
 import Vuetify from "vuetify/lib";
 Vue.use(Vuetify, {
