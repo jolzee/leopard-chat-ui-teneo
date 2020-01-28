@@ -972,6 +972,8 @@ export default {
     ...mapGetters(["uuid", "dark", "embed"])
   },
   mounted() {
+    this.$store.commit("HIDE_508_CONTENT");
+    logger.info(`Form Open - Hiding 508 content in the chat window`);
     this.setDefaults();
   },
   data() {
@@ -1010,6 +1012,7 @@ export default {
     },
     close() {
       this.$emit("hideForm");
+      this.$store.commit("SHOW_508_CONTENT");
     },
     async clear() {
       this.formData = {};

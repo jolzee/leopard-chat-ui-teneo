@@ -309,6 +309,15 @@ export default {
         this.modalClass();
       }
     },
+    showModal(newValue) {
+      if (newValue) {
+        this.$store.commit("HIDE_508_CONTENT");
+        logger.info(`Modal Open - Hiding 508 content in the chat window`);
+      } else {
+        this.$store.commit("SHOW_508_CONTENT");
+        logger.info(`Modal Closed - Hiding 508 content in the chat window`);
+      }
+    },
     modalItem() {
       if (
         (this.modalItem && this.$store.getters.showModal) ||
@@ -598,6 +607,10 @@ export default {
     }
   },
   methods: {
+    // handleFocus() {
+    //   this.$store.commit("HIDE_508_CONTENT");
+    //   logger.info(`Modal Has Focus - Hiding 508 content in the chat window`);
+    // },
     toggleFullscreen() {
       let modalElements = document.getElementsByClassName("teneo-modal");
       modalElements[0].setAttribute("style", "");
@@ -697,8 +710,9 @@ export default {
     },
     hideModal() {
       this.$store.commit("HIDE_CHAT_MODAL");
+      this.$store.commit("SHOW_508_CONTENT");
       let that = this;
-      logger.debug("About to RESET MODAL 22");
+      logger.debug("About to RESET MODAL to defaults");
       setTimeout(function() {
         that.resetModal();
       }, 1000); // needed to stop weird animations on the close

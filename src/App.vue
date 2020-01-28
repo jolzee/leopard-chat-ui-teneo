@@ -251,13 +251,14 @@
 
         <transition
           name="chat-window-transition"
-          :aria-hidden="drawer"
+          :aria-hidden="drawer || hide508"
           :enter-active-class="getAnimatedIn"
           :leave-active-class="getAnimatedOut"
         >
           <div
             id="teneo"
-            :inert="drawer"
+            :aria-hidden="drawer || hide508"
+            :inert="drawer || (embed && hide508)"
             v-if="isChatOpen"
             :class="{
               'elevation-2': !embed,
@@ -600,6 +601,7 @@ export default {
       "accessibleAnouncement",
       "accentStyling",
       "authenticated",
+      "hide508",
       "isPromptPollingActive",
       "getPromptPollingIntervalInMilliseconds",
       "config",

@@ -156,6 +156,7 @@ function storeSetup(vuetify) {
         showCustomModal: false,
         showModal: false
       },
+      hide508: false,
       progress: {
         listening: false,
         progressBar: false,
@@ -215,6 +216,9 @@ function storeSetup(vuetify) {
       },
       liveChatApiToken(state) {
         return state.liveAgent.apiAccessToken;
+      },
+      hide508(state) {
+        return state.hide508;
       },
       hasLoggedInTeneo(state) {
         return state.auth.hasLoggedInTeneo;
@@ -1013,6 +1017,12 @@ function storeSetup(vuetify) {
       }
     },
     mutations: {
+      HIDE_508_CONTENT(state) {
+        state.hide508 = true;
+      },
+      SHOW_508_CONTENT(state) {
+        state.hide508 = false;
+      },
       SET_ACCESIBLE_ANOUNCEMENT(state, message) {
         state.accessibleAnouncement = stripHtml(message);
       },
@@ -2038,6 +2048,9 @@ function storeSetup(vuetify) {
             // tts is speaking something. Let's shut it up
             context.getters.tts.shutUp();
           }
+          context.commit("HIDE_CUSTOM_MODAL");
+          context.commit("HIDE_CHAT_MODAL");
+          context.commit("REMOVE_MODAL_ITEM");
         }
 
         if (currentUserInput) {

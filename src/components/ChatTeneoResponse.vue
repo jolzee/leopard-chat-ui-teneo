@@ -944,6 +944,7 @@ export default {
     },
     showModal() {
       this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals first
+      this.$store.commit("HIDE_508_CONTENT");
       this.$store.commit("SHOW_CHAT_MODAL", this.item);
     },
     displayFeedbackForm() {
