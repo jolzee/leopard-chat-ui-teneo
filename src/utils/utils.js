@@ -135,7 +135,6 @@ export const cleanEmptyChunks = answerText => {
   let chunks = answerText.split("||");
   chunks.forEach(chunk => {
     let trimmedChunk = chunk.trim();
-    console.log(trimmedChunk);
     if (trimmedChunk) {
       finalAnswerText += `||${trimmedChunk}`;
     }
