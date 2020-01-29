@@ -154,7 +154,7 @@
         class="pr-3 pl-1 pt-1"
       >
         <v-col cols="2" class="text-center" v-if="showChatIcons">
-          <v-btn
+          <!-- <v-btn
             v-long-press="1000"
             tabindex="-1"
             @long-press-start="swapInputButton"
@@ -167,7 +167,7 @@
             large
           >
             <v-icon large class="white--text">{{ getResponseIcon }}</v-icon>
-          </v-btn>
+          </v-btn>-->
         </v-col>
         <v-col>
           <v-card
