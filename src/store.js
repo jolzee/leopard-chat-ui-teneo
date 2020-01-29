@@ -220,6 +220,18 @@ function storeSetup(vuetify) {
       hide508(state) {
         return state.hide508;
       },
+      liveAgentChatChannel(state){
+        var liveAgentChatChannel = "";
+        var params = state.connection.requestParameters.split("&");
+        for (var i = 0; i < params.length; i++) {
+          var pair = params[i].split("=");
+          if (decodeURIComponent(pair[0]) == "liveAgentChatChannel") 
+          {
+            liveAgentChatChannel = pair[1];
+          }
+        }
+        return liveAgentChatChannel;
+      },
       hasLoggedInTeneo(state) {
         return state.auth.hasLoggedInTeneo;
       },
@@ -2535,7 +2547,7 @@ function storeSetup(vuetify) {
 
   // setup Live Chat
   try {
-    if (window.leopardConfig.liveChat.licenseKey) {
+    if (window.leopardConfig.liveChat.licenseKey || store.getters.liveAgentChatChannel) {
       logger.debug(`About to try and setup Live Chat`);
       config.setupLiveChat(store);
     }

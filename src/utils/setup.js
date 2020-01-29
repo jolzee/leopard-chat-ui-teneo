@@ -26,6 +26,7 @@ Vue.use(Vuetify, {
 
 import { ASR_CORRECTIONS } from "../constants/asr-corrections"; // fix ASR issues before they get to Teneo
 import { LiveChat } from "./live-chat";
+import { LiveChatBugout } from "./live-chat-bugout";
 import { STORAGE_KEY } from "../constants/solution-config-default";
 
 let logrocketPlugin = null;
@@ -340,12 +341,21 @@ export default class Setup {
   }
 
   setupLiveChat(store) {
-    this.liveChat = new LiveChat(
-      store,
-      !this.USE_SESSION_STORAGE,
-      STORAGE_KEY,
-      this.TENEO_CHAT_HISTORY
-    );
+    if (store.getters.liveAgentChatChannel)
+    {
+      this.liveChat = new LiveChatBugout(
+        store,
+        store.getters.liveAgentChatChannel
+      );
+    }
+    else{
+      this.liveChat = new LiveChat(
+        store,
+        !this.USE_SESSION_STORAGE,
+        STORAGE_KEY,
+        this.TENEO_CHAT_HISTORY
+      );
+    }
   }
 
   getMergedAsrCorrections(leopardDefaultCorrections) {
