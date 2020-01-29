@@ -220,27 +220,20 @@
               </v-list-item>
             </v-list>
             <template v-slot:append>
-              <v-row
-                aria-hidden="true"
-                align="center"
-                justify="center"
-                class="primary darken-2"
-                style="height:67px"
-              >
+              <v-row align="center" justify="center" class="primary darken-2" style="height:67px">
                 <div class="pa-2" role="img">
                   <a
                     href="https://www.artificial-solutions.com/"
                     class="leopard-img"
                     target="_blank"
-                    title="Learn more about Artificial Solutions - opens in new window"
+                    aria-label="Artificial Solutions information will open in a new window"
                   >
-                    <v-img
+                    <img
                       src="../public/static/as-logo.png"
-                      contain
-                      width="150"
-                      alt="Artificial Solutions Logo"
+                      alt="Artificial Solutions logo"
                       class="text-center"
-                    ></v-img>
+                      width="150"
+                    />
                   </a>
                 </div>
               </v-row>
