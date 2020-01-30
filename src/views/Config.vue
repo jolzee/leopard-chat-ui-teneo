@@ -798,6 +798,7 @@ export default {
   mounted() {
     if (this.$router.currentRoute.path === "/config") {
       this.showModal = true;
+      this.$vuetify.theme.dark = false;
     }
     let siteFrame = document.getElementById("site-frame");
     if (siteFrame) {
