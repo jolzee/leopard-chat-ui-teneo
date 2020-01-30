@@ -228,7 +228,7 @@
                     }"
                     @shortkey.native="captureAudio"
                     :color="audioButtonColor"
-                    :class="audioButtonClasses"
+                    :class="!$vuetify.theme.dark ? 'white--text' : 'black--text'"
                     small
                     fab
                     @click.native="captureAudio"
@@ -347,8 +347,7 @@ export default {
       mustScroll: true,
       oldDialogLength: 0,
       showAudioInput: false,
-      audioButtonClasses: "white--text",
-      audioButtonColor: "primary",
+      audioButtonColor: "sendButton",
       showDate: false,
       showPassword: false,
       showTime: false,
@@ -743,7 +742,6 @@ export default {
       ) {
         this.$store.commit("HIDE_CHAT_MODAL");
         this.audioButtonColor = "error";
-        this.audioButtonClasses = "white--text";
         this.$store.commit("SHOW_LISTING_OVERLAY");
         this.$store.dispatch("captureAudio");
       }
