@@ -1510,7 +1510,8 @@ iframe#site-frame {
     -webkit-border-radius: 13px 13px 0 0 !important;
   }
 
-  .teneo-toolbar-float {
+  .teneo-toolbar-float,
+  .v-system-bar {
     border-radius: unset !important;
     -moz-border-radius: unset !important;
     -webkit-border-radius: unset !important;
@@ -1571,7 +1572,8 @@ iframe#site-frame {
     -webkit-border-radius: 13px 13px 0 0 !important;
   }
 
-  .teneo-toolbar-float {
+  .teneo-toolbar-float,
+  .v-system-bar {
     border-radius: unset !important;
     -moz-border-radius: unset !important;
     -webkit-border-radius: unset !important;
