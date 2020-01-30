@@ -59,9 +59,21 @@ export const fixSolutions = allSolutions => {
   origChatConfig = replaceString(origChatConfig, '"false"', "false");
   allSolutions = JSON.parse(origChatConfig);
 
-  allSolutions.solutions.forEach(solution => {
-    solution = fixSolution(solution);
-  });
+  if ("solutions" in allSolutions) {
+    allSolutions.solutions.forEach(solution => {
+      solution = fixSolution(solution);
+    });
+  } else if ("url" in allSolutions) {
+    // not really a solutions file rather just a solution
+    let solutionsWrapper = {
+      activeSolution: "",
+      solutions: []
+    };
+    let fixedSolution = fixSolution(allSolutions);
+    solutionsWrapper.activeSolution = fixedSolution.id;
+    solutionsWrapper.solutions.push(fixedSolution);
+    allSolutions = solutionsWrapper;
+  }
 
   return allSolutions;
 };
