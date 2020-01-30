@@ -1511,9 +1511,9 @@ iframe#site-frame {
   }
 
   .teneo-toolbar-float {
-    border-radius: unset;
-    -moz-border-radius: unset;
-    -webkit-border-radius: unset;
+    border-radius: unset !important;
+    -moz-border-radius: unset !important;
+    -webkit-border-radius: unset !important;
   }
 }
 
@@ -1572,9 +1572,9 @@ iframe#site-frame {
   }
 
   .teneo-toolbar-float {
-    border-radius: unset;
-    -moz-border-radius: unset;
-    -webkit-border-radius: unset;
+    border-radius: unset !important;
+    -moz-border-radius: unset !important;
+    -webkit-border-radius: unset !important;
   }
 }
 </style>
