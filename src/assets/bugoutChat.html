@@ -29,21 +29,25 @@
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
   };
   var bugoutChannel = getUrlParameter("channel");
-  
-  var b = Bugout(bugoutChannel);
-  //b.on("seen", function(address) { log(address + " [ seen ]"); });
-  // log(b.address() + " [ me ]");
-  
-  b.on("message", function(address, message) {
-    if(address == b.address())
-    {
-      log("[Io]: " + message);
-    }
-    else{
-      log("[Utente]: " + message);
-    }
-  
-});
+  if(bugoutChannel)
+  {
+    var b = Bugout(bugoutChannel);
+    //b.on("seen", function(address) { log(address + " [ seen ]"); });
+    // log(b.address() + " [ me ]");
+    
+    b.on("message", function(address, message) {
+      if(address == b.address())
+      {
+        log("[Io]: " + message);
+      }
+      else{
+        log("[Utente]: " + message);
+      }
+    });
+  }
+  else{
+    log("Please, add a url parameter with the channel name. Like: <thisPageUrl>?channel=myChannelName. Also be sure you open this page twice");
+  }
 
 document.getElementById("input").onkeydown = function(ev) {
     if (ev.keyCode == 13) {
