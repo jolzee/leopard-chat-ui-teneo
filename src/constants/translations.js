@@ -110,7 +110,7 @@ export const TRANSLATIONS = {
     "empty.user.input": "Het lijkt erop dat je niets tegen me zei",
     "help.page.title": "Hier zijn enkele dingen die u mij kunt vragen",
     "input.box.label": "Zeg iets...",
-    listening: "het luisteren...",
+    listening: "Luisteren",
     "menu.about": "Over",
     "menu.chat": "Babbelen",
     "menu.config": "Config",
