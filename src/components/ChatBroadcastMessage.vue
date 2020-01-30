@@ -2,15 +2,17 @@
   <!-- Misc Message -->
   <div v-if="item.type === 'miscMessage'" class="mt-2 mx-3 pb-3">
     <v-alert
-      :border="item.alertBorderPosition"
+      :border="item.borderPosition"
       :value="true"
-      :prominent="item.alertProminent"
-      :outlined="item.alertOutlined"
-      :type="item.alertType"
-      :color="item.alertColor"
-      :icon="item.alertIcon"
+      :prominent="item.prominent"
+      :outlined="item.uutlined"
+      :type="item.alertType ? item.alertType : null"
+      :color="item.color"
+      :icon="item.icon"
       class="mb-0 elevation-2"
-    >{{ item.alertText }}</v-alert>
+    >
+      <p>{{ item.message }}</p>
+    </v-alert>
   </div>
 </template>
 

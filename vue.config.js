@@ -85,14 +85,6 @@ let buildConfig = {
       errors: true
     }
   },
-  css: {
-    extract: { ignoreOrder: true },
-    loaderOptions: {
-      sass: {
-        prependData: `@import "~@/sass/variables.scss"`
-      }
-    }
-  },
   configureWebpack: {
     devtool: "source-map",
     plugins:

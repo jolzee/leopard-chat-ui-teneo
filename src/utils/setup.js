@@ -17,7 +17,7 @@ import "@/utils/vee-validate";
 import "vue-loaders/dist/vue-loaders.css";
 import "vue2-animate/dist/vue2-animate.min.css";
 
-import Vuetify from "vuetify/lib";
+import Vuetify from "vuetify/lib/framework";
 Vue.use(Vuetify, {
   directives: {
     Ripple
@@ -229,6 +229,9 @@ export default class Setup {
             },
             theme: {
               dark: false,
+              options: {
+                customProperties: true
+              },
               themes: {
                 light: this.THEME,
                 dark: {
@@ -237,8 +240,12 @@ export default class Setup {
                   accent: "#00FF00",
                   error: "#FF4B4B",
                   info: "#1E92D0",
-                  success: "#46A352",
-                  warning: "#9B5D09"
+                  success: "#335f13",
+                  warning: "#FDFF00",
+                  anchor: "#67BAD7",
+                  sendButton: "#FFFFFF",
+                  focusButton: "#CEFF00",
+                  textButton: "#FFFFFF"
                 }
               }
             },

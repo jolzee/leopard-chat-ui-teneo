@@ -5,13 +5,13 @@ const enableDrag = function() {
     const closestDialog = e.target.closest(
       ".v-dialog.v-dialog--active, .v-application.application-float"
     );
-
     if (
-      e.button === 0 &&
-      closestDialog &&
-      ((e.target.classList.contains("v-system-bar") &&
-        !e.target.classList.contains("leopard-system-bar")) ||
-        e.target.classList.contains("v-toolbar__content"))
+      (e.button === 0 &&
+        closestDialog &&
+        (e.target.classList.contains("v-system-bar") ||
+          e.target.classList.contains("teneo-systembar-spacer")) &&
+          !e.target.classList.contains("leopard-system-bar")) ||
+      e.target.classList.contains("v-toolbar__content")
     ) {
       // element which can be used to move element
       d.el = closestDialog; // element which should be moved

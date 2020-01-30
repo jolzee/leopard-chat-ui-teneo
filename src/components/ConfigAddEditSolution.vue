@@ -18,7 +18,7 @@
         :class="{ 'popup-header': !fullscreen }"
         dark
       >
-        <v-spacer style="height:30px"></v-spacer>
+        <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
 
         <v-icon
           tabindex="0"
@@ -964,6 +964,9 @@ export default {
         "success",
         "warning",
         "dark",
+        "sendButton",
+        "focusButton",
+        "textButton",
         "custom1",
         "custom2",
         "custom3"

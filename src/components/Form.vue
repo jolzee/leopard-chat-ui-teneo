@@ -29,7 +29,7 @@
             </v-overlay>
           </v-fade-transition>
           <v-system-bar color="primary darken-2" :class="{ 'popup-header': !fullscreen }" dark>
-            <v-spacer></v-spacer>
+            <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
 
             <v-icon
               v-if="!embed"

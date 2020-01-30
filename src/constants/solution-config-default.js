@@ -60,6 +60,9 @@ okkay | ok
     success: "#4CAF50",
     warning: "#FFC107",
     dark: "#0062B1",
+    focusButton: "#C8C4C4",
+    sendButton: "#0062B1",
+    textButton: "#000000",
     custom1: "#0062B1",
     custom2: "#0062B1",
     custom3: "#0062B1"

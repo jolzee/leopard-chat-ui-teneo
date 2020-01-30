@@ -4,7 +4,19 @@
     name="modal-image-transition"
     enter-active-class="animated zoomIn"
   >-->
-  <v-img v-if="url" :src="url" :max-height="determineMaxHeight()" contain></v-img>
+  <v-img
+    v-if="url"
+    :src="url"
+    :max-height="determineMaxHeight()"
+    lazy-src="../../public/static/placeholder-image-300x207.png"
+    contain
+  >
+    <template v-slot:placeholder>
+      <v-row class="fill-height ma-0" align="center" justify="center">
+        <v-progress-circular indeterminate color="secondary lighten-2"></v-progress-circular>
+      </v-row>
+    </template>
+  </v-img>
   <!-- </transition> -->
 </template>
 <script>

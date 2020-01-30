@@ -32,7 +32,7 @@
               style="background-color: indigo"
           >{{ selectedSolution.name }}</span>-->
         </span>
-        <v-spacer></v-spacer>
+        <v-spacer class="teneo-systembar-spacer"></v-spacer>
         <v-icon
           v-if="!embed"
           tabindex="0"

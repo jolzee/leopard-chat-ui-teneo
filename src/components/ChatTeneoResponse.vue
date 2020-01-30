@@ -192,11 +192,11 @@
       <v-card>
         <div class="d-flex flex-no-wrap justify-space-between">
           <div>
-            <v-card-title class="headline">
+            <h2 class="headline">
               {{
               routerCheckList.title
               }}
-            </v-card-title>
+            </h2>
 
             <v-row
               align="center"
@@ -230,18 +230,23 @@
     >
       <!-- Button Options -->
       <v-card-text class="teneo-button-options pt-2 pb-2" v-if="!hasLongOptions">
-        <h3 v-text="getOptions.title" class="subtitle-1 font-weight-bold"></h3>
+        <h2 v-text="getOptions.title" class="subtitle-1 font-weight-bold"></h2>
         <div v-if="getOptions.html" class="elevation-2 mt-2" v-html="getOptions.items"></div>
         <span v-else v-for="(option, optionIndex) in getOptions.items" :key="optionIndex + uuid">
           <v-btn
             height="25"
             class="option-btn mr-2 mt-2"
             x-small
-            color="success"
+            color="success textButton--text"
             :aria-label="option.aria ? option.aria : option.name"
             @click="optionClicked(option)"
           >
-            <v-icon v-if="option.icon" left style="padding-top: 2px">{{`mdi-${option.icon}`}}</v-icon>
+            <v-icon
+              v-if="option.icon"
+              left
+              class="teneo-icon"
+              style="padding-top: 2px;"
+            >{{`mdi-${option.icon}`}}</v-icon>
             {{ option.name }}
           </v-btn>
         </span>
@@ -280,18 +285,18 @@
     >
       <v-col cols="12" class="text-right mb-2">
         <v-btn
-          color="secondary"
+          color="success textButton--text"
           aria-label="Leave Feedback"
-          class="mt-2"
+          class="modal-btn mt-2"
           small
           @click="displayFeedbackForm"
         >
+          <v-icon left class="teneo-icon">mdi-thumbs-up-down</v-icon>
           {{
           getFeedbackFormConfig.label && getFeedbackFormConfig.label !== null
           ? getFeedbackFormConfig.label
           : "Leave Feedback"
           }}
-          <v-icon right small color="white">mdi-thumbs-up-down</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -307,18 +312,18 @@
         />
 
         <v-btn
-          color="success"
+          color="success textButton--text"
           aria-label="Form needs filling opens in a new window"
-          class="mt-2"
+          class="modal-btn mt-2"
           small
           @click="showForm()"
         >
+          <v-icon left class="teneo-icon">mdi-file-document-edit-outline</v-icon>
           {{
           getFormConfig && getFormConfig.openFormButtonText
           ? getFormConfig.openFormButtonText
           : "Form"
           }}
-          <v-icon right small color="white">mdi-file-document-edit-outline</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -332,13 +337,13 @@
       <v-col cols="12" class="text-right mb-1">
         <v-btn
           :aria-label="modalButtonText.aria"
-          color="success"
-          class="mt-2"
+          color="success textButton--text"
+          class="modal-btn mt-2"
           small
           @click="showModal"
         >
+          <v-icon left class="teneo-icon">{{ modalButtonIcon }}</v-icon>
           {{ modalButtonText.text }}
-          <v-icon right small color="white">{{ modalButtonIcon }}</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -354,10 +359,10 @@
           aria-label="Open Date Picker"
           fab
           class="teneo-userinput-icon elevation-2 mb-2"
-          color="success"
+          color="success textButton--text"
           @click="toggleDate()"
         >
-          <v-icon>mdi-calendar-clock</v-icon>
+          <v-icon class="teneo-icon">mdi-calendar-clock</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -374,10 +379,10 @@
           fab
           aria-label="Open Time Picker"
           class="teneo-userinput-icon elevation-2 mb-2"
-          color="success"
+          color="success textButton--text"
           @click="toggleTime()"
         >
-          <v-icon>mdi-clock</v-icon>
+          <v-icon large class="teneo-icon">mdi-clock</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -989,6 +994,11 @@ export default {
 .option-btn {
   font-size: 13px;
   text-transform: unset;
+  white-space: normal;
+}
+
+.modal-btn {
+  font-size: 13px;
   white-space: normal;
 }
 

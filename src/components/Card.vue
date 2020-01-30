@@ -30,7 +30,7 @@
         v-for="(action, index) in config.actions"
         :key="'action' + index"
         small
-        color="primary"
+        color="secondary"
         @click="actionClicked(action)"
       >{{ action.name }}</v-btn>
     </v-card-actions>

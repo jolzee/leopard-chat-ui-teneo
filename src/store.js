@@ -1139,6 +1139,26 @@ function storeSetup(vuetify) {
       PUSH_LIVE_CHAT_STATUS_TO_DIALOG(state, liveChatStatus) {
         state.conversation.dialog.push(liveChatStatus);
       },
+      SHOW_SIMPLE_MESSAGE_IN_CHAT(state, config) {
+        state.progress.showChatLoading = false;
+        let miscMessage = {
+          type: "miscMessage",
+          message: null,
+          borderPosition: "left",
+          alertType: null,
+          color: "info",
+          primient: false,
+          outlined: false,
+          icon: null,
+          bodyText: "",
+          hasExtraData: false
+        };
+        Object.assign(miscMessage, config);
+        if (!miscMessage.icon && !miscMessage.alertType) {
+          miscMessage.alertType = "info";
+        }
+        state.conversation.dialog.push(miscMessage);
+      },
       SHOW_MESSAGE_IN_CHAT(
         state,
         message,
@@ -1152,13 +1172,13 @@ function storeSetup(vuetify) {
         state.progress.showChatLoading = false;
         let miscMessage = {
           type: "miscMessage",
-          alertText: message,
-          alertBorderPosition: borderPosition,
+          message: message,
+          borderPosition: borderPosition,
           alertType: type,
-          alertColor: color,
-          alertProminent: prominent,
-          alertOutlined: outlined,
-          alertIcon: icon,
+          color: color,
+          primient: prominent,
+          outlined: outlined,
+          icon: icon,
           bodyText: "",
           hasExtraData: false
         };
@@ -1181,9 +1201,11 @@ function storeSetup(vuetify) {
         state.auth.firebase = firebase;
       },
       SHOW_CHAT_LOADING(state) {
+        logger.debug("Showing Chat Loading Animation");
         state.progress.showChatLoading = true;
       },
       HIDE_CHAT_LOADING(state) {
+        logger.debug("Hiding Chat Loading Animation");
         state.progress.showChatLoading = false;
       },
       LIVE_CHAT_LOADING(state, mustShow) {
@@ -1919,6 +1941,7 @@ function storeSetup(vuetify) {
         });
       },
       login(context) {
+        context.commit("SHOW_CHAT_LOADING");
         // get the greeting message if we haven't done so for this session
         return new Promise((resolve, reject) => {
           const teneoUrl =
@@ -1932,6 +1955,7 @@ function storeSetup(vuetify) {
             // userInput: ""
           })
             .then(json => {
+              context.commit("HIDE_CHAT_LOADING");
               if ("numActiveFlows" in json.responseData.extraData) {
                 let numActiveFlows = parseInt(
                   json.responseData.extraData.numActiveFlows
@@ -2013,16 +2037,16 @@ function storeSetup(vuetify) {
               resolve();
             })
             .catch(err => {
+              context.commit("HIDE_CHAT_LOADING");
               const errResp = {
                 error: err,
-                teneoUrl: teneoUrl
+                teneoUrl: teneoUrl,
+                message: "Could not send login command to TIE"
               };
               logger.debug(`Problems sending login command`, errResp);
               context.commit(
                 "SHOW_MESSAGE_IN_CHAT",
-                "Problems sending login command: " +
-                  err.message +
-                  ". Please make sure your Solution is published and that you are referencing the correct TIE Url."
+                "Problems sending login to TIE: Is your solution published and online? Is your TIE url correct?"
               );
               reject(errResp);
             });
@@ -2168,9 +2192,11 @@ function storeSetup(vuetify) {
                 logger.debug(
                   "Session is stale.. keep chat open and continue with the new session"
                 );
-                const awayMessage =
-                  "You have been away for an extended period of time. A new session with the virtual assistant has been created.";
-                context.commit("SHOW_MESSAGE_IN_CHAT", awayMessage);
+                const awayMessage = "This is a new chatbot session.";
+                context.commit("SHOW_SIMPLE_MESSAGE_IN_CHAT", {
+                  message: awayMessage,
+                  icon: "mdi-timer"
+                });
                 context.commit("SET_ACCESIBLE_ANOUNCEMENT", awayMessage);
               }
 

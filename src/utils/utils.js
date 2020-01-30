@@ -32,6 +32,18 @@ export const fixSolution = solution => {
     solution.theme.custom3 = solutionDefault.theme.custom3;
   }
 
+  if (!("focusButton" in solution.theme)) {
+    solution.theme.focusButton = solutionDefault.theme.focusButton;
+  }
+
+  if (!("sendButton" in solution.theme)) {
+    solution.theme.sendButton = solution.theme.primary;
+  }
+
+  if (!("textButton" in solution.theme)) {
+    solution.theme.textButton = solutionDefault.theme.textButton;
+  }
+
   if (!("animations" in solution)) {
     solution.animations = solutionDefault.animations;
   }

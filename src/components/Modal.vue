@@ -46,8 +46,13 @@
             >{{ overlayMessage }}</v-alert>
           </v-overlay>
         </v-fade-transition>
-        <v-system-bar color="primary darken-2" :class="{ 'popup-header': !fullscreen }" dark>
-          <v-spacer></v-spacer>
+        <v-system-bar
+          height="25px"
+          color="primary darken-2"
+          :class="{ 'popup-header': !fullscreen }"
+          dark
+        >
+          <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
           <v-icon
             tabindex="0"
             tag="button"

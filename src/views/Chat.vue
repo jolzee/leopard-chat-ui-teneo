@@ -130,6 +130,7 @@
                   :clearable="userInput !== ''"
                   clear-icon="mdi-comment-remove-outline"
                   auto-grow
+                  color="sendButton"
                   required
                   solo
                   tabindex="0"
@@ -162,9 +163,8 @@
                       text
                       icon
                       ripple
-                      color="primary"
                     >
-                      <v-icon>mdi-send</v-icon>
+                      <v-icon color="sendButton">mdi-send</v-icon>
                     </v-btn>
                   </template>
                 </v-text-field>
@@ -179,7 +179,8 @@
                   @file-update="fileChanged"
                   large
                   hover
-                  class="elevation-2 v-btn v-btn--fab v-btn--round v-size--small primary white--text mt-3"
+                  color="sendButton"
+                  class="elevation-2 v-btn v-btn--fab v-btn--round v-size--small sendButton white--text mt-3"
                 >
                   <template slot="icon">
                     <v-icon dark class="py-2">mdi-paperclip</v-icon>
@@ -206,10 +207,9 @@
                     aria-label="Send"
                     v-if="!showAudioInput"
                     large
-                    color="primary"
                     @click.native="sendUserInput"
                   >
-                    <v-icon>mdi-send</v-icon>
+                    <v-icon color="sendButton">mdi-send</v-icon>
                   </v-btn>
 
                   <v-btn
@@ -233,7 +233,7 @@
                     fab
                     @click.native="captureAudio"
                   >
-                    <v-icon large>mdi-microphone</v-icon>
+                    <v-icon>{{ listening ? "mdi-ear-hearing" : "mdi-voice" }}</v-icon>
                   </v-btn>
                 </template>
               </v-col>
@@ -659,7 +659,7 @@ export default {
     stopAudioCapture() {
       this.$store.commit("HIDE_LISTENING_OVERLAY");
       this.$store.dispatch("stopAudioCapture");
-      this.audioButtonColor = "primary";
+      this.audioButtonColor = "sendButton";
     },
     onHtmlClick(event) {
       // Find the closest anchor to the target.
@@ -705,7 +705,7 @@ export default {
     sendUserInput(params = "") {
       if (this.valid) {
         this.$refs.userInputForm.resetValidation();
-        this.audioButtonColor = "primary";
+        this.audioButtonColor = "sendButton";
         if (this.userInput.trim()) {
           this.$store.commit("SHOW_PROGRESS_BAR");
           this.showDate = false;
