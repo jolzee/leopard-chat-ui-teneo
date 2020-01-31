@@ -295,7 +295,6 @@ function updateLeopardVariables() {
   );
 
   var teneoFrameWindow = window.frames.teneochatwidget;
-  console.log("Teneo Window Frame", teneoFrameWindow);
   if (teneoFrameWindow) {
     var leoapardPayload = {
       width: leoaprdViewWidth,
