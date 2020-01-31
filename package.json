@@ -44,7 +44,7 @@
     "logrocket-vuex": "0.0.3",
     "markdown-it": "^10.0.0",
     "markdown-it-for-inline": "^0.1.1",
-    "plyr": "^3.5.6",
+    "plyr": "^3.5.7-beta.0",
     "prismjs": "^1.19.0",
     "promised-location": "^1.0.1",
     "replace-string": "^3.0.0",
