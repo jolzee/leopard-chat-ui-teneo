@@ -1073,10 +1073,13 @@ function storeSetup(vuetify) {
         state.modals.showCustomModal = false;
       },
       HIDE_CHAT_WINDOW_DISPLAY_EMBED(state, _getters) {
-        // state.ui.showChatWindow = false; DON'T ENABLE - Let embed code in prod hide leopard.
         logger.debug(`HIDE_CHAT_WINDOW_DISPLAY_EMBED`);
-        sendMessageToParent("hideLeopard");
         localStorage.setItem("isChatOpen", false);
+        state.ui.showChatWindow = false;
+      },
+      HIDE_CHAT_WINDOW(state) {
+        logger.debug(`store: HIDE_CHAT_WINDOW`);
+        state.ui.showChatWindow = false;
       },
       OPEN_CHAT_WINDOW_DISPLAY_EMBED(state, _getters) {
         state.ui.showChatWindow = true;
@@ -1111,10 +1114,6 @@ function storeSetup(vuetify) {
       },
       LOG_OUT_TENEO(state) {
         state.auth.hasLoggedInTeneo = false;
-      },
-      HIDE_CHAT_WINDOW(state) {
-        logger.debug(`store: HIDE_CHAT_WINDOW`);
-        state.ui.showChatWindow = false;
       },
       HIDE_CHAT_BUTTON(state) {
         state.ui.showChatButton = false;
@@ -2606,6 +2605,18 @@ function receiveMessageFromParent(event) {
       logger.debug(messageObject);
       // event.source.postMessage("This is a message sent back from Leopard to the site embedding Leopard", event.origin);
 
+      if (
+        "leopardState" in messageObject &&
+        messageObject.leopardState === "closed"
+      ) {
+        store.commit("HIDE_CHAT_WINDOW_DISPLAY_EMBED");
+        setTimeout(
+          function() {
+            store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
+          }.bind(this),
+          1000
+        );
+      }
       if ("height" in messageObject && "width" in messageObject) {
         logger.info(`Event from parent`, event);
         store.state.ui.parent = {

@@ -180,6 +180,7 @@ var leopardAnimations = {
 };
 
 var shouldShowLeopard = false;
+var isLeopardAnimating = false;
 
 // eslint-disable-next-line no-unused-vars
 function getLeopardElementHeight() {
@@ -231,24 +232,27 @@ function receiveLeopardMessage(event) {
       animateLeopard(leopardAnimations.in);
     } else if (event.data === "hideLeopard" && shouldShowLeopard) {
       // console.log("Hide 👁 Leopard");
-      shouldShowLeopard = false;
+      isLeopardAnimating = true;
       animateLeopard(leopardAnimations.out, function() {
+        shouldShowLeopard = false;
         var node = document.getElementById("teneo-chat-widget-container");
         node.style.display = "none";
-        if (!shouldShowLeopard) {
-          setTimeout(function() {
-            node = document.getElementById("teneo-chat-widget-container");
-            node.className = "teneo-chat-button-widget";
-            node.style.display = "block";
-          }, 100);
-        }
+        postMessageToLeopard({ leopardState: "closed" });
+        setTimeout(function() {
+          node = document.getElementById("teneo-chat-widget-container");
+          node.className = "teneo-chat-button-widget";
+          node.style.display = "block";
+          isLeopardAnimating = false;
+        }, 800);
       });
-    } else if (event.data === "hideLeopard" && !shouldShowLeopard) {
+    } else if (event.data === "hideLeopard" && !isLeopardAnimating) {
       var leopardContainer = document.getElementById(
         "teneo-chat-widget-container"
       );
-      leopardContainer.className = "teneo-chat-button-widget";
-      leopardContainer.style.display = "block";
+      if (leopardContainer.className !== "teneo-chat-button-widget") {
+        leopardContainer.className = "teneo-chat-button-widget";
+        leopardContainer.style.display = "block";
+      }
     } else if (event.data.startsWith("runLeopardScript")) {
       var results = event.data.split("|");
       eval(results[1]);
@@ -282,6 +286,13 @@ function animateLeopard(animationName, callback) {
     if (node.style.display !== "none") {
       callback();
     }
+  }
+}
+
+function postMessageToLeopard(objPayload) {
+  var teneoFrameWindow = window.frames.teneochatwidget;
+  if (teneoFrameWindow && objPayload) {
+    teneoFrameWindow.postMessage(JSON.stringify(objPayload), "*");
   }
 }
 

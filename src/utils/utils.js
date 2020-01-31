@@ -78,6 +78,12 @@ export const fixSolutions = allSolutions => {
   return allSolutions;
 };
 
+export const sendMessageToParent = message => {
+  if (parent) {
+    parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
+  }
+};
+
 export const removeAll = (targetStr, findArr) => {
   findArr.forEach(find => {
     targetStr = replaceAll(targetStr, find);

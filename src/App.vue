@@ -448,7 +448,7 @@ const logger = require("@/utils/logging").getLogger("App.vue");
 import "wicg-inert/dist/inert.min.js";
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "./constants/solution-config-default.js";
-import { debounce } from "@/utils/utils";
+import { debounce, sendMessageToParent } from "@/utils/utils";
 const OverlayAlert = () => import("./components/OverlayAlert");
 // import AssistiveText from "./components/AssistiveText.vue";
 import jsonpack from "jsonpack/main";
@@ -830,27 +830,21 @@ export default {
       window.location.href = deepLinkUrl;
     },
     closeChatEmbedded() {
+      localStorage.setItem("isChatOpen", "false");
+      sendMessageToParent("hideLeopard");
       this.calculateMobileHeight(); // only called on mobile devices
       logger.debug("Close Chat Embedded");
       this.$store.commit("HIDE_CHAT_BUTTON");
-      this.$store.commit("HIDE_CHAT_WINDOW_DISPLAY_EMBED");
-      setTimeout(
-        function() {
-          this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
-        }.bind(this),
-        2000
-      );
     },
     openEmbedButton() {
       this.calculateMobileHeight(); // only called on mobile devices
       logger.debug("Open Chat Window from Embed Button");
       this.$store.commit("HIDE_CHAT_BUTTON");
-      this.$store.commit("OPEN_CHAT_WINDOW_DISPLAY_EMBED");
       setTimeout(
         function() {
-          this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
+          this.$store.commit("OPEN_CHAT_WINDOW_DISPLAY_EMBED");
         }.bind(this),
-        2000
+        800
       );
     },
     logout() {
