@@ -190,6 +190,13 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      fullscreenEmbed(state) {
+        return (
+          state.ui.embed &&
+          state.ui.parent.width &&
+          state.ui.parent.width <= 480
+        );
+      },
       accessibleAnouncement(state) {
         return state.accessibleAnouncement;
       },
@@ -2588,6 +2595,7 @@ function sendMessageToParent(message) {
 function receiveMessageFromParent(event) {
   try {
     // if (event.origin !== "http://example.com:8080") return;
+
     if (event.data) {
       let messageObject = JSON.parse(event.data);
       if ("info" in messageObject && "id" in messageObject) {
@@ -2598,21 +2606,15 @@ function receiveMessageFromParent(event) {
       logger.debug(messageObject);
       // event.source.postMessage("This is a message sent back from Leopard to the site embedding Leopard", event.origin);
 
-      if ("frameHeight" in messageObject) {
+      if ("height" in messageObject && "width" in messageObject) {
+        logger.info(`Event from parent`, event);
         store.state.ui.parent = {
-          frameHeight: messageObject.frameHeight
+          height: messageObject.height,
+          width: messageObject.width
         };
-        localStorage.setItem(
-          STORAGE_KEY + "parentHeight",
-          messageObject.frameHeight
-        );
         logger.debug(
-          `receiveMessageFromParent: parentHeight = ${messageObject.frameHeight}`
+          `receiveMessageFromParent: height: ${messageObject.height} width: ${messageObject.width}`
         );
-        // trigger a resize event
-        let evt = window.document.createEvent("UIEvents");
-        evt.initUIEvent("resize", true, false, window, 0);
-        window.dispatchEvent(evt);
       } else {
         store.state.connection.ctxParameters = messageObject;
       }
@@ -2622,4 +2624,7 @@ function receiveMessageFromParent(event) {
   }
 }
 
-if (config.EMBED) window.addEventListener("message", receiveMessageFromParent);
+if (config.EMBED) {
+  logger.info("Listening for messages from parent");
+  window.addEventListener("message", receiveMessageFromParent);
+}

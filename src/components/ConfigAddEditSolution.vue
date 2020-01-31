@@ -15,7 +15,7 @@
       <v-system-bar
         height="25px"
         color="primary darken-2"
-        :class="{ 'popup-header': !fullscreen }"
+        :class="{ 'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown}"
         dark
       >
         <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
@@ -23,7 +23,7 @@
         <v-icon
           tabindex="0"
           tag="button"
-          v-if="!embed"
+          v-if="!embed && !$vuetify.breakpoint.mdAndDown"
           :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
           @click="toggleFullscreen"
         >

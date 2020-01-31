@@ -28,11 +28,19 @@
               </v-alert>
             </v-overlay>
           </v-fade-transition>
-          <v-system-bar color="primary darken-2" :class="{ 'popup-header': !fullscreen }" dark>
+          <v-system-bar
+            color="primary darken-2"
+            :class="{
+                  'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown,
+                  'teneo-toolbar-embed': embed && !fullscreenEmbed,
+                  'teneo-toolbar-embed-fullscreen': fullscreenEmbed
+                }"
+            dark
+          >
             <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
 
             <v-icon
-              v-if="!embed"
+              v-if="!embed && !$vuetify.breakpoint.mdAndDown"
               tabindex="0"
               tag="button"
               :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
@@ -969,7 +977,7 @@ export default {
   },
   props: ["formConfig"],
   computed: {
-    ...mapGetters(["uuid", "dark", "embed"])
+    ...mapGetters(["uuid", "dark", "embed", "fullscreenEmbed"])
   },
   mounted() {
     this.$store.commit("HIDE_508_CONTENT");
@@ -1076,11 +1084,17 @@ export default {
   overflow-x: hidden;
 }
 
-.v-dialog.v-dialog--active .popup-header {
+.teneo-toolbar-embed {
+  border-radius: 4px 4px 0 0 !important;
+  -moz-border-radius: 4px 4px 0 0 !important;
+  -webkit-border-radius: 4px 4px 0 0 !important;
+}
+
+.v-dialog.v-dialog--active .grab-cursor {
   cursor: grab;
 }
 
-.v-dialog.v-dialog--active .popup-header:active {
+.v-dialog.v-dialog--active .grab-cursor:active {
   cursor: grabbing;
 }
 </style>

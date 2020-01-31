@@ -78,6 +78,33 @@ export const fixSolutions = allSolutions => {
   return allSolutions;
 };
 
+export const removeAll = (targetStr, findArr) => {
+  findArr.forEach(find => {
+    targetStr = replaceAll(targetStr, find);
+  });
+  return targetStr;
+};
+
+export const replaceAll = (targetStr, findStr, replaceStr = "") => {
+  return targetStr.split(findStr).join(replaceStr);
+};
+
+export const debounce = (func, wait, immediate) => {
+  var timeout;
+  return () => {
+    const context = this,
+      args = arguments;
+    const later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    const callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+};
+
 /**
  * Smooth scroll
  */

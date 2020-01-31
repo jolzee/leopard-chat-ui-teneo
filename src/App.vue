@@ -32,7 +32,8 @@
         'elevation-2': !embed,
         'application-float': shouldFloat,
         'application-embed': embed,
-        'application-mobile': isMobileDevice
+        'application-mobile': isMobileDevice,
+        'application-fullscreen': fullscreenEmbed
       }"
     >
       <!-- <AssistiveText ref="assistiveText" v-model="accessibleAnouncement"></AssistiveText> -->
@@ -264,7 +265,7 @@
           >
             <div style="height: inherit; border-radius: inherit">
               <v-app-bar
-                elevation="4"
+                elevation="2"
                 max-height="64"
                 min-height="64"
                 height="64"
@@ -272,8 +273,9 @@
                 dark
                 app
                 :class="{
-                  'teneo-toolbar-float': float,
-                  'teneo-toolbar-embed': embed
+                  'teneo-toolbar-float': float && !embed,
+                  'teneo-toolbar-embed': embed && !fullscreenEmbed,
+                  'teneo-toolbar-embed-fullscreen': fullscreenEmbed
                 }"
                 class="teneo-leopard-header"
                 :style="toolbarStyle"
@@ -446,6 +448,7 @@ const logger = require("@/utils/logging").getLogger("App.vue");
 import "wicg-inert/dist/inert.min.js";
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "./constants/solution-config-default.js";
+import { debounce } from "@/utils/utils";
 const OverlayAlert = () => import("./components/OverlayAlert");
 // import AssistiveText from "./components/AssistiveText.vue";
 import jsonpack from "jsonpack/main";
@@ -542,7 +545,12 @@ export default {
     if (this.embed) {
       this.isChatOpenLocalStorage();
     }
-    window.addEventListener("resize", this.onResizeOrEmbed);
+    // window.addEventListener("resize", his.onResizeOrEmbed);
+    window.addEventListener(
+      "resize",
+      debounce(this.onResizeOrEmbed, 200, false),
+      false
+    );
     // deal with import of solution
     const urlParams = new URLSearchParams(window.location.search);
     const initialUserInput = urlParams.get("question");
@@ -596,6 +604,7 @@ export default {
       "authenticated",
       "hide508",
       "isPromptPollingActive",
+      "fullscreenEmbed",
       "getPromptPollingIntervalInMilliseconds",
       "config",
       "isMobileDevice",
@@ -1390,6 +1399,12 @@ div.teneo-footer:focus-within {
   border: 0px solid #000000;
 }
 
+.teneo-toolbar-embed {
+  border-radius: 13px 13px 0 0 !important;
+  -moz-border-radius: 13px 13px 0 0 !important;
+  -webkit-border-radius: 13px 13px 0 0 !important;
+}
+
 .show-the-chat {
   right: 0 !important;
 }
@@ -1504,17 +1519,17 @@ iframe#site-frame {
     -webkit-border-radius: 13px !important;
   }
 
-  .teneo-toolbar-embed {
-    border-radius: 13px 13px 0 0 !important;
-    -moz-border-radius: 13px 13px 0 0 !important;
-    -webkit-border-radius: 13px 13px 0 0 !important;
-  }
-
   .teneo-toolbar-float,
   .v-system-bar {
     border-radius: unset !important;
     -moz-border-radius: unset !important;
     -webkit-border-radius: unset !important;
+  }
+
+  .teneo-toolbar-embed-fullscreen {
+    border-radius: unset !important;
+    -moz-border-radius: unset !important;
+    -webkit-border-radius: unset 0 0 !important;
   }
 }
 
@@ -1564,12 +1579,6 @@ iframe#site-frame {
     border-radius: 13px !important;
     -moz-border-radius: 13px !important;
     -webkit-border-radius: 13px !important;
-  }
-
-  .teneo-toolbar-embed {
-    border-radius: 13px 13px 0 0 !important;
-    -moz-border-radius: 13px 13px 0 0 !important;
-    -webkit-border-radius: 13px 13px 0 0 !important;
   }
 
   .teneo-toolbar-float,

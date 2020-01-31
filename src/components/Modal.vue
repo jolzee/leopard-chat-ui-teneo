@@ -15,7 +15,7 @@
       scrollable
       persistent
       no-click-animation
-      content-class="teneo-modal"
+      :content-class="embed && !fullscreenEmbed ? 'teneo-modal-embed' : fullscreenEmbed ? 'teneo-modal-fullscreen' : 'teneo-modal'"
       hide-overlay
       :width="
         currentModalSize === 'small'
@@ -49,7 +49,11 @@
         <v-system-bar
           height="25px"
           color="primary darken-2"
-          :class="{ 'popup-header': !fullscreen }"
+          :class="{
+                  'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown,
+                  'teneo-toolbar-embed': embed && !fullscreenEmbed,
+                  'teneo-toolbar-embed-fullscreen': fullscreenEmbed
+                }"
           dark
         >
           <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
@@ -60,7 +64,7 @@
             @click="toggleFullscreen"
             v-if="
               currentModalPosition !== 'fullscreen' &&
-                currentModalSize !== 'fullscreen' && !embed
+                currentModalSize !== 'fullscreen' && !embed && !$vuetify.breakpoint.mdAndDown
             "
           >
             {{
@@ -199,7 +203,7 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("Modal.vue");
-import { stripHtmlTags } from "@/utils/utils";
+import { stripHtmlTags, removeAll } from "@/utils/utils";
 // import Audio from "./Audio";
 // import Carousel from "./Carousel";
 // import CustomModal from "./CustomModal";
@@ -537,6 +541,7 @@ export default {
     ...mapGetters([
       "dark",
       "embed",
+      "fullscreenEmbed",
       "showButtonOnly",
       "extensionIsInline",
       "hasInline",
@@ -636,16 +641,20 @@ export default {
           modalElements !== "undefined" &&
           this.currentModalSize !== "undefined"
         ) {
-          // for (var i = 0; i < modalElements.length; i++) {
-          //   modalElements[
-          //     i
-          //   ].className += ` teneo-modal-${this.currentModalPosition} teneo-modal-${this.currentModalSize}-width`;
-          // }
           for (var i = 0; i < modalElements.length; i++) {
             if (
               this.currentModalSize !== "fullscreen" &&
               this.currentModalPosition !== "fullscreen"
             ) {
+              modalElements[i].className = removeAll(
+                modalElements[i].className,
+                [
+                  "teneo-modal-left",
+                  "teneo-modal-center",
+                  "teneo-modal-right",
+                  "teneo-modal-fullscreen"
+                ]
+              );
               modalElements[
                 i
               ].className += ` teneo-modal-${this.currentModalPosition}`;
@@ -833,11 +842,20 @@ export default {
 }
 
 .teneo-modal {
-  /* position: absolute !important;
-  right: 0;
-  margin: 0 !important; */
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.teneo-modal-embed {
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 4px !important;
+}
+
+.teneo-modal-fullscreen {
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 0px !important;
 }
 
 .teneo-modal-card {

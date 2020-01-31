@@ -3,10 +3,10 @@
 var leopardUrl;
 
 var leopardEmbedSrc = null;
-var scripts = document.getElementsByTagName("script");
-for (var i = 0; i < scripts.length; ++i) {
-  if (isLeopard(scripts[i])) {
-    leopardEmbedSrc = scripts[i].getAttribute("src");
+var leopardPageScripts = document.getElementsByTagName("script");
+for (var i = 0; i < leopardPageScripts.length; ++i) {
+  if (isLeopard(leopardPageScripts[i])) {
+    leopardEmbedSrc = leopardPageScripts[i].getAttribute("src");
   }
 }
 
@@ -38,6 +38,23 @@ function getLeopardTemplate(f) {
     .replace(/\*\/[^/]+$/, "");
 }
 
+function leopardDebounce(func, wait, immediate) {
+  var timeout;
+
+  return function executedFunction() {
+    var context = this;
+    var args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+}
+
 var leopardChatTemplate = getLeopardTemplate(function() {
   /*!
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
@@ -64,7 +81,7 @@ var leopardChatTemplate = getLeopardTemplate(function() {
      border-radius: 13px;
      -moz-border-radius: 13px;
      -webkit-border-radius: 13px;
-     height: calc(var(--vh, 1vh) * 85);
+     height: calc(var(--leopardvh, 1vh) * 85);
 }
 
 .teneo-transparent::-moz-selection { background: transparent !important; background-color: transparent !important;}
@@ -98,8 +115,8 @@ var leopardChatTemplate = getLeopardTemplate(function() {
      border-radius: 0px;
      -moz-border-radius: 0px;
      -webkit-border-radius: 0px;
-     min-height: calc(var(--vh, 1vh) * 20);
-     height: calc(var(--vh, 1vh) * 100);
+     min-height: calc(var(--leopardvh, 1vh) * 20);
+     height: calc(var(--leopardvh, 1vh) * 100);
   }
 
   .teneo-chat-button-widget {
@@ -131,7 +148,7 @@ var leopardChatTemplate = getLeopardTemplate(function() {
     scrolling="no"
     role="application"
     aria-label="Chat Bot"
-    style="height: 100%; width: 100%; border-width: 0px; border-style: none; border-color: transparent; border-image: unset; background: transparent !important; background-color: transparent !important;"
+    style="height: 100%; width: 100%; border-width: 0px; border-style: none; border-color: transparent; border-image: unset; background: none transparent !important; background-color: transparent !important;"
     class="teneo-transparent"
   ></iframe>
 </div>
@@ -150,8 +167,11 @@ if (window.TENEOCTX) {
 } else {
   leopardChatTemplate = leopardChatTemplate.replace(teneoCtxParamsRegex, "");
 }
-var vh = window.innerHeight * 0.01;
-document.documentElement.style.setProperty("--vh", vh + "px");
+var leopardViewHeight = window.innerHeight * 0.01;
+document.documentElement.style.setProperty(
+  "--leopardvh",
+  leopardViewHeight + "px"
+);
 document.body.insertAdjacentHTML("afterbegin", leopardChatTemplate);
 
 var leopardAnimations = {
@@ -265,10 +285,29 @@ function animateLeopard(animationName, callback) {
   }
 }
 
-function updateLeopardHeight() {
-  var vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty("--vh", vh + "px");
+function updateLeopardVariables() {
+  var leopardViewHeight = window.innerHeight;
+  var leoaprdViewWidth = window.innerWidth;
+
+  document.documentElement.style.setProperty(
+    "--leopardvh",
+    leopardViewHeight * 0.01 + "px"
+  );
+
+  var teneoFrameWindow = window.frames.teneochatwidget;
+  console.log("Teneo Window Frame", teneoFrameWindow);
+  if (teneoFrameWindow) {
+    var leoapardPayload = {
+      width: leoaprdViewWidth,
+      height: leopardViewHeight
+    };
+    teneoFrameWindow.postMessage(JSON.stringify(leoapardPayload), "*");
+  }
 }
 
 window.addEventListener("message", receiveLeopardMessage, false);
-window.addEventListener("resize", updateLeopardHeight);
+window.addEventListener(
+  "resize",
+  leopardDebounce(updateLeopardVariables, 200, false),
+  false
+);

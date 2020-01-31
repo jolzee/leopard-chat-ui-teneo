@@ -34,7 +34,7 @@
         </span>
         <v-spacer class="teneo-systembar-spacer"></v-spacer>
         <v-icon
-          v-if="!embed"
+          v-if="!embed && !$vuetify.breakpoint.mdAndDown"
           tabindex="0"
           tag="button"
           :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
