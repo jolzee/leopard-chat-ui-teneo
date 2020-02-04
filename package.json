@@ -26,7 +26,7 @@
     "@livechat/customer-sdk": "^2.0.0-alpha.3",
     "@mdi/font": "^4.8.95",
     "@sentry/browser": "^5.11.2",
-    "@sentry/integrations": "^5.11.1",
+    "@sentry/integrations": "^5.12.0",
     "artyom.js": "github:jolzee/artyom.js#master",
     "bluebird": "^3.7.2",
     "consola": "^2.11.3",
