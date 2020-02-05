@@ -29,38 +29,40 @@
           @hideFeedback="showFeedback = false"
         />
         <v-container class="chat-container-inner">
-          <transition-group
-            name="chat-line-transition"
-            enter-active-class="animated no-animation-today"
-          >
-            <v-container
-              v-for="(item, i) in dialog"
-              :key="i + 'itemsIter' + uuid"
-              :class="{ 'mt-0 pb-0': i === dialog.length - 1, 'pt-0': i === 0 }"
-              class="px-0 mx-0"
+          <div aria-live="polite">
+            <transition-group
+              name="chat-line-transition"
+              enter-active-class="animated no-animation-today"
             >
-              <ChatBroadcastMessage :item="item" class="pb-1"></ChatBroadcastMessage>
+              <v-container
+                v-for="(item, i) in dialog"
+                :key="i + 'itemsIter' + uuid"
+                :class="{ 'mt-0 pb-0': i === dialog.length - 1, 'pt-0': i === 0 }"
+                class="px-0 mx-0"
+              >
+                <ChatBroadcastMessage :item="item" class="pb-1"></ChatBroadcastMessage>
 
-              <LiveChatResponse :itemIndexInDialog="i" :item="item" class="mt-1 pb-1"></LiveChatResponse>
+                <LiveChatResponse :itemIndexInDialog="i" :item="item" class="mt-1 pb-1"></LiveChatResponse>
 
-              <ChatTeneoResponse
-                :item="item"
-                :itemIndexInDialog="i"
-                @swapInputButton="swapInputButton"
-                @handleFocus="handleFocus"
-                @toggleDate="showDate = !showDate"
-                @toggleTime="showTime = !showTime"
-                @showFeedback="showFeedback = true"
-              ></ChatTeneoResponse>
+                <ChatTeneoResponse
+                  :item="item"
+                  :itemIndexInDialog="i"
+                  @swapInputButton="swapInputButton"
+                  @handleFocus="handleFocus"
+                  @toggleDate="showDate = !showDate"
+                  @toggleTime="showTime = !showTime"
+                  @showFeedback="showFeedback = true"
+                ></ChatTeneoResponse>
 
-              <ChatUserQuestion
-                :item="item"
-                :itemIndexInDialog="i"
-                @clicked="updateInputBox"
-                @swapInputButton="swapInputButton"
-              ></ChatUserQuestion>
-            </v-container>
-          </transition-group>
+                <ChatUserQuestion
+                  :item="item"
+                  :itemIndexInDialog="i"
+                  @clicked="updateInputBox"
+                  @swapInputButton="swapInputButton"
+                ></ChatUserQuestion>
+              </v-container>
+            </transition-group>
+          </div>
         </v-container>
 
         <!-- live chat typing -->

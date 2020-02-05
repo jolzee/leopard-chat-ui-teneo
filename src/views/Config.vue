@@ -306,6 +306,7 @@
                               class="mr-2 mb-2"
                               v-bind="attrs"
                               v-on="on"
+                              :loading="displayAddEditDialog"
                               v-show="showSolutionButtons"
                               fab
                               dark
