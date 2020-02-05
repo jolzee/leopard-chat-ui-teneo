@@ -34,7 +34,7 @@
         </v-fade-transition>
         <v-system-bar
           height="25px"
-          color="primary darken-2"
+          color="primary darken-3"
           :class="{
                   'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown,
                   'teneo-toolbar-embed': embed && !fullscreenEmbed,
@@ -59,7 +59,7 @@
           <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close">mdi-close</v-icon>
         </v-system-bar>
 
-        <v-app-bar dark color="primary" dense>
+        <v-app-bar :color="`primary ${textColor('primary')}`" dense>
           <v-toolbar-title>{{ title }}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-app-bar>
@@ -93,7 +93,7 @@ export default {
   name: "Dialog",
   props: ["title", "show", "width"],
   computed: {
-    ...mapGetters(["uuid", "dark", "embed", "fullscreenEmbed"])
+    ...mapGetters(["uuid", "dark", "embed", "fullscreenEmbed", "textColor"])
   },
   data() {
     return {

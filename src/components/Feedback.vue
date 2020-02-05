@@ -7,10 +7,9 @@
       :fullscreen="$vuetify.breakpoint.mdAndDown"
     >
       <v-card>
-        <v-app-bar dark color="primary" max-height="64">
+        <v-app-bar :color="`primary ${textColor('primary')}`" max-height="64">
           <v-toolbar-title>Feedback</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-icon>mdi-message-processing-outline</v-icon>
         </v-app-bar>
 
         <v-card-text style="height: 360px;" class="px-2">
@@ -79,6 +78,8 @@
 </template>
 <script>
 const logger = require("@/utils/logging").getLogger("Feedback.vue");
+import { mapGetters } from "vuex";
+
 export default {
   name: "Feedback",
   props: ["feedbackConfig"],
@@ -113,7 +114,9 @@ export default {
       this.$store.commit("SHOW_MESSAGE_IN_CHAT", "Thanks for your feedback.");
     }
   },
-  computed: {}
+  computed: {
+    ...mapGetters(["textColor"])
+  }
 };
 </script>
 <style></style>

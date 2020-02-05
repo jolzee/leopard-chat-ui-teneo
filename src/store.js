@@ -5,7 +5,8 @@ import {
   doesParameterExist,
   getParameterByName,
   sleep,
-  cleanEmptyChunks
+  cleanEmptyChunks,
+  isLight
 } from "@/utils/utils";
 import router from "@/router";
 import dayjs from "dayjs";
@@ -190,6 +191,9 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      theme(state) {
+        return state.ui.theme;
+      },
       fullscreenEmbed(state) {
         return (
           state.ui.embed &&
@@ -472,6 +476,16 @@ function storeSetup(vuetify) {
         } else {
           return false;
         }
+      },
+      textColor: state => themeColorName => {
+        console.log("vuetify is dark?", vuetify.framework.theme.isDark);
+        if (!vuetify.framework.theme.isDark) {
+          let hexColor = state.ui.theme[themeColorName];
+          return isLight(hexColor) ? "black--text" : "white--text";
+        } else {
+          return "white--text";
+        }
+        return "";
       },
       vimeoIdFromUrl: _state => url => {
         const regExp = /^.+vimeo.com\/(.*\/)?([^#]*)/;

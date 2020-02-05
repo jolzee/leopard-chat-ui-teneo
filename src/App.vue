@@ -14,10 +14,10 @@
             accesskey="/"
             aria-label="Open Chat"
             tabindex="0"
-            class="leopard-open-close-button embed-button-center pulse"
+            :class="`leopard-open-close-button embed-button-center pulse ${textColor('primary')}`"
             :style="customCssButtonToolbar"
           >
-            <v-icon dark>mdi-message-text</v-icon>
+            <v-icon>mdi-message-text</v-icon>
           </v-btn>
         </v-fab-transition>
       </div>
@@ -49,7 +49,7 @@
           id="leopardSystemBarMinimized"
           color="primary"
           accesskey="+"
-          class="white--text elevation-4 leopard-system-bar"
+          :class="`elevation-4 leopard-system-bar ${textColor('primary')}`"
           style="border-left: 4px solid yellowgreen !important; border-right: 4px solid yellowgreen !important;"
           @click="maximizeChat = true"
           v-on:keydown.enter.prevent="maximizeChat = true"
@@ -74,11 +74,10 @@
               @click="toggleChat"
               v-show="showChatButton && !isChatOpen"
               tabindex="0"
-              class="leopard-open-close-button"
-              :class="{ pulse: pulseButton && !isChatOpen }"
+              :class="`leopard-open-close-button ${textColor('primary')} ${pulseButton && !isChatOpen ? 'pulse' : ''}`"
               :style="customCssButtonToolbar"
             >
-              <v-icon dark v-text="isChatOpen ? 'mdi-close' : 'mdi-message-text'"></v-icon>
+              <v-icon v-text="isChatOpen ? 'mdi-close' : 'mdi-message-text'"></v-icon>
             </v-btn>
           </v-fab-transition>
         </div>
@@ -288,6 +287,7 @@
                       tile
                       small
                       ripple
+                      :color="isLightColor('primary') ? 'black' : 'white'"
                       id="leopardNavMenuButton"
                       accesskey="m"
                       :aria-label="
@@ -297,7 +297,7 @@
                       class="embed-button-center ml-0"
                       :style="customCssButtonToolbar"
                     >
-                      <v-icon dark>
+                      <v-icon>
                         {{
                         drawer ? "mdi-menu-open" : "mdi-menu"
                         }}
@@ -323,12 +323,13 @@
                       tile
                       small
                       ripple
+                      :color="isLightColor('primary') ? 'black' : 'white'"
                       to="/"
                       aria-label="Back to Chat"
                       class="mr-2"
                       :style="customCssButtonToolbar"
                     >
-                      <v-icon dark>mdi-arrow-left</v-icon>
+                      <v-icon>mdi-arrow-left</v-icon>
                     </v-btn>
                   </v-fab-transition>
                 </span>
@@ -342,11 +343,12 @@
                         tile
                         small
                         ripple
+                        :color="isLightColor('primary') ? 'black' : 'white'"
                         aria-label="Close Chat"
                         class="embed-button-center mr-0"
                         :style="customCssButtonToolbar"
                       >
-                        <v-icon dark>mdi-close</v-icon>
+                        <v-icon>mdi-close</v-icon>
                       </v-btn>
                     </v-fab-transition>
                   </span>
@@ -361,12 +363,13 @@
                       small
                       ripple
                       accesskey="."
+                      :color="isLightColor('primary') ? 'black' : 'white'"
                       aria-label="Minimize Chat"
                       class="embed-button-center mr-1"
                       :style="customCssButtonToolbar"
                       @click="minimizeChat"
                     >
-                      <v-icon dark>mdi-image-size-select-small</v-icon>
+                      <v-icon>mdi-image-size-select-small</v-icon>
                     </v-btn>
                   </v-fab-transition>
                   <v-fab-transition>
@@ -376,13 +379,14 @@
                       tile
                       small
                       ripple
+                      :color="isLightColor('primary') ? 'black' : 'white'"
                       accesskey="/"
                       aria-label="Close Chat"
                       class="embed-button-center mr-0"
                       :style="customCssButtonToolbar"
                       @click="toggleChat"
                     >
-                      <v-icon dark>mdi-close</v-icon>
+                      <v-icon>mdi-close</v-icon>
                     </v-btn>
                   </v-fab-transition>
                 </template>
@@ -448,7 +452,7 @@ const logger = require("@/utils/logging").getLogger("App.vue");
 import "wicg-inert/dist/inert.min.js";
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "./constants/solution-config-default.js";
-import { debounce, sendMessageToParent } from "@/utils/utils";
+import { debounce, sendMessageToParent, isLight } from "@/utils/utils";
 const OverlayAlert = () => import("./components/OverlayAlert");
 // import AssistiveText from "./components/AssistiveText.vue";
 import jsonpack from "jsonpack/main";
@@ -603,6 +607,8 @@ export default {
       "accentStyling",
       "authenticated",
       "hide508",
+      "theme",
+      "textColor",
       "isPromptPollingActive",
       "fullscreenEmbed",
       "getPromptPollingIntervalInMilliseconds",
@@ -730,10 +736,24 @@ export default {
       }
     },
     toolbarColor() {
-      return "primary white--text";
+      return !this.$vuetify.theme.dark
+        ? `primary ${isLight(this.theme.primary) ? "black" : "white"}--text`
+        : `primary white--text`;
     }
   },
   methods: {
+    isLightColor(themeColorName) {
+      if (!this.$vuetify.theme.dark) {
+        let hexColor = this.theme[themeColorName];
+        logger.debug(
+          `Checking ${themeColorName} color: ${hexColor}`,
+          this.theme
+        );
+        return isLight(hexColor);
+      } else {
+        return false;
+      }
+    },
     backToChat() {
       this.drawer = false;
       if (this.$router.currentRoute.path !== "/") {

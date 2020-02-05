@@ -14,7 +14,7 @@
     <v-card color>
       <v-system-bar
         height="25px"
-        color="primary darken-2"
+        color="primary darken-3"
         :class="{ 'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown}"
         dark
       >
@@ -40,14 +40,14 @@
         >mdi-close</v-icon>
       </v-system-bar>
 
-      <v-app-bar dark color="primary" dense>
+      <v-app-bar :color="`primary ${textColor('primary')}`" dense>
         <v-toolbar-title>{{ dialogTitle }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <span class="d-none d-md-inline-block">
           <v-btn
             small
             aria-label="Open Marterial Design Icons in a new window"
-            color="primary darken-2"
+            :color="`primary darken-2 ${textColor('primary')}`"
             href="https://petershaggynoble.github.io/MDI-Sandbox/"
             target="_blank"
             dark
@@ -373,10 +373,10 @@
                         `Set the active color for editing to ${color}`
                       "
                       fab
-                      dark
+                      :dark="!isLight(solution.theme[color])"
                       small
                       @click="setActiveColor(color)"
-                      :color="solution.theme[color]"
+                      :color="`${solution.theme[color]}`"
                     >
                       <v-icon v-if="activeColor === color">mdi-star</v-icon>
                     </v-btn>
@@ -784,14 +784,14 @@
         <v-btn
           class="mr-2"
           :aria-label="`Close the solution editing dialog`"
-          color="primary lighten-2"
+          :color="`primary lighten-2 ${textColor('primary')}`"
           small
           light
           @click="closeAddNewSolutionDialog"
         >Close</v-btn>
         <v-btn
           class="mr-2"
-          color="primary darken-2"
+          :color="`primary darken-2 ${textColor('primary')}`"
           small
           :aria-label="`Save edits to the solution`"
           @click="saveForm"
@@ -811,7 +811,7 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("ChatAddEditSolution.vue");
-import { createSlug, cloneObject } from "@/utils/utils";
+import { createSlug, cloneObject, isLight } from "@/utils/utils";
 import urlRegex from "url-regex";
 import { mapGetters } from "vuex";
 import { COLOR_NAMES } from "../constants/color-names.js";
@@ -1060,7 +1060,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["embed"]),
+    ...mapGetters(["embed", "textColor"]),
     themeColorsFiltered() {
       return this.themeColors.filter(function(color) {
         return color !== "white";
@@ -1084,6 +1084,9 @@ export default {
     }, 100);
   },
   methods: {
+    isLight(color) {
+      return isLight(color);
+    },
     createSlug() {
       this.solution.deepLink = createSlug(this.solution.name);
     },

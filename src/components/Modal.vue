@@ -48,7 +48,7 @@
         </v-fade-transition>
         <v-system-bar
           height="25px"
-          color="primary darken-2"
+          color="primary darken-3"
           :class="{
                   'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown,
                   'teneo-toolbar-embed': embed && !fullscreenEmbed,
@@ -74,7 +74,7 @@
           <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="hideModal">mdi-close</v-icon>
         </v-system-bar>
 
-        <v-app-bar :dense="title.length < 43" dark color="primary">
+        <v-app-bar :dense="title.length < 43" :color="`primary ${textColor('primary')}`">
           <h2
             class="subtitle-1"
             :aria-label="aria ? aria : title ? title : $t('more.info.title')"
@@ -541,6 +541,7 @@ export default {
     ...mapGetters([
       "dark",
       "embed",
+      "textColor",
       "fullscreenEmbed",
       "showButtonOnly",
       "extensionIsInline",

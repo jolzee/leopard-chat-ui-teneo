@@ -237,7 +237,7 @@
             height="25"
             class="option-btn mr-2 mt-2"
             x-small
-            color="success textButton--text"
+            :color="`success ${textColor('success')}`"
             :aria-label="option.aria ? option.aria : option.name"
             @click="optionClicked(option)"
           >
@@ -285,7 +285,7 @@
     >
       <v-col cols="12" class="text-right mb-2">
         <v-btn
-          color="success textButton--text"
+          :color="`success ${textColor('success')}`"
           aria-label="Leave Feedback"
           class="modal-btn mt-2"
           small
@@ -312,7 +312,7 @@
         />
 
         <v-btn
-          color="success textButton--text"
+          :color="`success ${textColor('success')}`"
           aria-label="Form needs filling opens in a new window"
           class="modal-btn mt-2"
           small
@@ -337,7 +337,7 @@
       <v-col cols="12" class="text-right mb-1">
         <v-btn
           :aria-label="modalButtonText.aria"
-          color="success textButton--text"
+          :color="`success ${textColor('success')}`"
           class="modal-btn mt-2"
           small
           @click="showModal"
@@ -359,7 +359,7 @@
           aria-label="Open Date Picker"
           fab
           class="teneo-userinput-icon elevation-2 mb-2"
-          color="success textButton--text"
+          :color="`success ${textColor('success')}`"
           @click="toggleDate()"
         >
           <v-icon class="teneo-icon">mdi-calendar-clock</v-icon>
@@ -379,7 +379,7 @@
           fab
           aria-label="Open Time Picker"
           class="teneo-userinput-icon elevation-2 mb-2"
-          color="success textButton--text"
+          :color="`success ${textColor('success')}`"
           @click="toggleTime()"
         >
           <v-icon large class="teneo-icon">mdi-clock</v-icon>
@@ -512,6 +512,7 @@ export default {
       "responseLookAndFeel",
       "isLiveAgentAssist",
       "dark",
+      "textColor",
       "itemAnswerTextCropped",
       "showChatIcons",
       "itemExtensions",
