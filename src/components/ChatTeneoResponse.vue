@@ -244,8 +244,7 @@
             <v-icon
               v-if="option.icon"
               left
-              class="teneo-icon"
-              style="padding-top: 2px;"
+              style="padding-top: 2px; opacity: 0.7 !important;"
             >{{`mdi-${option.icon}`}}</v-icon>
             {{ option.name }}
           </v-btn>
@@ -291,7 +290,7 @@
           small
           @click="displayFeedbackForm"
         >
-          <v-icon left class="teneo-icon">mdi-thumbs-up-down</v-icon>
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;">mdi-thumbs-up-down</v-icon>
           {{
           getFeedbackFormConfig.label && getFeedbackFormConfig.label !== null
           ? getFeedbackFormConfig.label
@@ -318,7 +317,11 @@
           small
           @click="showForm()"
         >
-          <v-icon left class="teneo-icon">mdi-file-document-edit-outline</v-icon>
+          <v-icon
+            left
+            class="teneo-icon"
+            style="opacity: 0.7 !important;"
+          >mdi-file-document-edit-outline</v-icon>
           {{
           getFormConfig && getFormConfig.openFormButtonText
           ? getFormConfig.openFormButtonText
@@ -342,7 +345,7 @@
           small
           @click="showModal"
         >
-          <v-icon left class="teneo-icon">{{ modalButtonIcon }}</v-icon>
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;">{{ modalButtonIcon }}</v-icon>
           {{ modalButtonText.text }}
         </v-btn>
       </v-col>
@@ -362,7 +365,7 @@
           :color="`success ${textColor('success')}`"
           @click="toggleDate()"
         >
-          <v-icon class="teneo-icon">mdi-calendar-clock</v-icon>
+          <v-icon class="teneo-icon" style="opacity: 0.7 !important;">mdi-calendar-clock</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -382,7 +385,7 @@
           :color="`success ${textColor('success')}`"
           @click="toggleTime()"
         >
-          <v-icon large class="teneo-icon">mdi-clock</v-icon>
+          <v-icon large class="teneo-icon" style="opacity: 0.7 !important;">mdi-clock</v-icon>
         </v-btn>
       </v-col>
     </v-row>

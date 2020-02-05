@@ -1888,11 +1888,11 @@ function storeSetup(vuetify) {
         });
       },
       stopAudioCapture(context) {
-        if (context.getters.tts.isSpeaking()) {
+        if (context.getters.tts && context.getters.tts.isSpeaking()) {
           logger.debug("muted TTS!");
           context.getters.tts.shutUp();
         }
-        if (context.getters.tts.isObeying()) {
+        if (context.getters.tts && context.getters.tts.isObeying()) {
           context.getters.asr.stop();
           context.commit("STOP_AUDIO_CAPTURE");
         }

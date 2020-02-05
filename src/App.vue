@@ -1121,6 +1121,18 @@ export default {
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css";
 
+.teneo-icon {
+  opacity: 0.7 !important;
+}
+
+.theme--dark.v-icon {
+  opacity: 1 !important;
+}
+
+.theme--light.v-icon {
+  opacity: 1 !important;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1259,10 +1271,6 @@ blockquote:before {
 }
 blockquote p {
   display: inline;
-}
-
-i.teneo-icon {
-  opacity: 0.7;
 }
 
 #leopard-chat-toolbar-title:focus,
