@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <vue-plyr v-if="videoId" :options="youtubeSettings" class="mb-2 elevation-4">
+  <div v-if="videoId">
+    <vue-plyr :options="youtubeSettings" class="mb-2 elevation-4">
       <div class="plyr__video-embed">
         <iframe
           :src="
