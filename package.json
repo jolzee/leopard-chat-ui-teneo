@@ -38,7 +38,7 @@
     "firebase": "^7.7.0",
     "gravatar": "^1.8.0",
     "is-html": "^2.0.0",
-    "is-mobile": "^2.1.0",
+    "is-mobile": "^2.2.0",
     "jsonpack": "^1.1.5",
     "logrocket": "^1.0.6",
     "logrocket-vuex": "0.0.3",
