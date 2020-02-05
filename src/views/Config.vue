@@ -239,7 +239,6 @@
                       style="max-width: 520px;"
                       color="#2F2869"
                       item-avatar="userIcon"
-                      autofocus
                       clearable
                       open-on-clear
                       hint="Buttons below are specific to the selected solution"
