@@ -239,6 +239,7 @@
                       style="max-width: 520px;"
                       color="#2F2869"
                       item-avatar="userIcon"
+                      autofocus
                       clearable
                       open-on-clear
                       hint="Buttons below are specific to the selected solution"
@@ -593,6 +594,121 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
+              <!-- Show backup solution dialog -->
+
+              <v-dialog v-model="showBackupDialog" persistent max-width="290">
+                <v-card>
+                  <v-card-title class="headline">Configuration Backup</v-card-title>
+                  <v-card-text>It's been at least 2 weeks since you performed a backup of your solution configurations. Would you like to perform a backup now?</v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="showBackupDialog = false">No</v-btn>
+                    <v-btn color="green darken-1" text @click="doBackup">Yes</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+
+              <!-- Offer refresh on back button -->
+              <v-dialog v-model="showPossibleRefreshDialog" persistent max-width="500">
+                <v-card>
+                  <v-card-title class="title">Refresh to Selected Solution?</v-card-title>
+                  <v-card-text>
+                    You changed the selected solution. Should I naviate to:
+                    <br />
+                    <br />
+                    <span class="leopard-code">{{ selectedSolution ? selectedSolution.name : "" }}</span>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="closeConfigArea(true)">No</v-btn>
+                    <v-btn color="green darken-1" text @click="doRefreshToSelectedSolution">Yes</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <!-- Show Audit Results for TIE Urls -->
+              <Dialog
+                :show="audit.show"
+                @close="closeAuditDialog"
+                :title="audit.title"
+                width="1000px"
+              >
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr class="elevation-2">
+                        <th class="text-left text-uppercase">Name</th>
+                        <th class="text-left text-uppercase">TIE Url</th>
+                        <th class="text-left text-uppercase">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="result in audit.results" :key="result.solution.id">
+                        <td>{{ result.solution.name }}</td>
+                        <td>
+                          <a
+                            :href="result.solution.url"
+                            :title="result.solution.url"
+                            target="_blank"
+                          >{{ result.solution.url }}</a>
+                        </td>
+                        <td>
+                          <v-progress-circular
+                            v-if="result.status === 'checking'"
+                            :rotate="360"
+                            :size="35"
+                            :width="5"
+                            indeterminate
+                            color="primary"
+                          ></v-progress-circular>
+                          <v-speed-dial
+                            v-else
+                            :v-model="true"
+                            left
+                            direction="left"
+                            open-on-hover
+                            transition="slide-y-reverse-transition"
+                          >
+                            <template v-slot:activator>
+                              <v-icon
+                                v-if="result.status === 'success'"
+                                large
+                                color="blue darken-2"
+                              >mdi-check-network-outline</v-icon>
+                              <v-icon v-else large color="error darken-2">mdi-close-network</v-icon>
+                            </template>
+                            <v-btn
+                              fab
+                              dark
+                              small
+                              color="red"
+                              @click="deleteSolution(result.solution.id)"
+                            >
+                              <v-icon>mdi-trash-can</v-icon>
+                            </v-btn>
+                            <v-btn
+                              fab
+                              dark
+                              small
+                              color="pink darken-4"
+                              @click="editSolutionAudit(result.solution.id)"
+                            >
+                              <v-icon>mdi-pencil</v-icon>
+                            </v-btn>
+                          </v-speed-dial>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </Dialog>
+              <ConfigAddEditSolution
+                v-if="displayAddEditDialog"
+                v-on:result="closeAddNewSolutionDialog($event)"
+                :currentModeEdit="currentModeEdit"
+                :config="config"
+                :selectedSolution="solution"
+                key="configAddEditSolution"
+              ></ConfigAddEditSolution>
             </v-col>
           </v-row>
         </v-container>
@@ -615,110 +731,6 @@
         :color="globalSnackbarColor"
       >{{ globalSnackbarMessage }}</v-snackbar>
     </v-card>
-    <!-- Show backup solution dialog -->
-
-    <v-dialog v-model="showBackupDialog" persistent max-width="290">
-      <v-card>
-        <v-card-title class="headline">Configuration Backup</v-card-title>
-        <v-card-text>It's been at least 2 weeks since you performed a backup of your solution configurations. Would you like to perform a backup now?</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="showBackupDialog = false">No</v-btn>
-          <v-btn color="green darken-1" text @click="doBackup">Yes</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- Offer refresh on back button -->
-    <v-dialog v-model="showPossibleRefreshDialog" persistent max-width="500">
-      <v-card>
-        <v-card-title class="title">Refresh to Selected Solution?</v-card-title>
-        <v-card-text>
-          You changed the selected solution. Should I naviate to:
-          <br />
-          <br />
-          <span class="leopard-code">{{ selectedSolution ? selectedSolution.name : "" }}</span>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="closeConfigArea(true)">No</v-btn>
-          <v-btn color="green darken-1" text @click="doRefreshToSelectedSolution">Yes</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <!-- Show Audit Results for TIE Urls -->
-    <Dialog :show="audit.show" @close="closeAuditDialog" :title="audit.title" width="1000px">
-      <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr class="elevation-2">
-              <th class="text-left text-uppercase">Name</th>
-              <th class="text-left text-uppercase">TIE Url</th>
-              <th class="text-left text-uppercase">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="result in audit.results" :key="result.solution.id">
-              <td>{{ result.solution.name }}</td>
-              <td>
-                <a
-                  :href="result.solution.url"
-                  :title="result.solution.url"
-                  target="_blank"
-                >{{ result.solution.url }}</a>
-              </td>
-              <td>
-                <v-progress-circular
-                  v-if="result.status === 'checking'"
-                  :rotate="360"
-                  :size="35"
-                  :width="5"
-                  indeterminate
-                  color="primary"
-                ></v-progress-circular>
-                <v-speed-dial
-                  v-else
-                  :v-model="true"
-                  left
-                  direction="left"
-                  open-on-hover
-                  transition="slide-y-reverse-transition"
-                >
-                  <template v-slot:activator>
-                    <v-icon
-                      v-if="result.status === 'success'"
-                      large
-                      color="blue darken-2"
-                    >mdi-check-network-outline</v-icon>
-                    <v-icon v-else large color="error darken-2">mdi-close-network</v-icon>
-                  </template>
-                  <v-btn fab dark small color="red" @click="deleteSolution(result.solution.id)">
-                    <v-icon>mdi-trash-can</v-icon>
-                  </v-btn>
-                  <v-btn
-                    fab
-                    dark
-                    small
-                    color="pink darken-4"
-                    @click="editSolutionAudit(result.solution.id)"
-                  >
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
-                </v-speed-dial>
-              </td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
-    </Dialog>
-    <ConfigAddEditSolution
-      v-if="displayAddEditDialog"
-      v-on:result="closeAddNewSolutionDialog($event)"
-      :currentModeEdit="currentModeEdit"
-      :config="config"
-      :selectedSolution="solution"
-      key="configAddEditSolution"
-    ></ConfigAddEditSolution>
   </v-dialog>
 </template>
 
@@ -1006,6 +1018,7 @@ export default {
       this.snackbarClipboard = true;
     },
     closeAddNewSolutionDialog(result) {
+      logger.info("Supposed to close Add Edit Dialog");
       this.displayAddEditDialog = false;
 
       if (result) {
@@ -1184,6 +1197,7 @@ export default {
         this.dialogTitle = "Editing Solution";
         this.currentModeEdit = "edit";
         this.solution = cloneObject(this.selectedSolution); // make a copy - we have a save button
+        logger.info("Trying to open Add Edit Dialod");
         this.showAddEditDialog();
       }
     },
@@ -1347,6 +1361,7 @@ export default {
     },
     showAddEditDialog() {
       this.displayAddEditDialog = true;
+      logger.info(`Ok add edit dialog should be showing...`);
     },
     showUploadDialog() {
       this.uploadDialog = true;
