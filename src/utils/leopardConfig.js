@@ -16,6 +16,10 @@ const getEnvValue = (name, fallback = "") => {
 
 export default {
   isProduction: getEnvValue("NODE_ENV", "production") === "production",
+  killSessionOnCloseEmbed: getEnvValue(
+    "VUE_APP_EMBED_KILL_SESSION_ON_CLOSE",
+    false
+  ),
   solutionConfig: {
     buildConfig: getEnvValue("VUE_APP_SOLUTION_CONFIG", {})
   },

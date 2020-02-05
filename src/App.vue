@@ -853,6 +853,9 @@ export default {
       localStorage.setItem("isChatOpen", "false");
       sendMessageToParent("hideLeopard");
       this.calculateMobileHeight(); // only called on mobile devices
+      if (window.leopardConfig.killSessionOnCloseEmbed) {
+        this.loginPerformed = false;
+      }
       logger.debug("Close Chat Embedded");
       this.$store.commit("HIDE_CHAT_BUTTON");
     },

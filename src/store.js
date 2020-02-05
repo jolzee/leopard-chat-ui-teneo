@@ -478,14 +478,12 @@ function storeSetup(vuetify) {
         }
       },
       textColor: state => themeColorName => {
-        console.log("vuetify is dark?", vuetify.framework.theme.isDark);
         if (!vuetify.framework.theme.isDark) {
           let hexColor = state.ui.theme[themeColorName];
           return isLight(hexColor) ? "black--text" : "white--text";
         } else {
           return "white--text";
         }
-        return "";
       },
       vimeoIdFromUrl: _state => url => {
         const regExp = /^.+vimeo.com\/(.*\/)?([^#]*)/;
@@ -2626,7 +2624,18 @@ function receiveMessageFromParent(event) {
         store.commit("HIDE_CHAT_WINDOW_DISPLAY_EMBED");
         setTimeout(
           function() {
+            if (config.EMBED && window.leopardConfig.killSessionOnCloseEmbed) {
+              // should kill the session and clear dialog history
+              logger.info("Killing Teneo Session");
+              store.dispatch("endSession");
+              localStorage.removeItem(
+                STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE
+              );
+              localStorage.removeItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY);
+              sessionStorage.removeItem(STORAGE_KEY + "teneo-chat-history");
+            }
             store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
+            return;
           }.bind(this),
           1000
         );
