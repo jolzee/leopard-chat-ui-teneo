@@ -1,22 +1,36 @@
 <template>
-  <vue-plyr v-if="videoId" :options="youtubeSettings" class="mb-2 elevation-4">
-    <div class="plyr__video-embed">
-      <iframe
-        :src="
+  <div>
+    <vue-plyr v-if="videoId" :options="youtubeSettings" class="mb-2 elevation-4">
+      <div class="plyr__video-embed">
+        <iframe
+          :src="
           `https://www.youtube.com/embed/${videoId}?iv_load_policy=3&cc_load_policy=1&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1`
         "
-        allowfullscreen
-        allowtransparency
-        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      ></iframe>
-    </div>
-  </vue-plyr>
+          allowfullscreen
+          allowtransparency
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        ></iframe>
+      </div>
+    </vue-plyr>
+    <v-btn
+      aria-label="Play on YouTube opens in a new window"
+      :color="`secondary darken-2 ${textColor('secondary')}`"
+      x-small
+      dark
+      :href="`https://www.youtube.com/watch?v=${videoId}`"
+      target="_blank"
+    >Open in YouTube</v-btn>
+  </div>
 </template>
 <script>
 import "plyr/dist/plyr.css";
+import { mapGetters } from "vuex";
 export default {
   components: { VuePlyr: () => import("vue-plyr") },
   props: ["videoId"],
+  computed: {
+    ...mapGetters(["textColor"])
+  },
   data() {
     return {
       youtubeSettings: {
