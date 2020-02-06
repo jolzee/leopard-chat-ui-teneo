@@ -291,8 +291,9 @@
               <v-col :cols="12">
                 <v-select
                   :items="animations.in"
+                  dense
+                  menu-props="auto"
                   color="light-blue darken-1"
-                  :menu-props="{ contentClass: 'select-options' }"
                   filled
                   v-model="solution.animations.in"
                   label="Specify Enter Animation"
@@ -304,8 +305,9 @@
               <v-col :cols="12">
                 <v-select
                   :items="animations.out"
+                  dense
                   color="light-blue darken-1"
-                  :menu-props="{ contentClass: 'select-options' }"
+                  menu-props="auto"
                   filled
                   v-model="solution.animations.out"
                   label="Specify Exit Animation"
