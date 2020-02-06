@@ -14,7 +14,7 @@
     <v-card color>
       <v-system-bar
         height="25px"
-        color="primary darken-3"
+        color="teal darken-4"
         :class="{ 'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown}"
         dark
       >
@@ -31,7 +31,6 @@
           fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
           }}
         </v-icon>
-
         <v-icon
           tag="button"
           aria-label="Close dialog"
@@ -40,14 +39,15 @@
         >mdi-close</v-icon>
       </v-system-bar>
 
-      <v-app-bar :color="`primary ${textColor('primary')}`" dense>
+      <v-app-bar :color="`teal darken-3 white--text`" dense>
         <v-toolbar-title>{{ dialogTitle }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <span class="d-none d-md-inline-block">
           <v-btn
-            small
+            x-small
+            style="opacity:0.8"
             aria-label="Open Marterial Design Icons in a new window"
-            :color="`primary darken-2 ${textColor('primary')}`"
+            :color="`teal darken-4 white--text`"
             href="https://petershaggynoble.github.io/MDI-Sandbox/"
             target="_blank"
             dark
@@ -64,7 +64,7 @@
                   <v-col :cols="12">
                     <v-text-field
                       filled
-                      color="light-blue darken-1"
+                      color="teal darken-4"
                       v-model.trim="solution.name"
                       validate-on-blur
                       label="Solution Name"
@@ -78,7 +78,7 @@
                       outlined
                       dense
                       append-icon="mdi-key"
-                      color="light-blue darken-1"
+                      color="teal darken-4"
                       v-model.trim="solution.id"
                       validate-on-blur
                       label="Solution Id"
@@ -91,7 +91,7 @@
               <v-col :cols="12">
                 <v-text-field
                   filled
-                  color="light-blue darken-1"
+                  color="teal darken-4"
                   v-model.trim="solution.deepLink"
                   validate-on-blur
                   label="Deep links can be accessed with ?dl=<deep-link>"
@@ -106,7 +106,7 @@
                 <v-text-field
                   filled
                   clearable
-                  color="light-blue darken-1"
+                  color="teal darken-4"
                   v-model.trim="solution.url"
                   validate-on-blur
                   label="URL to Teneo Runtime - no parameters"
@@ -117,7 +117,11 @@
             </v-row>
             <v-row>
               <v-col :cols="12">
-                <v-switch v-model="solution.useInProduction" label="Use in production"></v-switch>
+                <v-switch
+                  color="purple darken-4"
+                  v-model="solution.useInProduction"
+                  label="Use in production"
+                ></v-switch>
                 <v-text-field
                   filled
                   clearable
@@ -126,7 +130,7 @@
                       !solution.useInProduction) ||
                       !('useInProduction' in solution)
                   "
-                  color="light-blue darken-1"
+                  color="teal darken-4"
                   v-model.trim="solution.iframeUrl"
                   validate-on-blur
                   label="Enter the IFRAME URL"
@@ -140,7 +144,7 @@
                 <v-text-field
                   filled
                   clearable
-                  color="light-blue darken-1"
+                  color="teal darken-4"
                   validate-on-blur
                   v-model.trim="solution.chatTitle"
                   label="Chat Window Title"
@@ -153,22 +157,39 @@
                 <v-card elevation-2>
                   <v-row no-gutters class="pl-5">
                     <v-col cols="12" :lg="4" :sm="6">
-                      <v-switch v-model="solution.enableLiveChat" label="Live Chat"></v-switch>
+                      <v-switch
+                        color="purple darken-4"
+                        v-model="solution.enableLiveChat"
+                        label="Live Chat"
+                      ></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
-                      <v-switch v-model="solution.float" label="Float UI"></v-switch>
-                    </v-col>
-                    <v-col cols="12" :lg="4" :sm="6">
-                      <v-switch v-model="solution.pulseButton" label="Pulse Button"></v-switch>
-                    </v-col>
-                    <v-col cols="12" :lg="4" :sm="6">
-                      <v-switch v-model="solution.showChatIcons" label="Chat Icons"></v-switch>
-                    </v-col>
-                    <v-col cols="12" :lg="4" :sm="6">
-                      <v-switch v-model="solution.displayAccent" label="Show Accent"></v-switch>
+                      <v-switch color="purple darken-4" v-model="solution.float" label="Float UI"></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
+                        color="purple darken-4"
+                        v-model="solution.pulseButton"
+                        label="Pulse Button"
+                      ></v-switch>
+                    </v-col>
+                    <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch
+                        color="purple darken-4"
+                        v-model="solution.showChatIcons"
+                        label="Chat Icons"
+                      ></v-switch>
+                    </v-col>
+                    <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch
+                        color="purple darken-4"
+                        v-model="solution.displayAccent"
+                        label="Show Accent"
+                      ></v-switch>
+                    </v-col>
+                    <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch
+                        color="purple darken-4"
                         v-model="solution.longResponsesInModal"
                         label="Long Answers in Modal"
                       ></v-switch>
@@ -183,7 +204,7 @@
                   filled
                   v-model.trim="solution.responseIcon"
                   validate-on-blur
-                  color="light-blue darken-1"
+                  color="teal darken-4"
                   label="Response Icon - MDI Icons (mdi-icon-name)"
                   :append-icon="solution.responseIcon"
                   :rules="[ruleMustHaveValue]"
@@ -201,7 +222,7 @@
                   small
                   :elevation="solution.responseIcon === icon ? '2' : '0'"
                   icon
-                  :color="solution.responseIcon === icon ? 'success' : 'indigo'"
+                  :color="solution.responseIcon === icon ? 'orange darken-4' : 'indigo'"
                 >
                   <v-icon>{{ icon }}</v-icon>
                 </v-btn>
@@ -213,7 +234,7 @@
                   filled
                   v-model.trim="solution.userIcon"
                   validate-on-blur
-                  color="light-blue darken-1"
+                  color="teal darken-4"
                   label="User Icon - MDI Icons (mdi-icon-name)"
                   :aria-label="
                     `Set the icon representing the customer in the chat UI`
@@ -236,7 +257,7 @@
                   small
                   :elevation="solution.userIcon === icon ? '2' : '0'"
                   icon
-                  :color="solution.userIcon === icon ? 'success' : 'indigo'"
+                  :color="solution.userIcon === icon ? 'orange darken-4' : 'indigo'"
                 >
                   <v-icon>{{ icon }}</v-icon>
                 </v-btn>
@@ -246,7 +267,7 @@
               <v-col :cols="12">
                 <v-select
                   :items="locales"
-                  color="light-blue darken-1"
+                  color="teal darken-4"
                   menu-props="auto"
                   filled
                   v-model="solution.locale"
@@ -263,6 +284,7 @@
                   :min="responseDelay.min"
                   :max="responseDelay.max"
                   thumb-label="always"
+                  color="teal darken-4"
                 ></v-slider>
               </v-col>
             </v-row>
@@ -293,7 +315,7 @@
                   :items="animations.in"
                   dense
                   menu-props="auto"
-                  color="light-blue darken-1"
+                  color="teal darken-4"
                   filled
                   v-model="solution.animations.in"
                   label="Specify Enter Animation"
@@ -332,7 +354,7 @@
                             dark
                             small
                             @click="resetColorsToDefault"
-                            color="green"
+                            color="teal darken-4 white--text"
                           >
                             <v-icon dark>mdi-undo-variant</v-icon>
                           </v-btn>
@@ -386,7 +408,7 @@
                       v-model.trim="solution.theme[color]"
                       clearable
                       @click="setActiveColor(color)"
-                      color="light-blue darken-1"
+                      color="teal darken-4"
                       filled
                       :value="typeof solution.theme[color] === 'string' ? solution.theme[color] : ''"
                       :label="color"
@@ -408,7 +430,7 @@
                     <v-slider
                       name="fontSlider1"
                       v-model="font.fontIndex"
-                      color="success"
+                      color="teal darken-4"
                       :max="6"
                       ticks
                       step="1"
@@ -481,7 +503,7 @@
                     <v-slider
                       name="fontSlider2"
                       v-model="font.fontIndex"
-                      color="success"
+                      color="teal darken-4"
                       :max="6"
                       ticks
                       step="1"
@@ -520,6 +542,7 @@
                       :items="themeColors"
                       v-model="solution.lookAndFeel.question.iconColor"
                       filled
+                      color="teal darken-4"
                       label="User Question Icon Color"
                     ></v-select>
                   </v-col>
@@ -529,6 +552,7 @@
                       :items="themeColors"
                       v-model="solution.lookAndFeel.question.blockBgColor"
                       filled
+                      color="teal darken-4"
                       label="User Question Block BG Color"
                     ></v-select>
                   </v-col>
@@ -538,6 +562,7 @@
                       :items="solution.lookAndFeel.question.blockBgColor === 'white' ? ['dark'] : ['dark', 'light']"
                       v-model="solution.lookAndFeel.question.blockTextColor"
                       filled
+                      color="teal darken-4"
                       label="User Question Block Text Color"
                     ></v-select>
                   </v-col>
@@ -549,10 +574,12 @@
                 <v-switch
                   v-model="solution.promptTriggers.enabled"
                   label="Poll for Prompt Triggers"
+                  color="purple darken-4"
                 ></v-switch>
                 <v-alert
                   border="top"
                   colored-border
+                  color="teal darken-4"
                   type="info"
                   elevation="2"
                   v-if="solution.promptTriggers.enabled"
@@ -566,7 +593,7 @@
                 </v-alert>
                 <v-text-field
                   v-if="solution.promptTriggers.enabled"
-                  color="light-blue darken-1"
+                  color="teal darken-4"
                   v-model.trim="solution.promptTriggers.pollSeconds"
                   validate-on-blur
                   filled
@@ -580,7 +607,7 @@
               <v-col :cols="12">
                 <v-textarea
                   filled
-                  color="light-blue darken-1"
+                  color="teal darken-4"
                   name="input-7-4"
                   label="Button and Toolbar Custom CSS"
                   v-model.trim="solution.customCssButtonToolbar"
@@ -592,7 +619,7 @@
               <v-col :cols="12">
                 <v-textarea
                   filled
-                  color="light-blue darken-1"
+                  color="teal darken-4"
                   name="input-7-4"
                   label="ASR Corrections"
                   v-model.trim="solution.asrCorrections"
@@ -606,9 +633,10 @@
                 <v-row>
                   <v-col cols="12">
                     <v-btn
-                      color="red"
+                      small
+                      color="light-green black--text"
                       :aria-label="`Add a help question`"
-                      class="white--text mr-2"
+                      class="mr-2"
                       @click="addUserInput"
                     >
                       Help
@@ -624,7 +652,7 @@
                       :value="question"
                       validate-on-blur
                       filled
-                      color="light-blue darken-1"
+                      color="teal darken-4"
                       label="Example question"
                       append-icon="mdi-android-messages"
                       :rules="[ruleMustHaveValue]"
@@ -657,9 +685,10 @@
               <v-col :cols="12" :lg="4">
                 <v-row align="start" justify="end">
                   <v-btn
-                    color="red"
+                    color="light-green black--text"
+                    small
                     :aria-label="`Add a new context parameter`"
-                    class="white--text mr-4"
+                    class="mr-4"
                     @click="addContextParam"
                   >
                     CTX Param
@@ -681,7 +710,7 @@
                     <v-text-field
                       v-model.trim="contextParam.name"
                       validate-on-blur
-                      color="light-blue darken-1"
+                      color="teal darken-4"
                       label="Parameter Name"
                       append-icon="mdi-key-variant"
                       :rules="[ruleMustHaveValue]"
@@ -706,7 +735,7 @@
                           v-bind="attrs"
                           v-on="on"
                           @click="addNewContextParameterValue(index)"
-                          color="green"
+                          color="light-green black--text"
                           dark
                         >mdi-plus-circle</v-icon>
                       </template>
@@ -746,7 +775,7 @@
                               )
                             "
                             :color="
-                              value.active ? 'green' : 'grey lighten-1'
+                              value.active ? 'light-green' : 'grey lighten-1'
                             "
                             dark
                           >
@@ -767,7 +796,7 @@
                         solo
                         outlined
                         clearable
-                        color="light-blue darken-1"
+                        color="teal darken-4"
                         label="Parameter Value"
                         hint="Parameter Value"
                         :rules="[ruleMustHaveValue]"
@@ -784,16 +813,15 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
-          class="mr-2"
           :aria-label="`Close the solution editing dialog`"
-          :color="`primary lighten-2 ${textColor('primary')}`"
+          :color="`teal darken-3 white--text`"
           small
           light
           @click="closeAddNewSolutionDialog"
         >Close</v-btn>
         <v-btn
           class="mr-2"
-          :color="`primary darken-2 ${textColor('primary')}`"
+          :color="`teal darken-3 white--text`"
           small
           :aria-label="`Save edits to the solution`"
           @click="saveForm"
