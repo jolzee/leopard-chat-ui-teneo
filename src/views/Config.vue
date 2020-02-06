@@ -251,7 +251,7 @@
                       item-text="name"
                       item-value="name"
                       v-model="selectedSolution"
-                      :menu-props="{ contentClass: 'select-options' }"
+                      menu-props="auto"
                       solo
                       :items="sortedSolutions"
                       return-object
@@ -524,16 +524,36 @@
                 persistent
                 light
                 max-width="calc(1200px - 20%)"
+                :fullscreen="$vuetify.breakpoint.mdAndDown"
               >
                 <v-card>
-                  <v-card-title>
-                    <h3>Import Solution(s) Configurations</h3>
-                  </v-card-title>
-                  <v-divider></v-divider>
-                  <v-card-text>
+                  <v-system-bar
+                    height="30px"
+                    color="primary darken-3"
+                    :class="{ 'grab-cursor': !embed && !$vuetify.breakpoint.mdAndDown}"
+                    dark
+                  >
+                    <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
+
+                    <v-icon
+                      tag="button"
+                      aria-label="Close dialog"
+                      tabindex="0"
+                      @click="closeUploadDialog"
+                    >mdi-close</v-icon>
+                  </v-system-bar>
+
+                  <v-app-bar
+                    :color="`primary ${textColor('primary')}`"
+                    dense
+                    style="max-height:48px"
+                  >
+                    <v-toolbar-title>Import Solution(s)</v-toolbar-title>
+                  </v-app-bar>
+                  <v-card-text class="mb-0 pb-0 pl-1">
                     <v-row>
                       <v-col cols="12">
-                        <div class="upload-btn ml-2 mb-2">
+                        <div class="upload-btn ml-5 pl-1 mb-2">
                           <input
                             id="uploadFile"
                             type="file"
@@ -836,7 +856,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["embed"]),
+    ...mapGetters(["embed", "textColor"]),
     getDefaultSolutionName() {
       let defaultSolution = this.config.solutions.find(
         solution => solution.id === this.config.activeSolution

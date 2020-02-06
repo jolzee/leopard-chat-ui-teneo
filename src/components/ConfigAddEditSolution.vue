@@ -247,7 +247,7 @@
                 <v-select
                   :items="locales"
                   color="light-blue darken-1"
-                  :menu-props="{ contentClass: 'select-options' }"
+                  menu-props="auto"
                   filled
                   v-model="solution.locale"
                   label="Specify Chat Locale"
