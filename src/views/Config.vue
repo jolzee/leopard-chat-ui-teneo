@@ -580,7 +580,7 @@
                           :value="getUploadConfig"
                           auto-grow
                           prepend-icon="mdi-settings-transfer"
-                          class="coding-font"
+                          class="leopard-code-font"
                         ></v-textarea>
                       </v-col>
                     </v-row>
@@ -1392,6 +1392,15 @@ export default {
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css?family=Inconsolata&display=swap");
+
+.leopard-code-font {
+  font-family: "Inconsolata", monospace;
+  line-height: normal;
+  font-weight: 500;
+  font-size: 1em;
+}
+
 .leopard-radius {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;

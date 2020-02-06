@@ -11,7 +11,7 @@
           $vuetify.breakpoint.mdAndDown
       "
   >
-    <v-card color>
+    <v-card>
       <v-system-bar
         height="25px"
         color="teal darken-4"
@@ -55,7 +55,11 @@
         </span>
       </v-app-bar>
 
-      <v-card-text style="height: 90vh" id="add-edit" class="teneo-hide-scroll-x mx-0 px-3 py-0">
+      <v-card-text
+        style="height: 90vh"
+        id="add-edit"
+        class="leopard-code-font teneo-hide-scroll-x mx-0 px-3 py-0"
+      >
         <v-form ref="form">
           <v-container class="px-0 pa-0">
             <v-row>
@@ -94,6 +98,7 @@
                   color="teal darken-4"
                   v-model.trim="solution.deepLink"
                   validate-on-blur
+                  class="leopard-code-font"
                   label="Deep links can be accessed with ?dl=<deep-link>"
                   :rules="[ruleMustHaveValue, ruleNoSpaces, ruleDeepLinkUnique]"
                   append-outer-icon="mdi-link-box-outline"
@@ -108,6 +113,7 @@
                   clearable
                   color="teal darken-4"
                   v-model.trim="solution.url"
+                  class="leopard-code-font"
                   validate-on-blur
                   label="URL to Teneo Runtime - no parameters"
                   append-icon="mdi-link-variant"
@@ -132,6 +138,7 @@
                   "
                   color="teal darken-4"
                   v-model.trim="solution.iframeUrl"
+                  class="leopard-code-font"
                   validate-on-blur
                   label="Enter the IFRAME URL"
                   append-icon="mdi-link-variant"
@@ -453,7 +460,7 @@
                   <v-col cols="9" :sm="10" :md="7" class="text-left pl-2" :class="solution.font">
                     <v-card
                       :color="$vuetify.theme.dark ? '#333333' : solution.theme[solution.lookAndFeel.response.blockBgColor]"
-                      class="chat-card chat-card-left text-left mb-3"
+                      class="chat-card chat-card-left text-left mb-3 leopard-default-font"
                       :class="solution.lookAndFeel.response.blockTextColor === 'light' ? ' white--text' : ''"
                     >
                       <span>Hello and welcome! My name is Leo and I’m here to answer your questions.</span>
@@ -515,7 +522,7 @@
                   <v-col cols="9" :sm="10" :md="7" class="text-right pl-2" :class="solution.font">
                     <v-card
                       :color="$vuetify.theme.dark ? '#333333' : solution.theme[solution.lookAndFeel.question.blockBgColor]"
-                      class="chat-card chat-card-right text-right mb-3"
+                      class="chat-card chat-card-right text-right mb-3 leopard-default-font"
                       :class="solution.lookAndFeel.question.blockTextColor === 'light' ? ' white--text' : ''"
                     >
                       <span>I would like to book a flight from Seattle to Cape Town</span>
@@ -609,6 +616,7 @@
                   filled
                   color="teal darken-4"
                   name="input-7-4"
+                  class="leopard-code-font"
                   label="Button and Toolbar Custom CSS"
                   v-model.trim="solution.customCssButtonToolbar"
                 ></v-textarea>
@@ -619,6 +627,7 @@
               <v-col :cols="12">
                 <v-textarea
                   filled
+                  class="leopard-code-font"
                   color="teal darken-4"
                   name="input-7-4"
                   label="ASR Corrections"
@@ -1325,6 +1334,10 @@ export default {
 </script>
 
 <style scoped>
+.leopard-default-font {
+  font-family: "Roboto", sans-serif;
+}
+
 .leopard-add-edit-shadow {
   border-color: #acafb1 !important;
   border-right: 2px solid #acafb1 !important;

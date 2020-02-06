@@ -295,7 +295,6 @@
                     "
                       @click.stop="drawer = !drawer"
                       class="embed-button-center ml-0"
-                      :style="customCssButtonToolbar"
                     >
                       <v-icon>
                         {{
@@ -327,7 +326,6 @@
                       to="/"
                       aria-label="Back to Chat"
                       class="mr-2"
-                      :style="customCssButtonToolbar"
                     >
                       <v-icon>mdi-arrow-left</v-icon>
                     </v-btn>
@@ -346,7 +344,6 @@
                         :color="isLightColor('primary') ? 'black' : 'white'"
                         aria-label="Close Chat"
                         class="embed-button-center mr-0"
-                        :style="customCssButtonToolbar"
                       >
                         <v-icon>mdi-close</v-icon>
                       </v-btn>
@@ -366,7 +363,6 @@
                       :color="isLightColor('primary') ? 'black' : 'white'"
                       aria-label="Minimize Chat"
                       class="embed-button-center mr-1"
-                      :style="customCssButtonToolbar"
                       @click="minimizeChat"
                     >
                       <v-icon>mdi-image-size-select-small</v-icon>
@@ -383,7 +379,6 @@
                       accesskey="/"
                       aria-label="Close Chat"
                       class="embed-button-center mr-0"
-                      :style="customCssButtonToolbar"
                       @click="toggleChat"
                     >
                       <v-icon>mdi-close</v-icon>
