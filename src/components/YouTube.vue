@@ -14,7 +14,8 @@
     </vue-plyr>
     <v-btn
       aria-label="Play on YouTube opens in a new window"
-      :color="`secondary darken-2 ${textColor('secondary')}`"
+      :color="`secondary ${textColor('secondary')}`"
+      class="ml-2"
       x-small
       dark
       :href="`https://www.youtube.com/watch?v=${videoId}`"
