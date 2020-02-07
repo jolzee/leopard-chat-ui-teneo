@@ -221,7 +221,7 @@
             </v-list>
             <template v-slot:append>
               <v-row align="center" justify="center" class="primary darken-2" style="height:67px">
-                <div class="pa-2" role="img">
+                <div class="pa-2">
                   <a
                     href="https://www.artificial-solutions.com/"
                     class="leopard-img"
