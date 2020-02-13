@@ -114,6 +114,13 @@ export const lightOrDark = color => {
   }
 };
 
+export const isEmpty = obj => {
+  for (const key in obj) {
+    return false;
+  }
+  return true;
+};
+
 export const isLight = color => {
   if (lightOrDark(color) === "light") {
     return true;
@@ -147,21 +154,19 @@ export const replaceAll = (targetStr, findStr, replaceStr = "") => {
   return targetStr.split(findStr).join(replaceStr);
 };
 
-export const debounce = (func, wait, immediate) => {
+export function debounce(func, wait, immediate) {
   var timeout;
-  return () => {
-    const context = this,
+  return function() {
+    var context = this,
       args = arguments;
-    const later = function() {
+    clearTimeout(timeout);
+    timeout = setTimeout(function() {
       timeout = null;
       if (!immediate) func.apply(context, args);
-    };
-    const callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(context, args);
+    }, wait);
+    if (immediate && !timeout) func.apply(context, args);
   };
-};
+}
 
 /**
  * Smooth scroll

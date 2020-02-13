@@ -230,7 +230,7 @@ export default class Setup {
             theme: {
               dark: false,
               options: {
-                customProperties: true
+                customProperties: false
               },
               themes: {
                 light: this.THEME,

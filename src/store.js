@@ -1409,7 +1409,7 @@ function storeSetup(vuetify) {
         state.asr.stopAudioCapture = true;
       },
       START_AUDIO_CAPTURE(state) {
-        if (state.asr.asr != null) {
+        if (state.asr.asr !== null) {
           if (state.tts.tts.isSpeaking()) {
             state.tts.tts.shutUp();
           }

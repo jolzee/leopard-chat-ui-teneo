@@ -14,7 +14,7 @@
               aria-hidden="true"
               v-long-press="1000"
               @long-press-start="swapInputButton"
-              :color="`${responseLookAndFeel.iconColor}`"
+              :color="!$vuetify.theme.dark ? responseLookAndFeel.iconColor : ''"
               class="teneo-response-icon"
               text
               tile
@@ -47,7 +47,7 @@
         <v-icon
           v-else
           large
-          :color="`${responseLookAndFeel.iconColor}`"
+          :color="!$vuetify.theme.dark ? responseLookAndFeel.iconColor : 'indigo'"
           class="teneo-response-icon"
         >{{ getResponseIcon }}</v-icon>
       </v-col>

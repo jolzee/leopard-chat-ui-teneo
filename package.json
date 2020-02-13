@@ -1,15 +1,24 @@
 {
   "name": "leopard-chat-teneo-vue",
-  "version": "1.0.0",
-  "private": true,
+  "version": "2.0.0",
   "description": "A Teneo Chat Client based on Vue and Vuetify",
   "author": "Peter Joles",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jolzee/chat-teneo-vue.git"
+  },
+  "homepage": "https://jolzee.gitbook.io/leopard/",
+  "license": "Apache-2.0",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
   "scripts": {
     "build": "vue-cli-service build --mode production",
     "build:development": "vue-cli-service build --mode development",
     "build:modern": "vue-cli-service build --modern",
-    "build:production": "vue-cli-service build --mode production",
-    "build:qa": "vue-cli-service build --mode qa",
     "lint": "vue-cli-service lint --fix",
     "serve": "vue-cli-service serve --mode development --open"
   },
@@ -22,12 +31,12 @@
   "dependencies": {
     "@livechat/accounts-sdk": "^1.3.3",
     "@livechat/agent-app-sdk": "^1.3.0",
-    "@livechat/agent-app-widget-sdk": "github:livechat/agent-app-widget-sdk#master",
+    "@livechat/agent-app-widget-sdk": "^3.0.0",
     "@livechat/customer-sdk": "^2.0.0-alpha.3",
     "@mdi/font": "^4.9.95",
     "@sentry/browser": "^5.12.1",
     "@sentry/integrations": "^5.12.0",
-    "artyom.js": "github:jolzee/artyom.js#master",
+    "artyom.js": "https://github.com/jolzee/artyom.js.git",
     "consola": "^2.11.3",
     "copy-to-clipboard": "^3.2.1",
     "core-js": "^3.6.4",

@@ -547,7 +547,7 @@ export default {
     // window.addEventListener("resize", his.onResizeOrEmbed);
     window.addEventListener(
       "resize",
-      debounce(this.onResizeOrEmbed, 200, false),
+      debounce(this.onResizeOrEmbed, 500, false),
       false
     );
     // deal with import of solution
@@ -1155,7 +1155,67 @@ export default {
 }
 
 .leopard-open-close-button.v-btn--fab:hover {
-  color: var(--v-focusButton-base) !important;
+  color: rgba(12, 161, 22, 0.552) !important;
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .leopard-open-close-button.v-btn--fab:hover {
+    color: rgb(185, 33, 6) !important;
+  }
+
+  #leopard-chat-toolbar-title:focus,
+  div.v-input__slot:focus,
+  .v-btn--fab:focus-within:before,
+  button:focus-within:focus,
+  a:focus-within,
+  div.v-list-item:focus-within,
+  div.chat-card:focus-within,
+  .v-input__icon--clear:focus-within {
+    -webkit-box-shadow: 0 0 0 3px black !important;
+    box-shadow: 0 0 0 3px black !important;
+    outline: 0 !important;
+  }
+
+  a.leopard-img:focus {
+    -webkit-box-shadow: 0 0 0 3px rgb(76, 77, 108) !important;
+    box-shadow: 0 0 0 3px rgb(76, 77, 108) !important;
+    outline: 0;
+    display: flex;
+    background: rgba(255, 255, 255, 0.19);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+  }
+
+  #leopard-chat-toolbar-title:focus {
+    box-shadow: 0 0 0 3px red !important;
+    outline: 0;
+    padding: 5px !important;
+    background: rgba(255, 255, 255, 0.19);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+  }
+
+  .pulse::before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgb(139, 139, 214) !important;
+    border-radius: inherit;
+    -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
+    transition: opacity 0.3s, -webkit-transform 0.3s;
+    transition: opacity 0.3s, transform 0.3s;
+    transition: opacity 0.3s, transform 0.3s, -webkit-transform 0.3s;
+    -webkit-animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1)
+      infinite;
+    animation: pulse-animation 4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    z-index: -1;
+  }
 }
 
 .leopard-font-xs {
@@ -1276,24 +1336,25 @@ a:focus-within,
 div.v-list-item:focus-within,
 div.chat-card:focus-within,
 .v-input__icon--clear:focus-within {
-  -webkit-box-shadow: 0 0 0 3px var(--v-focusButton-base) !important;
-  box-shadow: 0 0 0 3px var(--v-focusButton-base) !important;
+  -webkit-box-shadow: 0 0 0 3px #9d99987d !important;
+  box-shadow: 0 0 0 3px #9d99987d !important;
   outline: 0 !important;
 }
 
 a.leopard-img:focus {
-  -webkit-box-shadow: 0 0 0 3px var(--v-focusButton-base) !important;
-  box-shadow: 0 0 0 3px var(--v-focusButton-base) !important;
+  -webkit-box-shadow: 0 0 0 3px #9d99987d !important;
+  box-shadow: 0 0 0 3px #9d99987d !important;
   outline: 0;
   display: flex;
-  background: rgba(255, 255, 255, 0.19);
+  background: rgba(115, 13, 13, 0.19);
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
 
 #leopard-chat-toolbar-title:focus {
-  box-shadow: 0 0 0 3px var(--v-focusButton-base) !important;
+  -webkit-box-shadow: 0 0 0 3px #9d99987d !important;
+  box-shadow: 0 0 0 3px #9d99987d !important;
   outline: 0;
   padding: 5px !important;
   background: rgba(255, 255, 255, 0.19);
@@ -1325,7 +1386,7 @@ div.teneo-footer:focus-within {
   height: 100%;
   top: 0;
   left: 0;
-  background-color: var(--v-focusButton-base) !important;
+  background-color: rgba(17, 18, 25, 0.4) !important;
   border-radius: inherit;
   -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
   transition: opacity 0.3s, -webkit-transform 0.3s;

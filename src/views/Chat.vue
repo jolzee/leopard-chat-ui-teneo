@@ -1,7 +1,7 @@
 <template>
   <v-container fluid id="chat-area" class="chat-container">
     <v-row no-gutters class="mx-0 px-0">
-      <ChatNoHistory v-if="noHistory && isHistoryPage"></ChatNoHistory>
+      <!-- <ChatNoHistory v-if="noHistory && isHistoryPage"></ChatNoHistory> -->
 
       <!-- show the listening modal when recognizing audio input -->
       <teneo-listening v-bind:value="listening" :message="$t('listening')"></teneo-listening>
@@ -48,7 +48,7 @@
                   :item="item"
                   :itemIndexInDialog="i"
                   @swapInputButton="swapInputButton"
-                  @handleFocus="handleFocus"
+                  @handleFocus="handleFocus = true"
                   @toggleDate="showDate = !showDate"
                   @toggleTime="showTime = !showTime"
                   @showFeedback="showFeedback = true"
@@ -97,153 +97,16 @@
         height="4"
       ></v-progress-linear>
     </v-row>
-    <v-row class="teneo-footer" :class="{ 'footer-float': float }" no-gutters>
-      <v-col>
-        <v-form v-model="valid" v-on:submit.prevent ref="userInputForm">
-          <v-container class="fill-height">
-            <v-row no-gutters align="center" justify="center">
-              <v-col class="text-center">
-                <v-text-field
-                  id="teneo-input-field"
-                  aria-label="Chat bot send message"
-                  v-show="!showUploadButton && !showUploadProgress"
-                  :disabled="progressBar || drawer"
-                  v-shortkey="{
-                    toggle1: ['ctrl', 'alt', '/'],
-                    toggle2: ['ctrl', 'alt', 'arrowdown']
-                  }"
-                  @shortkey.native="swapInputButton"
-                  :prepend-inner-icon="
-                    askingForPassword
-                      ? showPassword
-                        ? 'mdi-eye'
-                        : 'mdi-eye-off'
-                      : ''
-                  "
-                  :type="
-                    askingForPassword
-                      ? showPassword
-                        ? 'text'
-                        : 'password'
-                      : 'text'
-                  "
-                  @click:prepend-inner="showPassword = !showPassword"
-                  :rules="askingForEmail ? [rules.email(userInput)] : []"
-                  :clearable="userInput !== ''"
-                  clear-icon="mdi-comment-remove-outline"
-                  auto-grow
-                  color="sendButton"
-                  required
-                  solo
-                  tabindex="0"
-                  return-masked-value
-                  v-mask="itemInputMask || nomask"
-                  name="userInput"
-                  ref="userInput"
-                  autocomplete="off"
-                  v-on:keydown.enter.prevent="sendUserInput('', $event)"
-                  v-model="userInput"
-                  :label="
-                    inputHelpText
-                      ? inputHelpText
-                      : askingForPassword
-                      ? $t('input.box.label.password')
-                      : askingForEmail
-                      ? $t('input.box.label.email')
-                      : $t('input.box.label')
-                  "
-                  single-line
-                  data-lpignore="true"
-                >
-                  <template v-if="showAudioInput" v-slot:append>
-                    <v-btn
-                      :disabled="userInput === ''"
-                      @click="sendUserInput"
-                      aria-label="Send Question to Chat Bot"
-                      large
-                      tabindex="0"
-                      text
-                      icon
-                      ripple
-                    >
-                      <v-icon color="sendButton">mdi-send</v-icon>
-                    </v-btn>
-                  </template>
-                </v-text-field>
-                <span v-shortkey="['esc']" @shortkey="stopAudioCapture"></span>
-              </v-col>
-              <v-col cols="3" sm="2" class="text-center">
-                <upload-btn
-                  icon
-                  tabindex="0"
-                  aria-label="Select File for Upload"
-                  v-if="showUploadButton"
-                  @file-update="fileChanged"
-                  large
-                  hover
-                  color="sendButton"
-                  class="elevation-2 v-btn v-btn--fab v-btn--round v-size--small sendButton white--text mt-3"
-                >
-                  <template slot="icon">
-                    <v-icon dark class="py-2">mdi-paperclip</v-icon>
-                  </template>
-                </upload-btn>
-                <v-progress-circular
-                  v-if="showUploadProgress"
-                  :rotate="360"
-                  :size="40"
-                  :width="10"
-                  :value="progressValue"
-                  color="accent"
-                  class="mt-3"
-                ></v-progress-circular>
-                <template v-if="!showUploadButton && !showUploadProgress">
-                  <v-btn
-                    text
-                    icon
-                    tabindex="0"
-                    :disabled="progressBar || userInput === ''"
-                    :loading="progressBar"
-                    v-long-press="1000"
-                    @long-press-start="swapInputButton"
-                    aria-label="Send"
-                    v-if="!showAudioInput"
-                    large
-                    @click.native="sendUserInput"
-                  >
-                    <v-icon color="sendButton">mdi-send</v-icon>
-                  </v-btn>
 
-                  <v-btn
-                    tabindex="0"
-                    aria-label="Send"
-                    :disabled="progressBar"
-                    :loading="progressBar"
-                    v-long-press="1000"
-                    @long-press-start="swapInputButton"
-                    ripple
-                    v-if="showAudioInput"
-                    v-shortkey="{
-                      recordAudioOne: ['ctrl', 'alt', '.'],
-                      recordAudioTwo: ['ctrl', 'alt', '`'],
-                      recordAudioThree: ['ctrl', 'alt', 'arrowup']
-                    }"
-                    @shortkey.native="captureAudio"
-                    :color="audioButtonColor"
-                    :class="!$vuetify.theme.dark ? 'white--text' : 'black--text'"
-                    small
-                    fab
-                    @click.native="captureAudio"
-                  >
-                    <v-icon>{{ listening ? "mdi-ear-hearing" : "mdi-voice" }}</v-icon>
-                  </v-btn>
-                </template>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-form>
-      </v-col>
-    </v-row>
+    <ChatInput
+      :toggleButton="showAudioInput"
+      :passUserInput="userInput"
+      :handleInputFocus="handleFocus"
+      :sendParams="sendParams"
+      :mustSend="mustSend"
+      @reset="resetChatInputDirections"
+      @scroll="scrollToBottom"
+    ></ChatInput>
 
     <!-- end -->
     <!-- Date picker dialog -->
@@ -252,12 +115,12 @@
         <v-date-picker header-color="primary" color="secondary" v-model="date" scrollable>
           <v-spacer></v-spacer>
           <v-btn small color="secondary" @click="showDate = false">Cancel</v-btn>
-          <v-btn small color="success" @click="sendUserInput">OK</v-btn>
+          <v-btn small color="success" @click="triggerSend">OK</v-btn>
         </v-date-picker>
       </v-dialog>
     </v-col>
 
-    <Dialog
+    <!-- <Dialog
       @close="showLeopardDialog = false"
       :show="showLeopardDialog"
       title="Hi there this is the title"
@@ -268,17 +131,22 @@
         veritatis ipsam laudantium? Consequatur tenetur voluptas facere
         provident magnam!
       </p>
-    </Dialog>
+    </Dialog>-->
 
     <!-- Time picker dialog -->
     <v-col cols="12" v-if="showTime" :key="'timePicker' + uuid">
       <v-dialog ref="dialogTime" v-model="showTime" width="290px">
         <v-card>
-          <v-time-picker header-color="primary" color="secondary" v-model="userInput" format="24hr"></v-time-picker>
+          <v-time-picker
+            header-color="primary"
+            color="secondary"
+            v-model.lazy="userInput"
+            format="24hr"
+          ></v-time-picker>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn small color="secondary" @click="showTime = false">Cancel</v-btn>
-            <v-btn small color="success" @click="sendUserInput">OK</v-btn>
+            <v-btn small color="success" @click="triggerSend">OK</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -288,20 +156,17 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("Chat.vue");
-var mobile = require("is-mobile");
 import dayjs from "dayjs";
-import LongPress from "vue-directive-long-press";
-import { mask } from "vue-the-mask";
+import { debounce } from "../utils/utils.js";
 // import ChatBroadcastMessage from "../components/ChatBroadcastMessage";
 // import ChatLoading from "../components/ChatLoading";
 // import ChatNoHistory from "../components/ChatNoHistory";
+// import Dialog from "../components/Dialog";
+// import LiveChatResponse from "../components/LiveChatResponse";
 import ChatTeneoResponse from "../components/ChatTeneoResponse";
 import ChatUserQuestion from "../components/ChatUserQuestion";
-// import Dialog from "../components/Dialog";
+import ChatInput from "../components/ChatInput";
 
-// import LiveChatResponse from "../components/LiveChatResponse";
-import UploadButton from "vuetify-upload-button";
-const superagent = require("superagent");
 import { mapGetters } from "vuex";
 
 if (window.Element && !Element.prototype.closest) {
@@ -324,63 +189,56 @@ export default {
   components: {
     ChatBroadcastMessage: () => import("../components/ChatBroadcastMessage"),
     ChatLoading: () => import("../components/ChatLoading"),
-    Dialog: () => import("../components/Dialog"),
-    ChatNoHistory: () => import("../components/ChatNoHistory"),
+    // Dialog: () => import("../components/Dialog"),
+    // ChatNoHistory: () => import("../components/ChatNoHistory"),
     ChatUserQuestion,
     ChatTeneoResponse,
+    ChatInput,
     Feedback: () => import("../components/Feedback"),
-    LiveChatResponse: () => import("../components/LiveChatResponse"),
-    "upload-btn": UploadButton
+    LiveChatResponse: () => import("../components/LiveChatResponse")
   },
-  directives: {
-    "long-press": LongPress,
-    mask
-  },
+
   data() {
     return {
-      nomask: {
-        mask: "*".repeat(333),
-        tokens: {
-          "*": { pattern: /./ }
-        }
-      },
+      showAudioInput: false,
+      userInput: "",
+      handleFocus: false,
+      sendParams: "",
+      mustSend: false,
       showLeopardDialog: false,
       interval: {},
       mustScroll: true,
       oldDialogLength: 0,
-      showAudioInput: false,
-      audioButtonColor: "sendButton",
       showDate: false,
-      showPassword: false,
       showTime: false,
-      showUploadProgress: false,
       showFeedback: false,
       audioInFocus: false,
-      progressValue: 0,
-      date: "",
-      rules: {
-        required: value => !!value || "Required.",
-        counter: value => value.length <= 20 || "Max 20 characters",
-        email: value => {
-          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-          return pattern.test(value) || "Invalid e-mail.";
-        }
-      },
-      valid: false
+      date: ""
     };
   },
   watch: {
+    date: function(newDate) {
+      if (newDate !== "") {
+        this.updateInputBox(dayjs(newDate).format("D MMMM YYYY"));
+      }
+    },
+    storeUserInput: debounce(function(userInputStore) {
+      console.log("User input in store has changed to:", userInputStore);
+      if (this.userInput !== userInputStore) {
+        this.userInput = userInputStore;
+      }
+    }, 500),
     dialog: function(newDialog) {
       if (newDialog.length !== this.oldDialogLength) {
         this.mustScroll = true;
         this.oldDialogLength = newDialog.length;
       }
     },
-    showLiveChatProcessing: function(isLiveChatPersonTyping) {
+    showLiveChatProcessing: debounce(function(isLiveChatPersonTyping) {
       if (isLiveChatPersonTyping) {
         this.mustScroll = true;
       }
-    }
+    }, 300)
   },
   beforeRouteLeave(from, to, next) {
     this.$emit("closeMenu");
@@ -418,26 +276,12 @@ export default {
       "lastItemHasLongResponse",
       "itemHasLongResponse"
     ]),
+
     getNarrowMobile() {
       if (window.innerWidth <= 480) {
         return "min-height: calc(var(--vh, 1vh) * 80 - 130px);";
       } else {
         return "";
-      }
-    },
-    userInput: {
-      get: function() {
-        if (this.date !== "") {
-          this.updateInputBox(dayjs(this.date).format("D MMMM YYYY"));
-        }
-        if (this.userInputReadyForSending) {
-          this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals
-          this.sendUserInput();
-        }
-        return this.$store.getters.userInput;
-      },
-      set: function(userInput) {
-        this.$store.commit("SET_USER_INPUT", userInput);
       }
     },
     getCurrentItem() {
@@ -459,65 +303,52 @@ export default {
       }
     }
   },
-  updated: function() {
-    let clearElements = document.getElementsByClassName("v-icon--link");
-    clearElements.forEach(clearElement => {
-      let parentEl = clearElement.parentElement;
-      if (parentEl.classList.contains("v-input__icon--clear")) {
-        clearElement.tabIndex = 0;
-        clearElement.setAttribute("aria-label", "Clear Chat");
-        clearElement.addEventListener("keyup", function(event) {
-          event.preventDefault();
-          if (event.keyCode === 13) {
-            clearElement.click();
-          }
-        });
-      }
-    });
-
+  updated: debounce(function() {
     try {
       if (this.mustScroll) {
         this.mustScroll = false;
-
         this.$nextTick(() => {
           this.scrollToBottom();
-          // setTimeout(this.scrollToBottom, 2001);
         });
-      }
-
-      if (!this.isMobileDevice) {
-        const element = this.$el.querySelector("#teneo-input-field");
-        if (element) {
-          this.$nextTick(() => {
-            element.addEventListener("focusin", e => e.stopPropagation());
-            element.focus();
-          });
-        }
       }
     } catch (e) {
       logger.debug(e);
       // do nothing
     }
-  },
+  }, 200),
   mounted() {
     let siteFrame = document.getElementById("site-frame");
-
     if (!this.embed && !this.overlayChat && siteFrame) {
       setTimeout(() => {
         siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
       }, 1200);
     }
-
     this.$el.addEventListener("click", this.onHtmlClick);
-    if (!this.isMobileDevice) {
-      this.$refs.userInput.focus();
-    } else {
-      document.activeElement.blur();
-    }
     this.scrollToBottom();
   },
   beforeDestroy() {},
   methods: {
+    resetChatInputDirections() {
+      this.userInput = "";
+      this.mustSend = false;
+      this.sendParams = "";
+      this.showDate = false;
+      this.showTime = false;
+      this.date = "";
+    },
+    updateInputBox(userInput) {
+      logger.debug(`Updating Input Box`);
+      this.userInput = userInput;
+    },
+    triggerSend(delay = 0) {
+      setTimeout(() => {
+        logger.debug(`Triggering send to Teneo`);
+        this.mustSend = true;
+      }, delay);
+    },
+    swapInputButton() {
+      this.showAudioInput = !this.showAudioInput;
+    },
     scrollToBottom() {
       logger.debug("Scroll to bottom");
       const endChatTarget = this.$refs.endChat;
@@ -548,120 +379,12 @@ export default {
         } catch {}
       }
     },
-    handleFocus() {
-      if (!this.isMobileDevice) {
-        this.$refs.userInput.focus();
-      } else {
-        document.activeElement.blur();
-      }
-    },
-    hideKeyboard() {
-      document.activeElement.blur();
-    },
-    fileChanged(file) {
-      this.$store.commit("HIDE_UPLOAD_BUTTON");
-      this.showUploadProgress = true;
-      let successfullUpload = true;
-      let performedActualUpload = false;
-      let uploadProgress = 0;
-      if (this.uploadConfig && Object.keys(this.uploadConfig).length) {
-        performedActualUpload = true;
-        let config = this.uploadConfig.parameters;
-        var formData = new FormData();
 
-        formData.append(config.postFileNameParam, file);
-        if (config.postParams) {
-          for (const [key, value] of Object.entries(config.postParams)) {
-            formData.append(key, value);
-          }
-        }
+    // hideKeyboard() {
+    //   logger.debug(`Hiding virtual keyboard`);
+    //   document.activeElement.blur();
+    // },
 
-        let self = this;
-        let postResultQueryParam = "";
-        superagent
-          .post(config.postUrl)
-          .send(formData)
-          .then(res => {
-            logger.debug(`Upload response code: ${res.status}`);
-            uploadProgress = 100;
-            // logger.debug(res);
-            postResultQueryParam = "&uploadResponse=" + btoa(res.text);
-            if (config.reqUserInputSuccess) {
-              self.$store.commit("SET_USER_INPUT", config.reqUserInputSuccess);
-            }
-            self.$store.dispatch(
-              "sendUserInput",
-              config.teneoSuccessQuery
-                ? config.teneoSuccessQuery + postResultQueryParam
-                : postResultQueryParam
-            );
-          })
-          .catch(function(response) {
-            uploadProgress = 100;
-            successfullUpload = false;
-            //handle error
-            if (config.reqUserInputFailure) {
-              self.$store.commit("SET_USER_INPUT", config.reqUserInputFailure);
-            }
-            self.$store.dispatch(
-              "sendUserInput",
-              config.teneoFailureQuery
-                ? config.teneoFailureQuery + postResultQueryParam
-                : postResultQueryParam
-            );
-            logger.error(`Could not upload file`, response);
-          });
-
-        // {
-        //   "name": "uploadConfig",
-        //   "parameters": {
-        //     postUrl: "http://url-to-post-file-to.com/some-context",
-        //     postFileNameParam: "file",
-        //     postParams: {
-        //       "my_key": "my_value"
-        //     },
-        //     teneoSuccessQuery: "&uploadResult=success",
-        //     teneoFailureQuery: "&uploadResult=error",
-        //     reqUserInputSuccess: "I have uploaded my file",
-        //     reqUserInputFailure: "I tried uploading but it didn't work"
-        //   }
-        // }
-      }
-      // If multiple prop is true, it will return an object array of files.
-      this.interval = setInterval(() => {
-        if (this.progressValue === 100 || uploadProgress === 100) {
-          clearInterval(this.interval);
-          this.showUploadProgress = false;
-          if (!performedActualUpload) {
-            if (!this.config) {
-              if (successfullUpload) {
-                this.$store.commit(
-                  "SHOW_MESSAGE_IN_CHAT",
-                  `Thanks we have successfully received your file: ${file.name}`
-                );
-                this.$store.dispatch("sendUserInput").then(() => {
-                  logger.debug("Upload flag sent to Teneo");
-                });
-              } else {
-                this.$store.commit(
-                  "SHOW_MESSAGE_IN_CHAT",
-                  `There was a problem uploading your file: ${file.name}`
-                );
-              }
-            }
-          }
-          return (this.progressValue = 0);
-        }
-        this.progressValue += 10;
-      }, 300);
-      logger.debug(file);
-    },
-
-    stopAudioCapture() {
-      this.$store.commit("HIDE_LISTENING_OVERLAY");
-      this.$store.dispatch("stopAudioCapture");
-      this.audioButtonColor = "sendButton";
-    },
     onHtmlClick(event) {
       // Find the closest anchor to the target.
       const anchor = event.target.closest("a");
@@ -676,6 +399,7 @@ export default {
       ) {
         return; // basically treat like a normal link
       } else if (anchor.classList.contains("openInIframe")) {
+        logger.debug(`Open Link in IFRAME`);
         // open in iframe
         event.stopPropagation();
         event.preventDefault();
@@ -685,93 +409,14 @@ export default {
         event.stopPropagation();
         event.preventDefault();
         if (anchor.getAttribute("data-input")) {
-          this.updateInputBox(anchor.getAttribute("data-input"));
+          logger.debug(`Update input box with data-input attribute of link`);
+          this.userInput = anchor.getAttribute("data-input");
         } else {
-          this.updateInputBox(anchor.innerText);
+          logger.debug(`Update input box with text of link`);
+          this.userInput = anchor.innerText;
         }
-        this.sendUserInput("&isClick=true");
-      }
-    },
-    updateInputBox(userInput) {
-      this.$store.commit("SET_USER_INPUT", userInput);
-      if (!this.isMobileDevice) {
-        this.$refs.userInput.focus();
-      } else {
-        document.activeElement.blur();
-      }
-    },
-    hideProgressBar() {
-      this.$store.commit("HIDE_PROGRESS_BAR");
-    },
-    sendUserInput(params = "") {
-      if (this.valid) {
-        this.$refs.userInputForm.resetValidation();
-        this.audioButtonColor = "sendButton";
-        if (this.userInput.trim()) {
-          this.$store.commit("SHOW_PROGRESS_BAR");
-          this.showDate = false;
-          this.showTime = false;
-          this.date = "";
-          this.scrollToBottom();
-          this.$store
-            .dispatch("sendUserInput", params)
-            .then(() => {
-              if (!this.isMobileDevice) {
-                this.$refs.userInput.focus();
-              } else {
-                document.activeElement.blur();
-              }
-            })
-            .catch(err => {
-              logger.error("Error Sending User Input", err);
-            });
-        }
-        if (!this.isMobileDevice) {
-          this.$refs.userInput.focus();
-        } else {
-          document.activeElement.blur();
-        }
-      }
-    },
-
-    captureAudio() {
-      if (
-        Object.prototype.hasOwnProperty.call(
-          window,
-          "webkitSpeechRecognition"
-        ) &&
-        Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
-      ) {
-        this.$store.commit("HIDE_CHAT_MODAL");
-        this.audioButtonColor = "error";
-        this.$store.commit("SHOW_LISTING_OVERLAY");
-        this.$store.dispatch("captureAudio");
-      }
-    },
-    swapInputButton() {
-      // check if we have access to the mic
-      let that = this;
-
-      if (navigator && navigator.mediaDevices && !mobile()) {
-        var isChrome =
-          /Chrome/.test(navigator.userAgent) &&
-          !/ OPR/.test(navigator.userAgent) &&
-          /Google Inc/.test(navigator.vendor);
-        if (isChrome) {
-          navigator.mediaDevices
-            .getUserMedia({ audio: true })
-            .then(function() {
-              that.showAudioInput = !that.showAudioInput;
-              that.$store.commit("TTS_ENABLE", that.showAudioInput);
-            })
-            .catch(function(err) {
-              logger.debug("ASR input is not allowed", err);
-              that.$store.commit(
-                "SHOW_MESSAGE_IN_CHAT",
-                "ASR input is not allowed. Possible reasons: website not running over HTTPS, you have denied microphone access or the chat UI has been loaded form a different domain that the website."
-              );
-            });
-        }
+        this.sendParams = "&isClick=true";
+        this.triggerSend(200);
       }
     }
   }
