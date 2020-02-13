@@ -8,7 +8,7 @@
     v-if="url"
     :src="url"
     :max-height="determineMaxHeight()"
-    lazy-src="../../public/static/placeholder-image-300x207.png"
+    lazy-src="@/assets/placeholder-image-300x207.png"
     contain
   >
     <template v-slot:placeholder>

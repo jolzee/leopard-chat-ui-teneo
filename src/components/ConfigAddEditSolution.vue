@@ -305,8 +305,7 @@
                   >
                     <v-img
                       v-if="showLeopardAnimationImage"
-                      src="../../public/static/leopard-small.png"
-                      lazy-src="../../public/static/leopard-small.png"
+                      src="@/assets/leopard-small.png"
                       max-height="300"
                       @click="toggleDisplayAnimationImage()"
                       style="z-index: 20"

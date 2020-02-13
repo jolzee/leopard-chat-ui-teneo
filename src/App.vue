@@ -229,7 +229,7 @@
                     aria-label="Artificial Solutions information will open in a new window"
                   >
                     <img
-                      src="../public/static/as-logo.png"
+                      src="@/assets/as-logo.png"
                       alt="Artificial Solutions logo"
                       class="text-center"
                       width="150"
