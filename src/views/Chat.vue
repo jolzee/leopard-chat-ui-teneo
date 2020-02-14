@@ -105,6 +105,7 @@
       :sendParams="sendParams"
       :mustSend="mustSend"
       :drawer="drawer"
+      :key="chatInputComponentKey"
       @reset="resetChatInputDirections"
       @scroll="scrollToBottom"
     ></ChatInput>
@@ -214,7 +215,9 @@ export default {
       showTime: false,
       showFeedback: false,
       audioInFocus: false,
-      date: ""
+      date: "",
+      isScrolling: false,
+      chatInputComponentKey: "55555" // so important for IE11 performance!!
     };
   },
   watch: {
@@ -335,6 +338,7 @@ export default {
       this.showDate = false;
       this.showTime = false;
       this.date = "";
+      this.chatInputComponentKey += 1
     },
     updateInputBox(userInput) {
       logger.debug(`Updating Input Box`);
@@ -349,10 +353,14 @@ export default {
     swapInputButton() {
       this.showAudioInput = !this.showAudioInput;
     },
-    scrollToBottom() {
+    debounceScroll() {
+      if (this.isScrolling) {
+        return;
+      }
       logger.debug("Scroll to bottom");
       const endChatTarget = this.$refs.endChat;
       if (endChatTarget) {
+        this.isScrolling = true;
         let scrollToElement = document.getElementById("teneo-chat-scroll");
         const options = {
           duration: 1200,
@@ -363,23 +371,21 @@ export default {
         try {
           if (scrollToElement) {
             this.$vuetify.goTo(endChatTarget, options);
-            let that = this;
-            setTimeout(function() {
-              scrollToElement = document.getElementById("teneo-chat-scroll");
-              if (scrollToElement) {
-                that.$vuetify.goTo(endChatTarget, {
-                  duration: 500,
-                  offset: 0,
-                  easing: "easeInQuad",
-                  container: "#teneo-chat-scroll"
-                });
-              }
-            }, 1500);
+          } else {
+            this.isScrolling = false
           }
-        } catch {}
+        } catch {
+          this.isScrolling = false
+        }
+        setTimeout(() => {
+          this.isScrolling = false
+        }, 1250);
       }
     },
-
+    scrollToBottom() {
+      // debounce(this.debounceScroll(), 2000, false);
+      this.debounceScroll();
+    },
     // hideKeyboard() {
     //   logger.debug(`Hiding virtual keyboard`);
     //   document.activeElement.blur();

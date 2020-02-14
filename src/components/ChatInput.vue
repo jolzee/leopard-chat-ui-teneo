@@ -236,6 +236,10 @@ export default {
       document.activeElement.blur();
     }
   },
+  created() {
+    logger.info(`Chat Input Created`);
+    this.handleFocus();
+  },
   computed: {
     ...mapGetters([
       "askingForPassword",
@@ -337,11 +341,12 @@ export default {
           this.$store
             .dispatch("sendUserInput", this.sendParams)
             .then(() => {
-              this.hideProgressBar();
-              this.userInput = "";
-              this.$refs.userInputForm.resetValidation();
+              // this.hideProgressBar();
+              // this.userInput = "";
+              // this.$refs.userInputForm.resetValidation();
+              // this.handleFocus();
               this.$emit("reset");
-              this.handleFocus();
+              // this.$emit("changeKey");
             })
             .catch(err => {
               logger.error("Error Sending User Input", err);
@@ -350,14 +355,17 @@ export default {
       }
     },
     handleFocus() {
-      let theInputElement = document.getElementById("teneo-input-field");
-      if (theInputElement && !this.isMobileDevice) {
-        // this.$refs.userInput.focus();
-        theInputElement.focus();
-        logger.debug(`Handling focus`);
-      } else if (theInputElement && this.isMobileDevice && document.activeElement === theInputElement) {
-        document.activeElement.blur();
-      }
+      setTimeout(() => {
+        let theInputElement = document.getElementById("teneo-input-field");
+        if (theInputElement && !this.isMobileDevice) {
+          // this.$refs.userInput.focus();
+          theInputElement.focus();
+          logger.debug(`Handling focus`);
+        } else if (theInputElement && this.isMobileDevice && document.activeElement === theInputElement) {
+          document.activeElement.blur();
+        }
+      }, 300);
+
     },
     toggleShowPassword() {
       logger.debug("Toggeling Password");
