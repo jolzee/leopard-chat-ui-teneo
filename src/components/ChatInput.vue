@@ -168,6 +168,7 @@ export default {
     showUploadProgress: false,
     audioInFocus: false,
     progressValue: 0,
+    showPassword: false,
     rules: {
       required: value => !!value || "Required.",
       counter: value => value.length <= 20 || "Max 20 characters",
@@ -271,7 +272,6 @@ export default {
         : this.$t("input.box.label");
     },
     innerIconCondition() {
-      logger.debug("about to toggle icon for password", this.askingForPassword);
       return this.askingForPassword
         ? this.showPassword
           ? "mdi-eye"
