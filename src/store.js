@@ -1,19 +1,22 @@
 /* eslint-disable no-unused-vars */
 import "regenerator-runtime/runtime";
 const logger = require("@/utils/logging").getLogger("store.js");
+const TIE = require("@artificialsolutions/tie-api-client");
 import {
   doesParameterExist,
   getParameterByName,
   sleep,
   cleanEmptyChunks,
-  isLight
+  isLight,
+  queryParamStringAsObject,
+  convertTeneoJsonNewToOld
 } from "@/utils/utils";
 import router from "@/router";
 import dayjs from "dayjs";
 import LiveChat from "@livechat/agent-app-widget-sdk";
 import { accountsSdk } from "@livechat/accounts-sdk";
-import liveChatConfig from "./utils/livechat-config";
-import Firebase from "./utils/firebase";
+import liveChatConfig from "@/utils/livechat-config";
+import Firebase from "@/utils/firebase";
 import enableDrag from "@/utils/drag";
 
 var md = require("markdown-it")({
@@ -33,26 +36,24 @@ var mobile = require("is-mobile");
 import URL from "url-parse";
 import uuidv1 from "uuid/v1";
 import Vue from "vue";
-import VueJsonp from "vue-jsonp";
 import Vuex from "vuex";
 import vuexI18n from "vuex-i18n"; // i18n the leopard interface
 // import VuePlyr from "vue-plyr";
-import Listening from "./components/Listening.vue"; // component dialog that shows then capturing audio
-import Modal from "./components/Modal.vue";
+import Listening from "@/components/Listening.vue"; // component dialog that shows then capturing audio
+import Modal from "@/components/Modal.vue";
 
 import VueLoadersBallPulseSync from "vue-loaders/dist/loaders/ball-pulse-sync";
 import VueLoadersLineScale from "vue-loaders/dist/loaders/line-scale";
 import VueLoadersLineScalePulseOutRapid from "vue-loaders/dist/loaders/line-scale-pulse-out-rapid";
 
-import { initializeASR, initializeTTS } from "./utils/asr-tts";
+import { initializeASR, initializeTTS } from "@/utils/asr-tts";
 
-import { STORAGE_KEY } from "./constants/solution-config-default"; // application storage key
-import { TRANSLATIONS } from "./constants/translations"; // add UI translations for different language here
-import Setup from "./utils/setup";
+import { STORAGE_KEY } from "@/constants/solution-config-default"; // application storage key
+import { TRANSLATIONS } from "@/constants/translations"; // add UI translations for different language here
+import Setup from "@/utils/setup";
 
 let store;
 let config = new Setup();
-Vue.use(VueJsonp, 20000);
 Vue.use(Vuex);
 
 // Vue.use(VuePlyr);
@@ -76,6 +77,7 @@ Vue.component(
 
 Vue.config.productionTip = false;
 let liveChatAssistConnectCount = 0;
+let browserHandledSession = null;
 
 export default function getStore() {
   return new Promise((resolve, reject) => {
@@ -1678,19 +1680,22 @@ function storeSetup(vuetify) {
         }
       },
       sendFeedback(context, feedback) {
-        Vue.jsonp(
-          config.TENEO_URL +
-            config.REQUEST_PARAMETERS +
-            context.getters.userInformationParams +
-            context.getters.timeZoneParam +
-            context.getters.ctxParameters,
-          {
-            command: "feedback",
-            feedback: JSON.stringify(feedback)
-          }
-        ).then(() => {
-          logger.debug("Feedback sent to Teneo");
-        });
+        let queryParams =
+          config.REQUEST_PARAMETERS +
+          context.getters.userInformationParams +
+          context.getters.timeZoneParam +
+          context.getters.ctxParameters;
+
+        let queryObj = queryParamStringAsObject(queryParams);
+        queryObj.command = "feedback";
+        queryObj.text = ""; // it's a login we don't have to say anything yet
+        queryObj.feedback = JSON.stringify(feedback);
+
+        TIE.sendInput(
+          config.TENEO_URL,
+          browserHandledSession,
+          queryObj
+        ).then(() => logger.debug("Feedback sent to Teneo"));
       },
       setUserInformation({ commit, getters }) {
         if (!window.leopardConfig.firebase.apiKey) {
@@ -1899,60 +1904,14 @@ function storeSetup(vuetify) {
       },
       endSessionLite(context) {
         context.commit("REMOVE_MODAL_ITEM");
-        let fullUrl = new URL(context.getters.teneoUrl);
-        let endSessionUrl =
-          fullUrl.protocol +
-          "//" +
-          fullUrl.host +
-          fullUrl.pathname +
-          "endsession?viewtype=STANDARDJSONP" +
-          (config.SEND_CTX_PARAMS === "all"
-            ? config.REQUEST_PARAMETERS.length > 0
-              ? "&" +
-                config.REQUEST_PARAMETERS.substring(
-                  1,
-                  config.REQUEST_PARAMETERS.length
-                )
-              : ""
-            : "");
-
-        Vue.jsonp(endSessionUrl, {}).then(() => {
-          context.commit("HIDE_CHAT_LOADING");
-          context.commit("HIDE_UPLOAD_BUTTON");
-          context.commit(
-            "SHOW_MESSAGE_IN_CHAT",
-            "Session restarted at this point",
-            "info",
-            "info",
-            "false",
-            true,
-            "mdi-cast-connected",
-            "top"
-          );
-          logger.debug("Session Ended");
-        });
+        TIE.close(config.TENEO_URL, browserHandledSession).then(() =>
+          logger.debug("Session Ended")
+        );
       },
       endSession(context) {
         context.commit("CLEAR_DIALOGS");
         context.commit("REMOVE_MODAL_ITEM");
-        let fullUrl = new URL(context.getters.teneoUrl);
-        let endSessionUrl =
-          fullUrl.protocol +
-          "//" +
-          fullUrl.host +
-          fullUrl.pathname +
-          "endsession?viewtype=STANDARDJSONP" +
-          (config.SEND_CTX_PARAMS === "all"
-            ? config.REQUEST_PARAMETERS.length > 0
-              ? "&" +
-                config.REQUEST_PARAMETERS.substring(
-                  1,
-                  config.REQUEST_PARAMETERS.length
-                )
-              : ""
-            : "");
-
-        Vue.jsonp(endSessionUrl, {}).then(() => {
+        TIE.close(config.TENEO_URL, browserHandledSession).then(() => {
           context.commit("HIDE_CHAT_LOADING");
           context.commit("HIDE_UPLOAD_BUTTON");
           logger.debug("Session Ended");
@@ -1962,17 +1921,19 @@ function storeSetup(vuetify) {
         context.commit("SHOW_CHAT_LOADING");
         // get the greeting message if we haven't done so for this session
         return new Promise((resolve, reject) => {
-          const teneoUrl =
-            config.TENEO_URL +
+          let queryParams =
             config.REQUEST_PARAMETERS +
             context.getters.userInformationParams +
             context.getters.timeZoneParam +
             context.getters.ctxParameters;
-          Vue.jsonp(teneoUrl, {
-            command: "login"
-            // userInput: ""
-          })
+
+          let queryObj = queryParamStringAsObject(queryParams);
+          queryObj.command = "login";
+          queryObj.text = ""; // it's a login we don't have to say anything yet
+
+          TIE.sendInput(config.TENEO_URL, browserHandledSession, queryObj)
             .then(json => {
+              json = convertTeneoJsonNewToOld(json);
               context.commit("HIDE_CHAT_LOADING");
               if ("numActiveFlows" in json.responseData.extraData) {
                 let numActiveFlows = parseInt(
@@ -2058,7 +2019,7 @@ function storeSetup(vuetify) {
               context.commit("HIDE_CHAT_LOADING");
               const errResp = {
                 error: err,
-                teneoUrl: teneoUrl,
+                teneoUrl: config.TENEO_URL,
                 message: "Could not send login command to TIE"
               };
               logger.debug(`Problems sending login command`, errResp);
@@ -2097,15 +2058,17 @@ function storeSetup(vuetify) {
 
         if (currentUserInput) {
           try {
-            var audio = new Audio(require("./assets/notification.mp3"));
+            var audio = new Audio(require("@/assets/notification.mp3"));
             audio.play();
           } catch {}
         }
 
         if (!context.getters.isLiveChat) {
-          // normal Teneo request needs to be made
-          const teneoUrl =
-            context.getters.teneoUrl +
+          logger.debug("Question 💬", currentUserInput.trim());
+
+          await sleep(context.getters.responseDelay); // delay responses if needed
+
+          let queryParams =
             (config.SEND_CTX_PARAMS === "all"
               ? config.REQUEST_PARAMETERS + params
               : params) +
@@ -2113,18 +2076,12 @@ function storeSetup(vuetify) {
             context.getters.timeZoneParam +
             context.getters.ctxParameters;
 
-          logger.debug("Question 💬", currentUserInput.trim());
-          logger.debug(
-            "Call Teneo",
-            `${teneoUrl}&userinput=${currentUserInput.trim()}`
-          );
+          let queryObj = queryParamStringAsObject(queryParams);
+          queryObj.text = currentUserInput.trim();
 
-          await sleep(context.getters.responseDelay); // delay responses if needed
-
-          Vue.jsonp(teneoUrl, {
-            userinput: currentUserInput.trim()
-          })
+          TIE.sendInput(config.TENEO_URL, browserHandledSession, queryObj)
             .then(json => {
+              json = convertTeneoJsonNewToOld(json);
               if (params.indexOf("command=train") !== -1) {
                 return;
               }
@@ -2186,7 +2143,7 @@ function storeSetup(vuetify) {
                 cleanEmptyChunks(json.responseData.answer) !== ""
               ) {
                 try {
-                  var audio = new Audio(require("./assets/notification.mp3"));
+                  var audio = new Audio(require("@/assets/notification.mp3"));
                   audio.play();
                 } catch {}
               }
@@ -2458,10 +2415,7 @@ function storeSetup(vuetify) {
                   langEngineUrl !== "undefined" &&
                   langInput !== "undefined"
                 ) {
-                  context.commit(
-                    "UPDATE_TENEO_URL",
-                    langEngineUrl + "?viewname=STANDARDJSONP"
-                  );
+                  context.commit("UPDATE_TENEO_URL", langEngineUrl);
                   context.commit("SET_USER_INPUT", langInput);
                   context.commit("SHOW_PROGRESS_BAR");
 
@@ -2498,7 +2452,7 @@ function storeSetup(vuetify) {
             .catch(err => {
               const errResp = {
                 error: err,
-                teneoUrl: teneoUrl
+                teneoUrl: config.TENEO_URL
               };
               if (err.status && err.status === 408) {
                 logger.error("Request To Teneo Timed Out: 408", errResp);

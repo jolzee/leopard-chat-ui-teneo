@@ -135,7 +135,7 @@ var mobile = require("is-mobile");
 import UploadButton from "vuetify-upload-button";
 import LongPress from "vue-directive-long-press";
 import { mask } from "vue-the-mask";
-import { debounce } from "../utils/utils.js";
+import { debounce } from "@/utils/utils.js";
 const superagent = require("superagent");
 
 export default {
@@ -270,6 +270,7 @@ export default {
         : this.$t("input.box.label");
     },
     innerIconCondition() {
+      logger.debug("about to toggle icon for password", this.askingForPassword);
       return this.askingForPassword
         ? this.showPassword
           ? "mdi-eye"
@@ -341,6 +342,7 @@ export default {
       }
     },
     toggleShowPassword() {
+      logger.debug("Toggeling Password");
       this.showPassword = !this.showPassword;
     },
     captureAudio() {

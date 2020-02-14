@@ -1,4 +1,3 @@
-// var defaultJson = require("@/../public/static/default.json");
 const environmentVariables = process.env;
 
 const getEnvValue = (name, fallback = "") => {

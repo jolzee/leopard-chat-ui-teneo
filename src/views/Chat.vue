@@ -157,15 +157,15 @@
 <script>
 const logger = require("@/utils/logging").getLogger("Chat.vue");
 import dayjs from "dayjs";
-import { debounce } from "../utils/utils.js";
-// import ChatBroadcastMessage from "../components/ChatBroadcastMessage";
-// import ChatLoading from "../components/ChatLoading";
-// import ChatNoHistory from "../components/ChatNoHistory";
-// import Dialog from "../components/Dialog";
-// import LiveChatResponse from "../components/LiveChatResponse";
-import ChatTeneoResponse from "../components/ChatTeneoResponse";
-import ChatUserQuestion from "../components/ChatUserQuestion";
-import ChatInput from "../components/ChatInput";
+import { debounce } from "@/utils/utils.js";
+// import ChatBroadcastMessage from "@/components/ChatBroadcastMessage";
+// import ChatLoading from "@/components/ChatLoading";
+// import ChatNoHistory from "@/components/ChatNoHistory";
+// import Dialog from "@/components/Dialog";
+// import LiveChatResponse from "@/components/LiveChatResponse";
+import ChatTeneoResponse from "@/components/ChatTeneoResponse";
+import ChatUserQuestion from "@/components/ChatUserQuestion";
+import ChatInput from "@/components/ChatInput";
 
 import { mapGetters } from "vuex";
 
@@ -187,15 +187,15 @@ if (window.Element && !Element.prototype.closest) {
 export default {
   props: ["drawer"],
   components: {
-    ChatBroadcastMessage: () => import("../components/ChatBroadcastMessage"),
-    ChatLoading: () => import("../components/ChatLoading"),
-    // Dialog: () => import("../components/Dialog"),
-    // ChatNoHistory: () => import("../components/ChatNoHistory"),
+    ChatBroadcastMessage: () => import("@/components/ChatBroadcastMessage"),
+    ChatLoading: () => import("@/components/ChatLoading"),
+    // Dialog: () => import("@/components/Dialog"),
+    // ChatNoHistory: () => import("@/components/ChatNoHistory"),
     ChatUserQuestion,
     ChatTeneoResponse,
     ChatInput,
-    Feedback: () => import("../components/Feedback"),
-    LiveChatResponse: () => import("../components/LiveChatResponse")
+    Feedback: () => import("@/components/Feedback"),
+    LiveChatResponse: () => import("@/components/LiveChatResponse")
   },
 
   data() {
@@ -307,15 +307,13 @@ export default {
     try {
       if (this.mustScroll) {
         this.mustScroll = false;
-        this.$nextTick(() => {
-          this.scrollToBottom();
-        });
+        this.scrollToBottom();
       }
     } catch (e) {
       logger.debug(e);
       // do nothing
     }
-  }, 200),
+  }, 100),
   mounted() {
     let siteFrame = document.getElementById("site-frame");
     if (!this.embed && !this.overlayChat && siteFrame) {

@@ -852,8 +852,8 @@ const logger = require("@/utils/logging").getLogger("ChatAddEditSolution.vue");
 import { createSlug, cloneObject, isLight } from "@/utils/utils";
 import urlRegex from "url-regex";
 import { mapGetters } from "vuex";
-import { COLOR_NAMES } from "../constants/color-names.js";
-import { SOLUTION_DEFAULT } from "../constants/solution-config-default.js";
+import { COLOR_NAMES } from "@/constants/color-names.js";
+import { SOLUTION_DEFAULT } from "@/constants/solution-config-default.js";
 export default {
   name: "ConfigAddEditSolution",
   components: {},

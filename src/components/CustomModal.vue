@@ -26,41 +26,20 @@
         >
           <v-container class="modal-container">
             <span v-for="(item, index) in items" :key="index">
-              <div
-                class="title add-padding"
-                v-if="item.type === 'title'"
-                v-html="item.value"
-              ></div>
+              <div class="title add-padding" v-if="item.type === 'title'" v-html="item.value"></div>
               <div
                 class="grey--text add-padding"
                 v-if="item.type === 'subtitle'"
                 v-html="item.value"
               ></div>
-              <div
-                class="add-padding"
-                v-if="item.type === 'html'"
-                v-html="item.value"
-              ></div>
-              <YouTube
-                v-if="item.type === 'youTube'"
-                :videoId="item.value"
-              ></YouTube>
+              <div class="add-padding" v-if="item.type === 'html'" v-html="item.value"></div>
+              <YouTube v-if="item.type === 'youTube'" :videoId="item.value"></YouTube>
               <Audio v-if="item.type === 'audio'" :url="item.value"></Audio>
               <Vimeo v-if="item.type === 'vimeo'" :videoId="item.value"></Vimeo>
-              <Video
-                v-if="item.type === 'video'"
-                :url="item.value"
-                type="mp4"
-              ></Video>
+              <Video v-if="item.type === 'video'" :url="item.value" type="mp4"></Video>
               <Map v-if="item.type === 'map'" :address="item.value"></Map>
-              <ImageAnimation
-                v-if="item.type === 'image'"
-                :url="item.value"
-              ></ImageAnimation>
-              <Carousel
-                v-if="item.type === 'carousel'"
-                :imageItems="item.value"
-              ></Carousel>
+              <ImageAnimation v-if="item.type === 'image'" :url="item.value"></ImageAnimation>
+              <Carousel v-if="item.type === 'carousel'" :imageItems="item.value"></Carousel>
             </span>
           </v-container>
           <v-row align="start" justify="center">
@@ -72,8 +51,7 @@
                 v-shortkey="['ctrl', 'alt', 'arrowleft']"
                 @shortkey.native="closeModal"
                 @click.native="closeModal"
-                >{{ $t("back.to.chat.button") }}
-              </v-btn>
+              >{{ $t("back.to.chat.button") }}</v-btn>
             </v-card-actions>
           </v-row>
         </v-card>
@@ -84,24 +62,17 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("CustomModal.vue");
-// import Audio from "./Audio";
-// import Carousel from "./Carousel";
-// import ImageAnimation from "./ImageAnimation";
-// import Video from "./Video";
-// import Map from "./Map";
-// import Vimeo from "./Vimeo";
-// import YouTube from "./YouTube";
 
 export default {
   props: ["items", "toolbarWidth"],
   components: {
-    Audio: () => import("./Audio"),
-    Carousel: () => import("./Carousel"),
-    ImageAnimation: () => import("./ImageAnimation"),
-    Map: () => import("./Map"),
-    Video: () => import("./Video"),
-    Vimeo: () => import("./Vimeo"),
-    YouTube: () => import("./YouTube")
+    Audio: () => import("@/components/Audio"),
+    Carousel: () => import("@/components/Carousel"),
+    ImageAnimation: () => import("@/components/ImageAnimation"),
+    Map: () => import("@/components/Map"),
+    Video: () => import("@/components/Video"),
+    Vimeo: () => import("@/components/Vimeo"),
+    YouTube: () => import("@/components/YouTube")
   },
   data() {
     return {};

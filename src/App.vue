@@ -446,17 +446,16 @@
 const logger = require("@/utils/logging").getLogger("App.vue");
 import "wicg-inert/dist/inert.min.js";
 import { mapGetters } from "vuex";
-import { STORAGE_KEY } from "./constants/solution-config-default.js";
+import { STORAGE_KEY } from "@/constants/solution-config-default.js";
 import { debounce, sendMessageToParent, isLight } from "@/utils/utils";
-const OverlayAlert = () => import("./components/OverlayAlert");
-// import AssistiveText from "./components/AssistiveText.vue";
+// import AssistiveText from "@/components/AssistiveText.vue";
 import jsonpack from "jsonpack/main";
 
 // import { createDetailsWidget } from "@livechat/agent-app-sdk";
 // import { createMessageBoxWidget } from "@livechat/agent-app-sdk";
 
 export default {
-  components: { OverlayAlert },
+  components: { OverlayAlert: () => import("@/components/OverlayAlert") },
   data() {
     return {
       liveChatAccessToken: null,

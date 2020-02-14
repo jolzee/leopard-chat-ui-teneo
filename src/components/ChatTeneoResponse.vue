@@ -409,16 +409,6 @@
 <script>
 const logger = require("@/utils/logging").getLogger("ChatTeneoResponse.vue");
 import LongPress from "vue-directive-long-press";
-// import Audio from "./Audio";
-// import Carousel from "./Carousel";
-// import ImageAnimation from "./ImageAnimation";
-// import DelayedResponse from "./DelayedResponse";
-// import Video from "./Video";
-// import AgentAssistCannedResponseForm from "./AgentAssistCannedResponseForm";
-// import Map from "./Map";
-// import Vimeo from "./Vimeo";
-// import Card from "./Card";
-// import YouTube from "./YouTube";
 import { mapGetters } from "vuex";
 import copy from "copy-to-clipboard";
 const isHtml = require("is-html");
@@ -430,18 +420,18 @@ export default {
     "long-press": LongPress
   },
   components: {
-    Audio: () => import("./Audio"),
+    Audio: () => import("@/components/Audio"),
     AgentAssistCannedResponseForm: () =>
-      import("./AgentAssistCannedResponseForm"),
-    Carousel: () => import("./Carousel"),
-    Card: () => import("./Card"),
-    ImageAnimation: () => import("./ImageAnimation"),
-    DelayedResponse: () => import("./DelayedResponse"),
-    Map: () => import("./Map"),
-    Video: () => import("./Video"),
-    Vimeo: () => import("./Vimeo"),
-    YouTube: () => import("./YouTube"),
-    Form: () => import("./Form")
+      import("@/components/AgentAssistCannedResponseForm"),
+    Carousel: () => import("@/components/Carousel"),
+    Card: () => import("@/components/Card"),
+    ImageAnimation: () => import("@/components/ImageAnimation"),
+    DelayedResponse: () => import("@/components/DelayedResponse"),
+    Map: () => import("@/components/Map"),
+    Video: () => import("@/components/Video"),
+    Vimeo: () => import("@/components/Vimeo"),
+    YouTube: () => import("@/components/YouTube"),
+    Form: () => import("@/components/Form")
   },
   props: ["item", "itemIndexInDialog"],
   data() {
@@ -928,9 +918,7 @@ export default {
         this.item.teneoResponse.extraData &&
         this.item.teneoResponse.extraData.formConfig
       ) {
-        return JSON.parse(
-          decodeURIComponent(this.item.teneoResponse.extraData.formConfig)
-        );
+        return JSON.parse(this.item.teneoResponse.extraData.formConfig);
       }
       return null;
     },

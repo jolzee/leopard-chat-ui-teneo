@@ -204,34 +204,22 @@
 <script>
 const logger = require("@/utils/logging").getLogger("Modal.vue");
 import { stripHtmlTags, removeAll } from "@/utils/utils";
-// import Audio from "./Audio";
-// import Carousel from "./Carousel";
-// import CustomModal from "./CustomModal";
-// import FlightItinerary from "./FlightItinerary";
-// import ImageAnimation from "./ImageAnimation";
-// import MyBankTransactions from "./MyBankTransactions";
-// import Pusher from "./Pusher";
-// import Table from "./Table";
-// import Video from "./Video";
-// import Map from "./Map";
-// import Vimeo from "./Vimeo";
-// import YouTube from "./YouTube";
 import { mapGetters } from "vuex";
 
 export default {
   components: {
-    Audio: () => import("./Audio"),
-    Carousel: () => import("./Carousel"),
-    CustomModal: () => import("./CustomModal"),
-    FlightItinerary: () => import("./FlightItinerary"),
-    ImageAnimation: () => import("./ImageAnimation"),
-    MyBankTransactions: () => import("./MyBankTransactions"),
-    Map: () => import("./Map"),
+    Audio: () => import("@/components/Audio"),
+    Carousel: () => import("@/components/Carousel"),
+    CustomModal: () => import("@/components/CustomModal"),
+    FlightItinerary: () => import("@/components/FlightItinerary"),
+    ImageAnimation: () => import("@/components/ImageAnimation"),
+    MyBankTransactions: () => import("@/components/MyBankTransactions"),
+    Map: () => import("@/components/Map"),
     // Pusher,
-    Table: () => import("./Table"),
-    Video: () => import("./Video"),
-    Vimeo: () => import("./Vimeo"),
-    YouTube: () => import("./YouTube")
+    Table: () => import("@/components/Table"),
+    Video: () => import("@/components/Video"),
+    Vimeo: () => import("@/components/Vimeo"),
+    YouTube: () => import("@/components/YouTube")
   },
   data() {
     return {

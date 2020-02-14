@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 const replaceString = require("replace-string");
-const solutionDefault = require("../constants/solution-config-default")
+const solutionDefault = require("@/constants/solution-config-default")
   .SOLUTION_DEFAULT;
 const jsonpack = require("jsonpack/main");
 
@@ -691,6 +691,48 @@ export const wait = (ms = 0) => {
 
 export const sleep = (ms = 0) => {
   return new Promise(r => setTimeout(r, ms));
+};
+
+export const queryParamStringAsObject = fullQueryString => {
+  let query_string = {};
+  let query = fullQueryString;
+  let vars = query.split("&");
+  for (let i = 0; i < vars.length; i++) {
+    let pair = vars[i].split("=");
+    if (typeof query_string[pair[0]] === "undefined") {
+      query_string[pair[0]] = decodeURIComponent(pair[1]);
+    } else if (typeof query_string[pair[0]] === "string") {
+      let arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
+      query_string[pair[0]] = arr;
+    } else {
+      query_string[pair[0]].push(decodeURIComponent(pair[1]));
+    }
+  }
+  return query_string;
+};
+
+export const convertTeneoJsonNewToOld = newJson => {
+  let finalJson = {
+    responseData: {
+      status: 0,
+      isNewSession: false,
+      lastinput: "",
+      answer: "",
+      extraData: {},
+      emotion: "",
+      link: {
+        href: "",
+        target: ""
+      }
+    }
+  };
+  finalJson.responseData.status = newJson.status;
+  finalJson.responseData.lastinput = newJson.input.text;
+  finalJson.responseData.answer = newJson.output.text;
+  finalJson.responseData.extraData = newJson.output.parameters;
+  finalJson.responseData.link.href = newJson.output.link;
+
+  return finalJson;
 };
 
 export const queryParametersAsObject = () => {

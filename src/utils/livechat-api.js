@@ -1,5 +1,5 @@
 const logger = require("@/utils/logging").getLogger("livechat-api.js");
-import config from "./livechat-config";
+import config from "@/utils/livechat-config";
 import axios from "axios";
 
 const GET = "GET";

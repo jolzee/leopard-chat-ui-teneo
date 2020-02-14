@@ -115,14 +115,14 @@
 <script>
 const logger = require("@/utils/logging").getLogger("ChatUserQuestion.vue");
 import LongPress from "vue-directive-long-press";
-// import AgentAssistTrainBotForm from "./AgentAssistTrainBotForm";
 import copy from "copy-to-clipboard";
 var stripHtml = require("striptags");
 import { mapGetters } from "vuex";
 export default {
   name: "ChatUserQuestion",
   components: {
-    AgentAssistTrainBotForm: () => import("./AgentAssistTrainBotForm")
+    AgentAssistTrainBotForm: () =>
+      import("@/components/AgentAssistTrainBotForm")
   },
   directives: {
     "long-press": LongPress

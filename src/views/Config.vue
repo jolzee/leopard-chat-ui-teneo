@@ -773,21 +773,22 @@ import copy from "copy-to-clipboard";
 import {
   STORAGE_KEY,
   SOLUTION_DEFAULT
-} from "../constants/solution-config-default.js";
+} from "@/constants/solution-config-default.js";
 import "prismjs/prism";
 import "prismjs/themes/prism-funky.css";
 import "prismjs/components/prism-json.min.js";
 import { mapGetters } from "vuex";
-// import ConfigAddEditSolution from "../components/ConfigAddEditSolution";
-// import Dialog from "../components/Dialog";
+const TIE = require("@artificialsolutions/tie-api-client");
+// import ConfigAddEditSolution from "@/components/ConfigAddEditSolution";
+// import Dialog from "@/components/Dialog";
 // import Prism from "vue-prism-component";
 
 export default {
   name: "ConfigView",
   components: {
     Prism: () => import("vue-prism-component"),
-    ConfigAddEditSolution: () => import("../components/ConfigAddEditSolution"),
-    Dialog: () => import("../components/Dialog")
+    ConfigAddEditSolution: () => import("@/components/ConfigAddEditSolution"),
+    Dialog: () => import("@/components/Dialog")
   },
   data() {
     return {
@@ -942,16 +943,14 @@ export default {
       let targetReportResult = this.audit.results.find(
         result => result.solution.id === solution.id
       );
-      const loginUrl = `${solution.url}?viewname=STANDARDJSONP&channel=webview&command=login`;
-      this.$jsonp(
-        loginUrl,
-        {
-          command: "login"
-        },
-        5000
-      )
+
+      let queryObj = {};
+      queryObj.text = "Ping"; // it's a login we don't have to say anything yet
+      queryObj.channel = "leopardAdmin";
+
+      TIE.sendInput(solution.url, null, queryObj)
         .then(json => {
-          if ("responseData" in json) {
+          if ("status" in json && json.status === 0) {
             targetReportResult.status = "success";
           } else {
             targetReportResult.status = "error";

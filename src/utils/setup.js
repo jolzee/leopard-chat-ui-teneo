@@ -10,7 +10,7 @@ import {
 import { Ripple } from "vuetify/lib/directives";
 import superagent from "superagent";
 import PromisedLocation from "promised-location";
-import { COLOR_NAMES } from "../constants/color-names.js";
+import { COLOR_NAMES } from "@/constants/color-names.js";
 import Vue from "vue";
 import "@/utils/vee-validate";
 
@@ -24,9 +24,9 @@ Vue.use(Vuetify, {
   }
 });
 
-import { ASR_CORRECTIONS } from "../constants/asr-corrections"; // fix ASR issues before they get to Teneo
-import { LiveChat } from "./live-chat";
-import { STORAGE_KEY } from "../constants/solution-config-default";
+import { ASR_CORRECTIONS } from "@/constants/asr-corrections"; // fix ASR issues before they get to Teneo
+import { LiveChat } from "@/utils/live-chat";
+import { STORAGE_KEY } from "@/constants/solution-config-default";
 
 let logrocketPlugin = null;
 let logRocket = null;
@@ -171,8 +171,7 @@ export default class Setup {
             this.SEND_CTX_PARAMS = this.activeSolution.sendContextParams
               ? this.activeSolution.sendContextParams
               : "login";
-            this.TENEO_URL =
-              this.activeSolution.url + "?viewname=STANDARDJSONP";
+            this.TENEO_URL = this.activeSolution.url;
             this.USER_ICON = this.activeSolution.userIcon;
 
             let theme = this.activeSolution.theme;

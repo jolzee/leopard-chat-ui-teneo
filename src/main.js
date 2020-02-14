@@ -7,8 +7,8 @@ smoothscroll.polyfill();
 const logger = require("@/utils/logging").getLogger("main.js");
 import { doesParameterExist } from "@/utils/utils";
 import Vue from "vue";
-import App from "./App";
-import router from "./router";
+import App from "@/App";
+import router from "@/router";
 
 if (!doesParameterExist("embed") && !doesParameterExist("button")) {
   console.groupCollapsed(
@@ -23,12 +23,12 @@ if (!doesParameterExist("embed") && !doesParameterExist("button")) {
   console.groupEnd();
 }
 
-import(/* webpackChunkName: "leopardConfig" */ "./utils/leopardConfig").then(
+import(/* webpackChunkName: "leopardConfig" */ "@/utils/leopardConfig").then(
   config => {
     window.leopardConfig = config.default;
     logger.info(`🐆 Leopard Config: `, window.leopardConfig);
 
-    import("./store")
+    import("@/store")
       .then(builder => {
         builder.default().then(({ vuetify, store }) => {
           new Vue({
