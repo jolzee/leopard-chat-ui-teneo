@@ -161,9 +161,9 @@ export function initializeASR(store, asrCorrections) {
             logger.debug(`Final Transcription: ${fixedUserInput}`);
           }
 
-          // setTimeout(function() {
-          store.commit("USER_INPUT_READY_FOR_SENDING");
-          // }, 100);
+          setTimeout(function() {
+            store.commit("USER_INPUT_READY_FOR_SENDING");
+          }, 150);
         }
       }
     });
