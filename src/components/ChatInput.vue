@@ -339,10 +339,12 @@ export default {
       }
     },
     handleFocus() {
-      if (!this.isMobileDevice) {
-        this.$refs.userInput.focus();
+      let theInputElement = document.getElementById("teneo-input-field");
+      if (theInputElement && !this.isMobileDevice) {
+        // this.$refs.userInput.focus();
+        theInputElement.focus();
         logger.debug(`Handling focus`);
-      } else {
+      } else if (theInputElement && this.isMobileDevice && document.activeElement === theInputElement) {
         document.activeElement.blur();
       }
     },
