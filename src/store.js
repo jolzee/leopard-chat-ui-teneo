@@ -282,6 +282,9 @@ function storeSetup(vuetify) {
         return state.ui.embed && !state.ui.showChatWindow;
       },
       getAnimatedIn(state, getters) {
+        if (getters.isMobileDevice) {
+          return "";
+        }
         let animation = "";
         if ("animations" in state.activeSolution && !getters.embed) {
           animation = "animated " + state.activeSolution.animations.in;
@@ -289,6 +292,9 @@ function storeSetup(vuetify) {
         return animation;
       },
       getAnimatedOut(state, getters) {
+        if (getters.isMobileDevice) {
+          return "";
+        }
         let animation = "";
         if ("animations" in state.activeSolution && !getters.embed) {
           animation = "animated " + state.activeSolution.animations.out;
@@ -1213,9 +1219,6 @@ function storeSetup(vuetify) {
       },
       CLEAR_USER_INPUT(state) {
         state.userInput.userInput = "";
-        if (state.browser.isMobile) {
-          document.activeElement.blur();
-        }
       },
       SET_FIREBASE(state, firebase) {
         state.auth.firebase = firebase;

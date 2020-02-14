@@ -30,10 +30,6 @@
         />
         <v-container class="chat-container-inner">
           <div aria-live="polite">
-            <transition-group
-              name="chat-line-transition"
-              enter-active-class="animated no-animation-today"
-            >
               <v-container
                 v-for="(item, i) in dialog"
                 :key="i + 'itemsIter' + uuid"
@@ -60,8 +56,8 @@
                   @clicked="updateInputBox"
                   @swapInputButton="swapInputButton"
                 ></ChatUserQuestion>
+
               </v-container>
-            </transition-group>
           </div>
         </v-container>
 
@@ -386,11 +382,6 @@ export default {
       // debounce(this.debounceScroll(), 2000, false);
       this.debounceScroll();
     },
-    // hideKeyboard() {
-    //   logger.debug(`Hiding virtual keyboard`);
-    //   document.activeElement.blur();
-    // },
-
     onHtmlClick(event) {
       // Find the closest anchor to the target.
       const anchor = event.target.closest("a");
@@ -434,6 +425,7 @@ export default {
 }
 
 #teneo-chat-scroll {
+  scrollbar-width: thin;
   -ms-overflow-style: -ms-autohiding-scrollbar;
   outline: 0;
 }
@@ -474,7 +466,6 @@ button.v-expansion-panel-header:focus {
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
   box-shadow: none !important;
-  /* color: transparent; */
 }
 
 div#chat-area p {
@@ -487,7 +478,6 @@ div.teneo-footer .v-input__slot {
   background: transparent !important;
   padding-right: 0px !important;
   margin-top: 8px !important;
-  /* padding-left: 5px !important; */
 }
 
 div.teneo-footer .v-text-field__details {
@@ -529,11 +519,6 @@ div.chat-container .v-expansion-panel::before {
   white-space: unset !important;
 }
 
-/* .v-toolbar__content,
-.v-toolbar__extension {
-  padding: 0 12px;
-} */
-
 @media screen and (-ms-high-contrast: active),
   screen and (-ms-high-contrast: none) {
   /* IE10+ specific styles go here */
@@ -549,7 +534,6 @@ div.chat-container .v-expansion-panel::before {
 }
 
 .chat-card {
-  /* font-size: 1.1em; */
   font-weight: 400;
   padding: 8px !important;
   margin-top: 4px;
@@ -601,7 +585,6 @@ div.options-list a.v-list__tile--link {
   min-height: calc(80vh - 130px);
   max-height: calc(80vh - 130px);
   height: calc(80vh - 130px);
-  /* height: calc(var(--vh, 1vh) * 80 - 130px); */
   overflow-y: auto;
   overflow-x: hidden;
 }
