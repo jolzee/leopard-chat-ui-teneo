@@ -546,7 +546,7 @@ export default {
     // window.addEventListener("resize", his.onResizeOrEmbed);
     window.addEventListener(
       "resize",
-      debounce(this.onResizeOrEmbed, 500, false),
+      debounce(this.onResizeOrEmbed, this.isMobileDevice ? 0 : 500, false),
       false
     );
     // deal with import of solution

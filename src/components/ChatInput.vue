@@ -135,7 +135,6 @@ var mobile = require("is-mobile");
 import UploadButton from "vuetify-upload-button";
 import LongPress from "vue-directive-long-press";
 import { mask } from "vue-the-mask";
-import { debounce } from "@/utils/utils.js";
 const superagent = require("superagent");
 
 export default {
@@ -179,6 +178,9 @@ export default {
     valid: false
   }),
   watch: {
+    dialogs: function() {
+      this.handleFocus();
+    },
     mustSend: function(mustSend) {
       if (mustSend) {
         this.valid = true;
@@ -206,12 +208,14 @@ export default {
     }
   },
   mounted() {
+    this.handClearIconClick();
+
     if (!this.isMobileDevice) {
       this.$refs.userInput.focus(); // possibly duplicated below
       const element = this.$el.querySelector("#teneo-input-field");
       if (element) {
         this.$nextTick(() => {
-          element.addEventListener("focusin", e => e.stopPropagation());
+          // element.addEventListener("focusin", e => e.stopPropagation());
           element.focus();
         });
       }
@@ -219,28 +223,12 @@ export default {
       document.activeElement.blur();
     }
   },
-  updated: debounce(function() {
-    this.handleFocus();
-    let clearElements = document.getElementsByClassName("v-icon--link");
-    clearElements.forEach(clearElement => {
-      let parentEl = clearElement.parentElement;
-      if (parentEl.classList.contains("v-input__icon--clear")) {
-        clearElement.tabIndex = 0;
-        clearElement.setAttribute("aria-label", "Clear Chat");
-        clearElement.addEventListener("keyup", function(event) {
-          event.preventDefault();
-          if (event.keyCode === 13) {
-            clearElement.click();
-          }
-        });
-      }
-    });
-  }, 300),
   computed: {
     ...mapGetters([
       "askingForPassword",
       "askingForEmail",
       "getLatestDialogHistory",
+      "dialogs",
       "dark",
       "float",
       "inputHelpText",
@@ -305,11 +293,26 @@ export default {
     }
   },
   methods: {
+    handClearIconClick() {
+      let clearElements = document.getElementsByClassName("v-icon--link");
+      clearElements.forEach(clearElement => {
+        let parentEl = clearElement.parentElement;
+        if (parentEl.classList.contains("v-input__icon--clear")) {
+          clearElement.tabIndex = 0;
+          clearElement.setAttribute("aria-label", "Clear Chat");
+          clearElement.addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+              clearElement.click();
+            }
+          });
+        }
+      });
+    },
     hideProgressBar() {
       this.$store.commit("HIDE_PROGRESS_BAR");
     },
     sendUserInput() {
-      this.handleFocus();
       if (this.valid) {
         logger.debug("Input Box is Valid");
         console.log(`What is userInput [[${this.userInput}]]`);
@@ -325,7 +328,9 @@ export default {
               this.userInput = "";
               this.$refs.userInputForm.resetValidation();
               this.$emit("reset");
-              this.handleFocus();
+              setTimeout(() => {
+                this.handleFocus();
+              }, 200);
             })
             .catch(err => {
               logger.error("Error Sending User Input", err);
@@ -334,9 +339,9 @@ export default {
       }
     },
     handleFocus() {
-      logger.debug(`Handling focus`);
       if (!this.isMobileDevice) {
         this.$refs.userInput.focus();
+        logger.debug(`Handling focus`);
       } else {
         document.activeElement.blur();
       }

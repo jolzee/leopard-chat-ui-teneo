@@ -313,7 +313,7 @@ export default {
       logger.debug(e);
       // do nothing
     }
-  }, 100),
+  }, 200),
   mounted() {
     let siteFrame = document.getElementById("site-frame");
     if (!this.embed && !this.overlayChat && siteFrame) {
@@ -327,6 +327,7 @@ export default {
   beforeDestroy() {},
   methods: {
     resetChatInputDirections() {
+      this.handleFocus = false;
       this.userInput = "";
       this.mustSend = false;
       this.sendParams = "";
