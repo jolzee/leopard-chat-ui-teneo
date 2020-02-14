@@ -63,7 +63,7 @@
     "url-parse": "^1.4.7",
     "url-regex": "^5.0.0",
     "uuid": "^3.4.0",
-    "vee-validate": "^3.2.4",
+    "vee-validate": "^3.2.5",
     "vue": "^2.6.11",
     "vue-directive-long-press": "^1.1.0",
     "vue-loader": "^15.9.0",
@@ -104,7 +104,7 @@
     "webpack-delete-plugin": "^0.1.1"
   },
   "engines": {
-    "node": "^10.16 || ^12.13"
+    "node": "^8.15 || ^10.16 || ^12.13"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
