@@ -104,6 +104,7 @@
       :handleInputFocus="handleFocus"
       :sendParams="sendParams"
       :mustSend="mustSend"
+      :drawer="drawer"
       @reset="resetChatInputDirections"
       @scroll="scrollToBottom"
     ></ChatInput>

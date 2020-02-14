@@ -144,7 +144,8 @@ export default {
     "toggleButton",
     "handleInputFocus",
     "sendParams",
-    "mustSend"
+    "mustSend",
+    "drawer"
   ],
   directives: {
     "long-press": LongPress,
@@ -315,7 +316,6 @@ export default {
     sendUserInput() {
       if (this.valid) {
         logger.debug("Input Box is Valid");
-        console.log(`What is userInput [[${this.userInput}]]`);
         this.$store.commit("HIDE_CHAT_MODAL"); // hide all modals
         this.$store.commit("SET_USER_INPUT", this.userInput);
         this.audioButtonColor = "sendButton";
@@ -325,12 +325,11 @@ export default {
           this.$store
             .dispatch("sendUserInput", this.sendParams)
             .then(() => {
+              this.hideProgressBar();
               this.userInput = "";
               this.$refs.userInputForm.resetValidation();
               this.$emit("reset");
-              setTimeout(() => {
-                this.handleFocus();
-              }, 200);
+              this.handleFocus();
             })
             .catch(err => {
               logger.error("Error Sending User Input", err);
