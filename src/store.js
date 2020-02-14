@@ -1413,6 +1413,7 @@ function storeSetup(vuetify) {
       START_AUDIO_CAPTURE(state) {
         if (state.asr.asr !== null) {
           if (state.tts.tts.isSpeaking()) {
+            logger.debug(`TTS was speaking. Stopping the existing chatter.`);
             state.tts.tts.shutUp();
           }
           state.asr.stopAudioCapture = false;

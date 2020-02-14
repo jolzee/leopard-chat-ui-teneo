@@ -103,11 +103,14 @@ export function initializeASR(store, asrCorrections) {
           }
         }, 800);
       },
-      onStart: function() {},
+      onStart: function() {
+        logger.debug("ASR capture started");
+      },
       onEnd: function() {
         store.commit("HIDE_LISTENING_OVERLAY");
 
         if (store.getters.stopAudioCapture) {
+          logger.debug("ASR capture was manually stopped");
           store.commit("CLEAR_USER_INPUT");
           store.commit("STOP_AUDIO_CAPTURE");
           // store.state.asr.stopAudioCapture = false;
@@ -139,9 +142,9 @@ export function initializeASR(store, asrCorrections) {
               fixedUserInput = fixedUserInput.replace(re, replacement[1]);
             }
 
-            logger.debug(
-              `Starting: ${startingText} | Ending: ${fixedUserInput}`
-            );
+            // logger.debug(
+            //   `Starting: ${startingText} | Ending: ${fixedUserInput}`
+            // );
 
             if (startingText.toLowerCase() !== fixedUserInput.toLowerCase()) {
               logger.debug(
@@ -161,9 +164,10 @@ export function initializeASR(store, asrCorrections) {
             logger.debug(`Final Transcription: ${fixedUserInput}`);
           }
 
+
           setTimeout(function() {
             store.commit("USER_INPUT_READY_FOR_SENDING");
-          }, 150);
+          }, 500);
         }
       }
     });

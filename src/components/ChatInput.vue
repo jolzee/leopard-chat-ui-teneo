@@ -179,6 +179,16 @@ export default {
     valid: false
   }),
   watch: {
+    storeUserInput: function(storeInput) {
+      if (this.userInput !== storeInput) {
+        this.userInput = storeInput;
+      }
+    },
+    drawer: function(newDrawer) {
+        if (!newDrawer) {
+          this.handleFocus();
+        }
+    },
     dialogs: function() {
       this.handleFocus();
     },
@@ -210,17 +220,18 @@ export default {
   },
   mounted() {
     this.handClearIconClick();
+    const element = this.$el.querySelector("#teneo-input-field");
 
     if (!this.isMobileDevice) {
-      this.$refs.userInput.focus(); // possibly duplicated below
-      const element = this.$el.querySelector("#teneo-input-field");
       if (element) {
         this.$nextTick(() => {
-          // element.addEventListener("focusin", e => e.stopPropagation());
+          // this.$refs.userInput.focus(); // possibly duplicated below
+          element.addEventListener("focusin", e => e.stopPropagation()); // to stop flickering
           element.focus();
         });
       }
     } else {
+      element.addEventListener("focusin", e => e.stopPropagation()); // to stop flickering
       document.activeElement.blur();
     }
   },
@@ -232,6 +243,7 @@ export default {
       "dialogs",
       "dark",
       "float",
+      {userInput: 'storeUserInput'},
       "inputHelpText",
       "isMobileDevice",
       "itemInputMask",
@@ -363,6 +375,7 @@ export default {
         this.audioButtonColor = "error";
         this.$store.commit("SHOW_LISTING_OVERLAY");
         this.$store.dispatch("captureAudio");
+        logger.debug("Triggering ASR capture");
       }
     },
     swapInputButton() {
