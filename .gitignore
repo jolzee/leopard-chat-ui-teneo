@@ -26,3 +26,5 @@ public/static/default.json
 secrets.tar
 deploy_rsa
 deploy_rsa.pub
+
+backup
