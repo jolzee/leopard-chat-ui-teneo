@@ -539,15 +539,19 @@ export default {
     this.$store.dispatch("setupLiveChatAgentAssist"); // only enabled in certain scenario
   },
   mounted() {
-    logger.debug("Is embed in production? ", this.embed);
+    logger.info("In production: ", this.embed);
     if (this.embed) {
       this.isChatOpenLocalStorage();
     }
-    window.addEventListener(
-      "resize",
-      debounce(this.onResizeOrEmbed, this.isMobileDevice ? 0 : 500, false),
-      false
-    );
+    this.$nextTick(function() {
+      if (this.isMobileDevice) {
+        window.addEventListener(
+        "resize", this.onResizeOrEmbed, false);
+      } else {
+        window.addEventListener(
+        "resize", debounce(this.onResizeOrEmbed, 200, false), false);
+      }
+    });
 
     // Looks for deeplink ?question=Hello there
     const urlParams = new URLSearchParams(window.location.search);
