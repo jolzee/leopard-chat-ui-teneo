@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import "regenerator-runtime/runtime";
 const logger = require("@/utils/logging").getLogger("store.js");
-const TIE = require("@artificialsolutions/tie-api-client");
+const TIE = require("leopard-tie-client");
 import {
   doesParameterExist,
   getParameterByName,

@@ -778,7 +778,7 @@ import "prismjs/prism";
 import "prismjs/themes/prism-funky.css";
 import "prismjs/components/prism-json.min.js";
 import { mapGetters } from "vuex";
-const TIE = require("@artificialsolutions/tie-api-client");
+const TIE = require("leopard-tie-client");
 // import ConfigAddEditSolution from "@/components/ConfigAddEditSolution";
 // import Dialog from "@/components/Dialog";
 // import Prism from "vue-prism-component";

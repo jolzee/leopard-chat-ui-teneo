@@ -132,8 +132,7 @@ let buildConfig = {
     "vue-plyr",
     "replace-string",
     "url-regex",
-    "vue-long-press-directive",
-    "@artificialsolutions/tie-api-client"
+    "vue-long-press-directive"
   ]
 };
 
