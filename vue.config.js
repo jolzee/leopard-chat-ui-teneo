@@ -3,6 +3,7 @@ const fs = require("fs");
 const CompressionPlugin = require("compression-webpack-plugin");
 var BrotliPlugin = require("brotli-webpack-plugin");
 var WebpackDeletePlugin = require("webpack-delete-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 // const prod = process.env.NODE_ENV === "production";
 const dev = process.env.NODE_ENV === "development";
@@ -135,6 +136,24 @@ let buildConfig = {
     "vue-long-press-directive"
   ]
 };
+
+if (!dev) {
+  console.log(`Using TerserPlugin`);
+  buildConfig.configureWebpack.plugins.push(
+    new TerserPlugin({
+      cache: true,
+      parallel: true,
+      sourceMap: produceSourceMaps, // Must be set to true if using source-maps in production
+      terserOptions: {
+        mangle: true,
+        compress: {
+          drop_console: true,
+          drop_debugger: true
+        }
+      }
+    })
+  );
+}
 
 if (useInternalSolutionConfig && !dev) {
   buildConfig.configureWebpack.plugins.push(
