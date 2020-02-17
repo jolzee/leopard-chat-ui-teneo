@@ -20,7 +20,8 @@
     "build:development": "vue-cli-service build --mode development",
     "build:modern": "vue-cli-service build --modern",
     "lint": "vue-cli-service lint --fix",
-    "serve": "vue-cli-service serve --mode development --open"
+    "serve": "vue-cli-service serve --mode development --open",
+    "release": "release-it"
   },
   "lint-staged": {
     "*.{js,vue}": [
@@ -96,6 +97,7 @@
     "eslint-plugin-vue": "^6.1.2",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
+    "release-it": "^12.4.3",
     "sass": "^1.25.0",
     "sass-loader": "^8.0.2",
     "vue-cli-plugin-vuetify": "^2.0.5",
