@@ -559,7 +559,13 @@ function storeSetup(vuetify) {
             try {
               for (var key in ordered) {
                 if (key.startsWith("extensions")) {
-                  var value = decodeURIComponent(ordered[key]);
+                  let value = ordered[key];
+                  try {
+                    value = decodeURIComponent(ordered[key]);
+                  } catch (e) {
+                    value = ordered[key];
+                  }
+
                   logger.debug(`Item Extensions > Key: ${key} Value: ${value}`);
                   try {
                     actions.push(JSON.parse(value));
@@ -2172,9 +2178,14 @@ function storeSetup(vuetify) {
                     )
                   );
                 } catch (e) {
-                  feedbackConfig = decodeURIComponent(
-                    json.responseData.extraData.offerFeedbackForm
-                  );
+                  try {
+                    feedbackConfig = decodeURIComponent(
+                      json.responseData.extraData.offerFeedbackForm
+                    );
+                  } catch (e) {
+                    feedbackConfig =
+                      json.responseData.extraData.offerFeedbackForm;
+                  }
                 }
                 context.commit("ADD_FEEDBACK_FORM", feedbackConfig);
               } else {
