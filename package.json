@@ -49,7 +49,7 @@
     "is-html": "^2.0.0",
     "is-mobile": "^2.2.0",
     "jsonpack": "^1.1.5",
-    "leopard-tie-client": "^2.0.1",
+    "leopard-tie-client": "^2.0.2",
     "logrocket": "^1.0.6",
     "logrocket-vuex": "0.0.3",
     "markdown-it": "^10.0.0",
