@@ -531,9 +531,13 @@ function storeSetup(vuetify) {
           item.teneoResponse &&
           name in item.teneoResponse.extraData
         ) {
-          response = JSON.parse(
-            decodeURIComponent(item.teneoResponse.extraData[name])
-          );
+          try {
+            response = JSON.parse(
+              decodeURIComponent(item.teneoResponse.extraData[name])
+            );
+          } catch (e) {
+            response = decodeURIComponent(item.teneoResponse.extraData[name]);
+          }
         }
         return response;
       },
@@ -557,7 +561,13 @@ function storeSetup(vuetify) {
                 if (key.startsWith("extensions")) {
                   var value = decodeURIComponent(ordered[key]);
                   logger.debug(`Item Extensions > Key: ${key} Value: ${value}`);
-                  actions.push(JSON.parse(value));
+                  try {
+                    actions.push(JSON.parse(value));
+                  } catch (e) {
+                    if (ordered[key]) {
+                      actions.push(value);
+                    }
+                  }
                 }
               }
             } catch (e) {
@@ -2154,11 +2164,18 @@ function storeSetup(vuetify) {
               context.commit("HIDE_CHAT_LOADING");
 
               if (json.responseData.extraData.offerFeedbackForm) {
-                const feedbackConfig = JSON.parse(
-                  decodeURIComponent(
+                let feedbackConfig = {};
+                try {
+                  feedbackConfig = JSON.parse(
+                    decodeURIComponent(
+                      json.responseData.extraData.offerFeedbackForm
+                    )
+                  );
+                } catch (e) {
+                  feedbackConfig = decodeURIComponent(
                     json.responseData.extraData.offerFeedbackForm
-                  )
-                );
+                  );
+                }
                 context.commit("ADD_FEEDBACK_FORM", feedbackConfig);
               } else {
                 context.commit("CLEAR_FEEDBACK_FORM");
