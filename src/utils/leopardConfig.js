@@ -23,6 +23,10 @@ export default {
     buildConfig: getEnvValue("VUE_APP_SOLUTION_CONFIG", {})
   },
   hideConfigMenu: getEnvValue("VUE_APP_HIDE_CONFIG_MENU", true),
+  hideArtificalSolutionsBranding: getEnvValue(
+    "VUE_APP_HIDE_AS_BRANDING",
+    false
+  ),
   loadFreshConfigForNewSessions: getEnvValue(
     "VUE_APP_LOAD_FRESH_CONFIG_FOR_NEW_SESSIONS",
     false

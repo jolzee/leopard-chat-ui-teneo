@@ -220,7 +220,13 @@
               </v-list-item>
             </v-list>
             <template v-slot:append>
-              <v-row align="center" justify="center" class="primary darken-2" style="height:67px">
+              <v-row
+                v-if="keepBranding()"
+                align="center"
+                justify="center"
+                class="primary darken-2"
+                style="height:67px"
+              >
                 <div class="pa-2">
                   <a
                     href="https://www.artificial-solutions.com/"
@@ -493,7 +499,8 @@ export default {
           icon: "mdi-information-variant",
           titleKey: "menu.about",
           ariaLabel: "About Chat Bot",
-          route: "about"
+          route: "about",
+          when: this.keepBranding()
         },
         {
           icon: "mdi-account-plus",
@@ -545,11 +552,13 @@ export default {
     }
     this.$nextTick(function() {
       if (this.isMobileDevice) {
-        window.addEventListener(
-        "resize", this.onResizeOrEmbed, false);
+        window.addEventListener("resize", this.onResizeOrEmbed, false);
       } else {
         window.addEventListener(
-        "resize", debounce(this.onResizeOrEmbed, 200, false), false);
+          "resize",
+          debounce(this.onResizeOrEmbed, 200, false),
+          false
+        );
       }
     });
 
@@ -618,6 +627,7 @@ export default {
       "isChatOpen",
       "socialAuthEnabled"
     ]),
+
     hasDifferentHistory() {
       if (this.getLatestDialogHistory.length !== this.dialogs.length) {
         logger.debug(`Should show 'History' menu option`);
@@ -647,6 +657,8 @@ export default {
             menuItem.when === "authenticated"
           ) {
             return true;
+          } else if ("when" in menuItem && typeof menuItem.when === "boolean") {
+            return menuItem.when;
           } else if (
             "when" in menuItem &&
             typeof menuItem.when === "function"
@@ -662,7 +674,11 @@ export default {
         });
       } else {
         // anonymous
+
         return this.menuItems.filter(menuItem => {
+          if ("when" in menuItem) {
+            console.log(`${menuItem.ariaLabel}`, typeof menuItem.when);
+          }
           if (menuItem.route === this.$route.name) {
             return false;
           }
@@ -673,6 +689,8 @@ export default {
             menuItem.when === "notAuthenticated"
           ) {
             return true;
+          } else if ("when" in menuItem && typeof menuItem.when === "boolean") {
+            return menuItem.when;
           } else if (
             "when" in menuItem &&
             typeof menuItem.when === "function"
@@ -727,6 +745,9 @@ export default {
     }
   },
   methods: {
+    keepBranding() {
+      return !window.leopardConfig.hideArtificalSolutionsBranding;
+    },
     isLightColor(themeColorName) {
       if (!this.$vuetify.theme.dark) {
         let hexColor = this.theme[themeColorName];
