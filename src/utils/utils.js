@@ -729,6 +729,7 @@ export const convertTeneoJsonNewToOld = newJson => {
   finalJson.responseData.status = newJson.status;
   finalJson.responseData.lastinput = newJson.input.text;
   finalJson.responseData.answer = newJson.output.text;
+  finalJson.responseData.emotion = newJson.output.emotion;
   finalJson.responseData.extraData = newJson.output.parameters;
   finalJson.responseData.link.href = newJson.output.link;
 
