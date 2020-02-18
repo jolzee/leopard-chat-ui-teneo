@@ -1,10 +1,8 @@
 {
-  "include": ["./src/**/*"],
-  "allowJs": true,
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "components/*": ["src/components/*"]
-    }
-  }
+	"compilerOptions": {
+		"baseUrl": ".",
+		"target": "es6"
+	},
+	"include": [],
+	"exclude": ["node_modules"]
 }

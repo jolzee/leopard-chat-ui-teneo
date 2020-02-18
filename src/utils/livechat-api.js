@@ -1,32 +1,31 @@
-const logger = require("@/utils/logging").getLogger("livechat-api.js");
 import config from "@/utils/livechat-config";
-import axios from "axios";
 
-const GET = "GET";
-const { server_url } = config;
+const superagent = require("superagent");
+const logger = require("@/utils/logging").getLogger("livechat-api.js");
 
-const createApiRequest = (method, route, accessToken, login) => {
-  return axios({
-    method,
-    url: server_url + route,
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      DateInterval: 1,
-      "X-API-Version": "2",
-      Agent: login
-    }
-  }).catch(function(error) {
-    logger.error(error);
-  });
+const { serverUrl } = config;
+
+const createApiRequest = (route, accessToken, login) => {
+	return superagent
+		.get(serverUrl + route)
+		.accept("json")
+		.set({
+			Authorization: `Bearer ${accessToken}`,
+			DateInterval: 1,
+			"X-API-Version": "2",
+			Agent: login
+		})
+		.then(res => {
+			return res.body;
+		});
 };
 
 const api = {
-  fetchAgents: accessToken => createApiRequest(GET, "/agents", accessToken),
-  fetchAgentRatings: (login, accessToken) =>
-    createApiRequest(GET, "/ratings/week", accessToken, login),
-  fetchAgentAvailability: (login, accessToken) =>
-    createApiRequest(GET, "/availability", accessToken, login),
-  fetchChattingTime: (login, accessToken) => createApiRequest(GET, "/chatting", accessToken, login)
+	fetchAgents: accessToken => createApiRequest("/agents", accessToken),
+	fetchAgentRatings: (login, accessToken) => createApiRequest("/ratings/week", accessToken, login),
+	fetchAgentAvailability: (login, accessToken) =>
+		createApiRequest("/availability", accessToken, login),
+	fetchChattingTime: (login, accessToken) => createApiRequest("/chatting", accessToken, login)
 };
 
 export default api;

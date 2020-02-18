@@ -1,12 +1,12 @@
 {
-  "git": {
-    "tagName": "v${version}",
-    "requireCleanWorkingDir": false
-  },
-  "github": {
-    "release": true
-  },
-  "npm": {
-    "publish": false
-  }
+	"git": {
+		"tagName": "v${version}",
+		"requireCleanWorkingDir": false
+	},
+	"github": {
+		"release": true
+	},
+	"npm": {
+		"publish": false
+	}
 }

@@ -1,0 +1,30 @@
+{
+	"root": true,
+	"env": {
+		"browser": true
+	},
+	"globals": {
+		"expect": true
+	},
+	"extends": ["airbnb-base", "plugin:vue/recommended", "prettier", "prettier/vue"],
+	"plugins": ["prettier", "vue"],
+	"parserOptions": {
+		"parser": "babel-eslint",
+		"sourceType": "module"
+	},
+	"rules": {
+		"import/no-unresolved": "off",
+		"no-cond-assign": "off",
+		"no-param-reassign": "off",
+		"no-eval": "off",
+		"no-nested-ternary": "off",
+		"no-unused-vars": [
+			"error",
+			{
+				"varsIgnorePattern": "logger"
+			}
+		],
+		"prefer-destructuring": "off",
+		"vue/no-v-html": "off"
+	}
+}
