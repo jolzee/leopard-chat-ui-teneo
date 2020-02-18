@@ -168,10 +168,7 @@ if (window.TENEOCTX) {
   leopardChatTemplate = leopardChatTemplate.replace(teneoCtxParamsRegex, "");
 }
 var leopardViewHeight = window.innerHeight * 0.01;
-document.documentElement.style.setProperty(
-  "--leopardvh",
-  leopardViewHeight + "px"
-);
+document.documentElement.style.setProperty("--leopardvh", leopardViewHeight + "px");
 document.body.insertAdjacentHTML("afterbegin", leopardChatTemplate);
 
 var leopardAnimations = {
@@ -214,17 +211,13 @@ function receiveLeopardMessage(event) {
   /* if (event.origin !== "http://example.org:8080") return; */
   try {
     if (event.data === "showLeopard" && !shouldShowLeopard) {
-      var leopardButtonElement = document.getElementsByClassName(
-        "teneo-chat-button-widget"
-      );
+      var leopardButtonElement = document.getElementsByClassName("teneo-chat-button-widget");
       if (leopardButtonElement.length > 0) {
         leopardButtonElement[0].style.display = "none";
         leopardButtonElement[0].className = "";
       }
       // console.log("👁 Leopard");
-      var leopardContainer = document.getElementById(
-        "teneo-chat-widget-container"
-      );
+      var leopardContainer = document.getElementById("teneo-chat-widget-container");
 
       leopardContainer.className = "teneo-chat-widget";
       leopardContainer.style.display = "block";
@@ -246,9 +239,7 @@ function receiveLeopardMessage(event) {
         }, 800);
       });
     } else if (event.data === "hideLeopard" && !isLeopardAnimating) {
-      var leopardContainer = document.getElementById(
-        "teneo-chat-widget-container"
-      );
+      var leopardContainer = document.getElementById("teneo-chat-widget-container");
       if (leopardContainer.className !== "teneo-chat-button-widget") {
         leopardContainer.className = "teneo-chat-button-widget";
         leopardContainer.style.display = "block";
@@ -300,10 +291,7 @@ function updateLeopardVariables() {
   var leopardViewHeight = window.innerHeight;
   var leoaprdViewWidth = window.innerWidth;
 
-  document.documentElement.style.setProperty(
-    "--leopardvh",
-    leopardViewHeight * 0.01 + "px"
-  );
+  document.documentElement.style.setProperty("--leopardvh", leopardViewHeight * 0.01 + "px");
 
   var teneoFrameWindow = window.frames.teneochatwidget;
   if (teneoFrameWindow) {
@@ -316,8 +304,4 @@ function updateLeopardVariables() {
 }
 
 window.addEventListener("message", receiveLeopardMessage, false);
-window.addEventListener(
-  "resize",
-  leopardDebounce(updateLeopardVariables, 200, false),
-  false
-);
+window.addEventListener("resize", leopardDebounce(updateLeopardVariables, 200, false), false);

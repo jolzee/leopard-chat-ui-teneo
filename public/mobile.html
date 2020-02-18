@@ -121,7 +121,9 @@
     function setup() {
       document.body.style.zoom = "82%";
       var deepLink = getUrlParam("dl", "");
-      document.getElementById("frame").setAttribute("src", "./" + (deepLink ? "?dl=" + deepLink : "") + "&mobile=true");
+      document
+        .getElementById("frame")
+        .setAttribute("src", "./" + (deepLink ? "?dl=" + deepLink : "") + "&mobile=true");
     }
   </script>
 </html>

@@ -10,14 +10,12 @@ const enableDrag = function() {
         closestDialog &&
         (e.target.classList.contains("v-system-bar") ||
           e.target.classList.contains("teneo-systembar-spacer")) &&
-          !e.target.classList.contains("leopard-system-bar")) ||
+        !e.target.classList.contains("leopard-system-bar")) ||
       e.target.classList.contains("v-toolbar__content")
     ) {
       // element which can be used to move element
       d.el = closestDialog; // element which should be moved
-      d.what = e.target.classList.contains("v-toolbar__content")
-        ? "chat-window"
-        : "dialog";
+      d.what = e.target.classList.contains("v-toolbar__content") ? "chat-window" : "dialog";
       d.mouseStartX = e.clientX;
       d.mouseStartY = e.clientY;
       d.elStartX = d.el.getBoundingClientRect().left;

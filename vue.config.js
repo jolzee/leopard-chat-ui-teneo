@@ -18,8 +18,7 @@ if (process.env.VUE_APP_SOURCE_MAP === "true" || dev) {
 
 console.log(`produceSourceMaps: ${produceSourceMaps}`);
 
-const enableJavaScriptCompression = process.env
-  .VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
+const enableJavaScriptCompression = process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
   ? process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
   : false;
 
@@ -157,10 +156,7 @@ if (!dev) {
 
 if (useInternalSolutionConfig && !dev) {
   buildConfig.configureWebpack.plugins.push(
-    new WebpackDeletePlugin([
-      "./dist/static/default.json",
-      "./dist/static/embed-leopard.js.gz"
-    ])
+    new WebpackDeletePlugin(["./dist/static/default.json", "./dist/static/embed-leopard.js.gz"])
   );
 }
 

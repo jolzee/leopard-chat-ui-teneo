@@ -74,5 +74,4 @@ okkay | ok
   useInProduction: false
 };
 
-export const STORAGE_KEY =
-  window.location.hostname + window.location.pathname + ":";
+export const STORAGE_KEY = window.location.hostname + window.location.pathname + ":";

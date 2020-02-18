@@ -26,8 +26,7 @@ const api = {
     createApiRequest(GET, "/ratings/week", accessToken, login),
   fetchAgentAvailability: (login, accessToken) =>
     createApiRequest(GET, "/availability", accessToken, login),
-  fetchChattingTime: (login, accessToken) =>
-    createApiRequest(GET, "/chatting", accessToken, login)
+  fetchChattingTime: (login, accessToken) => createApiRequest(GET, "/chatting", accessToken, login)
 };
 
 export default api;

@@ -23,24 +23,22 @@ if (!doesParameterExist("embed") && !doesParameterExist("button")) {
   console.groupEnd();
 }
 
-import(/* webpackChunkName: "leopardConfig" */ "@/utils/leopardConfig").then(
-  config => {
-    window.leopardConfig = config.default;
-    logger.info(`🐆 Leopard Config: `, window.leopardConfig);
+import(/* webpackChunkName: "leopardConfig" */ "@/utils/leopardConfig").then(config => {
+  window.leopardConfig = config.default;
+  logger.info(`🐆 Leopard Config: `, window.leopardConfig);
 
-    import("@/store")
-      .then(builder => {
-        builder.default().then(({ vuetify, store }) => {
-          new Vue({
-            router,
-            store,
-            vuetify,
-            render: h => h(App)
-          }).$mount("#app");
-        });
-      })
-      .catch(error => {
-        logger.error("Leopard Setup Error", error);
+  import("@/store")
+    .then(builder => {
+      builder.default().then(({ vuetify, store }) => {
+        new Vue({
+          router,
+          store,
+          vuetify,
+          render: h => h(App)
+        }).$mount("#app");
       });
-  }
-);
+    })
+    .catch(error => {
+      logger.error("Leopard Setup Error", error);
+    });
+});

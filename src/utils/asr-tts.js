@@ -120,9 +120,7 @@ export function initializeASR(store, asrCorrections) {
 
         if (store.getters.userInput) {
           let fixedUserInput = store.getters.userInput;
-          logger.debug(
-            "Final Transcription from ASR: " + store.state.userInput.userInput
-          );
+          logger.debug("Final Transcription from ASR: " + store.state.userInput.userInput);
           asrCorrections.forEach(replacement => {
             let startingText = fixedUserInput;
 
@@ -133,10 +131,7 @@ export function initializeASR(store, asrCorrections) {
                 replacement[1].toLowerCase()
               );
             } else {
-              let search = replacement[0].replace(
-                /[-[\]{}()*+?.,\\^$|#\s]/g,
-                "\\$&"
-              ); // escase any special characters
+              let search = replacement[0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"); // escase any special characters
               var re = new RegExp("\\b" + search + "\\b", "gi");
               // fixedUserInput = fixedUserInput.toLowerCase().replace(re, replacement[1].toLowerCase());
               fixedUserInput = fixedUserInput.replace(re, replacement[1]);
@@ -148,22 +143,15 @@ export function initializeASR(store, asrCorrections) {
 
             if (startingText.toLowerCase() !== fixedUserInput.toLowerCase()) {
               logger.debug(
-                "Made a change to ASR response: " +
-                  replacement[0] +
-                  " >> " +
-                  replacement[1]
+                "Made a change to ASR response: " + replacement[0] + " >> " + replacement[1]
               );
             }
           });
 
-          if (
-            store.getters.userInput.toLowerCase() !==
-            fixedUserInput.toLowerCase()
-          ) {
+          if (store.getters.userInput.toLowerCase() !== fixedUserInput.toLowerCase()) {
             store.commit("SET_USER_INPUT", fixedUserInput);
             logger.debug(`Final Transcription: ${fixedUserInput}`);
           }
-
 
           setTimeout(function() {
             store.commit("USER_INPUT_READY_FOR_SENDING");

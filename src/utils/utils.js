@@ -2,8 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 const replaceString = require("replace-string");
-const solutionDefault = require("@/constants/solution-config-default")
-  .SOLUTION_DEFAULT;
+const solutionDefault = require("@/constants/solution-config-default").SOLUTION_DEFAULT;
 const jsonpack = require("jsonpack/main");
 
 export const fixSolution = solution => {
@@ -85,9 +84,7 @@ export const lightOrDark = color => {
   // Check the format of the color, HEX or RGB?
   if (color.match(/^rgb/)) {
     // If HEX --> store the red, green, blue values in separate variables
-    color = color.match(
-      /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/
-    );
+    color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
 
     r = color[1];
     g = color[2];
@@ -482,9 +479,9 @@ export const stripHtmlTags = str => {
 };
 
 export const createSharableLink = solution => {
-  return `${location.protocol}//${location.host}${
-    location.pathname
-  }?import=${encodeURIComponent(jsonpack.pack(solution))}`;
+  return `${location.protocol}//${location.host}${location.pathname}?import=${encodeURIComponent(
+    jsonpack.pack(solution)
+  )}`;
 };
 
 /**
@@ -869,11 +866,7 @@ export const getParameterByName = (name, url) => {
 
 export const getUrlVarsAsObj = () => {
   let vars = {};
-  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
-    m,
-    key,
-    value
-  ) {
+  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
     vars[key] = value;
   });
   return vars;
@@ -886,11 +879,7 @@ export const getUrlParam = (parameter, defaultvalue) => {
     if (urlparameter) {
       urlparameter = urlparameter.split("#")[0];
       urlparameter =
-        urlparameter === "true"
-          ? true
-          : urlparameter === "false"
-          ? false
-          : urlparameter;
+        urlparameter === "true" ? true : urlparameter === "false" ? false : urlparameter;
     } else {
       urlparameter = defaultvalue;
     }

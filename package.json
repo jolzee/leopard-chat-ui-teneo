@@ -19,6 +19,7 @@
     "build": "vue-cli-service build --mode production",
     "build:development": "vue-cli-service build --mode development",
     "build:modern": "vue-cli-service build --modern",
+    "prettier": "prettier --write **/*.{ts,js,css,html}",
     "lint": "vue-cli-service lint --fix",
     "serve": "vue-cli-service serve --mode development --open",
     "release": "release-it"

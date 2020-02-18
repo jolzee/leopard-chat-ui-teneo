@@ -33,10 +33,7 @@ let logRocket = null;
 let sentry = null;
 
 // start LogRocket Setup
-if (
-  window.leopardConfig.isProduction &&
-  window.leopardConfig.logging.logRocket
-) {
+if (window.leopardConfig.isProduction && window.leopardConfig.logging.logRocket) {
   import("logrocket")
     .then(({ default: LogRocket }) => {
       logRocket = LogRocket;
@@ -54,10 +51,7 @@ if (
 // End LogRocket Setup
 
 // start sentry
-if (
-  window.window.leopardConfig.isProduction &&
-  window.window.leopardConfig.logging.sentryDsn
-) {
+if (window.window.leopardConfig.isProduction && window.window.leopardConfig.logging.sentryDsn) {
   Promise.all([import("@sentry/browser"), import("@sentry/integrations")]).then(
     ([Sentry, Integrations]) => {
       Sentry.init({
@@ -125,9 +119,7 @@ export default class Setup {
             logger.debug(`Active Solution: ${this.chatConfig.activeSolution}`);
             let deepLink = getParameterByName("dl"); // look for deep link
             if (!deepLink) {
-              logger.debug(
-                `No deep link found in the current url - load default solution`
-              );
+              logger.debug(`No deep link found in the current url - load default solution`);
               this.activeSolution = this.chatConfig.activeSolution;
               const matchingSolutions = this.chatConfig.solutions.filter(
                 solution => solution.id === this.activeSolution
@@ -157,9 +149,7 @@ export default class Setup {
                 }
               }
             }
-            this.ASR_CORRECTIONS_MERGED = this.getMergedAsrCorrections(
-              ASR_CORRECTIONS
-            );
+            this.ASR_CORRECTIONS_MERGED = this.getMergedAsrCorrections(ASR_CORRECTIONS);
             logger.debug("Merged ASR Corrections");
             this.CHAT_TITLE = this.activeSolution.chatTitle;
             this.IFRAME_URL = this.activeSolution.iframeUrl;
@@ -177,19 +167,15 @@ export default class Setup {
             let theme = this.activeSolution.theme;
             // convert color names to their #hex equivalent
             for (const key in theme) {
-              if (theme[key].charAt(0) !== "#")
-                theme[key] = COLOR_NAMES[theme[key]];
+              if (theme[key].charAt(0) !== "#") theme[key] = COLOR_NAMES[theme[key]];
             }
             this.THEME = theme;
 
             this.ENABLE_LIVE_CHAT =
-              this.activeSolution.enableLiveChat &&
-              !doesParameterExist("plugin_id");
+              this.activeSolution.enableLiveChat && !doesParameterExist("plugin_id");
             this.UNIQUE_KEY =
               this.activeSolution.deepLink +
-              (window.location.href.indexOf("mobile=true") > -1
-                ? "_mobile"
-                : "");
+              (window.location.href.indexOf("mobile=true") > -1 ? "_mobile" : "");
             document.title = this.activeSolution.name;
 
             let self = this;
@@ -256,10 +242,7 @@ export default class Setup {
             if (logRocket && sentry) {
               logRocket.getSessionURL(sessionURL => {
                 sentry.configureScope(scope => {
-                  scope.setExtra(
-                    "teneoSolutionURL",
-                    createSharableLink(this.activeSolution)
-                  );
+                  scope.setExtra("teneoSolutionURL", createSharableLink(this.activeSolution));
                   scope.setExtra("sessionURL", sessionURL);
                 });
               });
@@ -283,18 +266,11 @@ export default class Setup {
         logger.debug("Using internal build config");
       } else {
         logger.debug("Looking for Solution Config in localStorage first");
-        this.chatConfig = JSON.parse(
-          localStorage.getItem(STORAGE_KEY + "config")
-        );
+        this.chatConfig = JSON.parse(localStorage.getItem(STORAGE_KEY + "config"));
       }
 
-      if (
-        !this.chatConfig ||
-        (this.chatConfig && this.chatConfig.solutions.length === 0)
-      ) {
-        logger.debug(
-          "No Solution Config found in localStorage. Continue looking.."
-        );
+      if (!this.chatConfig || (this.chatConfig && this.chatConfig.solutions.length === 0)) {
+        logger.debug("No Solution Config found in localStorage. Continue looking..");
         this._loadDefaultConfig()
           .then(defaultConfig => {
             this.chatConfig = defaultConfig;
@@ -325,21 +301,13 @@ export default class Setup {
           .get(defaultConfigUrl)
           .accept("application/json")
           .then(res => {
-            logger.debug(
-              "Found and loaded Solution Config from /static/default.json"
-            );
+            logger.debug("Found and loaded Solution Config from /static/default.json");
             let defaultConfig = res.body;
-            localStorage.setItem(
-              STORAGE_KEY + "config",
-              JSON.stringify(defaultConfig)
-            );
+            localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(defaultConfig));
             resolve(defaultConfig);
           })
           .catch(function(error) {
-            reject(
-              "Could not load default.json from /static/default.json: " +
-                error.message
-            );
+            reject("Could not load default.json from /static/default.json: " + error.message);
           });
       }
     });
@@ -369,20 +337,14 @@ export default class Setup {
           }
         }
       });
-      finalCorrections = leopardDefaultCorrections.concat(
-        solutionResplacements
-      );
+      finalCorrections = leopardDefaultCorrections.concat(solutionResplacements);
     }
     return finalCorrections;
   }
 
   getUrlVars() {
     var vars = {};
-    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
-      m,
-      key,
-      value
-    ) {
+    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
       vars[key] = value;
     });
     return vars;
@@ -395,11 +357,7 @@ export default class Setup {
       if (urlparameter) {
         urlparameter = urlparameter.split("#")[0];
         urlparameter =
-          urlparameter === "true"
-            ? true
-            : urlparameter === "false"
-            ? false
-            : urlparameter;
+          urlparameter === "true" ? true : urlparameter === "false" ? false : urlparameter;
       } else {
         urlparameter = defaultvalue;
       }
