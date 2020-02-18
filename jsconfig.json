@@ -1,8 +1,8 @@
 {
-	"compilerOptions": {
-		"baseUrl": ".",
-		"target": "es6"
-	},
-	"include": [],
-	"exclude": ["node_modules"]
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es6"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

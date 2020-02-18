@@ -1,42 +1,42 @@
 <template>
-	<v-row
-		no-gutters
-		align="start"
-		justify="start"
-		class="px-3 mx-0 fill-height leopard-alternative-views"
-	>
-		<v-col cols="12" class="mt-2">
-			<p class="subheading font-weight-medium">
-				Choose one of the following sign up methods.
-			</p>
-		</v-col>
-		<v-col cols="12">
-			<v-btn
-				color="#375A9A"
-				aria-label="Facebook opens in a new window"
-				class="white--text teneo-social-btn px-1 mr-1 mb-1"
-				@click="loginSocial('facebook')"
-			>
-				<v-icon left light class="ml-1">mdi-facebook-box</v-icon>Facebook
-			</v-btn>
-			<v-btn
-				color="#EE4036"
-				aria-label="Google opens in a new window"
-				class="white--text teneo-social-btn px-1 mr-1 mb-1"
-				@click="loginSocial('google')"
-			>
-				<v-icon left light class="ml-1">mdi-google-plus</v-icon>Google+
-			</v-btn>
-			<v-btn
-				color="#464646"
-				aria-label="Github opens in a new window"
-				class="white--text teneo-social-btn px-1 mr-0 mb-1"
-				@click="loginSocial('facebook')"
-			>
-				<v-icon left light class="ml-1">mdi-github-circle</v-icon>GitHub
-			</v-btn>
-		</v-col>
-		<!-- <v-col cols="12" class="mt-2">
+  <v-row
+    no-gutters
+    align="start"
+    justify="start"
+    class="px-3 mx-0 fill-height leopard-alternative-views"
+  >
+    <v-col cols="12" class="mt-2">
+      <p class="subheading font-weight-medium">
+        Choose one of the following sign up methods.
+      </p>
+    </v-col>
+    <v-col cols="12">
+      <v-btn
+        color="#375A9A"
+        aria-label="Facebook opens in a new window"
+        class="white--text teneo-social-btn px-1 mr-1 mb-1"
+        @click="loginSocial('facebook')"
+      >
+        <v-icon left light class="ml-1">mdi-facebook-box</v-icon>Facebook
+      </v-btn>
+      <v-btn
+        color="#EE4036"
+        aria-label="Google opens in a new window"
+        class="white--text teneo-social-btn px-1 mr-1 mb-1"
+        @click="loginSocial('google')"
+      >
+        <v-icon left light class="ml-1">mdi-google-plus</v-icon>Google+
+      </v-btn>
+      <v-btn
+        color="#464646"
+        aria-label="Github opens in a new window"
+        class="white--text teneo-social-btn px-1 mr-0 mb-1"
+        @click="loginSocial('facebook')"
+      >
+        <v-icon left light class="ml-1">mdi-github-circle</v-icon>GitHub
+      </v-btn>
+    </v-col>
+    <!-- <v-col cols="12" class="mt-2">
       <p
         class="subheading font-weight-medium"
       >Or signup using your email address. (All fields required)</p>
@@ -96,109 +96,109 @@
         </v-row>
       </v-container>
     </v-form>-->
-		<v-col cols="12" class="my-4 py-0">
-			<v-btn color="primary" aria-label="Back to Chat Bot" ripple to="/">{{
-				$t("back.to.chat.button")
-			}}</v-btn>
-		</v-col>
-	</v-row>
+    <v-col cols="12" class="my-4 py-0">
+      <v-btn color="primary" aria-label="Back to Chat Bot" ripple to="/">{{
+        $t("back.to.chat.button")
+      }}</v-btn>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 const logger = require("@/utils/logging").getLogger("Register.vue");
 
 export default {
-	name: "Register",
-	components: {},
-	data() {
-		return {
-			displayName: "",
-			email: "",
-			errorMessage: "",
-			password: "",
-			valid: false,
-			showPassword: false,
-			rules: {
-				required: value => !!value || "Error: Required",
-				min: value => (value && value.length >= 6) || "Error: Min 6 characters",
-				emailRules: value => {
-					if (value) {
-						const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-						return pattern.test(value) || "Error: Invalid e-mail";
-					}
-					return "Error: Email is required";
-				}
-			}
-		};
-	},
-	computed: {},
-	mounted() {
-		this.$nextTick(() => {
-			setTimeout(() => {
-				const element = document.getElementById("leopard-chat-toolbar-title");
-				if (element) {
-					element.focus();
-				}
-			}, 100);
-		});
-	},
-	beforeRouteLeave(from, to, next) {
-		this.$emit("closeMenu");
-		next();
-	},
-	updated() {
-		const elements = document.getElementsByClassName("v-messages__message");
-		elements.forEach(element => {
-			element.setAttribute("aria-live", "polite");
-		});
-	},
-	methods: {
-		hideErrorMessage() {
-			this.errorMessage = "";
-		},
-		loginSocial(socialProvider) {
-			this.$store
-				.dispatch("loginSocial", socialProvider)
-				.then(() => {
-					if (this.$router.currentRoute.path !== "/") {
-						this.$router.push("/"); // make sure we show the main chat window
-					}
-				})
-				.catch(message => {
-					this.errorMessage = message;
-					setTimeout(this.hideErrorMessage, 2000);
-				});
-		},
-		registerUser() {
-			if (this.$refs.form.validate()) {
-				this.$store
-					.dispatch("registerUserWithUsernameEmailPassword", {
-						displayName: this.displayName,
-						email: this.email,
-						password: this.password
-					})
-					.then(() => {
-						if (this.$router.currentRoute.path !== "/") {
-							this.$router.push("/"); // make sure we show the main chat window
-						}
-					})
-					.catch(message => {
-						this.errorMessage = message;
-						setTimeout(this.hideErrorMessage, 2000);
-					});
-			}
-		}
-	}
+  name: "Register",
+  components: {},
+  data() {
+    return {
+      displayName: "",
+      email: "",
+      errorMessage: "",
+      password: "",
+      valid: false,
+      showPassword: false,
+      rules: {
+        required: value => !!value || "Error: Required",
+        min: value => (value && value.length >= 6) || "Error: Min 6 characters",
+        emailRules: value => {
+          if (value) {
+            const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return pattern.test(value) || "Error: Invalid e-mail";
+          }
+          return "Error: Email is required";
+        }
+      }
+    };
+  },
+  computed: {},
+  mounted() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        const element = document.getElementById("leopard-chat-toolbar-title");
+        if (element) {
+          element.focus();
+        }
+      }, 100);
+    });
+  },
+  beforeRouteLeave(from, to, next) {
+    this.$emit("closeMenu");
+    next();
+  },
+  updated() {
+    const elements = document.getElementsByClassName("v-messages__message");
+    elements.forEach(element => {
+      element.setAttribute("aria-live", "polite");
+    });
+  },
+  methods: {
+    hideErrorMessage() {
+      this.errorMessage = "";
+    },
+    loginSocial(socialProvider) {
+      this.$store
+        .dispatch("loginSocial", socialProvider)
+        .then(() => {
+          if (this.$router.currentRoute.path !== "/") {
+            this.$router.push("/"); // make sure we show the main chat window
+          }
+        })
+        .catch(message => {
+          this.errorMessage = message;
+          setTimeout(this.hideErrorMessage, 2000);
+        });
+    },
+    registerUser() {
+      if (this.$refs.form.validate()) {
+        this.$store
+          .dispatch("registerUserWithUsernameEmailPassword", {
+            displayName: this.displayName,
+            email: this.email,
+            password: this.password
+          })
+          .then(() => {
+            if (this.$router.currentRoute.path !== "/") {
+              this.$router.push("/"); // make sure we show the main chat window
+            }
+          })
+          .catch(message => {
+            this.errorMessage = message;
+            setTimeout(this.hideErrorMessage, 2000);
+          });
+      }
+    }
+  }
 };
 </script>
 
 <style>
 .teneo-social-btn {
-	justify-content: left !important;
-	text-transform: unset;
+  justify-content: left !important;
+  text-transform: unset;
 }
 
 .teneo-social-btn .v-btn__content {
-	justify-content: left !important;
+  justify-content: left !important;
 }
 </style>

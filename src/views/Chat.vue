@@ -1,123 +1,127 @@
 <template>
-	<v-container id="chat-area" fluid class="chat-container">
-		<v-row no-gutters class="mx-0 px-0">
-			<!-- <ChatNoHistory v-if="noHistory && isHistoryPage"></ChatNoHistory> -->
+  <v-container id="chat-area" fluid class="chat-container">
+    <v-row no-gutters class="mx-0 px-0">
+      <!-- <ChatNoHistory v-if="noHistory && isHistoryPage"></ChatNoHistory> -->
 
-			<!-- show the listening modal when recognizing audio input -->
-			<teneo-listening :value="listening" :message="$t('listening')"></teneo-listening>
+      <!-- show the listening modal when recognizing audio input -->
+      <teneo-listening :value="listening" :message="$t('listening')"></teneo-listening>
 
-			<v-col
-				id="teneo-chat-scroll"
-				ref="chatContainer"
-				cols="12"
-				class="pa-0"
-				tabindex="0"
-				:class="{
-					'grey darken-4 dark-scroll': $vuetify.theme.dark,
-					'light-scroll grey lighten-4': !$vuetify.theme.dark,
-					'chat-responses-float': float,
-					'chat-responses': !float,
-					'chat-responses-float-mobile': isMobileDevice
-				}"
-			>
-				<!-- show the initial loding ball animation when first loading the chat window -->
-				<ChatLoading v-if="showChatLoading"></ChatLoading>
-				<Feedback
-					v-if="showFeedback"
-					:feedback-config="getFeedbackFormConfig"
-					@showFeedback="showFeedback = true"
-					@hideFeedback="showFeedback = false"
-				/>
-				<v-container class="chat-container-inner">
-					<div aria-live="polite">
-						<v-container
-							v-for="(item, i) in dialog"
-							:key="i + 'itemsIter' + uuid"
-							:class="{ 'mt-0 pb-0': i === dialog.length - 1, 'pt-0': i === 0 }"
-							class="px-0 mx-0"
-						>
-							<ChatBroadcastMessage :item="item" class="pb-1"></ChatBroadcastMessage>
+      <v-col
+        id="teneo-chat-scroll"
+        ref="chatContainer"
+        cols="12"
+        class="pa-0"
+        tabindex="0"
+        :class="{
+          'grey darken-4 dark-scroll': $vuetify.theme.dark,
+          'light-scroll grey lighten-4': !$vuetify.theme.dark,
+          'chat-responses-float': float,
+          'chat-responses': !float,
+          'chat-responses-float-mobile': isMobileDevice
+        }"
+      >
+        <!-- show the initial loding ball animation when first loading the chat window -->
+        <ChatLoading v-if="showChatLoading"></ChatLoading>
+        <Feedback
+          v-if="showFeedback"
+          :feedback-config="getFeedbackFormConfig"
+          @showFeedback="showFeedback = true"
+          @hideFeedback="showFeedback = false"
+        />
+        <v-container class="chat-container-inner">
+          <div aria-live="polite">
+            <v-container
+              v-for="(item, i) in dialog"
+              :key="i + 'itemsIter' + uuid"
+              :class="{ 'mt-0 pb-0': i === dialog.length - 1, 'pt-0': i === 0 }"
+              class="px-0 mx-0"
+            >
+              <ChatBroadcastMessage :item="item" class="pb-1"></ChatBroadcastMessage>
 
-							<LiveChatResponse :item-index-in-dialog="i" :item="item" class="mt-1 pb-1"></LiveChatResponse>
+              <LiveChatResponse
+                :item-index-in-dialog="i"
+                :item="item"
+                class="mt-1 pb-1"
+              ></LiveChatResponse>
 
-							<ChatTeneoResponse
-								:item="item"
-								:item-index-in-dialog="i"
-								@swapInputButton="swapInputButton"
-								@handleFocus="handleFocus = true"
-								@toggleDate="showDate = !showDate"
-								@toggleTime="showTime = !showTime"
-								@showFeedback="showFeedback = true"
-							></ChatTeneoResponse>
+              <ChatTeneoResponse
+                :item="item"
+                :item-index-in-dialog="i"
+                @swapInputButton="swapInputButton"
+                @handleFocus="handleFocus = true"
+                @toggleDate="showDate = !showDate"
+                @toggleTime="showTime = !showTime"
+                @showFeedback="showFeedback = true"
+              ></ChatTeneoResponse>
 
-							<ChatUserQuestion
-								:item="item"
-								:item-index-in-dialog="i"
-								@clicked="updateInputBox"
-								@swapInputButton="swapInputButton"
-							></ChatUserQuestion>
-						</v-container>
-					</div>
-				</v-container>
+              <ChatUserQuestion
+                :item="item"
+                :item-index-in-dialog="i"
+                @clicked="updateInputBox"
+                @swapInputButton="swapInputButton"
+              ></ChatUserQuestion>
+            </v-container>
+          </div>
+        </v-container>
 
-				<!-- live chat typing -->
-				<div
-					v-if="showLiveChatProcessing"
-					class="text-left ma-2"
-					style="background-color: transparent; align-items: left;"
-				>
-					<v-alert
-						min-width="100%"
-						color="info"
-						border="left"
-						elevation="2"
-						colored-border
-						icon="mdi-keyboard-settings"
-					>
-						Agent is typing a message..
-						<vue-loaders-ball-pulse-sync color="#C2C2C2" scale="0.5"></vue-loaders-ball-pulse-sync>
-					</v-alert>
-				</div>
-				<span ref="endChat">
-					<!-- scroll to the end -->
-				</span>
-			</v-col>
-			<!-- // progressBar -->
-			<!-- Chat Footer - Input Field and Buttons -->
-			<v-progress-linear
-				:indeterminate="true"
-				:active="progressBar"
-				class="teneo-input-loading"
-				color="accent"
-				height="4"
-			></v-progress-linear>
-		</v-row>
+        <!-- live chat typing -->
+        <div
+          v-if="showLiveChatProcessing"
+          class="text-left ma-2"
+          style="background-color: transparent; align-items: left;"
+        >
+          <v-alert
+            min-width="100%"
+            color="info"
+            border="left"
+            elevation="2"
+            colored-border
+            icon="mdi-keyboard-settings"
+          >
+            Agent is typing a message..
+            <vue-loaders-ball-pulse-sync color="#C2C2C2" scale="0.5"></vue-loaders-ball-pulse-sync>
+          </v-alert>
+        </div>
+        <span ref="endChat">
+          <!-- scroll to the end -->
+        </span>
+      </v-col>
+      <!-- // progressBar -->
+      <!-- Chat Footer - Input Field and Buttons -->
+      <v-progress-linear
+        :indeterminate="true"
+        :active="progressBar"
+        class="teneo-input-loading"
+        color="accent"
+        height="4"
+      ></v-progress-linear>
+    </v-row>
 
-		<ChatInput
-			:key="chatInputComponentKey"
-			:toggle-button="showAudioInput"
-			:pass-user-input="userInput"
-			:handle-input-focus="handleFocus"
-			:send-params="sendParams"
-			:must-send="mustSend"
-			:drawer="drawer"
-			@reset="resetChatInputDirections"
-			@scroll="scrollToBottom"
-		></ChatInput>
+    <ChatInput
+      :key="chatInputComponentKey"
+      :toggle-button="showAudioInput"
+      :pass-user-input="userInput"
+      :handle-input-focus="handleFocus"
+      :send-params="sendParams"
+      :must-send="mustSend"
+      :drawer="drawer"
+      @reset="resetChatInputDirections"
+      @scroll="scrollToBottom"
+    ></ChatInput>
 
-		<!-- end -->
-		<!-- Date picker dialog -->
-		<v-col v-if="showDate" :key="'datePicker' + uuid" cols="12">
-			<v-dialog ref="dialogDate" v-model="showDate" :return-value.sync="date" width="290px">
-				<v-date-picker v-model="date" header-color="primary" color="secondary" scrollable>
-					<v-spacer></v-spacer>
-					<v-btn small color="secondary" @click="showDate = false">Cancel</v-btn>
-					<v-btn small color="success" @click="triggerSend">OK</v-btn>
-				</v-date-picker>
-			</v-dialog>
-		</v-col>
+    <!-- end -->
+    <!-- Date picker dialog -->
+    <v-col v-if="showDate" :key="'datePicker' + uuid" cols="12">
+      <v-dialog ref="dialogDate" v-model="showDate" :return-value.sync="date" width="290px">
+        <v-date-picker v-model="date" header-color="primary" color="secondary" scrollable>
+          <v-spacer></v-spacer>
+          <v-btn small color="secondary" @click="showDate = false">Cancel</v-btn>
+          <v-btn small color="success" @click="triggerSend">OK</v-btn>
+        </v-date-picker>
+      </v-dialog>
+    </v-col>
 
-		<!-- <Dialog
+    <!-- <Dialog
       @close="showLeopardDialog = false"
       :show="showLeopardDialog"
       title="Hi there this is the title"
@@ -130,20 +134,25 @@
       </p>
 		</Dialog>-->
 
-		<!-- Time picker dialog -->
-		<v-col v-if="showTime" :key="'timePicker' + uuid" cols="12">
-			<v-dialog ref="dialogTime" v-model="showTime" width="290px">
-				<v-card>
-					<v-time-picker v-model.lazy="userInput" header-color="primary" color="secondary" format="24hr"></v-time-picker>
-					<v-card-actions>
-						<v-spacer></v-spacer>
-						<v-btn small color="secondary" @click="showTime = false">Cancel</v-btn>
-						<v-btn small color="success" @click="triggerSend">OK</v-btn>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-		</v-col>
-	</v-container>
+    <!-- Time picker dialog -->
+    <v-col v-if="showTime" :key="'timePicker' + uuid" cols="12">
+      <v-dialog ref="dialogTime" v-model="showTime" width="290px">
+        <v-card>
+          <v-time-picker
+            v-model.lazy="userInput"
+            header-color="primary"
+            color="secondary"
+            format="24hr"
+          ></v-time-picker>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn small color="secondary" @click="showTime = false">Cancel</v-btn>
+            <v-btn small color="success" @click="triggerSend">OK</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-col>
+  </v-container>
 </template>
 
 <script>
@@ -163,358 +172,358 @@ import { mapGetters } from "vuex";
 const logger = require("@/utils/logging").getLogger("Chat.vue");
 
 if (window.Element && !Element.prototype.closest) {
-	Element.prototype.closest = function locateClosest(s) {
-		const matches = (this.document || this.ownerDocument).querySelectorAll(s);
-		let i;
-		let el = this;
-		do {
-			i = matches.length;
-			while ((i -= 1 >= 0 && matches.item(i) !== el)) {
-				// find some stuff
-			}
-		} while (i < 0 && (el = el.parentElement));
-		return el;
-	};
+  Element.prototype.closest = function locateClosest(s) {
+    const matches = (this.document || this.ownerDocument).querySelectorAll(s);
+    let i;
+    let el = this;
+    do {
+      i = matches.length;
+      while ((i -= 1 >= 0 && matches.item(i) !== el)) {
+        // find some stuff
+      }
+    } while (i < 0 && (el = el.parentElement));
+    return el;
+  };
 }
 
 export default {
-	components: {
-		ChatBroadcastMessage: () => import("@/components/ChatBroadcastMessage"),
-		ChatLoading: () => import("@/components/ChatLoading"),
-		// Dialog: () => import("@/components/Dialog"),
-		// ChatNoHistory: () => import("@/components/ChatNoHistory"),
-		ChatUserQuestion,
-		ChatTeneoResponse,
-		ChatInput,
-		Feedback: () => import("@/components/Feedback"),
-		LiveChatResponse: () => import("@/components/LiveChatResponse")
-	},
-	props: {
-		drawer: {
-			type: Boolean,
-			required: true
-		}
-	},
+  components: {
+    ChatBroadcastMessage: () => import("@/components/ChatBroadcastMessage"),
+    ChatLoading: () => import("@/components/ChatLoading"),
+    // Dialog: () => import("@/components/Dialog"),
+    // ChatNoHistory: () => import("@/components/ChatNoHistory"),
+    ChatUserQuestion,
+    ChatTeneoResponse,
+    ChatInput,
+    Feedback: () => import("@/components/Feedback"),
+    LiveChatResponse: () => import("@/components/LiveChatResponse")
+  },
+  props: {
+    drawer: {
+      type: Boolean,
+      required: true
+    }
+  },
 
-	data() {
-		return {
-			showAudioInput: false,
-			userInput: "",
-			handleFocus: false,
-			sendParams: "",
-			mustSend: false,
-			showLeopardDialog: false,
-			interval: {},
-			mustScroll: true,
-			oldDialogLength: 0,
-			showDate: false,
-			showTime: false,
-			showFeedback: false,
-			audioInFocus: false,
-			date: "",
-			isScrolling: false,
-			chatInputComponentKey: "55555" // so important for IE11 performance!!
-		};
-	},
-	computed: {
-		...mapGetters([
-			"isLiveAgentAssist",
-			"askingForPassword",
-			"askingForEmail",
-			"dialogs",
-			"embed",
-			"overlayChat",
-			"getLatestDialogHistory",
-			"dark",
-			"float",
-			"inputHelpText",
-			"isMobileDevice",
-			"itemInputMask",
-			"progressBar",
-			"showChatLoading",
-			"showUploadButton",
-			"showLiveChatProcessing",
-			"showFeedbackForm",
-			"getFeedbackFormConfig",
-			"userInputReadyForSending",
-			"userProfileImage",
-			"uuid",
-			"displayName",
-			"listening",
-			"settingLongResponsesInModal",
-			"uploadConfig",
-			"lastItemAnswerTextCropped",
-			"itemAnswerTextCropped",
-			"lastItemHasLongResponse",
-			"itemHasLongResponse"
-		]),
+  data() {
+    return {
+      showAudioInput: false,
+      userInput: "",
+      handleFocus: false,
+      sendParams: "",
+      mustSend: false,
+      showLeopardDialog: false,
+      interval: {},
+      mustScroll: true,
+      oldDialogLength: 0,
+      showDate: false,
+      showTime: false,
+      showFeedback: false,
+      audioInFocus: false,
+      date: "",
+      isScrolling: false,
+      chatInputComponentKey: "55555" // so important for IE11 performance!!
+    };
+  },
+  computed: {
+    ...mapGetters([
+      "isLiveAgentAssist",
+      "askingForPassword",
+      "askingForEmail",
+      "dialogs",
+      "embed",
+      "overlayChat",
+      "getLatestDialogHistory",
+      "dark",
+      "float",
+      "inputHelpText",
+      "isMobileDevice",
+      "itemInputMask",
+      "progressBar",
+      "showChatLoading",
+      "showUploadButton",
+      "showLiveChatProcessing",
+      "showFeedbackForm",
+      "getFeedbackFormConfig",
+      "userInputReadyForSending",
+      "userProfileImage",
+      "uuid",
+      "displayName",
+      "listening",
+      "settingLongResponsesInModal",
+      "uploadConfig",
+      "lastItemAnswerTextCropped",
+      "itemAnswerTextCropped",
+      "lastItemHasLongResponse",
+      "itemHasLongResponse"
+    ]),
 
-		getNarrowMobile() {
-			if (window.innerWidth <= 480) {
-				return "min-height: calc(var(--vh, 1vh) * 80 - 130px);";
-			}
-			return "";
-		},
-		getCurrentItem() {
-			return this.dialog.length - 1;
-		},
-		isHistoryPage() {
-			return this.$route.name === "history";
-		},
-		noHistory() {
-			const history = this.getLatestDialogHistory;
-			return history.length === 0;
-		},
-		dialog() {
-			if (this.$route.name === "chat") {
-				return this.dialogs ? this.dialogs : [];
-			}
-			// history in session storage
-			return this.getLatestDialogHistory ? this.getLatestDialogHistory : [];
-		}
-	},
-	watch: {
-		date(newDate) {
-			if (newDate !== "") {
-				this.updateInputBox(dayjs(newDate).format("D MMMM YYYY"));
-			}
-		},
-		storeUserInput: debounce(function storeQuestion(userInputStore) {
-			if (this.userInput !== userInputStore) {
-				this.userInput = userInputStore;
-			}
-		}, 500),
-		dialog(newDialog) {
-			if (newDialog.length !== this.oldDialogLength) {
-				this.mustScroll = true;
-				this.oldDialogLength = newDialog.length;
-			}
-		},
-		showLiveChatProcessing: debounce(function scrollIfTyping(isLiveChatPersonTyping) {
-			if (isLiveChatPersonTyping) {
-				this.mustScroll = true;
-			}
-		}, 300)
-	},
-	beforeRouteLeave(from, to, next) {
-		this.$emit("closeMenu");
-		next();
-	},
+    getNarrowMobile() {
+      if (window.innerWidth <= 480) {
+        return "min-height: calc(var(--vh, 1vh) * 80 - 130px);";
+      }
+      return "";
+    },
+    getCurrentItem() {
+      return this.dialog.length - 1;
+    },
+    isHistoryPage() {
+      return this.$route.name === "history";
+    },
+    noHistory() {
+      const history = this.getLatestDialogHistory;
+      return history.length === 0;
+    },
+    dialog() {
+      if (this.$route.name === "chat") {
+        return this.dialogs ? this.dialogs : [];
+      }
+      // history in session storage
+      return this.getLatestDialogHistory ? this.getLatestDialogHistory : [];
+    }
+  },
+  watch: {
+    date(newDate) {
+      if (newDate !== "") {
+        this.updateInputBox(dayjs(newDate).format("D MMMM YYYY"));
+      }
+    },
+    storeUserInput: debounce(function storeQuestion(userInputStore) {
+      if (this.userInput !== userInputStore) {
+        this.userInput = userInputStore;
+      }
+    }, 500),
+    dialog(newDialog) {
+      if (newDialog.length !== this.oldDialogLength) {
+        this.mustScroll = true;
+        this.oldDialogLength = newDialog.length;
+      }
+    },
+    showLiveChatProcessing: debounce(function scrollIfTyping(isLiveChatPersonTyping) {
+      if (isLiveChatPersonTyping) {
+        this.mustScroll = true;
+      }
+    }, 300)
+  },
+  beforeRouteLeave(from, to, next) {
+    this.$emit("closeMenu");
+    next();
+  },
 
-	updated: debounce(function scroll() {
-		try {
-			if (this.mustScroll) {
-				this.mustScroll = false;
-				this.scrollToBottom();
-			}
-		} catch (e) {
-			logger.debug(e);
-			// do nothing
-		}
-	}, 200),
-	mounted() {
-		const siteFrame = document.getElementById("site-frame");
-		if (!this.embed && !this.overlayChat && siteFrame) {
-			setTimeout(() => {
-				siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
-			}, 1200);
-		}
-		this.$el.addEventListener("click", this.onHtmlClick);
-		this.scrollToBottom();
-	},
-	beforeDestroy() {},
-	methods: {
-		resetChatInputDirections() {
-			this.handleFocus = false;
-			this.userInput = "";
-			this.mustSend = false;
-			this.sendParams = "";
-			this.showDate = false;
-			this.showTime = false;
-			this.date = "";
-			this.chatInputComponentKey += 1;
-		},
-		updateInputBox(userInput) {
-			logger.debug(`Updating Input Box`);
-			this.userInput = userInput;
-		},
-		triggerSend(delay = 0) {
-			setTimeout(() => {
-				logger.debug(`Triggering send to Teneo`);
-				this.mustSend = true;
-			}, delay);
-		},
-		swapInputButton() {
-			this.showAudioInput = !this.showAudioInput;
-		},
-		debounceScroll() {
-			if (this.isScrolling) {
-				return;
-			}
-			logger.debug("Scroll to bottom");
-			const endChatTarget = this.$refs.endChat;
-			if (endChatTarget) {
-				this.isScrolling = true;
-				const scrollToElement = document.getElementById("teneo-chat-scroll");
-				const options = {
-					duration: 1200,
-					offset: -50,
-					easing: "easeInQuad",
-					container: "#teneo-chat-scroll"
-				};
-				try {
-					if (scrollToElement) {
-						this.$vuetify.goTo(endChatTarget, options);
-					} else {
-						this.isScrolling = false;
-					}
-				} catch {
-					this.isScrolling = false;
-				}
-				setTimeout(() => {
-					this.isScrolling = false;
-				}, 1250);
-			}
-		},
-		scrollToBottom() {
-			// debounce(this.debounceScroll(), 2000, false);
-			this.debounceScroll();
-		},
-		onHtmlClick(event) {
-			// Find the closest anchor to the target.
-			const anchor = event.target.closest("a");
-			if (!anchor) return;
+  updated: debounce(function scroll() {
+    try {
+      if (this.mustScroll) {
+        this.mustScroll = false;
+        this.scrollToBottom();
+      }
+    } catch (e) {
+      logger.debug(e);
+      // do nothing
+    }
+  }, 200),
+  mounted() {
+    const siteFrame = document.getElementById("site-frame");
+    if (!this.embed && !this.overlayChat && siteFrame) {
+      setTimeout(() => {
+        siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
+      }, 1200);
+    }
+    this.$el.addEventListener("click", this.onHtmlClick);
+    this.scrollToBottom();
+  },
+  beforeDestroy() {},
+  methods: {
+    resetChatInputDirections() {
+      this.handleFocus = false;
+      this.userInput = "";
+      this.mustSend = false;
+      this.sendParams = "";
+      this.showDate = false;
+      this.showTime = false;
+      this.date = "";
+      this.chatInputComponentKey += 1;
+    },
+    updateInputBox(userInput) {
+      logger.debug(`Updating Input Box`);
+      this.userInput = userInput;
+    },
+    triggerSend(delay = 0) {
+      setTimeout(() => {
+        logger.debug(`Triggering send to Teneo`);
+        this.mustSend = true;
+      }, delay);
+    },
+    swapInputButton() {
+      this.showAudioInput = !this.showAudioInput;
+    },
+    debounceScroll() {
+      if (this.isScrolling) {
+        return;
+      }
+      logger.debug("Scroll to bottom");
+      const endChatTarget = this.$refs.endChat;
+      if (endChatTarget) {
+        this.isScrolling = true;
+        const scrollToElement = document.getElementById("teneo-chat-scroll");
+        const options = {
+          duration: 1200,
+          offset: -50,
+          easing: "easeInQuad",
+          container: "#teneo-chat-scroll"
+        };
+        try {
+          if (scrollToElement) {
+            this.$vuetify.goTo(endChatTarget, options);
+          } else {
+            this.isScrolling = false;
+          }
+        } catch {
+          this.isScrolling = false;
+        }
+        setTimeout(() => {
+          this.isScrolling = false;
+        }, 1250);
+      }
+    },
+    scrollToBottom() {
+      // debounce(this.debounceScroll(), 2000, false);
+      this.debounceScroll();
+    },
+    onHtmlClick(event) {
+      // Find the closest anchor to the target.
+      const anchor = event.target.closest("a");
+      if (!anchor) return;
 
-			// Check to make sure this is from our v-html because
-			// we don't want to handle clicks from other things in
-			// the Vue
-			if (!anchor.classList.contains("sendInput") && !anchor.classList.contains("openInIframe")) {
-				// basically treat like a normal link
-			} else if (anchor.classList.contains("openInIframe")) {
-				logger.debug(`Open Link in IFRAME`);
-				// open in iframe
-				event.stopPropagation();
-				event.preventDefault();
-				this.$store.commit("UPDATE_FRAME_URL", anchor.getAttribute("href"));
-			} else {
-				// send input
-				event.stopPropagation();
-				event.preventDefault();
-				if (anchor.getAttribute("data-input")) {
-					logger.debug(`Update input box with data-input attribute of link`);
-					this.userInput = anchor.getAttribute("data-input");
-				} else {
-					logger.debug(`Update input box with text of link`);
-					this.userInput = anchor.innerText;
-				}
-				this.sendParams = "&isClick=true";
-				this.triggerSend(200);
-			}
-		}
-	}
+      // Check to make sure this is from our v-html because
+      // we don't want to handle clicks from other things in
+      // the Vue
+      if (!anchor.classList.contains("sendInput") && !anchor.classList.contains("openInIframe")) {
+        // basically treat like a normal link
+      } else if (anchor.classList.contains("openInIframe")) {
+        logger.debug(`Open Link in IFRAME`);
+        // open in iframe
+        event.stopPropagation();
+        event.preventDefault();
+        this.$store.commit("UPDATE_FRAME_URL", anchor.getAttribute("href"));
+      } else {
+        // send input
+        event.stopPropagation();
+        event.preventDefault();
+        if (anchor.getAttribute("data-input")) {
+          logger.debug(`Update input box with data-input attribute of link`);
+          this.userInput = anchor.getAttribute("data-input");
+        } else {
+          logger.debug(`Update input box with text of link`);
+          this.userInput = anchor.innerText;
+        }
+        this.sendParams = "&isClick=true";
+        this.triggerSend(200);
+      }
+    }
+  }
 };
 </script>
 <style scoped>
 .loading-ball {
-	width: 360px;
+  width: 360px;
 }
 
 #teneo-chat-scroll {
-	scrollbar-width: thin;
-	-ms-overflow-style: -ms-autohiding-scrollbar;
-	outline: 0;
+  scrollbar-width: thin;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  outline: 0;
 }
 
 #teneo-chat-scroll:focus {
-	box-shadow: inset 0 0 0 1px rgba(17, 18, 25, 0.2) !important;
-	outline: 0;
+  box-shadow: inset 0 0 0 1px rgba(17, 18, 25, 0.2) !important;
+  outline: 0;
 }
 
 .container {
-	padding: 0 !important;
+  padding: 0 !important;
 }
 
 .teneo-input-loading {
-	position: relative;
-	top: -4px;
-	margin-bottom: -4px;
-	z-index: 1;
+  position: relative;
+  top: -4px;
+  margin-bottom: -4px;
+  z-index: 1;
 }
 </style>
 <style>
 div.upload-btn {
-	padding-right: 0 !important;
-	padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
 }
 
 label.upload-btn {
-	padding-right: 0 !important;
-	padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
 }
 
 button.v-expansion-panel-header:active {
-	border-style: none !important;
+  border-style: none !important;
 }
 
 button.v-expansion-panel-header:focus {
-	background: unset;
-	-webkit-box-shadow: none !important;
-	-moz-box-shadow: none !important;
-	box-shadow: none !important;
+  background: unset;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 div#chat-area p {
-	margin-bottom: 2px;
+  margin-bottom: 2px;
 }
 
 div.teneo-footer .v-input__slot {
-	-webkit-box-shadow: none !important;
-	box-shadow: none !important;
-	background: transparent !important;
-	padding-right: 0px !important;
-	margin-top: 8px !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding-right: 0px !important;
+  margin-top: 8px !important;
 }
 
 div.teneo-footer .v-text-field__details {
-	position: absolute;
-	margin-top: 45px;
+  position: absolute;
+  margin-top: 45px;
 }
 
 div.chat-container .v-expansion-panel-header {
-	cursor: unset !important;
-	user-select: text !important;
+  cursor: unset !important;
+  user-select: text !important;
 }
 
 v-expansion-panel-header div.chat-container .v-expansion-panel:not(:first-child)::after {
-	border-top: none !important;
+  border-top: none !important;
 }
 
 .v-expansion-panel:not(:first-child)::after {
-	border-top: none !important;
+  border-top: none !important;
 }
 
 div.chat-container .v-expansion-panel-header--mousedown {
-	-webkit-box-shadow: none !important;
-	box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 div.chat-container .v-expansion-panel::before {
-	-webkit-box-shadow: none !important;
-	box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 .v-toolbar__title:not(:first-child) {
-	margin-left: 12px !important;
+  margin-left: 12px !important;
 }
 
 .v-toolbar__title {
-	font-size: 17px !important;
-	white-space: unset !important;
+  font-size: 17px !important;
+  white-space: unset !important;
 }
 
 @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
-	/* IE10+ specific styles go here */
-	/* .chat-card {
+  /* IE10+ specific styles go here */
+  /* .chat-card {
     font-size: 1.1em;
     font-weight: 400;
     padding: 8px;
@@ -526,137 +535,137 @@ div.chat-container .v-expansion-panel::before {
 }
 
 .chat-card {
-	display: table;
-	width: fit-content;
-	margin-top: 4px;
-	padding: 8px !important;
-	font-weight: 400;
-	line-height: 1.4;
+  display: table;
+  width: fit-content;
+  margin-top: 4px;
+  padding: 8px !important;
+  font-weight: 400;
+  line-height: 1.4;
 }
 
 .chat-card-left {
-	border-radius: 3px 13px 13px 13px !important;
-	-moz-border-radius: 3px 13px 13px 13px !important;
-	-webkit-border-radius: 3px 13px 13px 13px !important;
-	padding-bottom: 3px !important;
+  border-radius: 3px 13px 13px 13px !important;
+  -moz-border-radius: 3px 13px 13px 13px !important;
+  -webkit-border-radius: 3px 13px 13px 13px !important;
+  padding-bottom: 3px !important;
 }
 
 .chat-card-right {
-	border-radius: 13px 3px 13px 13px !important;
-	-moz-border-radius: 13px 3px 13px 13px !important;
-	-webkit-border-radius: 13px 3px 13px 13px !important;
-	margin-left: auto !important;
+  border-radius: 13px 3px 13px 13px !important;
+  -moz-border-radius: 13px 3px 13px 13px !important;
+  -webkit-border-radius: 13px 3px 13px 13px !important;
+  margin-left: auto !important;
 }
 
 div.options-list a.v-list__tile--link {
-	cursor: pointer;
-	height: inherit !important;
+  cursor: pointer;
+  height: inherit !important;
 }
 
 .teneo-response-icon {
-	margin-left: 0px;
-	margin-right: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 .teneo-userinput-icon {
-	margin-right: 0px;
-	margin-left: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
 }
 
 .teneo-dialog {
-	width: 360px;
-	max-width: none;
-	border-top: unset !important;
-	padding-left: 10px;
-	padding-right: 10px;
-	animation-duration: 2s;
-	animation-delay: 1s;
+  width: 360px;
+  max-width: none;
+  border-top: unset !important;
+  padding-left: 10px;
+  padding-right: 10px;
+  animation-duration: 2s;
+  animation-delay: 1s;
 }
 
 .chat-responses-float {
-	min-height: calc(80vh - 130px);
-	max-height: calc(80vh - 130px);
-	height: calc(80vh - 130px);
-	overflow-y: auto;
-	overflow-x: hidden;
+  min-height: calc(80vh - 130px);
+  max-height: calc(80vh - 130px);
+  height: calc(80vh - 130px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .chat-responses-float-mobile {
-	height: calc(var(--vh, 1vh) * 80 - 130px) !important;
+  height: calc(var(--vh, 1vh) * 80 - 130px) !important;
 }
 
 .chat-responses {
-	min-height: calc(100vh - 130px);
-	max-height: calc(100vh - 130px);
-	height: calc(100vh - 130px);
-	overflow-y: auto;
-	overflow-x: hidden;
+  min-height: calc(100vh - 130px);
+  max-height: calc(100vh - 130px);
+  height: calc(100vh - 130px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .chat-container {
-	overflow-x: hide !important;
-	width: 360px;
+  overflow-x: hide !important;
+  width: 360px;
 }
 
 .chat-container-inner {
-	overflow-x: hide !important;
-	-webkit-box-shadow: 0 2px 20px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
-		0 1px 3px 0 rgba(0, 0, 0, 0.12);
-	box-shadow: 0 2px 20px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
-		0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  overflow-x: hide !important;
+  -webkit-box-shadow: 0 2px 20px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 20px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
 }
 
 span.teneo-reply ul {
-	padding-left: 17px !important;
+  padding-left: 17px !important;
 }
 
 .teneo-footer {
-	-webkit-box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12), 0px -2px 0px 0 rgba(0, 0, 0, 0.08),
-		0px -3px 0px 0px rgba(0, 0, 0, 0.04);
-	box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12), 0px -2px 0px 0 rgba(0, 0, 0, 0.08),
-		0px -3px 0px 0px rgba(0, 0, 0, 0.04);
+  -webkit-box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12), 0px -2px 0px 0 rgba(0, 0, 0, 0.08),
+    0px -3px 0px 0px rgba(0, 0, 0, 0.04);
+  box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12), 0px -2px 0px 0 rgba(0, 0, 0, 0.08),
+    0px -3px 0px 0px rgba(0, 0, 0, 0.04);
 
-	position: relative;
-	bottom: 0px !important;
-	width: 100%;
-	height: 67px !important;
-	z-index: 5;
+  position: relative;
+  bottom: 0px !important;
+  width: 100%;
+  height: 67px !important;
+  z-index: 5;
 }
 
 @media only screen and (max-height: 480px) {
-	.chat-responses,
-	.chat-responses-float {
-		min-height: calc(100vh - 130px);
-	}
+  .chat-responses,
+  .chat-responses-float {
+    min-height: calc(100vh - 130px);
+  }
 
-	.chat-responses-float-mobile {
-		min-height: calc(var(--vh, 1vh) * 100 - 130px);
-		height: calc(var(--vh, 1vh) * 100 - 130px);
-	}
+  .chat-responses-float-mobile {
+    min-height: calc(var(--vh, 1vh) * 100 - 130px);
+    height: calc(var(--vh, 1vh) * 100 - 130px);
+  }
 }
 
 @media only screen and (max-width: 480px) {
-	.v-footer,
-	.chat-container,
-	.teneo-dialog,
-	.loading-ball {
-		width: 100vw !important;
-	}
+  .v-footer,
+  .chat-container,
+  .teneo-dialog,
+  .loading-ball {
+    width: 100vw !important;
+  }
 
-	.teneo-footer {
-		border-radius: unset;
-		-moz-border-radius: unset;
-		-webkit-border-radius: unset;
-	}
+  .teneo-footer {
+    border-radius: unset;
+    -moz-border-radius: unset;
+    -webkit-border-radius: unset;
+  }
 
-	.chat-responses,
-	.chat-responses-float {
-		min-height: calc(100vh - 130px);
-	}
+  .chat-responses,
+  .chat-responses-float {
+    min-height: calc(100vh - 130px);
+  }
 
-	.chat-responses-float-mobile {
-		min-height: calc(var(--vh, 1vh) * 100 - 130px);
-		height: calc(var(--vh, 1vh) * 100 - 130px);
-	}
+  .chat-responses-float-mobile {
+    min-height: calc(var(--vh, 1vh) * 100 - 130px);
+    height: calc(var(--vh, 1vh) * 100 - 130px);
+  }
 }
 </style>
