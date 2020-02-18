@@ -38,10 +38,10 @@ export default {
 
 <style>
 .v-dialog.centered-dialog {
+  width: auto;
+  border-radius: 6px;
+  color: whitesmoke;
   background: hsla(228, 100%, 1%, 0.7);
   box-shadow: none;
-  border-radius: 6px;
-  width: auto;
-  color: whitesmoke;
 }
 </style>

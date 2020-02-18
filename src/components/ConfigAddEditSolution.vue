@@ -294,7 +294,7 @@
             </v-row>
             <v-row>
               <v-col :cols="12">
-                <v-row align="center" justify="center" style="min-height: 300px; height: 300px;">
+                <v-row align="center" justify="center" style=" height: 300px;min-height: 300px;">
                   <transition
                     name="leoaprd-transition"
                     :enter-active-class="'animated ' + solution.animations.in"
@@ -469,9 +469,10 @@
                           : ''
                       "
                     >
-                      <span>
-                        Hello and welcome! My name is Leo and I’m here to answer your questions.
-                      </span>
+                      <span
+                        >Hello and welcome! My name is Leo and I’m here to answer your
+                        questions.</span
+                      >
                     </v-card>
                   </v-col>
                   <v-spacer></v-spacer>
@@ -1338,7 +1339,7 @@ export default {
 
 <style scoped>
 .leopard-default-font {
-  font-family: "Roboto", sans-serif;
+  font-family: Roboto, sans-serif;
 }
 
 .leopard-add-edit-shadow {
@@ -1351,24 +1352,24 @@ export default {
 }
 
 .chat-card {
-  font-weight: 400;
-  padding: 8px !important;
-  margin-top: 4px;
-  line-height: 1.4em;
-  width: fit-content;
   display: table;
+  width: fit-content;
+  margin-top: 4px;
+  padding: 8px !important;
+  font-weight: 400;
+  line-height: 1.4;
 }
 
 .chat-card-left {
-  border-radius: 3px 13px 13px 13px !important;
   -moz-border-radius: 3px 13px 13px 13px !important;
   -webkit-border-radius: 3px 13px 13px 13px !important;
+  border-radius: 3px 13px 13px 13px !important;
 }
 
 .chat-card-right {
-  border-radius: 13px 3px 13px 13px !important;
+  margin-left: auto !important;
   -moz-border-radius: 13px 3px 13px 13px !important;
   -webkit-border-radius: 13px 3px 13px 13px !important;
-  margin-left: auto !important;
+  border-radius: 13px 3px 13px 13px !important;
 }
 </style>

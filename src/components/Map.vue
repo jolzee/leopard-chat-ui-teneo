@@ -34,15 +34,15 @@ export default {
 <style>
 .map-responsive {
   overflow: hidden;
-  padding-bottom: 56.25%;
   position: relative;
   height: 0;
+  padding-bottom: 56.25%;
 }
 .map-responsive iframe {
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
   position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>

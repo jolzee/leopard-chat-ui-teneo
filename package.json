@@ -21,6 +21,9 @@
     "build:modern": "vue-cli-service build --modern",
     "prettier": "prettier --write **/*.{ts,js,css,html,json,vue}",
     "lint": "vue-cli-service lint --fix",
+    "lint:css:fix": "stylelint **/*.vue --fix",
+    "lint:css": "stylelint **/*.vue",
+    "stylelint-check": "stylelint-config-prettier-check",
     "serve": "vue-cli-service serve --mode development --open",
     "release": "release-it"
   },
@@ -119,6 +122,7 @@
     "sass": "^1.25.0",
     "sass-loader": "^8.0.2",
     "stylelint": "^13.2.0",
+    "stylelint-config-prettier": "^7.0.0",
     "stylelint-config-wordpress": "^16.0.0",
     "stylelint-order": "^4.0.0",
     "terser-webpack-plugin": "^2.3.5",

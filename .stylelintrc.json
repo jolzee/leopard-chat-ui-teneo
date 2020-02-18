@@ -1,9 +1,17 @@
-module.exports = {
-  extends: ["stylelint-config-wordpress/scss", "./node_modules/prettier-stylelint/config.js"],
-  plugins: "stylelint-order",
-  // ignoreFiles: ["/**/*.vue"],
-  rules: {
-    "max-line-length": 255,
+{
+  "extends": [
+    "stylelint-config-wordpress/scss",
+    "./node_modules/prettier-stylelint/config.js",
+    "stylelint-config-prettier"
+  ],
+  "plugins": ["stylelint-order"],
+  "ignoreFiles": ["/**/*.vue"],
+  "rules": {
+    "comment-empty-line-before": null,
+    "font-family-no-missing-generic-family-keyword": null,
+    "no-empty-source": null,
+    "selector-class-pattern": null,
+    "color-named": null,
     "function-url-quotes": "always",
     "function-name-case": null,
     "at-rule-no-unknown": null,
@@ -12,7 +20,7 @@ module.exports = {
     "declaration-block-no-duplicate-properties": [
       true,
       {
-        ignore: ["consecutive-duplicates-with-different-values"]
+        "ignore": ["consecutive-duplicates-with-different-values"]
       }
     ],
     "order/order": ["at-variables", "dollar-variables", "custom-properties", "declarations"],
@@ -310,4 +318,4 @@ module.exports = {
       "pointer-events"
     ]
   }
-};
+}

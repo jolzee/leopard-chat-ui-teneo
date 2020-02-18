@@ -26,7 +26,7 @@
               v-if="selectedSolution"
               class="white--text px-2 ml-2 py-1 elevation-2 leopard-radius d-none d-sm-inline"
               style="background-color: indigo"
-					>{{ selectedSolution.name }}</span>-->
+          >{{ selectedSolution.name }}</span>-->
         </span>
         <v-spacer class="teneo-systembar-spacer"></v-spacer>
         <v-icon
@@ -198,7 +198,7 @@
               <v-icon>mdi-check</v-icon>
             </v-avatar>
             {{ getDefaultSolutionName }}
-				</v-chip>-->
+        </v-chip>-->
       </v-app-bar>
       <v-card-text height="80%" class="px-2 mx-0 py-0">
         <v-container fluid>
@@ -614,9 +614,9 @@
                     You changed the selected solution. Should I naviate to:
                     <br />
                     <br />
-                    <span class="leopard-code">
-                      {{ selectedSolution ? selectedSolution.name : "" }}
-                    </span>
+                    <span class="leopard-code">{{
+                      selectedSolution ? selectedSolution.name : ""
+                    }}</span>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
@@ -717,9 +717,9 @@
       <v-divider class="ma-0"></v-divider>
       <v-card-actions class="grey lighten-3">
         <v-spacer></v-spacer>
-        <v-btn color="#2F2869" dark small @click="closeConfigArea(false)">
-          {{ $t("back.to.chat.button") }}
-        </v-btn>
+        <v-btn color="#2F2869" dark small @click="closeConfigArea(false)">{{
+          $t("back.to.chat.button")
+        }}</v-btn>
       </v-card-actions>
       <!-- global snackbar -->
       <v-snackbar
@@ -1339,10 +1339,10 @@ export default {
 @import url("https://fonts.googleapis.com/css?family=Inconsolata&display=swap");
 
 .leopard-code-font {
-  font-family: "Inconsolata", monospace;
-  line-height: normal;
-  font-weight: 500;
+  font-family: Inconsolata, monospace;
   font-size: 1em;
+  font-weight: 500;
+  line-height: normal;
 }
 
 .leopard-radius {
@@ -1358,9 +1358,9 @@ export default {
 div.v-input__slot:focus,
 button:focus,
 a:focus {
+  outline: 0;
   -webkit-box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
   box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
-  outline: 0;
 }
 </style>
 
@@ -1368,32 +1368,33 @@ a:focus {
 div.v-input__slot:focus,
 button:focus,
 a:focus {
-  -webkit-box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
   outline: 0;
+  -webkit-box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
   box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
 }
 
 #app {
-  border-radius: 0px !important;
+  border-radius: 0 !important;
 }
 
 .select-options {
   position: fixed !important;
+
   /* margin-left: 15px; */
 }
 
 .upload-btn {
-  padding-left: 16px;
   padding-right: 16px;
+  padding-left: 16px;
 }
 
 .upload-btn input[type="file"] {
-  position: absolute;
-  height: 0.1px;
-  width: 0.1px;
   overflow: hidden;
-  opacity: 0;
+  position: absolute;
   z-index: -1;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
 }
 
 .upload-btn-hover {
@@ -1407,6 +1408,7 @@ a:focus {
 .code-styling {
   /* margin: 0 !important; */
   background-color: inherit;
+
   /* margin-bottom: -20px !important; */
 }
 
@@ -1417,22 +1419,22 @@ a:focus {
 
 .mono-font {
   font-family: "Courier New", Courier, monospace;
-  font-weight: 500;
   font-size: 10px !important;
+  font-weight: 500;
   line-height: 1;
 }
 
 code {
   display: unset !important;
   border-radius: 2px !important;
-  white-space: unset !important;
   font-size: unset !important;
-  font-weight: unset !important;
+  font-weight: initial !important;
+  white-space: unset !important;
 }
 
 pre[class*="language-"] {
-  background-size: 1.2em 1.2em !important;
-  background-color: rgba(76, 43, 112, 1) !important;
   border-radius: 5px;
+  background-color: rgba(76, 43, 112, 1) !important;
+  background-size: 1.2em 1.2em !important;
 }
 </style>

@@ -973,8 +973,8 @@ export default {
 
 .option-btn {
   font-size: 13px;
-  text-transform: unset;
   white-space: normal;
+  text-transform: unset;
 }
 
 .modal-btn {
