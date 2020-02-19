@@ -1,8 +1,9 @@
 const path = require("path");
 const fs = require("fs");
 const CompressionPlugin = require("compression-webpack-plugin");
-var BrotliPlugin = require("brotli-webpack-plugin");
-var WebpackDeletePlugin = require("webpack-delete-plugin");
+const BrotliPlugin = require("brotli-webpack-plugin");
+const WebpackDeletePlugin = require("webpack-delete-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 // const prod = process.env.NODE_ENV === "production";
 const dev = process.env.NODE_ENV === "development";
@@ -17,8 +18,7 @@ if (process.env.VUE_APP_SOURCE_MAP === "true" || dev) {
 
 console.log(`produceSourceMaps: ${produceSourceMaps}`);
 
-const enableJavaScriptCompression = process.env
-  .VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
+const enableJavaScriptCompression = process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
   ? process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
   : false;
 
@@ -136,12 +136,38 @@ let buildConfig = {
   ]
 };
 
+if (!dev) {
+  console.log(`Using TerserPlugin`);
+  buildConfig.configureWebpack.plugins.push(
+    new TerserPlugin({
+      cache: true,
+      parallel: true,
+      sourceMap: produceSourceMaps, // Must be set to true if using source-maps in production
+      terserOptions: {
+        output: {
+          comments: false
+        },
+        extractComments: true,
+        exclude: [
+          "setup.js",
+          "setup",
+          "leopardConfig",
+          "leopardConfig.js",
+          "/leopardConfig(?:..{1,20}?)??.js/"
+        ],
+        mangle: true,
+        compress: {
+          drop_console: false,
+          drop_debugger: false
+        }
+      }
+    })
+  );
+}
+
 if (useInternalSolutionConfig && !dev) {
   buildConfig.configureWebpack.plugins.push(
-    new WebpackDeletePlugin([
-      "./dist/static/default.json",
-      "./dist/static/embed-leopard.js.gz"
-    ])
+    new WebpackDeletePlugin(["./dist/static/default.json", "./dist/static/embed-leopard.js.gz"])
   );
 }
 

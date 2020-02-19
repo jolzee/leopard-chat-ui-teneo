@@ -6,8 +6,7 @@ const logger = require("@/utils/logging").getLogger("router.js");
 Vue.use(Router);
 
 function loadView(view) {
-  return () =>
-    import(/* webpackChunkName: "view-[request]" */ `@/views/${view}.vue`);
+  return () => import(/* webpackChunkName: "view-[request]" */ `@/views/${view}.vue`);
 }
 
 logger.debug(`Setting up Vue Router`);

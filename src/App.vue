@@ -74,7 +74,11 @@
               @click="toggleChat"
               v-show="showChatButton && !isChatOpen"
               tabindex="0"
-              :class="`leopard-open-close-button ${textColor('primary')} ${pulseButton && !isChatOpen ? 'pulse' : ''}`"
+              :class="
+                `leopard-open-close-button ${textColor('primary')} ${
+                  pulseButton && !isChatOpen ? 'pulse' : ''
+                }`
+              "
               :style="customCssButtonToolbar"
             >
               <v-icon v-text="isChatOpen ? 'mdi-close' : 'mdi-message-text'"></v-icon>
@@ -109,7 +113,9 @@
                     tabindex="-1"
                     class="headline white--text font-weight-medium"
                     id="leopard-first-drawer-item"
-                  >Chat Menu</h1>
+                  >
+                    Chat Menu
+                  </h1>
                 </div>
               </v-col>
             </v-row>
@@ -128,7 +134,9 @@
                     <v-icon medium :class="menuClass">mdi-comment-arrow-left-outline</v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title class="subheading" :class="menuClassText">Back to chat</v-list-item-title>
+                    <v-list-item-title class="subheading" :class="menuClassText"
+                      >Back to chat</v-list-item-title
+                    >
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -136,16 +144,13 @@
                 <v-list-item ripple :aria-label="menuItem.ariaLabel" :to="menuItem.route">
                   <v-list-item-action>
                     <v-icon medium :class="menuClass">
-                      {{
-                      menuItem.icon
-                      }}
+                      {{ menuItem.icon }}
                     </v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title
-                      class="subheading"
-                      :class="menuClassText"
-                    >{{ $t(menuItem.titleKey) }}</v-list-item-title>
+                    <v-list-item-title class="subheading" :class="menuClassText">{{
+                      $t(menuItem.titleKey)
+                    }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -163,18 +168,12 @@
                     <v-icon
                       medium
                       :class="menuClass"
-                      v-text="
-                          $vuetify.theme.dark
-                            ? 'mdi-brightness-5'
-                            : 'mdi-brightness-4'
-                        "
+                      v-text="$vuetify.theme.dark ? 'mdi-brightness-5' : 'mdi-brightness-4'"
                     ></v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
                     <v-list-item-title class="subheading" :class="menuClassText">
-                      {{
-                      $vuetify.theme.dark ? "Light Mode" : "Dark Mode"
-                      }}
+                      {{ $vuetify.theme.dark ? "Light Mode" : "Dark Mode" }}
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
@@ -187,13 +186,15 @@
                   aria-label="Close menu"
                   value="true"
                   key="menuCloseChatMenu"
-                  @click="drawer=false"
+                  @click="drawer = false"
                 >
                   <v-list-item-action>
                     <v-icon medium :class="menuClass">mdi-backburger</v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title class="subheading" :class="menuClassText">Close</v-list-item-title>
+                    <v-list-item-title class="subheading" :class="menuClassText"
+                      >Close</v-list-item-title
+                    >
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -212,10 +213,9 @@
                   <v-icon medium :class="menuClass">mdi-logout-variant</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                  <v-list-item-title
-                    class="subheading"
-                    :class="menuClassText"
-                  >{{ $t("menu.logout") }}</v-list-item-title>
+                  <v-list-item-title class="subheading" :class="menuClassText">{{
+                    $t("menu.logout")
+                  }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -296,16 +296,12 @@
                       :color="isLightColor('primary') ? 'black' : 'white'"
                       id="leopardNavMenuButton"
                       accesskey="m"
-                      :aria-label="
-                      drawer ? 'Hide Chat Bot Menu' : 'Chat Bot Menu'
-                    "
+                      :aria-label="drawer ? 'Hide Chat Bot Menu' : 'Chat Bot Menu'"
                       @click.stop="drawer = !drawer"
                       class="embed-button-center ml-0"
                     >
                       <v-icon>
-                        {{
-                        drawer ? "mdi-menu-open" : "mdi-menu"
-                        }}
+                        {{ drawer ? "mdi-menu-open" : "mdi-menu" }}
                       </v-icon>
                     </v-btn>
                   </v-fab-transition>
@@ -431,8 +427,7 @@
                 </v-simple-table>
                 <br />
                 <v-alert border="top" colored-border type="warning" elevation="2">
-                  Accepting will overwrite other solutions with the same name or
-                  deep link.
+                  Accepting will overwrite other solutions with the same name or deep link.
                 </v-alert>
               </v-card-text>
               <v-card-actions>
@@ -522,6 +517,16 @@ export default {
     };
   },
   watch: {
+    mustCloseBecauseOfEscape: function(mustClose) {
+      if (mustClose) {
+        if (this.embed) {
+          this.closeChatEmbedded();
+        } else {
+          this.toggleChat();
+        }
+        this.$store.commit("REST_MUST_CLOSE");
+      }
+    },
     drawer: function(isDrawerOpen) {
       if (isDrawerOpen) {
         this.$nextTick(() => {
@@ -554,11 +559,7 @@ export default {
       if (this.isMobileDevice) {
         window.addEventListener("resize", this.onResizeOrEmbed, false);
       } else {
-        window.addEventListener(
-          "resize",
-          debounce(this.onResizeOrEmbed, 200, false),
-          false
-        );
+        window.addEventListener("resize", debounce(this.onResizeOrEmbed, 200, false), false);
       }
     });
 
@@ -598,6 +599,7 @@ export default {
     ...mapGetters([
       "isLiveAgentAssist",
       "accessibleAnouncement",
+      "mustCloseBecauseOfEscape",
       "accentStyling",
       "authenticated",
       "hide508",
@@ -659,10 +661,7 @@ export default {
             return true;
           } else if ("when" in menuItem && typeof menuItem.when === "boolean") {
             return menuItem.when;
-          } else if (
-            "when" in menuItem &&
-            typeof menuItem.when === "function"
-          ) {
+          } else if ("when" in menuItem && typeof menuItem.when === "function") {
             return menuItem.when();
           } else if (menuItem.route === "config") {
             return this.hideConfigMenu ? false : true;
@@ -676,9 +675,6 @@ export default {
         // anonymous
 
         return this.menuItems.filter(menuItem => {
-          if ("when" in menuItem) {
-            console.log(`${menuItem.ariaLabel}`, typeof menuItem.when);
-          }
           if (menuItem.route === this.$route.name) {
             return false;
           }
@@ -691,10 +687,7 @@ export default {
             return true;
           } else if ("when" in menuItem && typeof menuItem.when === "boolean") {
             return menuItem.when;
-          } else if (
-            "when" in menuItem &&
-            typeof menuItem.when === "function"
-          ) {
+          } else if ("when" in menuItem && typeof menuItem.when === "function") {
             return menuItem.when();
           } else if (menuItem.route === "config") {
             return this.hideConfigMenu ? false : true;
@@ -751,10 +744,7 @@ export default {
     isLightColor(themeColorName) {
       if (!this.$vuetify.theme.dark) {
         let hexColor = this.theme[themeColorName];
-        logger.debug(
-          `Checking ${themeColorName} color: ${hexColor}`,
-          this.theme
-        );
+        logger.debug(`Checking ${themeColorName} color: ${hexColor}`, this.theme);
         return isLight(hexColor);
       } else {
         return false;
@@ -834,10 +824,7 @@ export default {
       if (existingSolutionsWithName < 0 && existingSolutionsWithDeepLink < 0) {
         // no clashes in name or deep link
         this.config.solutions.push(this.importedSolution); // no conflicts
-      } else if (
-        existingSolutionsWithName >= 0 ||
-        existingSolutionsWithDeepLink >= 0
-      ) {
+      } else if (existingSolutionsWithName >= 0 || existingSolutionsWithDeepLink >= 0) {
         // name and deep link clash - replace
         this.config.solutions.splice(existingSolutionsWithDeepLink, 1);
         existingSolutionsWithName = this.config.solutions.findIndex(
@@ -970,12 +957,8 @@ export default {
           !this.loginPerformed &&
           this.dialogs.length === 0)
       ) {
-        logger.debug(
-          "Window width is narrow. Determined that we need to send login"
-        );
-        logger.debug(
-          `onResizeOrEmbed: Has Login Been Performed? ${this.loginPerformed}`
-        );
+        logger.debug("Window width is narrow. Determined that we need to send login");
+        logger.debug(`onResizeOrEmbed: Has Login Been Performed? ${this.loginPerformed}`);
         this.loginPerformed = true;
         let that = this;
         this.$store
@@ -985,10 +968,7 @@ export default {
             logger.debug("Successfully established chat session");
           })
           .catch(err => {
-            logger.debug(
-              "ERROR LOGGING IN TO CHAT - Could not login to: ",
-              err.teneoUrl
-            );
+            logger.debug("ERROR LOGGING IN TO CHAT - Could not login to: ", err.teneoUrl);
           });
       } else {
         this.$store.commit("HIDE_CHAT_LOADING");
@@ -1044,10 +1024,7 @@ export default {
       // this.$store.commit("CHANGE_THEME");
     },
     toggleChat() {
-      if (
-        !this.$store.state.chatConfig ||
-        !this.$store.state.chatConfig.activeSolution
-      ) {
+      if (!this.$store.state.chatConfig || !this.$store.state.chatConfig.activeSolution) {
         this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY");
         this.$router.push({ name: "config" });
         return;
@@ -1114,9 +1091,7 @@ export default {
         });
 
         setTimeout(() => {
-          document
-            .getElementsByClassName("leopard-open-close-button")[0]
-            .focus();
+          document.getElementsByClassName("leopard-open-close-button")[0].focus();
         }, 1700);
       }
     }
@@ -1222,8 +1197,7 @@ export default {
     transition: opacity 0.3s, -webkit-transform 0.3s;
     transition: opacity 0.3s, transform 0.3s;
     transition: opacity 0.3s, transform 0.3s, -webkit-transform 0.3s;
-    -webkit-animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1)
-      infinite;
+    -webkit-animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
     animation: pulse-animation 4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
     z-index: -1;
   }
@@ -1256,8 +1230,8 @@ export default {
   color: #fafafa;
   padding-left: 3px;
   padding-right: 3px;
-  font-family: Fira Code, Consolas, Monaco, Lucida Console, Liberation Mono,
-    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New;
+  font-family: Fira Code, Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
+    Bitstream Vera Sans Mono, Courier New;
 }
 
 p {

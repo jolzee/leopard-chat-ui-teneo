@@ -1,11 +1,11 @@
 {
-    "recommendations": [
-        "dbaeumer.vscode-eslint",
-        "octref.vetur",
-        "ritwickdey.liveserver",
-        "coenraads.bracket-pair-colorizer",
-        "formulahendry.auto-rename-tag",
-        "hollowtree.vue-snippets",
-        "sdras.vue-vscode-snippets"
-    ]
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "octref.vetur",
+    "ritwickdey.liveserver",
+    "coenraads.bracket-pair-colorizer",
+    "formulahendry.auto-rename-tag",
+    "hollowtree.vue-snippets",
+    "sdras.vue-vscode-snippets"
+  ]
 }

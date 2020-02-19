@@ -172,7 +172,13 @@ document.documentElement.style.setProperty(
   "--leopardvh",
   leopardViewHeight + "px"
 );
-document.body.insertAdjacentHTML("afterbegin", leopardChatTemplate);
+
+var leopardTargetElement = document.getElementById("leopardChatWindow");
+if (leopardTargetElement) {
+  leopardTargetElement.innerHTML = leopardChatTemplate;
+} else {
+  document.body.insertAdjacentHTML("afterbegin", leopardChatTemplate);
+}
 
 var leopardAnimations = {
   in: "flipInY",
