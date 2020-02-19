@@ -40,7 +40,12 @@
 
 <script>
 export default {
-  props: ["itinerary"],
+  props: {
+    itinerary: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {};
   },

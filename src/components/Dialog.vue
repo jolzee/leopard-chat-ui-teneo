@@ -5,9 +5,9 @@
     leave-active-class="animated fadeOutRightBig"
   >
     <v-dialog
+      v-show="show"
       id="leopard-dialog"
       v-model="show"
-      v-show="show"
       :transition="undefined"
       persistent
       scrollable
@@ -43,14 +43,13 @@
           <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
 
           <v-icon
+            v-if="!embed && !$vuetify.breakpoint.mdAndDown"
             tabindex="0"
             tag="button"
-            v-if="!embed && !$vuetify.breakpoint.mdAndDown"
             :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
             @click="toggleFullscreen"
+            >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon
           >
-            {{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}
-          </v-icon>
 
           <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close"
             >mdi-close</v-icon
@@ -89,9 +88,19 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "Dialog",
-  props: ["title", "show", "width"],
-  computed: {
-    ...mapGetters(["uuid", "dark", "embed", "fullscreenEmbed", "textColor"])
+  props: {
+    title: {
+      type: String,
+      required: true
+    },
+    show: {
+      type: Boolean,
+      required: true
+    },
+    width: {
+      type: String,
+      required: true
+    }
   },
   data() {
     return {
@@ -99,12 +108,15 @@ export default {
       overlay: false
     };
   },
+  computed: {
+    ...mapGetters(["uuid", "dark", "embed", "fullscreenEmbed", "textColor"])
+  },
   methods: {
     close() {
       this.$emit("close");
     },
     toggleFullscreen() {
-      let dialogElements = document.getElementsByClassName("leopard-dialog");
+      const dialogElements = document.getElementsByClassName("leopard-dialog");
       dialogElements[0].setAttribute("style", "");
       this.fullscreen = !this.fullscreen;
     }

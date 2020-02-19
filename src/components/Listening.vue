@@ -17,11 +17,9 @@
 </template>
 <script>
 const logger = require("@/utils/logging").getLogger("Listening.vue");
+
 export default {
   name: "Loading",
-  data: function() {
-    return {};
-  },
   props: {
     value: {
       type: Boolean,
@@ -31,6 +29,9 @@ export default {
       type: String,
       default: "Listening..."
     }
+  },
+  data() {
+    return {};
   }
 };
 </script>

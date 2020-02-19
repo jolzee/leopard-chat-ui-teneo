@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center" v-if="dialog">
+  <v-row v-if="dialog" justify="center">
     <v-dialog
       v-model="dialog"
       scrollable
@@ -49,8 +49,8 @@
               </v-col>
               <v-col cols="12" class="my-0 py-0">
                 <v-textarea
-                  outlined
                   v-model="comment"
+                  outlined
                   clearable
                   color="primary"
                   solo
@@ -77,12 +77,18 @@
   </v-row>
 </template>
 <script>
-const logger = require("@/utils/logging").getLogger("Feedback.vue");
 import { mapGetters } from "vuex";
+
+const logger = require("@/utils/logging").getLogger("Feedback.vue");
 
 export default {
   name: "Feedback",
-  props: ["feedbackConfig"],
+  props: {
+    feedbackConfig: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       dialogm1: "",
@@ -92,6 +98,9 @@ export default {
       comment: "",
       items: this.feedbackConfig.reasons ? this.feedbackConfig.reasons : []
     };
+  },
+  computed: {
+    ...mapGetters(["textColor"])
   },
   methods: {
     hideFeedback() {
@@ -111,9 +120,6 @@ export default {
       this.$store.commit("CLEAR_FEEDBACK_FORM"); // so it doesn't show again
       this.$store.commit("SHOW_MESSAGE_IN_CHAT", "Thanks for your feedback.");
     }
-  },
-  computed: {
-    ...mapGetters(["textColor"])
   }
 };
 </script>

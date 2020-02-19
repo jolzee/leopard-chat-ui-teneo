@@ -1,9 +1,17 @@
+/* eslint-disable func-names */
+/* eslint-disable no-plusplus */
+/* eslint-disable guard-for-in */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-bitwise */
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-unused-vars */
 
 const replaceString = require("replace-string");
 const solutionDefault = require("@/constants/solution-config-default").SOLUTION_DEFAULT;
 const jsonpack = require("jsonpack/main");
+const uuidv4 = require("uuid/v4");
+
+export const uuid = () => uuidv4();
 
 export const fixSolution = solution => {
   if (!("id" in solution)) {
@@ -52,6 +60,34 @@ export const fixSolution = solution => {
   return solution;
 };
 
+const WHITE_SPACES = [
+  " ",
+  "\n",
+  "\r",
+  "\t",
+  "\f",
+  "\v",
+  "\u00A0",
+  "\u1680",
+  "\u180E",
+  "\u2000",
+  "\u2001",
+  "\u2002",
+  "\u2003",
+  "\u2004",
+  "\u2005",
+  "\u2006",
+  "\u2007",
+  "\u2008",
+  "\u2009",
+  "\u200A",
+  "\u2028",
+  "\u2029",
+  "\u202F",
+  "\u205F",
+  "\u3000"
+];
+
 export const fixSolutions = allSolutions => {
   let origChatConfig = JSON.stringify(allSolutions);
   origChatConfig = replaceString(origChatConfig, '"true"', "true");
@@ -64,11 +100,11 @@ export const fixSolutions = allSolutions => {
     });
   } else if ("url" in allSolutions) {
     // not really a solutions file rather just a solution
-    let solutionsWrapper = {
+    const solutionsWrapper = {
       activeSolution: "",
       solutions: []
     };
-    let fixedSolution = fixSolution(allSolutions);
+    const fixedSolution = fixSolution(allSolutions);
     solutionsWrapper.activeSolution = fixedSolution.id;
     solutionsWrapper.solutions.push(fixedSolution);
     allSolutions = solutionsWrapper;
@@ -77,9 +113,95 @@ export const fixSolutions = allSolutions => {
   return allSolutions;
 };
 
+/**
+ * Remove chars from beginning of string.
+ */
+export const ltrim = (str, chars) => {
+  chars = chars || WHITE_SPACES;
+
+  let start = 0;
+  const len = str.length;
+  const charLen = chars.length;
+  let found = true;
+  let i;
+  let c;
+
+  while (found && start < len) {
+    found = false;
+    i = -1;
+    c = str.charAt(start);
+
+    while (++i < charLen) {
+      if (c === chars[i]) {
+        found = true;
+        start++;
+        break;
+      }
+    }
+  }
+
+  return start >= len ? "" : str.substr(start, len);
+};
+
+/**
+ * Remove chars from end of string.
+ */
+export const rtrim = (str, chars) => {
+  chars = chars || WHITE_SPACES;
+
+  let end = str.length - 1;
+  const charLen = chars.length;
+  let found = true;
+  let i;
+  let c;
+
+  while (found && end >= 0) {
+    found = false;
+    i = -1;
+    c = str.charAt(end);
+
+    while (++i < charLen) {
+      if (c === chars[i]) {
+        found = true;
+        end--;
+        break;
+      }
+    }
+  }
+
+  return end >= 0 ? str.substring(0, end + 1) : "";
+};
+
+/**
+ * Remove white-spaces from beginning and end of string.
+ */
+export const trim = (str, chars) => {
+  chars = chars || WHITE_SPACES;
+  return ltrim(rtrim(str, chars), chars);
+};
+
+/**
+ * Limit number of chars.
+ */
+export const truncate = (str, maxChars, append, onlyFullWords) => {
+  append = append || "...";
+  maxChars = onlyFullWords ? maxChars + 1 : maxChars;
+
+  str = trim(str);
+  if (str.length <= maxChars) {
+    return str;
+  }
+  str = str.substr(0, maxChars - append.length);
+  // crop at last space or remove trailing whitespace
+  str = onlyFullWords ? str.substr(0, str.lastIndexOf(" ")) : trim(str);
+  return str + append;
+};
+
 export const lightOrDark = color => {
   // Variables for red, green, blue values
-  var r, g, b, hsp;
+  let r;
+  let g;
+  let b;
 
   // Check the format of the color, HEX or RGB?
   if (color.match(/^rgb/)) {
@@ -91,7 +213,7 @@ export const lightOrDark = color => {
     b = color[3];
   } else {
     // If RGB --> Convert it to HEX: http://gist.github.com/983661
-    color = +("0x" + color.slice(1).replace(color.length < 5 && /./g, "$&$&"));
+    color = +`0x${color.slice(1).replace(color.length < 5 && /./g, "$&$&")}`;
 
     r = color >> 16;
     g = (color >> 8) & 255;
@@ -99,16 +221,15 @@ export const lightOrDark = color => {
   }
 
   // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
-  hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+  const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
 
   // Using the HSP value, determine whether the color is light or dark 127.5 orig
   if (hsp > 145) {
     // console.log("Light >> HSP: ", hsp);
     return "light";
-  } else {
-    // console.log("Dark >> HSP: ", hsp);
-    return "dark";
   }
+  // console.log("Dark >> HSP: ", hsp);
+  return "dark";
 };
 
 export const isEmpty = obj => {
@@ -121,23 +242,25 @@ export const isEmpty = obj => {
 export const isLight = color => {
   if (lightOrDark(color) === "light") {
     return true;
-  } else {
-    return false;
   }
+  return false;
 };
 
 export const isDark = color => {
   if (lightOrDark(color) === "dark") {
     return true;
-  } else {
-    return false;
   }
+  return false;
 };
 
 export const sendMessageToParent = message => {
-  if (parent) {
-    parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
+  if (window.parent) {
+    window.parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
   }
+};
+
+export const replaceAll = (targetStr, findStr, replaceStr = "") => {
+  return targetStr.split(findStr).join(replaceStr);
 };
 
 export const removeAll = (targetStr, findArr) => {
@@ -147,17 +270,12 @@ export const removeAll = (targetStr, findArr) => {
   return targetStr;
 };
 
-export const replaceAll = (targetStr, findStr, replaceStr = "") => {
-  return targetStr.split(findStr).join(replaceStr);
-};
-
 export function debounce(func, wait, immediate) {
-  var timeout;
-  return function() {
-    var context = this,
-      args = arguments;
+  let timeout;
+  return function debounceLogic(...args) {
+    const context = this;
     clearTimeout(timeout);
-    timeout = setTimeout(function() {
+    timeout = setTimeout(function callFunction() {
       timeout = null;
       if (!immediate) func.apply(context, args);
     }, wait);
@@ -179,18 +297,18 @@ Math.easeInOutQuad = function(t, b, c, d) {
 };
 
 Math.easeInCubic = function(t, b, c, d) {
-  let tc = (t /= d) * t * t;
+  const tc = (t /= d) * t * t;
   return b + c * tc;
 };
 
 Math.inOutQuintic = function(t, b, c, d) {
-  let ts = (t /= d) * t,
-    tc = ts * t;
+  const ts = (t /= d) * t;
+  const tc = ts * t;
   return b + c * (6 * tc * ts + -15 * ts * ts + 10 * tc);
 };
 
 // requestAnimationFrame for Smart Animating http://goo.gl/sx5sts
-export let requestAnimFrame = (function() {
+export const requestAnimFrame = (function() {
   return (
     window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
@@ -215,26 +333,24 @@ export const scrollTo = (to, callback, duration) => {
       document.body.scrollTop
     );
   }
-  let start = position(),
-    change = to - start,
-    currentTime = 0,
-    increment = 20;
+  const start = position();
+  const change = to - start;
+  let currentTime = 0;
+  const increment = 20;
   duration = typeof duration === "undefined" ? 500 : duration;
-  let animateScroll = function() {
+  const animateScroll = function() {
     // increment the time
     currentTime += increment;
     // find the value with the quadratic in-out easing function
-    let val = Math.easeInOutQuad(currentTime, start, change, duration);
+    const val = Math.easeInOutQuad(currentTime, start, change, duration);
     // move the document.body
     move(val);
     // do the animation unless its over
     if (currentTime < duration) {
       requestAnimFrame(animateScroll);
-    } else {
-      if (callback && typeof callback === "function") {
-        // the animation is done so lets callback
-        callback();
-      }
+    } else if (callback && typeof callback === "function") {
+      // the animation is done so lets callback
+      callback();
     }
   };
   animateScroll();
@@ -243,9 +359,9 @@ export const scrollTo = (to, callback, duration) => {
 
 export const cleanEmptyChunks = answerText => {
   let finalAnswerText = "";
-  let chunks = answerText.split("||");
+  const chunks = answerText.split("||");
   chunks.forEach(chunk => {
-    let trimmedChunk = chunk.trim();
+    const trimmedChunk = chunk.trim();
     if (trimmedChunk) {
       finalAnswerText += `||${trimmedChunk}`;
     }
@@ -268,15 +384,55 @@ export const upperCase = str => {
 };
 
 /**
+ * Replaces all accented chars with regular ones
+ */
+export const replaceAccents = str => {
+  // verifies if the String has accents and replace them
+  if (str.search(/[\xC0-\xFF]/g) > -1) {
+    str = str
+      .replace(/[\xC0-\xC5]/g, "A")
+      .replace(/[\xC6]/g, "AE")
+      .replace(/[\xC7]/g, "C")
+      .replace(/[\xC8-\xCB]/g, "E")
+      .replace(/[\xCC-\xCF]/g, "I")
+      .replace(/[\xD0]/g, "D")
+      .replace(/[\xD1]/g, "N")
+      .replace(/[\xD2-\xD6\xD8]/g, "O")
+      .replace(/[\xD9-\xDC]/g, "U")
+      .replace(/[\xDD]/g, "Y")
+      .replace(/[\xDE]/g, "P")
+      .replace(/[\xE0-\xE5]/g, "a")
+      .replace(/[\xE6]/g, "ae")
+      .replace(/[\xE7]/g, "c")
+      .replace(/[\xE8-\xEB]/g, "e")
+      .replace(/[\xEC-\xEF]/g, "i")
+      .replace(/[\xF1]/g, "n")
+      .replace(/[\xF2-\xF6\xF8]/g, "o")
+      .replace(/[\xF9-\xFC]/g, "u")
+      .replace(/[\xFE]/g, "p")
+      .replace(/[\xFD\xFF]/g, "y");
+  }
+
+  return str;
+};
+
+/**
+ * Remove non-word chars.
+ */
+export const removeNonWord = str => {
+  return str.replace(/[^0-9a-zA-Z\xC0-\xFF \-]/g, "");
+};
+
+/**
  * Convert string to camelCase text.
  */
 export const camelCase = str => {
   str = replaceAccents(str);
   str = removeNonWord(str)
-    .replace(/\-/g, " ") //convert all hyphens to spaces
-    .replace(/\s[a-z]/g, upperCase) //convert first char of each word to UPPERCASE
-    .replace(/\s+/g, "") //remove spaces
-    .replace(/^[A-Z]/g, lowerCase); //convert first char to lowercase
+    .replace(/\-/g, " ") // convert all hyphens to spaces
+    .replace(/\s[a-z]/g, upperCase) // convert first char of each word to UPPERCASE
+    .replace(/\s+/g, "") // remove spaces
+    .replace(/^[A-Z]/g, lowerCase); // convert first char to lowercase
   return str;
 };
 
@@ -285,7 +441,7 @@ export const camelCase = str => {
  */
 export const unCamelCase = str => {
   str = str.replace(/([a-z\xE0-\xFF])([A-Z\xC0\xDF])/g, "$1 $2");
-  str = str.toLowerCase(); //add space between camelCase text
+  str = str.toLowerCase(); // add space between camelCase text
   return str;
 };
 
@@ -324,8 +480,8 @@ export const slugify = (str, delimeter) => {
 
   str = replaceAccents(str);
   str = removeNonWord(str);
-  str = trim(str) //should come after removeNonWord
-    .replace(/ +/g, delimeter) //replace spaces with delimeter
+  str = trim(str) // should come after removeNonWord
+    .replace(/ +/g, delimeter) // replace spaces with delimeter
     .toLowerCase();
 
   return str;
@@ -356,13 +512,6 @@ export const underscore = str => {
 };
 
 /**
- * Remove non-word chars.
- */
-export const removeNonWord = str => {
-  return str.replace(/[^0-9a-zA-Z\xC0-\xFF \-]/g, "");
-};
-
-/**
  * Convert line-breaks from DOS/MAC to a single standard (UNIX by default)
  */
 export const normalizeLineBreaks = (str, lineEnd) => {
@@ -372,39 +521,6 @@ export const normalizeLineBreaks = (str, lineEnd) => {
     .replace(/\r\n/g, lineEnd) // DOS
     .replace(/\r/g, lineEnd) // Mac
     .replace(/\n/g, lineEnd); // Unix
-};
-
-/**
- * Replaces all accented chars with regular ones
- */
-export const replaceAccents = str => {
-  // verifies if the String has accents and replace them
-  if (str.search(/[\xC0-\xFF]/g) > -1) {
-    str = str
-      .replace(/[\xC0-\xC5]/g, "A")
-      .replace(/[\xC6]/g, "AE")
-      .replace(/[\xC7]/g, "C")
-      .replace(/[\xC8-\xCB]/g, "E")
-      .replace(/[\xCC-\xCF]/g, "I")
-      .replace(/[\xD0]/g, "D")
-      .replace(/[\xD1]/g, "N")
-      .replace(/[\xD2-\xD6\xD8]/g, "O")
-      .replace(/[\xD9-\xDC]/g, "U")
-      .replace(/[\xDD]/g, "Y")
-      .replace(/[\xDE]/g, "P")
-      .replace(/[\xE0-\xE5]/g, "a")
-      .replace(/[\xE6]/g, "ae")
-      .replace(/[\xE7]/g, "c")
-      .replace(/[\xE8-\xEB]/g, "e")
-      .replace(/[\xEC-\xEF]/g, "i")
-      .replace(/[\xF1]/g, "n")
-      .replace(/[\xF2-\xF6\xF8]/g, "o")
-      .replace(/[\xF9-\xFC]/g, "u")
-      .replace(/[\xFE]/g, "p")
-      .replace(/[\xFD\xFF]/g, "y");
-  }
-
-  return str;
 };
 
 /**
@@ -425,7 +541,7 @@ export const crop = (str, maxChars, append) => {
  * Escape RegExp string chars.
  */
 export const escapeRegExp = str => {
-  let ESCAPE_CHARS = /[\\.+*?\^$\[\](){}\/'#]/g;
+  const ESCAPE_CHARS = /[\\.+*?\^$\[\](){}\/'#]/g;
   return str.replace(ESCAPE_CHARS, "\\$&");
 };
 
@@ -467,7 +583,7 @@ export const escapeUnicode = (str, shouldEscapePrintable) => {
     }
     // we use "000" and slice(-4) for brevity, need to pad zeros,
     // unicode escape always have 4 chars after "\u"
-    return "\\u" + ("000" + ch.charCodeAt(0).toString(16)).slice(-4);
+    return `\\u${`000${ch.charCodeAt(0).toString(16)}`.slice(-4)}`;
   });
 };
 
@@ -479,9 +595,9 @@ export const stripHtmlTags = str => {
 };
 
 export const createSharableLink = solution => {
-  return `${location.protocol}//${location.host}${location.pathname}?import=${encodeURIComponent(
-    jsonpack.pack(solution)
-  )}`;
+  return `${window.location.protocol}//${window.location.host}${
+    window.location.pathname
+  }?import=${encodeURIComponent(jsonpack.pack(solution))}`;
 };
 
 /**
@@ -491,6 +607,13 @@ export const removeNonASCII = str => {
   // Matches non-printable ASCII chars -
   // http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
   return str.replace(/[^\x20-\x7E]/g, "");
+};
+
+/**
+ * Repeat string n times
+ */
+export const repeat = (str, n) => {
+  return new Array(n + 1).join(str);
 };
 
 /**
@@ -511,125 +634,6 @@ export const lpad = (str, minLen, ch) => {
 };
 
 /**
- * Repeat string n times
- */
-export const repeat = (str, n) => {
-  return new Array(n + 1).join(str);
-};
-
-/**
- * Limit number of chars.
- */
-export const truncate = (str, maxChars, append, onlyFullWords) => {
-  append = append || "...";
-  maxChars = onlyFullWords ? maxChars + 1 : maxChars;
-
-  str = trim(str);
-  if (str.length <= maxChars) {
-    return str;
-  }
-  str = str.substr(0, maxChars - append.length);
-  //crop at last space or remove trailing whitespace
-  str = onlyFullWords ? str.substr(0, str.lastIndexOf(" ")) : trim(str);
-  return str + append;
-};
-
-let WHITE_SPACES = [
-  " ",
-  "\n",
-  "\r",
-  "\t",
-  "\f",
-  "\v",
-  "\u00A0",
-  "\u1680",
-  "\u180E",
-  "\u2000",
-  "\u2001",
-  "\u2002",
-  "\u2003",
-  "\u2004",
-  "\u2005",
-  "\u2006",
-  "\u2007",
-  "\u2008",
-  "\u2009",
-  "\u200A",
-  "\u2028",
-  "\u2029",
-  "\u202F",
-  "\u205F",
-  "\u3000"
-];
-
-/**
- * Remove chars from beginning of string.
- */
-export const ltrim = (str, chars) => {
-  chars = chars || WHITE_SPACES;
-
-  let start = 0,
-    len = str.length,
-    charLen = chars.length,
-    found = true,
-    i,
-    c;
-
-  while (found && start < len) {
-    found = false;
-    i = -1;
-    c = str.charAt(start);
-
-    while (++i < charLen) {
-      if (c === chars[i]) {
-        found = true;
-        start++;
-        break;
-      }
-    }
-  }
-
-  return start >= len ? "" : str.substr(start, len);
-};
-
-/**
- * Remove chars from end of string.
- */
-export const rtrim = (str, chars) => {
-  chars = chars || WHITE_SPACES;
-
-  let end = str.length - 1,
-    charLen = chars.length,
-    found = true,
-    i,
-    c;
-
-  while (found && end >= 0) {
-    found = false;
-    i = -1;
-    c = str.charAt(end);
-
-    while (++i < charLen) {
-      if (c === chars[i]) {
-        found = true;
-        end--;
-        break;
-      }
-    }
-  }
-
-  return end >= 0 ? str.substring(0, end + 1) : "";
-};
-
-/**
- * Remove white-spaces from beginning and end of string.
- */
-export const trim = (str, chars) => {
-  chars = chars || WHITE_SPACES;
-  return ltrim(rtrim(str, chars), chars);
-};
-
-/**
  * Capture all capital letters following a word boundary (in case the
  * input is in all caps)
  */
@@ -638,22 +642,23 @@ export const abbreviate = str => {
 };
 
 export const includeFile = file => {
-  let script = document.createElement("script");
+  const script = document.createElement("script");
   script.src = file;
   script.type = "text/javascript";
   script.defer = true;
   document.head.appendChild(script);
 };
 
-export let isUndefined = e => typeof e === "undefined",
-  isconst = e => typeof e === "function",
-  isNumber = e => typeof e === "number" && isFinite(e),
-  isObject = e => typeof e === "object",
-  isArray = e => Array.isArray(e),
-  isImage = e => e instanceof HTMLImageElement,
-  isNull = e => e === null,
-  isInt = e => Number(e) === e && e % 1 === 0,
-  isFloat = e => Number(e) === e && e % 1 !== 0;
+export const isUndefined = e => typeof e === "undefined";
+const isconst = e => typeof e === "function";
+// eslint-disable-next-line no-restricted-globals
+const isNumber = e => typeof e === "number" && isFinite(e);
+const isObject = e => typeof e === "object";
+const isArray = e => Array.isArray(e);
+const isImage = e => e instanceof HTMLImageElement;
+const isNull = e => e === null;
+const isInt = e => Number(e) === e && e % 1 === 0;
+const isFloat = e => Number(e) === e && e % 1 !== 0;
 
 export const createSlug = text => {
   return text
@@ -691,25 +696,25 @@ export const sleep = (ms = 0) => {
 };
 
 export const queryParamStringAsObject = fullQueryString => {
-  let query_string = {};
-  let query = fullQueryString;
-  let vars = query.split("&");
+  const queryString = {};
+  const query = fullQueryString;
+  const vars = query.split("&");
   for (let i = 0; i < vars.length; i++) {
-    let pair = vars[i].split("=");
-    if (typeof query_string[pair[0]] === "undefined") {
-      query_string[pair[0]] = decodeURIComponent(pair[1]);
-    } else if (typeof query_string[pair[0]] === "string") {
-      let arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
-      query_string[pair[0]] = arr;
+    const pair = vars[i].split("=");
+    if (typeof queryString[pair[0]] === "undefined") {
+      queryString[pair[0]] = decodeURIComponent(pair[1]);
+    } else if (typeof queryString[pair[0]] === "string") {
+      const arr = [queryString[pair[0]], decodeURIComponent(pair[1])];
+      queryString[pair[0]] = arr;
     } else {
-      query_string[pair[0]].push(decodeURIComponent(pair[1]));
+      queryString[pair[0]].push(decodeURIComponent(pair[1]));
     }
   }
-  return query_string;
+  return queryString;
 };
 
 export const convertTeneoJsonNewToOld = newJson => {
-  let finalJson = {
+  const finalJson = {
     responseData: {
       status: 0,
       isNewSession: false,
@@ -726,6 +731,7 @@ export const convertTeneoJsonNewToOld = newJson => {
   finalJson.responseData.status = newJson.status;
   finalJson.responseData.lastinput = newJson.input.text;
   finalJson.responseData.answer = newJson.output.text;
+  finalJson.responseData.emotion = newJson.output.emotion;
   finalJson.responseData.extraData = newJson.output.parameters;
   finalJson.responseData.link.href = newJson.output.link;
 
@@ -733,34 +739,34 @@ export const convertTeneoJsonNewToOld = newJson => {
 };
 
 export const queryParametersAsObject = () => {
-  let query_string = {};
-  let query = window.location.search.substring(1);
-  let vars = query.split("&");
+  const queryString = {};
+  const query = window.location.search.substring(1);
+  const vars = query.split("&");
   for (let i = 0; i < vars.length; i++) {
-    let pair = vars[i].split("=");
-    if (typeof query_string[pair[0]] === "undefined") {
-      query_string[pair[0]] = decodeURIComponent(pair[1]);
-    } else if (typeof query_string[pair[0]] === "string") {
-      let arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
-      query_string[pair[0]] = arr;
+    const pair = vars[i].split("=");
+    if (typeof queryString[pair[0]] === "undefined") {
+      queryString[pair[0]] = decodeURIComponent(pair[1]);
+    } else if (typeof queryString[pair[0]] === "string") {
+      const arr = [queryString[pair[0]], decodeURIComponent(pair[1])];
+      queryString[pair[0]] = arr;
     } else {
-      query_string[pair[0]].push(decodeURIComponent(pair[1]));
+      queryString[pair[0]].push(decodeURIComponent(pair[1]));
     }
   }
-  return query_string;
+  return queryString;
 };
 
 export const setFullscreen = fullscreen => {
-  let el = document.documentElement;
+  const el = document.documentElement;
   if (fullscreen) {
-    let rfs =
+    const rfs =
       el.requestFullscreen ||
       el.webkitRequestFullScreen ||
       el.mozRequestFullScreen ||
       el.msRequestFullscreen;
     rfs.call(el);
   } else {
-    let rfs =
+    const rfs =
       document.exitFullscreen ||
       document.webkitExitFullscreen ||
       document.mozExitFullscreen ||
@@ -770,26 +776,26 @@ export const setFullscreen = fullscreen => {
 };
 
 export const doesParameterExist = paramName => {
-  let queryString = location.search;
-  let params = queryString.substring(1).split("&");
+  const queryString = window.location.search;
+  const params = queryString.substring(1).split("&");
   for (let i = 0; i < params.length; i++) {
-    let pair = params[i].split("=");
-    if (decodeURIComponent(pair[0]) == paramName) return true;
+    const pair = params[i].split("=");
+    if (decodeURIComponent(pair[0]) === paramName) return true;
   }
   return false;
 };
 
 export const download = (data, filename, type = "text/plain") => {
-  let file = new Blob([data], {
-    type: type
+  const file = new Blob([data], {
+    type
   });
   if (window.navigator.msSaveOrOpenBlob)
     // IE10+
     window.navigator.msSaveOrOpenBlob(file, filename);
   else {
     // Others
-    let a = document.createElement("a"),
-      url = URL.createObjectURL(file);
+    const a = document.createElement("a");
+    const url = URL.createObjectURL(file);
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
@@ -802,12 +808,12 @@ export const download = (data, filename, type = "text/plain") => {
 };
 
 export const getBase64Image = img => {
-  let canvas = document.createElement("canvas");
+  const canvas = document.createElement("canvas");
   canvas.width = img.width;
   canvas.height = img.height;
-  let ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d");
   ctx.drawImage(img, 0, 0);
-  let dataURL = canvas.toDataURL("image/png");
+  const dataURL = canvas.toDataURL("image/png");
   return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 };
 
@@ -827,44 +833,41 @@ export const cloneObjectPromise = obj => {
   return new Promise((resolve, reject) => {
     // this is a deep clone
     try {
-      let clonedObject = obj ? JSON.parse(JSON.stringify(obj)) : obj;
+      const clonedObject = obj ? JSON.parse(JSON.stringify(obj)) : obj;
       resolve(clonedObject);
     } catch (e) {
-      reject(r);
+      reject(e);
     }
   });
 };
-
-export const uuidv4 = require("uuid/v4");
-export const uuid = () => uuidv4();
 
 export const uuidPromise = () => {
   return new Promise(resolve => resolve(uuidv4()));
 };
 
 export const decodeHTML = html => {
-  let txt = document.createElement("textarea");
+  const txt = document.createElement("textarea");
   txt.innerHTML = html;
   return txt.value;
 };
 
 export const generateQueryParams = jsObject =>
   Object.keys(jsObject)
-    .map(key => key + "=" + jsObject[key])
+    .map(key => `${key}=${jsObject[key]}`)
     .join("&");
 
 export const getParameterByName = (name, url) => {
   if (!url) url = window.location.href;
   name = name.replace(/[\]]/g, "\\$&");
-  let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-    results = regex.exec(url);
+  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
+  const results = regex.exec(url);
   if (!results) return null;
   if (!results[2]) return "";
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
 
 export const getUrlVarsAsObj = () => {
-  let vars = {};
+  const vars = {};
   window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
     vars[key] = value;
   });

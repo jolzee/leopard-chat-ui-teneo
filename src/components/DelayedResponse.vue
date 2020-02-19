@@ -13,10 +13,10 @@
 <script>
 export default {
   name: "DelayedResponse",
-  data: function() {
+  props: {},
+  data() {
     return {};
-  },
-  props: {}
+  }
 };
 </script>
 

@@ -10,6 +10,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+
 export default {
   name: "OverlayAlert",
   computed: {

@@ -27,11 +27,14 @@
 <script>
 import "plyr/dist/plyr.css";
 import { mapGetters } from "vuex";
+
 export default {
   components: { VuePlyr: () => import("vue-plyr") },
-  props: ["videoId"],
-  computed: {
-    ...mapGetters(["textColor"])
+  props: {
+    videoId: {
+      type: String,
+      required: true
+    }
   },
   data() {
     return {
@@ -53,6 +56,9 @@ export default {
         }
       }
     };
+  },
+  computed: {
+    ...mapGetters(["textColor"])
   }
 };
 </script>

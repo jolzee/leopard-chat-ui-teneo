@@ -3,23 +3,23 @@
   <div v-if="item.type === 'reply'" :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3' : ''">
     <v-row v-if="itemText !== '<span>'" justify="start" no-gutters class="pr-3 pl-1 pt-2">
       <v-col
+        v-if="showChatIcons && !$vuetify.breakpoint.smAndDown"
         cols="2"
         class="text-center d-none d-sm-block"
-        v-if="showChatIcons && !$vuetify.breakpoint.smAndDown"
       >
         <v-menu v-if="isLiveAgentAssist" close-on-click close-on-content-click offset-y>
           <template v-slot:activator="{ on }">
             <v-btn
-              v-on="on"
-              aria-hidden="true"
               v-long-press="1000"
-              @long-press-start="swapInputButton"
+              aria-hidden="true"
               :color="!$vuetify.theme.dark ? responseLookAndFeel.iconColor : ''"
               class="teneo-response-icon"
               text
               tile
               icon
               large
+              v-on="on"
+              @long-press-start="swapInputButton"
             >
               <v-icon large>{{ getResponseIcon }}</v-icon>
             </v-btn>
@@ -27,15 +27,15 @@
 
           <v-list class="liveAgentAssitMenu">
             <v-hover
-              v-slot:default="{ hover }"
               v-for="menuItem in dynamicAgentAssistMenu"
+              v-slot:default="{ hover }"
               :key="menuItem.title"
             >
-              <v-list-item @click="menuItem.method" :class="hover ? 'primary' : ''">
+              <v-list-item :class="hover ? 'primary' : ''" @click="menuItem.method">
                 <v-list-item-title :class="hover ? 'white--text' : ''">
-                  <v-icon :color="hover ? 'secondary' : ''" class="mr-2">
-                    {{ menuItem.icon }}
-                  </v-icon>
+                  <v-icon :color="hover ? 'secondary' : ''" class="mr-2">{{
+                    menuItem.icon
+                  }}</v-icon>
                   {{ menuItem.title }}
                 </v-list-item-title>
               </v-list-item>
@@ -83,7 +83,7 @@
     <span v-for="(extension, index) in itemExtensions(item)" :key="index + 'inlines' + uuid">
       <v-row v-if="hasInlineType(extension, 'youTube')" no-gutters class="px-3 pt-2">
         <v-col cols="12">
-          <YouTube :videoId="youTubeVideoId(extension)" class="mt-2"></YouTube>
+          <YouTube :video-id="youTubeVideoId(extension)" class="mt-2"></YouTube>
         </v-col>
       </v-row>
       <v-row v-if="hasInlineType(extension, 'audio')" no-gutters class="px-3 pt-2">
@@ -93,7 +93,7 @@
       </v-row>
       <v-row v-if="hasInlineType(extension, 'vimeo')" no-gutters class="px-3 pt-2">
         <v-col cols="12">
-          <Vimeo :videoId="vimeoId(extension)" class="mt-2"></Vimeo>
+          <Vimeo :video-id="vimeoId(extension)" class="mt-2"></Vimeo>
         </v-col>
       </v-row>
       <v-row v-if="hasInlineType(extension, 'video')" no-gutters class="px-3 pt-2">
@@ -117,7 +117,7 @@
       </v-row>
       <v-row v-if="hasInlineType(extension, 'carousel')" no-gutters class="px-3 pt-2">
         <v-col cols="12">
-          <Carousel :imageItems="carouselImageArray(extension)" class="mt-2"></Carousel>
+          <Carousel :image-items="carouselImageArray(extension)" class="mt-2"></Carousel>
         </v-col>
       </v-row>
       <v-row v-if="hasInlineType(extension, 'table')" no-gutters class="px-3 pt-2">
@@ -131,13 +131,13 @@
             <template v-slot:default>
               <thead>
                 <tr>
-                  <th class="text-left" v-for="header in extension.headers" :key="header + uuid">
+                  <th v-for="header in extension.headers" :key="header + uuid" class="text-left">
                     {{ header }}
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(row, index) in extension.rows" :key="index + uuid">
+                <tr v-for="(row, rowIndex) in extension.rows" :key="rowIndex + uuid">
                   <td v-for="(column, colIndex) in row" :key="colIndex + uuid">{{ column }}</td>
                 </tr>
               </tbody>
@@ -154,7 +154,7 @@
         no-gutters
         class="pr-3 pl-1 pt-1"
       >
-        <v-col cols="2" class="text-center" v-if="showChatIcons">
+        <v-col v-if="showChatIcons" cols="2" class="text-center">
           <!-- <v-btn
             v-long-press="1000"
             tabindex="-1"
@@ -168,7 +168,7 @@
             large
           >
             <v-icon large class="white--text">{{ getResponseIcon }}</v-icon>
-          </v-btn>-->
+					</v-btn>-->
         </v-col>
         <v-col>
           <v-card
@@ -195,26 +195,24 @@
       v-if="showDelayedResponse && itemIndexInDialog === dialog.length - 1"
     ></DelayedResponse>
     <!-- show any options in the response: for example Yes, No Maybe -->
-    <v-col cols="12" v-if="routerCheckList && itemIndexInDialog === dialog.length - 1" class="px-3">
+    <v-col v-if="routerCheckList && itemIndexInDialog === dialog.length - 1" cols="12" class="px-3">
       <v-card>
         <div class="d-flex flex-no-wrap justify-space-between">
           <div>
-            <h2 class="headline">
-              {{ routerCheckList.title }}
-            </h2>
+            <h2 class="headline">{{ routerCheckList.title }}</h2>
 
             <v-row
+              v-for="(routerItem, index) in routerCheckList.items"
+              :key="index"
               align="center"
               justify="start"
-              v-for="(item, index) in routerCheckList.items"
-              :key="index"
               class="ml-1"
             >
               <v-col cols="2">
-                <v-icon :color="item.color">{{ item.icon }}</v-icon>
+                <v-icon :color="routerItem.color">{{ routerItem.icon }}</v-icon>
               </v-col>
               <v-col cols="10">
-                <p>{{ item.label }}</p>
+                <p>{{ routerItem.label }}</p>
               </v-col>
             </v-row>
           </div>
@@ -233,10 +231,10 @@
       class="mb-1 mx-3 pt-0 px-1 pb-2 elevation-0 text-center transparent teneo-response-collection"
     >
       <!-- Button Options -->
-      <v-card-text class="teneo-button-options pt-2 pb-2" v-if="!hasLongOptions">
-        <h2 v-text="getOptions.title" class="subtitle-1 font-weight-bold"></h2>
+      <v-card-text v-if="!hasLongOptions" class="teneo-button-options pt-2 pb-2">
+        <h2 class="subtitle-1 font-weight-bold" v-text="getOptions.title"></h2>
         <div v-if="getOptions.html" class="elevation-2 mt-2" v-html="getOptions.items"></div>
-        <span v-else v-for="(option, optionIndex) in getOptions.items" :key="optionIndex + uuid">
+        <span v-for="(option, optionIndex) in getOptions.items" v-else :key="optionIndex + uuid">
           <v-btn
             height="25"
             class="option-btn mr-2 mt-2"
@@ -245,9 +243,9 @@
             :aria-label="option.aria ? option.aria : option.name"
             @click="optionClicked(option)"
           >
-            <v-icon v-if="option.icon" left style="padding-top: 2px; opacity: 0.7 !important;">{{
-              `mdi-${option.icon}`
-            }}</v-icon>
+            <v-icon v-if="option.icon" left style="padding-top: 2px; opacity: 0.7 !important;">
+              {{ `mdi-${option.icon}` }}
+            </v-icon>
             {{ option.name }}
           </v-btn>
         </span>
@@ -258,13 +256,13 @@
         <v-list-item-group color="primary">
           <template v-for="(option, altOptionIndex) in getOptions.items">
             <v-list-item
-              tag="a"
               :key="altOptionIndex + 'tile' + uuid"
-              @click="optionClicked(option)"
+              tag="a"
               :aria-label="option.aria ? option.aria : option.name"
               class="text-left pl-2 pr-2"
               style="height: 40px;"
               dense
+              @click="optionClicked(option)"
             >
               <v-list-item-icon class="mr-4">
                 <v-icon>{{ getLongListIcon(altOptionIndex) }}</v-icon>
@@ -272,8 +270,8 @@
               <v-list-item-content class="text-left">
                 <!-- <v-list-item-title v-html="option.name"></v-list-item-title> -->
                 <v-list-item-subtitle
-                  v-html="option.name"
                   style="white-space: unset;"
+                  v-html="option.name"
                 ></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -283,8 +281,8 @@
     </v-card>
     <!-- more info for modals & calendar picker button -->
     <v-row
-      no-gutters
       v-if="hasFeedbackForm(item) && itemIndexInDialog === dialog.length - 1"
+      no-gutters
       class="mr-3"
     >
       <v-col cols="12" class="text-right mb-2">
@@ -306,11 +304,11 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row no-gutters v-if="!completedForm && hasForm()" class="mr-4">
+    <v-row v-if="!completedForm && hasForm()" no-gutters class="mr-4">
       <v-col cols="12" class="text-right mb-2">
         <Form
           v-if="mustShowForm()"
-          :formConfig="getFormConfig()"
+          :form-config="getFormConfig()"
           @showForm="showForm()"
           @hideForm="hideForm()"
           @completed="completed()"
@@ -337,10 +335,10 @@
     </v-row>
 
     <v-row
-      no-gutters
       v-if="
         (item.hasExtraData && hasModal(item) && notLiveChatTranscript) || itemHasLongResponse(item)
       "
+      no-gutters
       class="mt-0 mr-3"
     >
       <v-col cols="12" class="text-right mb-1">
@@ -351,16 +349,16 @@
           small
           @click="showModal"
         >
-          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;">{{
-            modalButtonIcon
-          }}</v-icon>
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;">
+            {{ modalButtonIcon }}
+          </v-icon>
           {{ modalButtonText.text }}
         </v-btn>
       </v-col>
     </v-row>
     <v-row
-      no-gutters
       v-if="mustShowDate && itemIndexInDialog === dialog.length - 1"
+      no-gutters
       class="mt-2 mr-3"
     >
       <!-- Date Picker -->
@@ -379,8 +377,8 @@
     </v-row>
 
     <v-row
-      no-gutters
       v-if="mustShowTime && itemIndexInDialog === dialog.length - 1"
+      no-gutters
       class="mt-2 mr-3"
     >
       <!-- Time Picker -->
@@ -416,12 +414,13 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging").getLogger("ChatTeneoResponse.vue");
 import LongPress from "vue-directive-long-press";
 import { mapGetters } from "vuex";
 import copy from "copy-to-clipboard";
+
+const logger = require("@/utils/logging").getLogger("ChatTeneoResponse.vue");
 const isHtml = require("is-html");
-var stripHtml = require("striptags");
+const stripHtml = require("striptags");
 
 export default {
   name: "ChatTeneoResponse",
@@ -441,7 +440,16 @@ export default {
     YouTube: () => import("@/components/YouTube"),
     Form: () => import("@/components/Form")
   },
-  props: ["item", "itemIndexInDialog"],
+  props: {
+    item: {
+      type: Object,
+      required: true
+    },
+    itemIndexInDialog: {
+      type: Number,
+      required: true
+    }
+  },
   data() {
     return {
       simpleTable: {
@@ -540,11 +548,11 @@ export default {
       "youTubeVideoId"
     ]),
     routerCheckList() {
-      let extensions = this.itemExtensions(this.item);
+      const extensions = this.itemExtensions(this.item);
       let routerCheckList = null;
 
       extensions.forEach(extension => {
-        if (extension.name.startsWith("displayRouterCheckList")) {
+        if (String(extension.name).startsWith("displayRouterCheckList")) {
           routerCheckList = extension.parameters;
         }
       });
@@ -558,28 +566,29 @@ export default {
         this.item.teneoResponse.emotion !== "" &&
         decodeURIComponent(this.item.teneoResponse.emotion).indexOf("|") !== -1
       ) {
-        let rawEmotion = decodeURIComponent(this.item.teneoResponse.emotion);
-        icon = "mdi-" + rawEmotion.split("|")[1].trim();
+        const rawEmotion = decodeURIComponent(this.item.teneoResponse.emotion);
+        icon = `mdi-${rawEmotion.split("|")[1].trim()}`;
       }
       return icon;
     },
     dynamicAgentAssistMenu() {
-      let filtered = this.agentAssist.menu.filter(menuItem => {
+      const filtered = this.agentAssist.menu.filter(menuItem => {
         if ("condition" in menuItem) {
           if (typeof menuItem.condition === "boolean") {
             return menuItem.condition;
-          } else if (typeof menuItem.condition === "function") {
+          }
+          if (typeof menuItem.condition === "function") {
             return menuItem.condition();
           }
-        } else {
-          return true;
+          return false;
         }
+        return true;
       });
 
       return filtered;
     },
     modalButtonText() {
-      let response = {
+      const response = {
         text: this.$t("button.more"),
         aria: this.$t("button.more")
       };
@@ -588,7 +597,7 @@ export default {
         response.aria = "Read full response will open in a new window.";
         return response;
       }
-      let extensions = this.itemExtensions(this.item);
+      const extensions = this.itemExtensions(this.item);
       let countOfNonInlines = 0;
       let buttonLabel = this.$t("button.more");
       let aria = this.$t("button.more");
@@ -598,15 +607,15 @@ export default {
         buttonLabel = this.$t("button.page");
       }
 
-      let externalExtensions = extensions.filter(
+      const externalExtensions = extensions.filter(
         extension =>
           this.item.teneoResponse.link.href === "" &&
-          (!extension.name.startsWith("displayCollection") ||
+          (!String(extension.name).startsWith("displayCollection") ||
             ("inline" in extension && !extension.inline))
       );
 
       externalExtensions.forEach(extension => {
-        let ariaButtonLabel = extension.title
+        const ariaButtonLabel = extension.title
           ? extension.title
           : extension.aria
           ? extension.aria
@@ -615,28 +624,28 @@ export default {
           ? `about "${ariaButtonLabel}" will open in a new window`
           : `available will open in a new window`;
 
-        countOfNonInlines++;
-        if (extension.name.startsWith("displayVideo")) {
+        countOfNonInlines += 1;
+        if (String(extension.name).startsWith("displayVideo")) {
           buttonLabel = this.$t("button.video");
           aria = `Video ${aria}`;
-        } else if (extension.name.startsWith("displayPanel")) {
+        } else if (String(extension.name).startsWith("displayPanel")) {
           buttonLabel = this.$t("button.more");
           aria = `More information ${aria}`;
-        } else if (extension.name.startsWith("displayImageCarousel")) {
+        } else if (String(extension.name).startsWith("displayImageCarousel")) {
           buttonLabel = this.$t("button.image");
           aria = `Image carousel ${aria}`;
-        } else if (extension.name.startsWith("displayImage")) {
+        } else if (String(extension.name).startsWith("displayImage")) {
           buttonLabel = this.$t("button.image");
           aria = `Image ${aria}`;
-        } else if (extension.name.startsWith("displayModal")) {
+        } else if (String(extension.name).startsWith("displayModal")) {
           buttonLabel = this.$t("button.more");
           aria = `More information ${aria}`;
-        } else if (extension.name.startsWith("displayMap")) {
+        } else if (String(extension.name).startsWith("displayMap")) {
           buttonLabel = this.$t("button.map");
           aria = `Map ${aria}`;
         } else if (
-          extension.name.startsWith("displayTable") ||
-          extension.name.startsWith("displayTransactionsTable")
+          String(extension.name).startsWith("displayTable") ||
+          String(extension.name).startsWith("displayTransactionsTable")
         ) {
           aria = `Table ${aria}`;
           buttonLabel = this.$t("button.table");
@@ -646,35 +655,35 @@ export default {
         aria = "More information will open in a new window";
         buttonLabel = this.$t("button.more"); // fallback to "more" when there could be multiple
       }
-      response.aria = !aria.startsWith("available")
+      response.aria = !String(aria).startsWith("available")
         ? aria
         : "More information will open in a new window";
-      response.text = buttonLabel ? buttonLabel : this.$t("button.more");
+      response.text = buttonLabel || this.$t("button.more");
       return response;
     },
     modalButtonIcon() {
-      let extensions = this.itemExtensions(this.item);
+      const extensions = this.itemExtensions(this.item);
       let countOfNonInlines = 0;
       let iconName = "mdi-arrow-top-left-thick";
       extensions.forEach(extension => {
         if (!extension.inline || this.item.teneoResponse.link.href !== "") {
-          countOfNonInlines++;
+          countOfNonInlines += 1;
         }
 
-        if (extension.name.startsWith("displayVideo")) {
+        if (String(extension.name).startsWith("displayVideo")) {
           iconName = "mdi-youtube";
-        } else if (extension.name.startsWith("displayImageCarousel")) {
+        } else if (String(extension.name).startsWith("displayImageCarousel")) {
           iconName = "mdi-view-carousel";
-        } else if (extension.name.startsWith("displayImage")) {
+        } else if (String(extension.name).startsWith("displayImage")) {
           iconName = "mdi-file-image";
         } else if (
-          extension.name.startsWith("displayTable") ||
-          extension.name.startsWith("displayTransactionsTable")
+          String(extension.name).startsWith("displayTable") ||
+          String(extension.name).startsWith("displayTransactionsTable")
         ) {
           iconName = "mdi-table-large";
-        } else if (extension.name.startsWith("displayMap")) {
+        } else if (String(extension.name).startsWith("displayMap")) {
           iconName = "mdi-google-maps";
-        } else if (extension.name.startsWith("displayAudio")) {
+        } else if (String(extension.name).startsWith("displayAudio")) {
           iconName = "mdi-music-box";
         }
 
@@ -692,7 +701,7 @@ export default {
     itemText() {
       let itemText = this.item.text;
       if (itemText.includes("||")) {
-        let firstAnswer = itemText.split("||")[0].trim();
+        const firstAnswer = itemText.split("||")[0].trim();
         itemText = firstAnswer;
       } else {
         itemText = this.itemAnswerTextCropped(this.item);
@@ -700,11 +709,11 @@ export default {
       return itemText;
     },
     hasCollection() {
-      let extensions = this.itemExtensions(this.item);
+      const extensions = this.itemExtensions(this.item);
       let hasOptions = false;
 
       extensions.forEach(extension => {
-        if (extension.name.startsWith("displayCollection")) {
+        if (String(extension.name).startsWith("displayCollection")) {
           hasOptions = true;
         }
       });
@@ -715,23 +724,22 @@ export default {
       return this.item.type === "reply" && this.item.text.includes("||");
     },
     getChunks() {
-      let chunks = this.item.text.split("||");
+      const chunks = this.item.text.split("||");
       chunks.shift(); // get everything but the first one
       return chunks;
     },
     dialog() {
       if (this.$route.name === "chat") {
         return this.dialogs ? this.dialogs : [];
-      } else {
-        // history in session storage
-        return this.getLatestDialogHistory ? this.getLatestDialogHistory : [];
       }
+      // history in session storage
+      return this.getLatestDialogHistory ? this.getLatestDialogHistory : [];
     },
     hasPermanentOptions() {
-      let extensions = this.itemExtensions(this.item);
+      const extensions = this.itemExtensions(this.item);
       let hasPermanentOptions = false;
       extensions.forEach(extension => {
-        if (extension.name.startsWith("displayCollection")) {
+        if (String(extension.name).startsWith("displayCollection")) {
           if (extension.permanent !== "undefined") {
             hasPermanentOptions = extension.permanent;
           }
@@ -740,10 +748,10 @@ export default {
       return hasPermanentOptions;
     },
     hasLongOptions() {
-      let extensions = this.itemExtensions(this.item);
+      const extensions = this.itemExtensions(this.item);
       let hasLongOptions = false;
       extensions.forEach(extension => {
-        if (extension.name.startsWith("displayCollection")) {
+        if (String(extension.name).startsWith("displayCollection")) {
           if (extension.hasLongOptions !== "undefined") {
             hasLongOptions = extension.hasLongOptions;
           }
@@ -752,7 +760,7 @@ export default {
       return hasLongOptions;
     },
     getOptions() {
-      let extensions = this.itemExtensions(this.item);
+      const extensions = this.itemExtensions(this.item);
       // only get the first set of options.
       let options = {};
       extensions.forEach(extension => {
@@ -769,7 +777,7 @@ export default {
       return false;
     },
     notLiveChatTranscript() {
-      let transcript = decodeURIComponent(this.item.teneoResponse.extraData.liveChat);
+      const transcript = decodeURIComponent(this.item.teneoResponse.extraData.liveChat);
       return transcript === "undefined";
     },
     mustShowTime() {
@@ -784,12 +792,10 @@ export default {
       const prefix508 = `<span class="sr-only">Chat bot said.</span>`;
       if (!isHtml(text)) {
         text = `<p>${prefix508}${text}</p>`;
+      } else if (String(text).startsWith("<p>")) {
+        text = `<p>${prefix508}${text.substring(3)}`;
       } else {
-        if (text.startsWith("<p>")) {
-          text = `<p>${prefix508}${text.substring(3)}`;
-        } else {
-          text = `<p>${prefix508}${text}</p>`; //TODO: Don't like this as we could have nested paragraphs
-        }
+        text = `<p>${prefix508}${text}</p>`; // TODO: Don't like this as we could have nested paragraphs
       }
       return text;
     },
@@ -866,20 +872,20 @@ export default {
     mustShowForm() {
       if (this.displayForm) {
         return true;
-      } else {
-        let formConfig = this.getFormConfig();
-
-        if (
-          this.isLastInDialog() &&
-          !this.hasFormAutomaticallyDisplayed &&
-          formConfig &&
-          formConfig.openAutomatically
-        ) {
-          this.hasFormAutomaticallyDisplayed = true;
-          this.displayForm = true;
-          return true;
-        }
       }
+      const formConfig = this.getFormConfig();
+
+      if (
+        this.isLastInDialog() &&
+        !this.hasFormAutomaticallyDisplayed &&
+        formConfig &&
+        formConfig.openAutomatically
+      ) {
+        this.hasFormAutomaticallyDisplayed = true;
+        this.displayForm = true;
+        return true;
+      }
+
       return false;
     },
     completed() {
@@ -916,14 +922,13 @@ export default {
     hasCard(item) {
       if (item.teneoResponse.extraData && item.teneoResponse.extraData.displayCard) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
     getLongListIcon(altOptionIndex) {
       let iconName = "mdi-numeric-9-plus-box-outline";
       if (altOptionIndex + 1 <= 9) {
-        iconName = "mdi-numeric-" + (altOptionIndex + 1) + "-box-outline";
+        iconName = `mdi-numeric-${altOptionIndex + 1}-box-outline`;
       }
       return iconName;
     },
@@ -947,11 +952,11 @@ export default {
     optionClicked(option) {
       this.$store.commit("SHOW_PROGRESS_BAR");
       this.$store.commit("SET_USER_INPUT", option.text ? option.text : option.name);
-      let optionClickParam = "&isClick=true";
+      const optionClickParam = "&isClick=true";
       this.$store
         .dispatch(
           "sendUserInput",
-          option.params ? "&" + option.params + optionClickParam : optionClickParam
+          option.params ? `&${option.params}${optionClickParam}` : optionClickParam
         )
         .then(() => {
           this.$emit("handleFocus");

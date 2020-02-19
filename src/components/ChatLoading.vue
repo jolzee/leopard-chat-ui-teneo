@@ -8,5 +8,6 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("ChatLoading.vue");
+
 export default {};
 </script>

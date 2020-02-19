@@ -1,9 +1,9 @@
 <template>
-  <v-row justify="center" v-if="dialog">
+  <v-row v-if="dialog" justify="center">
     <v-dialog v-model="dialog" persistent max-width="500" content-class="trainbot">
       <v-card>
         <v-card-title class="title">
-          <v-icon class="mr-2" color="primary">mdi-teach</v-icon> Train Bot
+          <v-icon class="mr-2" color="primary">mdi-teach</v-icon>Train Bot
         </v-card-title>
         <v-card-text class="px-1">
           <v-col cols="12">
@@ -13,14 +13,13 @@
               color="success"
               elevation="2"
               icon="mdi-comment-question-outline"
+              >{{ question }}</v-alert
             >
-              {{ question }}
-            </v-alert>
           </v-col>
           <v-col cols="12">
             <v-textarea
-              solo
               v-model="answer"
+              solo
               name="answer"
               rows="3"
               label="Expected Answer"
@@ -34,8 +33,8 @@
           </v-col>
           <v-col cols="12">
             <v-textarea
-              solo
               v-model="comment"
+              solo
               name="comment"
               rows="3"
               label="Additional Comments"
@@ -60,9 +59,15 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("AgentAssistTrainBotForm.vue");
+
 export default {
   name: "AgentAsssitTrainBotForm",
-  props: ["question"],
+  props: {
+    question: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       dialog: true,
@@ -70,10 +75,10 @@ export default {
       comment: ""
     };
   },
+  computed: {},
   mounted() {
     this.$store.commit("SET_USER_INPUT", "");
   },
-  computed: {},
   methods: {
     trainTeneo() {
       this.$store.commit("SET_USER_INPUT", "");

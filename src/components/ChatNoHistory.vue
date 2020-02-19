@@ -5,7 +5,9 @@
         <v-card-title primary-title>
           <v-card-text>
             <div class="text-center">
-              <h3 class="headline mb-2 text-center">{{ $t("no.chat.history.title") }}</h3>
+              <h3 class="headline mb-2 text-center">
+                {{ $t("no.chat.history.title") }}
+              </h3>
               <div class="text-center">{{ $t("no.chat.history.body") }}</div>
             </div>
           </v-card-text>
@@ -30,6 +32,7 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("ChatNoHistory.vue");
+
 export default {
   data() {
     return {};

@@ -12,7 +12,7 @@
     <v-row no-gutters>
       <v-col cols="12">
         <v-toolbar dark color="primary">
-          <v-btn fab small @click="closeModal" color="secondary">
+          <v-btn fab small color="secondary" @click="closeModal">
             <v-icon dark medium>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>{{ $t("more.info.title") }}</v-toolbar-title>
@@ -26,20 +26,20 @@
         >
           <v-container class="modal-container">
             <span v-for="(item, index) in items" :key="index">
-              <div class="title add-padding" v-if="item.type === 'title'" v-html="item.value"></div>
+              <div v-if="item.type === 'title'" class="title add-padding" v-html="item.value"></div>
               <div
-                class="grey--text add-padding"
                 v-if="item.type === 'subtitle'"
+                class="grey--text add-padding"
                 v-html="item.value"
               ></div>
-              <div class="add-padding" v-if="item.type === 'html'" v-html="item.value"></div>
-              <YouTube v-if="item.type === 'youTube'" :videoId="item.value"></YouTube>
+              <div v-if="item.type === 'html'" class="add-padding" v-html="item.value"></div>
+              <YouTube v-if="item.type === 'youTube'" :video-id="item.value"></YouTube>
               <Audio v-if="item.type === 'audio'" :url="item.value"></Audio>
-              <Vimeo v-if="item.type === 'vimeo'" :videoId="item.value"></Vimeo>
+              <Vimeo v-if="item.type === 'vimeo'" :video-id="item.value"></Vimeo>
               <Video v-if="item.type === 'video'" :url="item.value" type="mp4"></Video>
               <Map v-if="item.type === 'map'" :address="item.value"></Map>
               <ImageAnimation v-if="item.type === 'image'" :url="item.value"></ImageAnimation>
-              <Carousel v-if="item.type === 'carousel'" :imageItems="item.value"></Carousel>
+              <Carousel v-if="item.type === 'carousel'" :image-items="item.value"></Carousel>
             </span>
           </v-container>
           <v-row align="start" justify="center">
@@ -47,8 +47,8 @@
             <v-card-actions>
               <!-- Yes there are keyboard shortcuts to close the modal window -->
               <v-btn
-                color="primary"
                 v-shortkey="['ctrl', 'alt', 'arrowleft']"
+                color="primary"
                 @shortkey.native="closeModal"
                 @click.native="closeModal"
                 >{{ $t("back.to.chat.button") }}</v-btn
@@ -65,7 +65,6 @@
 const logger = require("@/utils/logging").getLogger("CustomModal.vue");
 
 export default {
-  props: ["items", "toolbarWidth"],
   components: {
     Audio: () => import("@/components/Audio"),
     Carousel: () => import("@/components/Carousel"),
@@ -74,6 +73,12 @@ export default {
     Video: () => import("@/components/Video"),
     Vimeo: () => import("@/components/Vimeo"),
     YouTube: () => import("@/components/YouTube")
+  },
+  props: {
+    items: {
+      type: Array,
+      required: true
+    }
   },
   data() {
     return {};

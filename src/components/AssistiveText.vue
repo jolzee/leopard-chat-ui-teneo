@@ -8,7 +8,10 @@
 <script>
 export default {
   props: {
-    value: String,
+    value: {
+      type: String,
+      required: true
+    },
     ariaLive: {
       type: String,
       default: "polite",
@@ -22,19 +25,19 @@ export default {
       textToRead: []
     };
   },
-  methods: {
-    say(text) {
-      if (text) {
-        this.textToRead.push(text);
-      }
+  watch: {
+    value(val) {
+      this.say(val);
     }
   },
   mounted() {
     this.say(this.value);
   },
-  watch: {
-    value(val) {
-      this.say(val);
+  methods: {
+    say(text) {
+      if (text) {
+        this.textToRead.push(text);
+      }
     }
   }
 };

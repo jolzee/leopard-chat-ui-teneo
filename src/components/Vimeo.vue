@@ -16,9 +16,15 @@
 // import VuePlyr from "vue-plyr";
 // const VuePlyr = () => import("vue-plyr");
 import "plyr/dist/plyr.css";
+
 export default {
   components: { VuePlyr: () => import("vue-plyr") },
-  props: ["videoId"],
+  props: {
+    videoId: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {};
   }

@@ -32,23 +32,23 @@
       </v-card>
     </v-col>
     <v-col
+      v-if="showChatIcons && !$vuetify.breakpoint.smAndDown"
       cols="2"
       class="text-center d-none d-sm-block"
-      v-if="showChatIcons && !$vuetify.breakpoint.smAndDown"
     >
       <v-menu v-if="isLiveAgentAssist" close-on-click close-on-content-click offset-y>
         <template v-slot:activator="{ on }">
           <v-btn
-            v-on="on"
-            aria-hidden="true"
             v-long-press="1000"
-            @long-press-start="swapInputButton"
+            aria-hidden="true"
             class="teneo-userinput-icon"
             text
             tile
             icon
             large
             :color="`${questionLookAndFeel.iconColor} white--text`"
+            v-on="on"
+            @long-press-start="swapInputButton"
             @click="updateInputBox('')"
           >
             <v-icon large>{{ userIcon }}</v-icon>
@@ -57,15 +57,13 @@
 
         <v-list class="liveAgentAssitMenu">
           <v-hover
-            v-slot:default="{ hover }"
             v-for="menuItem in agentAssist.menu"
+            v-slot:default="{ hover }"
             :key="menuItem.title"
           >
-            <v-list-item @click="menuItem.method" :class="hover ? 'primary' : ''">
+            <v-list-item :class="hover ? 'primary' : ''" @click="menuItem.method">
               <v-list-item-title :class="hover ? 'white--text' : ''">
-                <v-icon :color="hover ? 'secondary' : ''" class="mr-2">
-                  {{ menuItem.icon }}
-                </v-icon>
+                <v-icon :color="hover ? 'secondary' : ''" class="mr-2">{{ menuItem.icon }}</v-icon>
                 {{ menuItem.title }}
               </v-list-item-title>
             </v-list-item>
@@ -74,38 +72,38 @@
       </v-menu>
       <template v-else>
         <v-avatar
-          tabindex="-1"
-          aria-hidden="true"
           v-if="authenticated && userProfileImage"
           v-long-press="1000"
-          @long-press-start="swapInputButton"
+          tabindex="-1"
+          aria-hidden="true"
           class="teneo-userinput-icon elevation-2"
           fab
           small
+          @long-press-start="swapInputButton"
           @click="updateInputBox(item.text)"
         >
           <img :src="userProfileImage" :alt="displayName" />
         </v-avatar>
         <v-btn
           v-else
+          v-long-press="1000"
           aria-hidden="true"
           tabindex="-1"
-          v-long-press="1000"
-          @long-press-start="swapInputButton"
           class="teneo-userinput-icon"
           text
           tile
           icon
           large
           :color="`${!$vuetify.theme.dark ? questionLookAndFeel.iconColor : 'white'}`"
+          @long-press-start="swapInputButton"
           @click="updateInputBox(item.text)"
         >
           <v-icon large>{{ userIcon }}</v-icon>
         </v-btn>
       </template>
-      <v-snackbar v-model="snackbar" absolute color="primary" :timeout="snackBarTimeout" top>{{
-        snackBarText
-      }}</v-snackbar>
+      <v-snackbar v-model="snackbar" absolute color="primary" :timeout="snackBarTimeout" top>
+        {{ snackBarText }}
+      </v-snackbar>
       <AgentAssistTrainBotForm
         v-if="agentAssist.trainForm"
         :question="agentAssist.trainFormQuestion"
@@ -117,11 +115,13 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging").getLogger("ChatUserQuestion.vue");
 import LongPress from "vue-directive-long-press";
 import copy from "copy-to-clipboard";
-var stripHtml = require("striptags");
 import { mapGetters } from "vuex";
+
+const logger = require("@/utils/logging").getLogger("ChatUserQuestion.vue");
+const stripHtml = require("striptags");
+
 export default {
   name: "ChatUserQuestion",
   components: {
@@ -130,7 +130,16 @@ export default {
   directives: {
     "long-press": LongPress
   },
-  props: ["item", "itemIndexInDialog"],
+  props: {
+    item: {
+      type: Object,
+      required: true
+    },
+    itemIndexInDialog: {
+      type: Number,
+      required: true
+    }
+  },
   data() {
     return {
       snackbar: false,
@@ -163,6 +172,27 @@ export default {
         ]
       }
     };
+  },
+  computed: {
+    ...mapGetters([
+      "leopardFont",
+      "questionLookAndFeel",
+      "isLiveAgentAssist",
+      "showChatIcons",
+      "dialogs",
+      "getLatestDialogHistory",
+      "authenticated",
+      "userProfileImage",
+      "displayName",
+      "userIcon"
+    ]),
+    dialog() {
+      if (this.$route.name === "chat") {
+        return this.dialogs ? this.dialogs : [];
+      }
+      // history in session storage
+      return this.getLatestDialogHistory ? this.getLatestDialogHistory : [];
+    }
   },
   methods: {
     determineCardColor() {
@@ -208,28 +238,6 @@ export default {
     },
     swapInputButton() {
       this.$emit("swapInputButton");
-    }
-  },
-  computed: {
-    ...mapGetters([
-      "leopardFont",
-      "questionLookAndFeel",
-      "isLiveAgentAssist",
-      "showChatIcons",
-      "dialogs",
-      "getLatestDialogHistory",
-      "authenticated",
-      "userProfileImage",
-      "displayName",
-      "userIcon"
-    ]),
-    dialog() {
-      if (this.$route.name === "chat") {
-        return this.dialogs ? this.dialogs : [];
-      } else {
-        // history in session storage
-        return this.getLatestDialogHistory ? this.getLatestDialogHistory : [];
-      }
     }
   }
 };

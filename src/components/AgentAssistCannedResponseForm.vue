@@ -1,10 +1,10 @@
 <template>
-  <v-row justify="center" v-if="showDialog">
+  <v-row v-if="showDialog" justify="center">
     <v-dialog v-model="showDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
           <span class="title">
-            <v-icon class="mx-2" color="primary">mdi-book-plus</v-icon> New canned response
+            <v-icon class="mx-2" color="primary">mdi-book-plus</v-icon>New canned response
           </span>
         </v-card-title>
         <v-card-text>
@@ -12,11 +12,11 @@
             <v-row>
               <v-col cols="12">
                 <v-textarea
+                  v-model="cannedResponseText"
                   name="Text of the canned response"
                   auto-grow
                   solo
                   label="Canned Response Text"
-                  v-model="cannedResponseText"
                   hint="Copied from the bot but you can change it"
                   outlined
                   persistent-hint
@@ -26,8 +26,8 @@
 
               <v-col cols="12">
                 <v-combobox
-                  outlined
                   v-model="tags"
+                  outlined
                   :filter="filter"
                   :hide-no-data="!search"
                   :items="items"
@@ -44,9 +44,9 @@
                   <template v-slot:no-data>
                     <v-list-item>
                       <span class="subheading mr-2">Create</span>
-                      <v-chip :color="`${colors[nonce - 1]} lighten-3`" label small>
-                        {{ search | tagify }}
-                      </v-chip>
+                      <v-chip :color="`${colors[nonce - 1]} lighten-3`" label small>{{
+                        search | tagify
+                      }}</v-chip>
                     </v-list-item>
                   </template>
                   <template v-slot:selection="{ attrs, item, parent, selected }">
@@ -59,13 +59,11 @@
                       small
                     >
                       <v-icon small left class="mr-1">mdi-pound</v-icon>
-                      <span class="pr-2">
-                        {{ item.text | tagify }}
-                      </span>
+                      <span class="pr-2">{{ item.text | tagify }}</span>
                       <v-icon small @click="parent.selectItem(item)">mdi-tag-minus</v-icon>
                     </v-chip>
                   </template>
-                  <template v-slot:item="{ index, item }">
+                  <template v-slot:item="{ editingIndex, item }">
                     <v-text-field
                       v-if="editing === item"
                       v-model="editing.text"
@@ -74,14 +72,14 @@
                       background-color="transparent"
                       hide-details
                       solo
-                      @keyup.enter="edit(index, item)"
+                      @keyup.enter="edit(editingIndex, item)"
                     ></v-text-field>
-                    <v-chip v-else :color="`${item.color} lighten-3`" dark label small>
-                      {{ item.text | tagify }}
-                    </v-chip>
+                    <v-chip v-else :color="`${item.color} lighten-3`" dark label small>{{
+                      item.text | tagify
+                    }}</v-chip>
                     <v-spacer></v-spacer>
                     <v-list-item-action @click.stop>
-                      <v-btn icon @click.stop.prevent="edit(index, item)">
+                      <v-btn icon @click.stop.prevent="edit(editingIndex, item)">
                         <v-icon>{{ editing !== item ? "mdi-pencil" : "mdi-check" }}</v-icon>
                       </v-btn>
                     </v-list-item-action>
@@ -103,9 +101,25 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("AgentAssistCannedResponseForm.vue");
+
 export default {
   name: "AddCannedResponseForm",
-  props: ["text"],
+  filters: {
+    tagify(value) {
+      if (!value) return "";
+      value = value
+        .toString()
+        .toLowerCase()
+        .replace(/\s/g, "");
+      return value;
+    }
+  },
+  props: {
+    text: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       showDialog: true,
@@ -147,20 +161,48 @@ export default {
     };
   },
   computed: {},
-  filters: {
-    tagify: function(value) {
-      if (!value) return "";
-      value = value
-        .toString()
-        .toLowerCase()
-        .replace(/\s/g, "");
-      return value;
+  watch: {
+    editing(val, prev) {
+      if (val !== null && prev !== val) {
+        val.text = val.text.toLowerCase().replace(/\s/g, "");
+        this.editing = val;
+      }
+    },
+    tags(val, prev) {
+      if (val.length === prev.length) return;
+      logger.debug("val", val);
+      this.tags = val.map(v => {
+        if (typeof v === "object") {
+          logger.debug("color :", v.color);
+          v = {
+            text: v.text.toLowerCase().replace(/\s/g, ""),
+            color: v.color ? v.color : this.colors[this.nonce - 1]
+          };
+          this.items.push(v);
+          if (!v.color) {
+            this.nonce += 1;
+          }
+
+          logger.debug("> nonce ++  :", this.nonce);
+        } else if (typeof v === "string") {
+          v = {
+            text: v.toLowerCase().replace(/\s/g, ""),
+            color: this.colors[this.nonce - 1]
+          };
+          this.items.push(v);
+
+          this.nonce += 1;
+          logger.debug(">> nonce ++  :", this.nonce);
+        }
+
+        return v;
+      });
     }
   },
   methods: {
     save() {
-      let theTags = [];
-      this.tags.forEach(function(tag) {
+      const theTags = [];
+      this.tags.forEach(tag => {
         theTags.push(tag.text);
       });
       const cannedResponse = {
@@ -215,44 +257,6 @@ export default {
         .replace(/\s/g, "");
 
       return text.indexOf(query) > -1;
-    }
-  },
-  watch: {
-    editing(val, prev) {
-      if (val !== null && prev !== val) {
-        val.text = val.text.toLowerCase().replace(/\s/g, "");
-        this.editing = val;
-      }
-    },
-    tags(val, prev) {
-      if (val.length === prev.length) return;
-      logger.debug("val", val);
-      this.tags = val.map(v => {
-        if (typeof v === "object") {
-          logger.debug("color :", v.color);
-          v = {
-            text: v.text.toLowerCase().replace(/\s/g, ""),
-            color: v.color ? v.color : this.colors[this.nonce - 1]
-          };
-          this.items.push(v);
-          if (!v.color) {
-            this.nonce++;
-          }
-
-          logger.debug("> nonce ++  :", this.nonce);
-        } else if (typeof v === "string") {
-          v = {
-            text: v.toLowerCase().replace(/\s/g, ""),
-            color: this.colors[this.nonce - 1]
-          };
-          this.items.push(v);
-
-          this.nonce++;
-          logger.debug(">> nonce ++  :", this.nonce);
-        }
-
-        return v;
-      });
     }
   }
 };

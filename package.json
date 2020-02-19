@@ -20,9 +20,10 @@
     "build:development": "vue-cli-service build --mode development",
     "build:modern": "vue-cli-service build --modern",
     "prettier": "prettier --write **/*.{ts,js,css,html,json,vue}",
-    "lint": "vue-cli-service lint --fix",
-    "lint:css:fix": "stylelint **/*.vue --fix",
+    "lint": "vue-cli-service lint",
+    "lint:fix": "vue-cli-service lint --fix",
     "lint:css": "stylelint **/*.vue",
+    "lint:css:fix": "stylelint **/*.vue --fix",
     "stylelint-check": "stylelint-config-prettier-check",
     "serve": "vue-cli-service serve --mode development --open",
     "release": "release-it"

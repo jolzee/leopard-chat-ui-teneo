@@ -1,6 +1,6 @@
 <template>
   <ValidationObserver ref="observer" v-slot="{ invalid, validated }">
-    <v-row align="start" justify="start" v-if="dialog">
+    <v-row v-if="dialog" align="start" justify="start">
       <v-dialog
         v-model="dialog"
         persistent
@@ -45,9 +45,8 @@
               tag="button"
               :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
               @click="fullscreen = !fullscreen"
+              >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon
             >
-              {{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}
-            </v-icon>
 
             <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close"
               >mdi-close</v-icon
@@ -79,7 +78,7 @@
                       :sm="hasColumnDescription(field) ? 4 : 12"
                       class="pl-0"
                     >
-                      <v-subheader v-html="getColumnDescription(field)" class="pa-0"></v-subheader>
+                      <v-subheader class="pa-0" v-html="getColumnDescription(field)"></v-subheader>
                     </v-col>
                     <v-col cols="12" :sm="hasColumnDescription(field) ? 8 : 12" class="pa-0">
                       <v-img
@@ -103,14 +102,14 @@
 
                       <div
                         v-if="field.html"
-                        v-html="field.html.label"
                         :class="field.html.classes ? field.html.classes.join(' ') : ''"
+                        v-html="field.html.label"
                       ></div>
 
                       <header
                         v-if="field.header"
-                        v-html="field.header.label"
                         :class="field.header.classes ? field.header.classes.join(' ') : ''"
+                        v-html="field.header.label"
                       ></header>
 
                       <hr v-if="field.divider" />
@@ -134,8 +133,8 @@
 
                       <ValidationProvider
                         v-if="field.textInput"
-                        :rules="field.textInput.validations ? field.textInput.validations : ''"
                         v-slot="{ errors, valid }"
+                        :rules="field.textInput.validations ? field.textInput.validations : ''"
                       >
                         <v-text-field
                           v-model="formData[field.textInput.name]"
@@ -201,8 +200,8 @@
 
                       <ValidationProvider
                         v-if="field.textarea"
-                        :rules="field.textarea.validations ? field.textarea.validations : ''"
                         v-slot="{ errors, valid }"
+                        :rules="field.textarea.validations ? field.textarea.validations : ''"
                       >
                         <v-textarea
                           v-model="formData[field.textarea.name]"
@@ -268,8 +267,8 @@
 
                       <ValidationProvider
                         v-if="field.comboBox"
-                        :rules="field.comboBox.validations ? field.comboBox.validations : ''"
                         v-slot="{ errors, valid }"
+                        :rules="field.comboBox.validations ? field.comboBox.validations : ''"
                       >
                         <v-autocomplete
                           v-model="formData[field.comboBox.name]"
@@ -338,8 +337,8 @@
 
                       <ValidationProvider
                         v-if="field.select"
-                        :rules="field.select.validations ? field.select.validations : ''"
                         v-slot="{ errors, valid }"
+                        :rules="field.select.validations ? field.select.validations : ''"
                       >
                         <v-select
                           v-model="formData[field.select.name]"
@@ -399,10 +398,10 @@
 
                       <ValidationProvider
                         v-if="field.checkbox"
+                        v-slot="{ errors }"
                         :rules="
                           field.checkbox.mustBeChecked ? { required: { allowFalse: false } } : ''
                         "
-                        v-slot="{ errors }"
                       >
                         <v-checkbox
                           v-model="formData[field.checkbox.name]"
@@ -421,8 +420,8 @@
 
                       <ValidationProvider
                         v-if="field.switch"
-                        :rules="field.switch.validations ? field.switch.validations : ''"
                         v-slot="{ errors }"
+                        :rules="field.switch.validations ? field.switch.validations : ''"
                       >
                         <v-switch
                           v-model="formData[field.switch.name]"
@@ -442,8 +441,8 @@
 
                       <ValidationProvider
                         v-if="field.radio"
-                        :rules="field.radio.validations ? field.radio.validations : ''"
                         v-slot="{ errors }"
+                        :rules="field.radio.validations ? field.radio.validations : ''"
                       >
                         <v-radio-group
                           v-model="formData[field.radio.name]"
@@ -473,8 +472,8 @@
                           "
                         >
                           <v-radio
-                            v-for="(item, index) in field.radio.items"
-                            :key="uuid + index"
+                            v-for="(item, radioIndex) in field.radio.items"
+                            :key="uuid + radioIndex"
                             :label="item.label"
                             :value="item.value"
                             :color="field.radio.color ? field.radio.color : 'success'"
@@ -484,8 +483,8 @@
 
                       <ValidationProvider
                         v-if="field.slider"
-                        :rules="field.slider.validations ? field.slider.validations : ''"
                         v-slot="{ errors }"
+                        :rules="field.slider.validations ? field.slider.validations : ''"
                       >
                         <v-slider
                           v-if="!field.slider.range"
@@ -588,15 +587,15 @@
             <v-btn
               v-if="formConfig.button"
               ripple
-              @click="submit"
               :color="formConfig.button.color ? formConfig.button.color : ''"
+              @click="submit"
             >
               {{ formConfig.button.text ? formConfig.button.text : "Submit" }}
-              <v-icon v-if="formConfig.button.icon" right dark>
-                {{ formConfig.button.icon ? `mdi-${formConfig.button.icon}` : "" }}
-              </v-icon>
+              <v-icon v-if="formConfig.button.icon" right dark>{{
+                formConfig.button.icon ? `mdi-${formConfig.button.icon}` : ""
+              }}</v-icon>
             </v-btn>
-            <v-btn v-else color="primary" @click="submit" :disabled="invalid || !validated"
+            <v-btn v-else color="primary" :disabled="invalid || !validated" @click="submit"
               >Submit</v-btn
             >
           </v-card-actions>
@@ -607,10 +606,11 @@
   </ValidationObserver>
 </template>
 <script>
-const logger = require("@/utils/logging").getLogger("Form.vue");
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { mask } from "vue-the-mask";
 import { mapGetters } from "vuex";
+
+const logger = require("@/utils/logging").getLogger("Form.vue");
 
 export default {
   name: "Form",
@@ -619,14 +619,11 @@ export default {
     ValidationObserver,
     ValidationProvider
   },
-  props: ["formConfig"],
-  computed: {
-    ...mapGetters(["uuid", "dark", "embed", "fullscreenEmbed", "textColor"])
-  },
-  mounted() {
-    this.$store.commit("HIDE_508_CONTENT");
-    logger.info(`Form Open - Hiding 508 content in the chat window`);
-    this.setDefaults();
+  props: {
+    formConfig: {
+      type: Object,
+      required: true
+    }
   },
   data() {
     return {
@@ -636,16 +633,24 @@ export default {
       overlay: false
     };
   },
+  computed: {
+    ...mapGetters(["uuid", "dark", "embed", "fullscreenEmbed", "textColor"])
+  },
+  mounted() {
+    this.$store.commit("HIDE_508_CONTENT");
+    logger.info(`Form Open - Hiding 508 content in the chat window`);
+    this.setDefaults();
+  },
   methods: {
     getColumnDescription(field) {
-      let fieldInfo = field[Object.keys(field)[0]];
+      const fieldInfo = field[Object.keys(field)[0]];
       if (fieldInfo && fieldInfo.description) {
         return fieldInfo.description;
       }
       return "";
     },
     hasColumnDescription(field) {
-      let fieldInfo = field[Object.keys(field)[0]];
+      const fieldInfo = field[Object.keys(field)[0]];
       if (fieldInfo && fieldInfo.description) {
         return true;
       }
@@ -653,7 +658,7 @@ export default {
     },
     setDefaults() {
       this.formConfig.fields.forEach(field => {
-        let fieldInfo = field[Object.keys(field)[0]];
+        const fieldInfo = field[Object.keys(field)[0]];
         if (fieldInfo.initialValue) {
           logger.debug(
             `Setting default for field [${fieldInfo.name} : ${fieldInfo.initialValue}] `
@@ -677,8 +682,8 @@ export default {
       const isValid = await this.$refs.observer.validate();
       if (!isValid) {
         this.overlay = true;
-        let that = this;
-        setTimeout(function() {
+        const that = this;
+        setTimeout(() => {
           that.overlay = false;
         }, 1500);
       } else {

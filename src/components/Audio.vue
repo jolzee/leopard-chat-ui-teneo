@@ -9,10 +9,21 @@
 <script>
 // const VuePlyr = () => import("vue-plyr");
 import "plyr/dist/plyr.css";
+
 const logger = require("@/utils/logging").getLogger("Audio.vue");
+
 export default {
   components: { VuePlyr: () => import("vue-plyr") },
-  props: ["url", "type"],
+  props: {
+    url: {
+      type: String,
+      required: true
+    },
+    type: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {};
   }

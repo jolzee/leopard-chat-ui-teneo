@@ -3,7 +3,7 @@
     v-if="url"
     name="modal-image-transition"
     enter-active-class="animated zoomIn"
-  >-->
+	>-->
   <v-img
     v-if="url"
     :src="url"
@@ -21,7 +21,12 @@
 </template>
 <script>
 export default {
-  props: ["url"],
+  props: {
+    url: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {};
   },

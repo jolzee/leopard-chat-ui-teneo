@@ -1,7 +1,7 @@
 <template>
   <v-dialog
-    v-model="showDialog"
     id="leopard-add-edit-dialog"
+    v-model="showDialog"
     scrollable
     :persistent="true"
     max-width="calc(900px - 10%)"
@@ -12,20 +12,21 @@
       <v-system-bar
         height="25px"
         color="teal darken-4"
-        :class="{ 'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown }"
+        :class="{
+          'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown
+        }"
         dark
       >
         <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
 
         <v-icon
+          v-if="!embed && !$vuetify.breakpoint.mdAndDown"
           tabindex="0"
           tag="button"
-          v-if="!embed && !$vuetify.breakpoint.mdAndDown"
           :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
           @click="toggleFullscreen"
+          >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon
         >
-          {{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}
-        </v-icon>
         <v-icon
           tag="button"
           aria-label="Close dialog"
@@ -53,8 +54,8 @@
       </v-app-bar>
 
       <v-card-text
-        style="height: 90vh"
         id="add-edit"
+        style="height: 90vh"
         class="leopard-code-font teneo-hide-scroll-x mx-0 px-3 py-0"
       >
         <v-form ref="form">
@@ -64,9 +65,9 @@
                 <v-row no-gutters>
                   <v-col :cols="12">
                     <v-text-field
+                      v-model.trim="solution.name"
                       filled
                       color="teal darken-4"
-                      v-model.trim="solution.name"
                       validate-on-blur
                       label="Solution Name"
                       :rules="[ruleMustHaveValue]"
@@ -74,13 +75,13 @@
                   </v-col>
                   <v-col :cols="12">
                     <v-text-field
+                      v-model.trim="solution.id"
                       disabled
                       solo
                       outlined
                       dense
                       append-icon="mdi-key"
                       color="teal darken-4"
-                      v-model.trim="solution.id"
                       validate-on-blur
                       label="Solution Id"
                     ></v-text-field>
@@ -91,9 +92,9 @@
             <v-row>
               <v-col :cols="12">
                 <v-text-field
+                  v-model.trim="solution.deepLink"
                   filled
                   color="teal darken-4"
-                  v-model.trim="solution.deepLink"
                   validate-on-blur
                   class="leopard-code-font"
                   label="Deep links can be accessed with ?dl=<deep-link>"
@@ -106,10 +107,10 @@
             <v-row>
               <v-col :cols="12" class="pb-0">
                 <v-text-field
+                  v-model.trim="solution.url"
                   filled
                   clearable
                   color="teal darken-4"
-                  v-model.trim="solution.url"
                   class="leopard-code-font"
                   validate-on-blur
                   label="URL to Teneo Runtime - no parameters"
@@ -121,19 +122,19 @@
             <v-row>
               <v-col :cols="12">
                 <v-switch
-                  color="purple darken-4"
                   v-model="solution.useInProduction"
+                  color="purple darken-4"
                   label="Use in production"
                 ></v-switch>
                 <v-text-field
-                  filled
-                  clearable
                   v-if="
                     ('useInProduction' in solution && !solution.useInProduction) ||
                       !('useInProduction' in solution)
                   "
-                  color="teal darken-4"
                   v-model.trim="solution.iframeUrl"
+                  filled
+                  clearable
+                  color="teal darken-4"
                   class="leopard-code-font"
                   validate-on-blur
                   label="Enter the IFRAME URL"
@@ -145,11 +146,11 @@
             <v-row>
               <v-col :cols="12">
                 <v-text-field
+                  v-model.trim="solution.chatTitle"
                   filled
                   clearable
                   color="teal darken-4"
                   validate-on-blur
-                  v-model.trim="solution.chatTitle"
                   label="Chat Window Title"
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
@@ -161,43 +162,43 @@
                   <v-row no-gutters class="pl-5">
                     <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
-                        color="purple darken-4"
                         v-model="solution.enableLiveChat"
+                        color="purple darken-4"
                         label="Live Chat"
                       ></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
-                        color="purple darken-4"
                         v-model="solution.float"
+                        color="purple darken-4"
                         label="Float UI"
                       ></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
-                        color="purple darken-4"
                         v-model="solution.pulseButton"
+                        color="purple darken-4"
                         label="Pulse Button"
                       ></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
-                        color="purple darken-4"
                         v-model="solution.showChatIcons"
+                        color="purple darken-4"
                         label="Chat Icons"
                       ></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
-                        color="purple darken-4"
                         v-model="solution.displayAccent"
+                        color="purple darken-4"
                         label="Show Accent"
                       ></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
-                        color="purple darken-4"
                         v-model="solution.longResponsesInModal"
+                        color="purple darken-4"
                         label="Long Answers in Modal"
                       ></v-switch>
                     </v-col>
@@ -208,8 +209,8 @@
             <v-row>
               <v-col :cols="12" class="pb-0">
                 <v-text-field
-                  filled
                   v-model.trim="solution.responseIcon"
+                  filled
                   validate-on-blur
                   color="teal darken-4"
                   label="Response Icon - MDI Icons (mdi-icon-name)"
@@ -223,13 +224,13 @@
                 <v-btn
                   v-for="(icon, index) in chatIcons"
                   :key="index + 'response-icons'"
-                  @click="solution.responseIcon = icon"
                   :aria-label="`Set the virtual assistant icon to ${icon}`"
                   dark
                   small
                   :elevation="solution.responseIcon === icon ? '2' : '0'"
                   icon
                   :color="solution.responseIcon === icon ? 'orange darken-4' : 'indigo'"
+                  @click="solution.responseIcon = icon"
                 >
                   <v-icon>{{ icon }}</v-icon>
                 </v-btn>
@@ -238,8 +239,8 @@
             <v-row>
               <v-col :cols="12" class="pb-0">
                 <v-text-field
-                  filled
                   v-model.trim="solution.userIcon"
+                  filled
                   validate-on-blur
                   color="teal darken-4"
                   label="User Icon - MDI Icons (mdi-icon-name)"
@@ -255,12 +256,12 @@
                   v-for="(icon, index) in chatIcons"
                   :key="index + 'user-icons'"
                   :aria-label="`Set the icon representing the customer to ${icon}`"
-                  @click="solution.userIcon = icon"
                   dark
                   small
                   :elevation="solution.userIcon === icon ? '2' : '0'"
                   icon
                   :color="solution.userIcon === icon ? 'orange darken-4' : 'indigo'"
+                  @click="solution.userIcon = icon"
                 >
                   <v-icon>{{ icon }}</v-icon>
                 </v-btn>
@@ -269,11 +270,11 @@
             <v-row>
               <v-col :cols="12">
                 <v-select
+                  v-model="solution.locale"
                   :items="locales"
                   color="teal darken-4"
                   menu-props="auto"
                   filled
-                  v-model="solution.locale"
                   label="Specify Chat Locale"
                   append-icon="mdi-translate"
                 ></v-select>
@@ -303,9 +304,9 @@
                       v-if="showLeopardAnimationImage"
                       src="@/assets/leopard-small.png"
                       max-height="300"
-                      @click="toggleDisplayAnimationImage()"
                       style="z-index: 20"
                       contain
+                      @click="toggleDisplayAnimationImage()"
                     ></v-img>
                   </transition>
                 </v-row>
@@ -314,12 +315,12 @@
             <v-row>
               <v-col :cols="12">
                 <v-select
+                  v-model="solution.animations.in"
                   :items="animations.in"
                   dense
                   menu-props="auto"
                   color="teal darken-4"
                   filled
-                  v-model="solution.animations.in"
                   label="Specify Enter Animation"
                   append-icon="mdi-expand-all"
                 ></v-select>
@@ -328,12 +329,12 @@
             <v-row>
               <v-col :cols="12">
                 <v-select
+                  v-model="solution.animations.out"
                   :items="animations.out"
                   dense
                   color="light-blue darken-1"
                   menu-props="auto"
                   filled
-                  v-model="solution.animations.out"
                   label="Specify Exit Animation"
                   append-icon="mdi-collapse-all"
                 ></v-select>
@@ -351,12 +352,12 @@
                             class="mx-2"
                             :aria-label="`Reset theme colors to default`"
                             v-bind="attrs"
-                            v-on="on"
                             icon
                             dark
                             small
-                            @click="resetColorsToDefault"
                             color="teal darken-4 white--text"
+                            v-on="on"
+                            @click="resetColorsToDefault"
                           >
                             <v-icon dark>mdi-undo-variant</v-icon>
                           </v-btn>
@@ -369,6 +370,7 @@
                 <v-row no-gutters>
                   <v-col cols="12" class="pt-0">
                     <v-color-picker
+                      v-model="color"
                       class="pt-0 mt-0"
                       :dot-size="15"
                       :canvas-height="80"
@@ -379,15 +381,14 @@
                       swatches-max-height="98"
                       :height="300"
                       width="800"
-                      v-model="color"
                       @input="updateColor"
                     ></v-color-picker>
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col
-                    v-for="color in themeColorsFiltered"
-                    :key="color"
+                    v-for="filteredColor in themeColorsFiltered"
+                    :key="filteredColor"
                     :cols="12"
                     :sm="6"
                     :md="6"
@@ -395,26 +396,28 @@
                   >
                     <v-btn
                       class="mr-2"
-                      :aria-label="`Set the active color for editing to ${color}`"
+                      :aria-label="`Set the active color for editing to ${filteredColor}`"
                       fab
-                      :dark="!isLight(solution.theme[color])"
+                      :dark="!isLight(solution.theme[filteredColor])"
                       small
-                      @click="setActiveColor(color)"
-                      :color="`${solution.theme[color]}`"
+                      :color="`${solution.theme[filteredColor]}`"
+                      @click="setActiveColor(filteredColor)"
                     >
-                      <v-icon v-if="activeColor === color">mdi-star</v-icon>
+                      <v-icon v-if="activeColor === filteredColor">mdi-star</v-icon>
                     </v-btn>
                     <v-text-field
-                      v-model.trim="solution.theme[color]"
+                      v-model.trim="solution.theme[filteredColor]"
                       clearable
-                      @click="setActiveColor(color)"
                       color="teal darken-4"
                       filled
                       :value="
-                        typeof solution.theme[color] === 'string' ? solution.theme[color] : ''
+                        typeof solution.theme[filteredColor] === 'string'
+                          ? solution.theme[filteredColor]
+                          : ''
                       "
-                      :label="color"
+                      :label="filteredColor"
                       :rules="[ruleMustHaveValue, ruleMustHaveColor]"
+                      @click="setActiveColor(filteredColor)"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -430,8 +433,8 @@
                 <v-row align="start" justify="start" no-gutters class="pl-1">
                   <v-col cols="12" class="mb-2">
                     <v-slider
-                      name="fontSlider1"
                       v-model="font.fontIndex"
+                      name="fontSlider1"
                       color="teal darken-4"
                       :max="6"
                       ticks
@@ -477,31 +480,31 @@
                 <v-row no-gutters class="mt-2">
                   <v-col cols="12" :md="6" :lg="4" class="pr-1">
                     <v-select
+                      v-model="solution.lookAndFeel.response.iconColor"
                       dense
                       :items="themeColors"
-                      v-model="solution.lookAndFeel.response.iconColor"
                       filled
                       label="Response Icon Color"
                     ></v-select>
                   </v-col>
                   <v-col cols="12" :md="6" :lg="4" class="pr-1">
                     <v-select
+                      v-model="solution.lookAndFeel.response.blockBgColor"
                       dense
                       :items="themeColors"
-                      v-model="solution.lookAndFeel.response.blockBgColor"
                       filled
                       label="Response Block BG Color"
                     ></v-select>
                   </v-col>
                   <v-col cols="12" :md="12" :lg="4" class="pr-1">
                     <v-select
+                      v-model="solution.lookAndFeel.response.blockTextColor"
                       dense
                       :items="
                         solution.lookAndFeel.response.blockBgColor === 'white'
                           ? ['dark']
                           : ['dark', 'light']
                       "
-                      v-model="solution.lookAndFeel.response.blockTextColor"
                       filled
                       label="Response Block Text Color"
                     ></v-select>
@@ -518,8 +521,8 @@
                 <v-row align="start" justify="start" no-gutters class="pl-1">
                   <v-col cols="12" class="mb-2">
                     <v-slider
-                      name="fontSlider2"
                       v-model="font.fontIndex"
+                      name="fontSlider2"
                       color="teal darken-4"
                       :max="6"
                       ticks
@@ -563,9 +566,9 @@
                 <v-row no-gutters class="mt-2">
                   <v-col cols="12" :md="6" :lg="4" class="pr-1">
                     <v-select
+                      v-model="solution.lookAndFeel.question.iconColor"
                       dense
                       :items="themeColors"
-                      v-model="solution.lookAndFeel.question.iconColor"
                       filled
                       color="teal darken-4"
                       label="User Question Icon Color"
@@ -573,9 +576,9 @@
                   </v-col>
                   <v-col cols="12" :md="6" :lg="4" class="pr-1">
                     <v-select
+                      v-model="solution.lookAndFeel.question.blockBgColor"
                       dense
                       :items="themeColors"
-                      v-model="solution.lookAndFeel.question.blockBgColor"
                       filled
                       color="teal darken-4"
                       label="User Question Block BG Color"
@@ -583,13 +586,13 @@
                   </v-col>
                   <v-col cols="12" :md="12" :lg="4" class="pr-1">
                     <v-select
+                      v-model="solution.lookAndFeel.question.blockTextColor"
                       dense
                       :items="
                         solution.lookAndFeel.question.blockBgColor === 'white'
                           ? ['dark']
                           : ['dark', 'light']
                       "
-                      v-model="solution.lookAndFeel.question.blockTextColor"
                       filled
                       color="teal darken-4"
                       label="User Question Block Text Color"
@@ -606,12 +609,12 @@
                   color="purple darken-4"
                 ></v-switch>
                 <v-alert
+                  v-if="solution.promptTriggers.enabled"
                   border="top"
                   colored-border
                   color="teal darken-4"
                   type="info"
                   elevation="2"
-                  v-if="solution.promptTriggers.enabled"
                 >
                   You must return the number of active flows from Teneo in each response.
                   <a
@@ -622,8 +625,8 @@
                 </v-alert>
                 <v-text-field
                   v-if="solution.promptTriggers.enabled"
-                  color="teal darken-4"
                   v-model.trim="solution.promptTriggers.pollSeconds"
+                  color="teal darken-4"
                   validate-on-blur
                   filled
                   label="How often should Leopard poll in seconds?"
@@ -635,12 +638,12 @@
             <v-row>
               <v-col :cols="12">
                 <v-textarea
+                  v-model.trim="solution.customCssButtonToolbar"
                   filled
                   color="teal darken-4"
                   name="input-7-4"
                   class="leopard-code-font"
                   label="Button and Toolbar Custom CSS"
-                  v-model.trim="solution.customCssButtonToolbar"
                 ></v-textarea>
               </v-col>
             </v-row>
@@ -648,12 +651,12 @@
               <!-- ASR Corrections -->
               <v-col :cols="12">
                 <v-textarea
+                  v-model.trim="solution.asrCorrections"
                   filled
                   class="leopard-code-font"
                   color="teal darken-4"
                   name="input-7-4"
                   label="ASR Corrections"
-                  v-model.trim="solution.asrCorrections"
                 ></v-textarea>
               </v-col>
             </v-row>
@@ -676,7 +679,7 @@
                   </v-col>
                 </v-row>
 
-                <v-row v-for="(question, index) in solution.knowledgeData" v-bind:key="index">
+                <v-row v-for="(question, index) in solution.knowledgeData" :key="index">
                   <v-col cols="11">
                     <v-text-field
                       v-model.trim="solution.knowledgeData[index]"
@@ -690,7 +693,7 @@
                     ></v-text-field>
                   </v-col>
                   <v-col cols="1" class="pl-2 pt-3">
-                    <v-icon @click="solution.knowledgeData.splice(index, 1)" color="red" dark
+                    <v-icon color="red" dark @click="solution.knowledgeData.splice(index, 1)"
                       >mdi-minus-circle</v-icon
                     >
                   </v-col>
@@ -702,8 +705,8 @@
 
               <v-col :cols="12" :lg="6" class="pt-0">
                 <v-radio-group
-                  label="When to send CTX params"
                   v-model="solution.sendContextParams"
+                  label="When to send CTX params"
                   mandatory
                 >
                   <v-radio label="At login" value="login"></v-radio>
@@ -729,11 +732,11 @@
               <v-col :cols="12" class="px-7">
                 <!-- Itterate over all CTX parameters and their values -->
                 <v-row
+                  v-for="(contextParam, index) in solution.contextParams"
+                  :key="index"
                   class="mb-4 grey lighten-5 pa-2 elevation-2"
                   align="start"
                   justify="start"
-                  v-for="(contextParam, index) in solution.contextParams"
-                  v-bind:key="index"
                 >
                   <v-col :cols="10">
                     <v-text-field
@@ -750,10 +753,10 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-icon
                           v-bind="attrs"
-                          v-on="on"
-                          @click="solution.contextParams.splice(index, 1)"
                           color="red"
                           dark
+                          v-on="on"
+                          @click="solution.contextParams.splice(index, 1)"
                           >mdi-minus-circle</v-icon
                         >
                       </template>
@@ -763,10 +766,10 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-icon
                           v-bind="attrs"
-                          v-on="on"
-                          @click="addNewContextParameterValue(index)"
                           color="light-green black--text"
                           dark
+                          v-on="on"
+                          @click="addNewContextParameterValue(index)"
                           >mdi-plus-circle</v-icon
                         >
                       </template>
@@ -777,7 +780,7 @@
                   <!-- Show each ctx parameter value -->
                   <v-row
                     v-for="(value, valueIndex) in contextParam.values"
-                    v-bind:key="valueIndex"
+                    :key="valueIndex"
                     no-gutters
                   >
                     <v-col class="elevation-2 pa-3 mb-2 mr-2 white">
@@ -785,10 +788,10 @@
                         <template v-slot:activator="{ on, attrs }">
                           <v-icon
                             v-bind="attrs"
-                            v-on="on"
-                            @click="contextParam.values.splice(valueIndex, 1)"
                             color="red"
                             dark
+                            v-on="on"
+                            @click="contextParam.values.splice(valueIndex, 1)"
                             >mdi-minus-circle</v-icon
                           >
                         </template>
@@ -798,12 +801,12 @@
                         <template v-slot:activator="{ on, attrs }">
                           <v-icon
                             v-bind="attrs"
+                            :color="value.active ? 'light-green' : 'grey lighten-1'"
+                            dark
                             v-on="on"
                             @click="
                               toggleActiveContextParameterValue(value.active, index, valueIndex)
                             "
-                            :color="value.active ? 'light-green' : 'grey lighten-1'"
-                            dark
                           >
                             {{
                               value.active ? "mdi-checkbox-marked" : "mdi-checkbox-blank-outline"
@@ -854,7 +857,7 @@
           Save
           <v-icon right dark>mdi-content-save</v-icon>
         </v-btn>
-        <v-snackbar :timeout="snackbarTimeout" v-model="snackbar" class="mb-5"
+        <v-snackbar v-model="snackbar" :timeout="snackbarTimeout" class="mb-5"
           >🧟‍ Please fix all form validation errors.</v-snackbar
         >
       </v-card-actions>
@@ -863,16 +866,22 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging").getLogger("ChatAddEditSolution.vue");
 import { createSlug, cloneObject, isLight } from "@/utils/utils";
 import urlRegex from "url-regex";
 import { mapGetters } from "vuex";
-import { COLOR_NAMES } from "@/constants/color-names.js";
-import { SOLUTION_DEFAULT } from "@/constants/solution-config-default.js";
+import COLOR_NAMES from "@/constants/color-names";
+import { SOLUTION_DEFAULT } from "@/constants/solution-config-default";
+
+const logger = require("@/utils/logging").getLogger("ChatAddEditSolution.vue");
+
 export default {
   name: "ConfigAddEditSolution",
   components: {},
-  props: ["config", "currentModeEdit", "selectedSolution"],
+  props: {
+    config: { type: Object, required: true },
+    currentModeEdit: { type: String, required: true },
+    selectedSolution: { type: Object, required: true }
+  },
   data() {
     return {
       showLeopardAnimationImage: true,
@@ -1089,30 +1098,10 @@ export default {
       ]
     };
   },
-  mounted() {
-    this.font.fontIndex = this.font.ticksLabels.indexOf(this.solution.font);
-  },
-  watch: {
-    "font.fontIndex": function(newIndex) {
-      if (this.solution) {
-        this.solution.font = this.font.ticksLabels[newIndex];
-      }
-    },
-    blockBgColor: function(newColor) {
-      if (this.solution && newColor === "white") {
-        this.solution.lookAndFeel.response.blockTextColor = "dark";
-      }
-    },
-    blockTextColor: function(shade) {
-      if (this.solution && shade === "light" && this.blockBgColor === "white") {
-        this.solution.lookAndFeel.response.blockTextColor = "dark";
-      }
-    }
-  },
   computed: {
     ...mapGetters(["embed", "textColor"]),
     themeColorsFiltered() {
-      return this.themeColors.filter(function(color) {
+      return this.themeColors.filter(color => {
         return color !== "white";
       });
     },
@@ -1123,12 +1112,29 @@ export default {
       return this.solution ? this.solution.lookAndFeel.response.blockTextColor : "#FFFFFF";
     }
   },
-  updated() {
-    // you have to wait just a bit for the scroll to work
-    setTimeout(function() {
-      // document.getElementById("add-edit").scrollTop = 0;
-    }, 100);
+  watch: {
+    // eslint-disable-next-line func-names
+    "font.fontIndex": function(newIndex) {
+      if (this.solution) {
+        this.solution.font = this.font.ticksLabels[newIndex];
+      }
+    },
+    blockBgColor(newColor) {
+      if (this.solution && newColor === "white") {
+        this.solution.lookAndFeel.response.blockTextColor = "dark";
+      }
+    },
+    blockTextColor(shade) {
+      if (this.solution && shade === "light" && this.blockBgColor === "white") {
+        this.solution.lookAndFeel.response.blockTextColor = "dark";
+      }
+    }
   },
+  mounted() {
+    this.font.fontIndex = this.font.ticksLabels.indexOf(this.solution.font);
+  },
+
+  updated() {},
   methods: {
     isLight(color) {
       return isLight(color);
@@ -1137,14 +1143,14 @@ export default {
       this.solution.deepLink = createSlug(this.solution.name);
     },
     toggleFullscreen() {
-      let dialogElements = document.getElementById("leopard-add-edit-dialog");
+      const dialogElements = document.getElementById("leopard-add-edit-dialog");
       dialogElements.setAttribute("style", "");
       this.fullscreen = !this.fullscreen;
     },
     toggleDisplayAnimationImage() {
       this.showLeopardAnimationImage = false;
-      let that = this;
-      setTimeout(function() {
+      const that = this;
+      setTimeout(() => {
         that.showLeopardAnimationImage = true;
       }, 1500);
     },
@@ -1173,7 +1179,7 @@ export default {
       }
       if (this.currentModeEdit === "edit") {
         logger.debug("About to save an edit to an existing solution");
-        for (let index = 0; index < this.config.solutions.length; index++) {
+        for (let index = 0; index < this.config.solutions.length; index += 1) {
           if (this.config.solutions[index].id === this.solution.id) {
             this.config.solutions.splice(index, 1, cloneObject(this.solution));
             break;
@@ -1212,7 +1218,7 @@ export default {
       if (active) {
         this.solution.contextParams[index].values[valueIndex].active = false;
       } else {
-        this.solution.contextParams[index].values.forEach(function(value) {
+        this.solution.contextParams[index].values.forEach(value => {
           if (value.active) {
             value.active = false;
           }
@@ -1236,10 +1242,10 @@ export default {
       this.solution.knowledgeData.push("");
     },
     getBackGroundColor(color) {
-      return "background-color:" + color;
+      return `background-color:${color}`;
     },
     resetColorsToDefault() {
-      this.solution.theme = Object.assign({}, SOLUTION_DEFAULT.theme);
+      this.solution.theme = { ...SOLUTION_DEFAULT.theme };
     },
     setActiveColor(activeTheme) {
       this.activeColor = activeTheme;
@@ -1254,7 +1260,7 @@ export default {
       }
     },
     getTabIndex() {
-      this.tabIndexCount = this.tabIndexCount + 1;
+      this.tabIndexCount += 1;
       return this.tabIndexCount;
     },
     ruleDeepLinkUnique(value) {
@@ -1265,28 +1271,24 @@ export default {
         );
         if (foundSolutions && foundSolutions.length > 0) {
           return "That deep link is already taken";
-        } else {
-          return true;
         }
-      } else {
-        // editing and existing solution config
-        logger.debug("Editing solution: checking deep link validity");
-        const foundSolution = this.config.solutions.find(solution => solution.deepLink === value);
-        logger.debug(foundSolution);
-        if (foundSolution && foundSolution.id !== this.selectedSolution.id) {
-          return "That deep link is already taken!!";
-        } else {
-          return true;
-        }
+        return true;
       }
+      // editing and existing solution config
+      logger.debug("Editing solution: checking deep link validity");
+      const foundSolution = this.config.solutions.find(solution => solution.deepLink === value);
+      logger.debug(foundSolution);
+      if (foundSolution && foundSolution.id !== this.selectedSolution.id) {
+        return "That deep link is already taken!!";
+      }
+      return true;
     },
     ruleMustBeInteger(value) {
-      logger.debug(`The value is ${Number(value)}`);
+      // logger.debug(`The value is ${Number(value)}`);
       if (Number.isInteger(Number(value))) {
         return true;
-      } else {
-        return "Value must be an integer";
       }
+      return "Value must be an integer";
     },
     ruleMustBeUrl(value) {
       if (
@@ -1301,20 +1303,18 @@ export default {
     ruleNoSpaces(value) {
       if (value && value.indexOf(" ") > -1) {
         return "no spaces allowed";
-      } else {
-        return true;
       }
+      return true;
     },
     ruleMustHaveColor(color) {
-      logger.debug(`Color validation`, color);
+      // logger.debug(`Color validation`, color);
       if (color && this.isValidColor(color)) {
         return true;
-      } else {
-        return "Must be HEX #8A2BE2 or named html name color";
       }
+      return "Must be HEX #8A2BE2 or named html name color";
     },
     ruleMustHaveValue(value) {
-      logger.debug(`ruleMustHaveValue`, value);
+      // logger.debug(`ruleMustHaveValue`, value);
       if (value && /\S/.test(value)) {
         return true;
       }
@@ -1323,14 +1323,15 @@ export default {
     isValidColor(color) {
       if (color && typeof color === "string" && color.charAt(0) === "#") {
         color = color.substring(1);
-        return [3, 4, 6, 8].indexOf(color.length) > -1 && !isNaN(parseInt(color, 16));
-      } else if (color) {
+        return [3, 4, 6, 8].indexOf(color.length) > -1 && !Number.isNaN(parseInt(color, 16));
+      }
+      if (color) {
         if (color.toLowerCase() in COLOR_NAMES) {
           return true;
-        } else {
-          return false;
         }
+        return false;
       }
+      return false;
     }
   }
 };
@@ -1338,7 +1339,7 @@ export default {
 
 <style scoped>
 .leopard-default-font {
-  font-family: "Roboto", sans-serif;
+  font-family: Roboto, sans-serif;
 }
 
 .leopard-add-edit-shadow {
@@ -1356,7 +1357,7 @@ export default {
   margin-top: 4px;
   padding: 8px !important;
   font-weight: 400;
-  line-height: 1.4em;
+  line-height: 1.4;
 }
 
 .chat-card-left {

@@ -20,9 +20,9 @@
         v-html="props.item[header.value]"
       ></td>
     </template>
-    <v-alert slot="no-results" :value="true" color="error" icon="mdi-alert-octagram">
-      Your search for "{{ search }}" found no results.
-    </v-alert>
+    <v-alert slot="no-results" :value="true" color="error" icon="mdi-alert-octagram"
+      >Your search for "{{ search }}" found no results.</v-alert
+    >
     <template v-if="footer" slot="footer">
       <td colspan="100%">
         <strong>{{ footer }}</strong>
@@ -33,10 +33,31 @@
 
 <script>
 export default {
-  props: ["headers", "items", "search", "footer", "rowsPerPage"],
+  props: {
+    headers: {
+      type: Array,
+      required: true
+    },
+    items: {
+      type: Array,
+      required: true
+    },
+    search: {
+      type: Boolean,
+      required: false
+    },
+    footer: {
+      type: String,
+      required: true
+    },
+    rowsPerPage: {
+      type: String,
+      required: true
+    }
+  },
   computed: {
     calcRowsPerPage() {
-      let rowsPerPageArray = [{ text: "All", value: -1 }];
+      const rowsPerPageArray = [{ text: "All", value: -1 }];
       if (this.rowsPerPage && this.rowsPerPage.length >= 0) {
         let reversedArray = this.rowsPerPage.slice(0);
         reversedArray = reversedArray.reverse();

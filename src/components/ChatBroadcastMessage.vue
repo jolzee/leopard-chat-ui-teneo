@@ -18,8 +18,14 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("ChatBroadcastMessage.vue");
+
 export default {
   name: "ChatBroadcastMessage",
-  props: ["item"]
+  props: {
+    item: {
+      type: Object,
+      required: true
+    }
+  }
 };
 </script>

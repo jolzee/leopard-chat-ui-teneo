@@ -1,9 +1,9 @@
 <template>
   <div class="map-responsive mb-2 elevation-4">
     <iframe
+      id="gmap_canvas"
       width="600"
       height="450"
-      id="gmap_canvas"
       :src="googleMapsUrl"
       frameborder="0"
       style="border:0"
@@ -13,7 +13,12 @@
 </template>
 <script>
 export default {
-  props: ["address"],
+  props: {
+    address: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {};
   },

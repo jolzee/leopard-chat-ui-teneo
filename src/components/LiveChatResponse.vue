@@ -53,9 +53,9 @@
       justify="start"
     >
       <v-col
+        v-if="showChatIcons && !$vuetify.breakpoint.smAndDown"
         cols="2"
         class="text-center d-none d-sm-block"
-        v-if="showChatIcons && !$vuetify.breakpoint.smAndDown"
       >
         <v-avatar size="40px" class="teneo-response-icon elevation-2">
           <img :src="item.agentAvatar" :alt="item.agentName" />
@@ -84,11 +84,22 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging").getLogger("LiveChatResponse.vue");
 import { mapGetters } from "vuex";
+
+const logger = require("@/utils/logging").getLogger("LiveChatResponse.vue");
+
 export default {
   name: "LiveChatResponse",
-  props: ["item", "itemIndexInDialog"],
+  props: {
+    item: {
+      type: Object,
+      required: true
+    },
+    itemIndexInDialog: {
+      type: Number,
+      required: true
+    }
+  },
   computed: {
     ...mapGetters([
       "showChatIcons",
@@ -100,14 +111,13 @@ export default {
     dialog() {
       if (this.$route.name === "chat") {
         return this.dialogs ? this.dialogs : [];
-      } else {
-        // history in session storage
-        return this.getLatestDialogHistory ? this.getLatestDialogHistory : [];
       }
+      // history in session storage
+      return this.getLatestDialogHistory ? this.getLatestDialogHistory : [];
     },
     isLiveChatRelated() {
       let isLiveChat = false;
-      if (this.item.type.startsWith("liveChat")) {
+      if (String(this.item.type).startsWith("liveChat")) {
         isLiveChat = true;
       }
       return isLiveChat;

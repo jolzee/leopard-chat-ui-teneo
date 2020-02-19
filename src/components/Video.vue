@@ -9,9 +9,19 @@
 // import VuePlyr from "vue-plyr";
 // const VuePlyr = () => import("vue-plyr");
 import "plyr/dist/plyr.css";
+
 export default {
   components: { VuePlyr: () => import("vue-plyr") },
-  props: ["url", "type"],
+  props: {
+    url: {
+      type: String,
+      required: true
+    },
+    type: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {};
   }

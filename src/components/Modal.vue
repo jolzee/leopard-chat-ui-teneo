@@ -1,6 +1,6 @@
 <template>
   <span>
-    <CustomModal :items="customModalItems" :toolbarWidth="toolbarWidth"></CustomModal>
+    <CustomModal :items="customModalItems" :toolbar-width="toolbarWidth"></CustomModal>
     <!-- Display Pusher Message -->
     <!-- <Pusher
       :displayPusherMessage="displayPusherMessage"
@@ -65,19 +65,18 @@
         >
           <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
           <v-icon
-            tabindex="0"
-            tag="button"
-            :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
-            @click="toggleFullscreen"
             v-if="
               currentModalPosition !== 'fullscreen' &&
                 currentModalSize !== 'fullscreen' &&
                 !embed &&
                 !$vuetify.breakpoint.mdAndDown
             "
+            tabindex="0"
+            tag="button"
+            :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
+            @click="toggleFullscreen"
+            >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon
           >
-            {{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}
-          </v-icon>
           <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="hideModal"
             >mdi-close</v-icon
           >
@@ -100,13 +99,13 @@
                 <!-- display the modal title and sub-title -->
 
                 <!-- Sub-Title -->
-                <div class="subtitle-2 font-weight-bold" v-if="subTitle" v-html="subTitle"></div>
+                <div v-if="subTitle" class="subtitle-2 font-weight-bold" v-html="subTitle"></div>
 
                 <!-- YouTube -->
-                <YouTube :videoId="youTubeVideoId"></YouTube>
+                <YouTube :video-id="youTubeVideoId"></YouTube>
 
                 <!-- Vimeo -->
-                <Vimeo :videoId="vimeoVideoId"></Vimeo>
+                <Vimeo :video-id="vimeoVideoId"></Vimeo>
 
                 <!-- Audio -->
                 <Audio :url="audioUrl"></Audio>
@@ -121,29 +120,29 @@
                 <ImageAnimation :url="imageUrl"></ImageAnimation>
 
                 <!-- show a carousel of images if available -->
-                <Carousel :imageItems="images"></Carousel>
+                <Carousel :image-items="images"></Carousel>
 
                 <!-- Show the body text, flight itineary, and any tables if available -->
                 <div
-                  class="mt-3"
                   v-if="itinerary || bodyText || transactionItems.length || tableRows.length"
+                  class="mt-3"
                 >
                   <!-- Show the flight itinerary -->
                   <FlightItinerary :itinerary="itinerary"></FlightItinerary>
 
                   <!-- show the body text -->
                   <v-card-text
-                    class="cardText"
-                    id="chat-modal-html"
                     v-if="bodyText"
-                    v-html="bodyText"
+                    id="chat-modal-html"
+                    class="cardText"
                     scrollable
+                    v-html="bodyText"
                   ></v-card-text>
 
                   <!-- data tables -->
                   <v-row
-                    class="fill-height mx-1"
                     v-if="transactionItems.length > 0 || tableRows.length > 0"
+                    class="fill-height mx-1"
                     align="end"
                     justify="start"
                   >
@@ -155,7 +154,7 @@
                     </v-row>
                     <v-spacer v-else></v-spacer>
                     <!-- show a search input box for the table -->
-                    <v-col cols="4" v-if="tableEnableSearch" class="mr-2">
+                    <v-col v-if="tableEnableSearch" cols="4" class="mr-2">
                       <v-text-field
                         v-model="search"
                         append-icon="mdi-table-search"
@@ -179,7 +178,7 @@
                     :items="tableRows"
                     :search="search"
                     :footer="tableFooter"
-                    :rowsPerPage="tableRowsPerPage"
+                    :rows-per-page="tableRowsPerPage"
                   ></Table>
                 </div>
               </v-col>
@@ -191,11 +190,11 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
+            id="leopard-back-to-chat-button"
+            v-shortkey="['ctrl', 'alt', 'arrowleft']"
             color="secondary white--text"
             small
-            id="leopard-back-to-chat-button"
             @click.native="hideModal"
-            v-shortkey="['ctrl', 'alt', 'arrowleft']"
             @shortkey.native="hideModal"
             >{{ $t("back.to.chat.button") }}</v-btn
           >
@@ -206,9 +205,10 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging").getLogger("Modal.vue");
 import { stripHtmlTags, removeAll } from "@/utils/utils";
 import { mapGetters } from "vuex";
+
+const logger = require("@/utils/logging").getLogger("Modal.vue");
 
 export default {
   components: {
@@ -285,22 +285,47 @@ export default {
       youTubeVideoId: ""
     };
   },
-  mounted() {
-    // if (this.pusherEnabled) {
-    //   logger.debug("Setting up pusher");
-    //   this.$pusher.subscribe("web-channel");
-    //   logger.debug("Subscribed to 'web-channel'");
-    //   let that = this;
-    //   this.$pusher.bind(
-    //     "some-event-and-possibly-some-unique-id-for-user",
-    //     data => {
-    //       logger.debug("Message from Teneo: " + data.message);
-    //       that.pusherMessage = data.message;
-    //       that.displayPusherMessage = true;
-    //     },
-    //     null
-    //   );
-    // }
+  computed: {
+    ...mapGetters([
+      "dark",
+      "embed",
+      "textColor",
+      "fullscreenEmbed",
+      "showButtonOnly",
+      "extensionIsInline",
+      "hasInline",
+      "hasModal",
+      "hasInlineType",
+      "iFrameUrlBase",
+      "itemExtensions",
+      "itemExtensionsModal",
+      "isAudioFile",
+      "isLiveChat",
+      "isVideoFile",
+      "liveChatTranscript",
+      "modalItem",
+      "modalSize",
+      "modalPosition",
+      "outputLink",
+      "userInput",
+      "vimeoIdFromUrl",
+      "youTubeIdFromUrl",
+      "itemHasLongResponse"
+    ]),
+    showPusher() {
+      // if (this.displayPusherMessage) {
+      //   return true;
+      // }
+      // return false;
+      return false;
+    },
+    toolbarWidth() {
+      if (this.currentModalSize !== "") {
+        logger.debug("Adjusted the custom modal toolbar style");
+        return `teneo-modal-${this.currentModalSize}-width`;
+      }
+      return "";
+    }
   },
   watch: {
     fullscreen(mustBeFullscreen) {
@@ -326,26 +351,24 @@ export default {
       ) {
         logger.debug("About to RESET MODAL");
         this.resetModal();
-        let item = this.modalItem;
-        let transcript = this.liveChatTranscript(item);
+        const item = this.modalItem;
+        const transcript = this.liveChatTranscript(item);
         let displayModal = false;
 
         // check if user wants to talk to a live agent
-        logger.debug("Live Chat? :" + this.isLiveChat);
+        logger.debug(`Live Chat? :${this.isLiveChat}`);
         if (transcript !== "undefined" && this.isLiveChat) {
           this.$store.commit(
             "LIVE_CHAT",
-            "======= VIRTUAL ASSISTANT CONVERSATION HISTORY =======\n" +
-              transcript +
-              "====================================================\n"
+            `======= VIRTUAL ASSISTANT CONVERSATION HISTORY =======\n${transcript}====================================================\n`
           );
           this.$store.commit("HIDE_CHAT_MODAL"); // stops the transcript from being sent back constantly during a live chat
         }
         // send URL's to the I-FRAME
-        let outputUrl = this.outputLink(item);
+        const outputUrl = this.outputLink(item);
         if (outputUrl !== "" && !this.showButtonOnly) {
-          if (outputUrl.startsWith("./")) {
-            let currentIframeUrl = this.iFrameUrlBase + outputUrl.substring(2, outputUrl.length);
+          if (String(outputUrl).startsWith("./")) {
+            const currentIframeUrl = this.iFrameUrlBase + outputUrl.substring(2, outputUrl.length);
             this.$store.commit("UPDATE_FRAME_URL", currentIframeUrl);
           } else {
             this.$store.commit("UPDATE_FRAME_URL", outputUrl);
@@ -353,7 +376,7 @@ export default {
         }
 
         if (this.hasModal(this.modalItem)) {
-          let extensions = this.itemExtensionsModal(item);
+          const extensions = this.itemExtensionsModal(item);
           extensions.forEach(extension => {
             this.transactionItems = [];
             displayModal = true;
@@ -441,7 +464,7 @@ export default {
             }
 
             // Check for a custom modal layout
-            if (extension.name.startsWith("displayModal")) {
+            if (String(extension.name).startsWith("displayModal")) {
               displayModal = false;
               this.showCustomModal = true;
               this.customModalItems = extension.items;
@@ -461,11 +484,11 @@ export default {
 
             // check for display video action
             if (extension.name === "displayVideo") {
-              let url = extension.parameters.video_url;
+              const url = extension.parameters.video_url;
               let videoId = this.youTubeIdFromUrl(url);
               if (!videoId) {
                 videoId = this.vimeoIdFromUrl(url);
-                logger.debug("vimeoid: " + videoId);
+                logger.debug(`vimeoid: ${videoId}`);
                 if (videoId) {
                   this.vimeoVideoId = videoId;
                 } else {
@@ -521,66 +544,41 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters([
-      "dark",
-      "embed",
-      "textColor",
-      "fullscreenEmbed",
-      "showButtonOnly",
-      "extensionIsInline",
-      "hasInline",
-      "hasModal",
-      "hasInlineType",
-      "iFrameUrlBase",
-      "itemExtensions",
-      "itemExtensionsModal",
-      "isAudioFile",
-      "isLiveChat",
-      "isVideoFile",
-      "liveChatTranscript",
-      "modalItem",
-      "modalSize",
-      "modalPosition",
-      "outputLink",
-      "userInput",
-      "vimeoIdFromUrl",
-      "youTubeIdFromUrl",
-      "itemHasLongResponse"
-    ]),
-    showPusher() {
-      // if (this.displayPusherMessage) {
-      //   return true;
-      // }
-      // return false;
-      return false;
-    },
-    toolbarWidth() {
-      if (this.currentModalSize !== "") {
-        logger.debug("Adjusted the custom modal toolbar style");
-        return `teneo-modal-${this.currentModalSize}-width`;
-      }
-      return "";
-    }
+  mounted() {
+    // if (this.pusherEnabled) {
+    //   logger.debug("Setting up pusher");
+    //   this.$pusher.subscribe("web-channel");
+    //   logger.debug("Subscribed to 'web-channel'");
+    //   let that = this;
+    //   this.$pusher.bind(
+    //     "some-event-and-possibly-some-unique-id-for-user",
+    //     data => {
+    //       logger.debug("Message from Teneo: " + data.message);
+    //       that.pusherMessage = data.message;
+    //       that.displayPusherMessage = true;
+    //     },
+    //     null
+    //   );
+    // }
   },
   updated() {
     this.$nextTick(() => {
       setTimeout(() => {
-        let elements = document.getElementsByClassName("plyr__control--overlaid");
+        const elements = document.getElementsByClassName("plyr__control--overlaid");
         if (elements.length > 0) {
           elements.forEach(element => {
             element.focus();
           });
         } else {
-          let backButton = document.getElementById("leopard-back-to-chat-button");
+          const backButton = document.getElementById("leopard-back-to-chat-button");
           if (backButton) {
             backButton.focus();
           }
         }
-        let iframes = document.getElementsByTagName("iframe");
+        const iframes = document.getElementsByTagName("iframe");
         iframes.forEach(iframe => {
           if (iframe.hasAttribute("allow")) {
-            let allowValue = iframe.getAttribute("allow");
+            const allowValue = iframe.getAttribute("allow");
             if (allowValue.indexOf("accelerometer") !== -1) {
               iframe.setAttribute("tabindex", "-1");
             }
@@ -591,7 +589,7 @@ export default {
 
     this.modalClass();
     if (this.bodyText) {
-      let chatModalDiv = document.getElementById("chat-modal-html");
+      const chatModalDiv = document.getElementById("chat-modal-html");
       if (chatModalDiv) {
         chatModalDiv.addEventListener("click", this.onHtmlClickInModal);
       }
@@ -603,7 +601,7 @@ export default {
     //   logger.info(`Modal Has Focus - Hiding 508 content in the chat window`);
     // },
     toggleFullscreen() {
-      let modalElements = document.getElementsByClassName("teneo-modal");
+      const modalElements = document.getElementsByClassName("teneo-modal");
       modalElements[0].setAttribute("style", "");
       this.fullscreen = !this.fullscreen;
     },
@@ -617,9 +615,9 @@ export default {
       if (!this.fullscreen) {
         logger.debug("Applying custom modal size and position");
         logger.debug("Adding sizing and position styles to modal");
-        var modalElements = document.getElementsByClassName("teneo-modal");
+        const modalElements = document.getElementsByClassName("teneo-modal");
         if (modalElements !== "undefined" && this.currentModalSize !== "undefined") {
-          for (var i = 0; i < modalElements.length; i++) {
+          for (let i = 0; i < modalElements.length; i += 1) {
             if (
               this.currentModalSize !== "fullscreen" &&
               this.currentModalPosition !== "fullscreen"
@@ -640,9 +638,9 @@ export default {
     },
     removeCustomStylesFromModal() {
       logger.debug("removing custom styles from modal");
-      var modalElements = document.getElementsByClassName("teneo-modal");
+      const modalElements = document.getElementsByClassName("teneo-modal");
       if (modalElements !== "undefined") {
-        for (var i = 0; i < modalElements.length; i++) {
+        for (let i = 0; i < modalElements.length; i += 1) {
           logger.debug("Removing existing modal size and position styles - reset");
           modalElements[i].classList.remove("teneo-modal-center");
           modalElements[i].classList.remove("teneo-modal-right");
@@ -664,7 +662,7 @@ export default {
       // we don't want to handle clicks from other things in
       // the Vue
       if (!anchor.classList.contains("sendInput") && !anchor.classList.contains("openInIframe")) {
-        return; // basically treat like a normal link
+        // basically treat like a normal link
       } else if (anchor.classList.contains("openInIframe")) {
         // open in iframe
         event.stopPropagation();
@@ -693,9 +691,9 @@ export default {
     hideModal() {
       this.$store.commit("HIDE_CHAT_MODAL");
       this.$store.commit("SHOW_508_CONTENT");
-      let that = this;
+      const that = this;
       logger.debug("About to RESET MODAL to defaults");
-      setTimeout(function() {
+      setTimeout(() => {
         that.resetModal();
       }, 1000); // needed to stop weird animations on the close
     },
@@ -708,10 +706,10 @@ export default {
       this.imageUrl = "";
       this.images = [];
       this.itinerary = "";
-      (this.fullscreen = false),
-        (this.overlay = false),
-        (this.overlayMessage = ""),
-        (this.currentModalPosition = "center");
+      this.fullscreen = false;
+      this.overlay = false;
+      this.overlayMessage = "";
+      this.currentModalPosition = "center";
       this.currentModalSize = "small";
       this.removeCustomStylesFromModal();
       this.search = "";
@@ -744,8 +742,7 @@ export default {
 }
 
 .modal-container {
-  padding: 0px;
-  /* margin-top: 20px; */
+  padding: 0;
 }
 
 .modal-height {
@@ -767,8 +764,8 @@ export default {
 }
 
 #chat-modal-html {
-  padding-right: 0px !important;
-  padding-left: 0px !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
 }
 
 .cardText table {
@@ -823,7 +820,7 @@ export default {
 .teneo-modal-fullscreen {
   overflow-x: hidden;
   overflow-y: auto;
-  border-radius: 0px !important;
+  border-radius: 0 !important;
 }
 
 .teneo-modal-card {
