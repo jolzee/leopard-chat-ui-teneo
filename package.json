@@ -111,6 +111,7 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-vue": "^6.2.1",
+    "filemanager-webpack-plugin": "^2.0.5",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
     "node-sass": "^4.13.1",

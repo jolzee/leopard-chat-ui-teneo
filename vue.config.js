@@ -5,13 +5,14 @@ const CompressionPlugin = require("compression-webpack-plugin");
 const BrotliPlugin = require("brotli-webpack-plugin");
 const WebpackDeletePlugin = require("webpack-delete-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+// const FileManagerPlugin = require("filemanager-webpack-plugin");
 
 // const prod = process.env.NODE_ENV === "production";
 const dev = process.env.NODE_ENV === "development";
 // var const = process.env.NODE_ENV === "qa";
 
 let produceSourceMaps = false;
-if (process.env.VUE_APP_SOURCE_MAP === "true" || dev) {
+if (process.env.VUE_APP_SOURCE_MAP === "true") {
   produceSourceMaps = true;
 } else {
   produceSourceMaps = false;
@@ -19,13 +20,17 @@ if (process.env.VUE_APP_SOURCE_MAP === "true" || dev) {
 
 console.log(`produceSourceMaps: ${produceSourceMaps}`);
 
-const enableJavaScriptCompression = process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
+let enableJavaScriptCompression = process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
   ? process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
   : false;
 
-const enableCssCompression = process.env.VUE_APP_BUILD_COMPRESS_CSS_ASSETS
+let enableCssCompression = process.env.VUE_APP_BUILD_COMPRESS_CSS_ASSETS
   ? process.env.VUE_APP_BUILD_COMPRESS_CSS_ASSETS
   : true;
+
+enableJavaScriptCompression = false;
+enableCssCompression = false;
+produceSourceMaps = false;
 
 const compressionPluginTest = () => {
   let test = /\.css$|\.html$/;
@@ -74,6 +79,20 @@ const rawdata = fs.readFileSync(`${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
 const solutionConfig = JSON.parse(rawdata);
 
 const buildConfig = {
+  publicPath: "./",
+  assetsDir: "assets",
+  outputDir: "dist",
+  filenameHashing: true,
+  transpileDependencies: [
+    "ip-regex",
+    "vuetify",
+    "is-html",
+    "vue-plyr",
+    "replace-string",
+    "url-regex",
+    "vue-long-press-directive"
+  ],
+  productionSourceMap: produceSourceMaps,
   devServer: {
     https: false,
     port: 8080,
@@ -87,7 +106,6 @@ const buildConfig = {
     }
   },
   configureWebpack: {
-    devtool: "source-map",
     plugins:
       enableJavaScriptCompression || enableCssCompression
         ? [
@@ -122,20 +140,21 @@ const buildConfig = {
       });
       return definitions;
     });
-  },
-  publicPath: "./",
-  assetsDir: "./assets/",
-  productionSourceMap: produceSourceMaps,
-  transpileDependencies: [
-    "ip-regex",
-    "vuetify",
-    "is-html",
-    "vue-plyr",
-    "replace-string",
-    "url-regex",
-    "vue-long-press-directive"
-  ]
+  }
 };
+
+// const fileManagerPlugin = new FileManagerPlugin({
+//   onEnd: {
+//     copy: [
+//       {
+//         source: "./dist/static/leopardConfig.js",
+//         destination: "./dist/static/leopardConfig.js.token"
+//       }
+//     ]
+//   }
+// });
+
+// buildConfig.configureWebpack.plugins.push(fileManagerPlugin);
 
 if (!dev) {
   console.log(`Using TerserPlugin`);
@@ -145,6 +164,7 @@ if (!dev) {
       parallel: true,
       sourceMap: produceSourceMaps, // Must be set to true if using source-maps in production
       terserOptions: {
+        exclude: ["leopardConfig", "leopardConfig.js", "/leopardConfig(?:..{1,20}?)??.js/"],
         mangle: true,
         compress: {
           drop_console: false,
