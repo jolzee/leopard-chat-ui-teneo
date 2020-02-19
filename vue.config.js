@@ -148,7 +148,7 @@ if (!dev) {
         mangle: true,
         compress: {
           drop_console: false,
-          drop_debugger: true
+          drop_debugger: false
         }
       }
     })
