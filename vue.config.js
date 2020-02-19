@@ -164,7 +164,17 @@ if (!dev) {
       parallel: true,
       sourceMap: produceSourceMaps, // Must be set to true if using source-maps in production
       terserOptions: {
-        exclude: ["leopardConfig", "leopardConfig.js", "/leopardConfig(?:..{1,20}?)??.js/"],
+        output: {
+          comments: true
+        },
+        extractComments: false,
+        exclude: [
+          "setup.js",
+          "setup",
+          "leopardConfig",
+          "leopardConfig.js",
+          "/leopardConfig(?:..{1,20}?)??.js/"
+        ],
         mangle: true,
         compress: {
           drop_console: false,
