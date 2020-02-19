@@ -15,6 +15,7 @@
                   toggle2: ['ctrl', 'alt', 'arrowdown']
                 }"
                 @shortkey.native="swapInputButton"
+                @keyup.esc="handleEscapeKey"
                 :prepend-inner-icon="innerIconCondition"
                 :type="determineFieldType"
                 @click:prepend-inner="toggleShowPassword()"
@@ -52,7 +53,7 @@
                   </v-btn>
                 </template>
               </v-text-field>
-              <span v-shortkey="['esc']" @shortkey="stopAudioCapture"></span>
+              <span v-shortkey="['esc']" @shortkey="handleEscapeKey"></span>
             </v-col>
             <v-col cols="3" sm="2" class="text-center">
               <upload-btn
@@ -404,11 +405,11 @@ export default {
         document.activeElement.blur();
       }
     },
-    stopAudioCapture() {
+    handleEscapeKey() {
       if (this.showAudioInput) {
         logger.debug(`Stopping audio capture`);
         this.$store.commit("HIDE_LISTENING_OVERLAY");
-        this.$store.dispatch("stopAudioCapture");
+        this.$store.dispatch("handleEscapeKey");
         this.audioButtonColor = "sendButton";
       } else {
         this.$store.commit("CLOSE_CHAT_ESC");
