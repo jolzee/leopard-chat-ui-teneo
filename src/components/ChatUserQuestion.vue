@@ -2,7 +2,7 @@
   <v-row
     v-if="item.type === 'userInput'"
     no-gutters
-    :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3 pl-3 pr-1 pt-2'  : 'pl-3 pr-1 pt-2'"
+    :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3 pl-3 pr-1 pt-2' : 'pl-3 pr-1 pt-2'"
   >
     <!-- user question -->
     <v-col>
@@ -10,10 +10,20 @@
         :color="determineCardColor()"
         :ripple="false"
         class="chat-card chat-card-right text-right pr-3 align-content-end"
-        :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? `mr-2 ${leopardFont} ${!$vuetify.theme.dark ? questionLookAndFeel.blockBgColor : ''}` : `${leopardFont} ${!$vuetify.theme.dark ? questionLookAndFeel.blockBgColor : ''}`"
+        :class="
+          !showChatIcons || $vuetify.breakpoint.smAndDown
+            ? `mr-2 ${leopardFont} ${!$vuetify.theme.dark ? questionLookAndFeel.blockBgColor : ''}`
+            : `${leopardFont} ${!$vuetify.theme.dark ? questionLookAndFeel.blockBgColor : ''}`
+        "
       >
         <p
-          :class="`${!$vuetify.theme.dark && questionLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
+          :class="
+            `${
+              !$vuetify.theme.dark && questionLookAndFeel.blockTextColor === 'light'
+                ? 'white--text'
+                : ''
+            }`
+          "
         >
           <span class="sr-only">I said.</span>
           {{ item.text }}
@@ -54,9 +64,7 @@
             <v-list-item @click="menuItem.method" :class="hover ? 'primary' : ''">
               <v-list-item-title :class="hover ? 'white--text' : ''">
                 <v-icon :color="hover ? 'secondary' : ''" class="mr-2">
-                  {{
-                  menuItem.icon
-                  }}
+                  {{ menuItem.icon }}
                 </v-icon>
                 {{ menuItem.title }}
               </v-list-item-title>
@@ -95,13 +103,9 @@
           <v-icon large>{{ userIcon }}</v-icon>
         </v-btn>
       </template>
-      <v-snackbar
-        v-model="snackbar"
-        absolute
-        color="primary"
-        :timeout="snackBarTimeout"
-        top
-      >{{ snackBarText }}</v-snackbar>
+      <v-snackbar v-model="snackbar" absolute color="primary" :timeout="snackBarTimeout" top>{{
+        snackBarText
+      }}</v-snackbar>
       <AgentAssistTrainBotForm
         v-if="agentAssist.trainForm"
         :question="agentAssist.trainFormQuestion"
@@ -121,8 +125,7 @@ import { mapGetters } from "vuex";
 export default {
   name: "ChatUserQuestion",
   components: {
-    AgentAssistTrainBotForm: () =>
-      import("@/components/AgentAssistTrainBotForm")
+    AgentAssistTrainBotForm: () => import("@/components/AgentAssistTrainBotForm")
   },
   directives: {
     "long-press": LongPress

@@ -6,16 +6,13 @@
     :persistent="true"
     max-width="calc(900px - 10%)"
     no-click-animation
-    :fullscreen="
-        fullscreen ||
-          $vuetify.breakpoint.mdAndDown
-      "
+    :fullscreen="fullscreen || $vuetify.breakpoint.mdAndDown"
   >
     <v-card>
       <v-system-bar
         height="25px"
         color="teal darken-4"
-        :class="{ 'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown}"
+        :class="{ 'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown }"
         dark
       >
         <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
@@ -27,16 +24,15 @@
           :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
           @click="toggleFullscreen"
         >
-          {{
-          fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
-          }}
+          {{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}
         </v-icon>
         <v-icon
           tag="button"
           aria-label="Close dialog"
           tabindex="0"
           @click="closeAddNewSolutionDialog"
-        >mdi-close</v-icon>
+          >mdi-close</v-icon
+        >
       </v-system-bar>
 
       <v-app-bar :color="`teal darken-3 white--text`" dense>
@@ -51,7 +47,8 @@
             href="https://petershaggynoble.github.io/MDI-Sandbox/"
             target="_blank"
             dark
-          >MDI Icons (mdi-icon-name)</v-btn>
+            >MDI Icons (mdi-icon-name)</v-btn
+          >
         </span>
       </v-app-bar>
 
@@ -132,8 +129,7 @@
                   filled
                   clearable
                   v-if="
-                    ('useInProduction' in solution &&
-                      !solution.useInProduction) ||
+                    ('useInProduction' in solution && !solution.useInProduction) ||
                       !('useInProduction' in solution)
                   "
                   color="teal darken-4"
@@ -171,7 +167,11 @@
                       ></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
-                      <v-switch color="purple darken-4" v-model="solution.float" label="Float UI"></v-switch>
+                      <v-switch
+                        color="purple darken-4"
+                        v-model="solution.float"
+                        label="Float UI"
+                      ></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
@@ -243,9 +243,7 @@
                   validate-on-blur
                   color="teal darken-4"
                   label="User Icon - MDI Icons (mdi-icon-name)"
-                  :aria-label="
-                    `Set the icon representing the customer in the chat UI`
-                  "
+                  :aria-label="`Set the icon representing the customer in the chat UI`"
                   :append-icon="solution.userIcon"
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
@@ -256,9 +254,7 @@
                 <v-btn
                   v-for="(icon, index) in chatIcons"
                   :key="index + 'user-icons'"
-                  :aria-label="
-                    `Set the icon representing the customer to ${icon}`
-                  "
+                  :aria-label="`Set the icon representing the customer to ${icon}`"
                   @click="solution.userIcon = icon"
                   dark
                   small
@@ -399,9 +395,7 @@
                   >
                     <v-btn
                       class="mr-2"
-                      :aria-label="
-                        `Set the active color for editing to ${color}`
-                      "
+                      :aria-label="`Set the active color for editing to ${color}`"
                       fab
                       :dark="!isLight(solution.theme[color])"
                       small
@@ -416,7 +410,9 @@
                       @click="setActiveColor(color)"
                       color="teal darken-4"
                       filled
-                      :value="typeof solution.theme[color] === 'string' ? solution.theme[color] : ''"
+                      :value="
+                        typeof solution.theme[color] === 'string' ? solution.theme[color] : ''
+                      "
                       :label="color"
                       :rules="[ruleMustHaveValue, ruleMustHaveColor]"
                     ></v-text-field>
@@ -458,11 +454,22 @@
                   </v-col>
                   <v-col cols="9" :sm="10" :md="7" class="text-left pl-2" :class="solution.font">
                     <v-card
-                      :color="$vuetify.theme.dark ? '#333333' : solution.theme[solution.lookAndFeel.response.blockBgColor]"
+                      :color="
+                        $vuetify.theme.dark
+                          ? '#333333'
+                          : solution.theme[solution.lookAndFeel.response.blockBgColor]
+                      "
                       class="chat-card chat-card-left text-left mb-3 leopard-default-font"
-                      :class="solution.lookAndFeel.response.blockTextColor === 'light' ? ' white--text' : ''"
+                      :class="
+                        solution.lookAndFeel.response.blockTextColor === 'light'
+                          ? ' white--text'
+                          : ''
+                      "
                     >
-                      <span>Hello and welcome! My name is Leo and I’m here to answer your questions.</span>
+                      <span
+                        >Hello and welcome! My name is Leo and I’m here to answer your
+                        questions.</span
+                      >
                     </v-card>
                   </v-col>
                   <v-spacer></v-spacer>
@@ -489,7 +496,11 @@
                   <v-col cols="12" :md="12" :lg="4" class="pr-1">
                     <v-select
                       dense
-                      :items="solution.lookAndFeel.response.blockBgColor === 'white' ? ['dark'] : ['dark', 'light']"
+                      :items="
+                        solution.lookAndFeel.response.blockBgColor === 'white'
+                          ? ['dark']
+                          : ['dark', 'light']
+                      "
                       v-model="solution.lookAndFeel.response.blockTextColor"
                       filled
                       label="Response Block Text Color"
@@ -520,9 +531,17 @@
 
                   <v-col cols="9" :sm="10" :md="7" class="text-right pl-2" :class="solution.font">
                     <v-card
-                      :color="$vuetify.theme.dark ? '#333333' : solution.theme[solution.lookAndFeel.question.blockBgColor]"
+                      :color="
+                        $vuetify.theme.dark
+                          ? '#333333'
+                          : solution.theme[solution.lookAndFeel.question.blockBgColor]
+                      "
                       class="chat-card chat-card-right text-right mb-3 leopard-default-font"
-                      :class="solution.lookAndFeel.question.blockTextColor === 'light' ? ' white--text' : ''"
+                      :class="
+                        solution.lookAndFeel.question.blockTextColor === 'light'
+                          ? ' white--text'
+                          : ''
+                      "
                     >
                       <span>I would like to book a flight from Seattle to Cape Town</span>
                     </v-card>
@@ -565,7 +584,11 @@
                   <v-col cols="12" :md="12" :lg="4" class="pr-1">
                     <v-select
                       dense
-                      :items="solution.lookAndFeel.question.blockBgColor === 'white' ? ['dark'] : ['dark', 'light']"
+                      :items="
+                        solution.lookAndFeel.question.blockBgColor === 'white'
+                          ? ['dark']
+                          : ['dark', 'light']
+                      "
                       v-model="solution.lookAndFeel.question.blockTextColor"
                       filled
                       color="teal darken-4"
@@ -590,12 +613,12 @@
                   elevation="2"
                   v-if="solution.promptTriggers.enabled"
                 >
-                  You must return the number of active flows from Teneo in each
-                  response.
+                  You must return the number of active flows from Teneo in each response.
                   <a
                     target="_blank"
                     href="https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
-                  >Leopard Documentation</a>
+                    >Leopard Documentation</a
+                  >
                 </v-alert>
                 <v-text-field
                   v-if="solution.promptTriggers.enabled"
@@ -667,11 +690,9 @@
                     ></v-text-field>
                   </v-col>
                   <v-col cols="1" class="pl-2 pt-3">
-                    <v-icon
-                      @click="solution.knowledgeData.splice(index, 1)"
-                      color="red"
-                      dark
-                    >mdi-minus-circle</v-icon>
+                    <v-icon @click="solution.knowledgeData.splice(index, 1)" color="red" dark
+                      >mdi-minus-circle</v-icon
+                    >
                   </v-col>
                 </v-row>
               </v-col>
@@ -733,7 +754,8 @@
                           @click="solution.contextParams.splice(index, 1)"
                           color="red"
                           dark
-                        >mdi-minus-circle</v-icon>
+                          >mdi-minus-circle</v-icon
+                        >
                       </template>
                       <span>Remove CTX Parameter</span>
                     </v-tooltip>
@@ -745,7 +767,8 @@
                           @click="addNewContextParameterValue(index)"
                           color="light-green black--text"
                           dark
-                        >mdi-plus-circle</v-icon>
+                          >mdi-plus-circle</v-icon
+                        >
                       </template>
                       <span>Add Parameter Value</span>
                     </v-tooltip>
@@ -766,7 +789,8 @@
                             @click="contextParam.values.splice(valueIndex, 1)"
                             color="red"
                             dark
-                          >mdi-minus-circle</v-icon>
+                            >mdi-minus-circle</v-icon
+                          >
                         </template>
                         <span>Delete Parameter Value</span>
                       </v-tooltip>
@@ -776,21 +800,13 @@
                             v-bind="attrs"
                             v-on="on"
                             @click="
-                              toggleActiveContextParameterValue(
-                                value.active,
-                                index,
-                                valueIndex
-                              )
+                              toggleActiveContextParameterValue(value.active, index, valueIndex)
                             "
-                            :color="
-                              value.active ? 'light-green' : 'grey lighten-1'
-                            "
+                            :color="value.active ? 'light-green' : 'grey lighten-1'"
                             dark
                           >
                             {{
-                            value.active
-                            ? "mdi-checkbox-marked"
-                            : "mdi-checkbox-blank-outline"
+                              value.active ? "mdi-checkbox-marked" : "mdi-checkbox-blank-outline"
                             }}
                           </v-icon>
                         </template>
@@ -826,7 +842,8 @@
           small
           light
           @click="closeAddNewSolutionDialog"
-        >Close</v-btn>
+          >Close</v-btn
+        >
         <v-btn
           class="mr-2"
           :color="`teal darken-3 white--text`"
@@ -837,11 +854,9 @@
           Save
           <v-icon right dark>mdi-content-save</v-icon>
         </v-btn>
-        <v-snackbar
-          :timeout="snackbarTimeout"
-          v-model="snackbar"
-          class="mb-5"
-        >🧟‍ Please fix all form validation errors.</v-snackbar>
+        <v-snackbar :timeout="snackbarTimeout" v-model="snackbar" class="mb-5"
+          >🧟‍ Please fix all form validation errors.</v-snackbar
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -861,10 +876,7 @@ export default {
   data() {
     return {
       showLeopardAnimationImage: true,
-      dialogTitle:
-        this.currentModeEdit === "edit"
-          ? "Editing Solution"
-          : "Adding Solution",
+      dialogTitle: this.currentModeEdit === "edit" ? "Editing Solution" : "Adding Solution",
       solution: this.selectedSolution,
       animations: {
         in: [
@@ -1105,14 +1117,10 @@ export default {
       });
     },
     blockBgColor() {
-      return this.solution
-        ? this.solution.lookAndFeel.response.blockBgColor
-        : "#FFFFFF";
+      return this.solution ? this.solution.lookAndFeel.response.blockBgColor : "#FFFFFF";
     },
     blockTextColor() {
-      return this.solution
-        ? this.solution.lookAndFeel.response.blockTextColor
-        : "#FFFFFF";
+      return this.solution ? this.solution.lookAndFeel.response.blockTextColor : "#FFFFFF";
     }
   },
   updated() {
@@ -1263,9 +1271,7 @@ export default {
       } else {
         // editing and existing solution config
         logger.debug("Editing solution: checking deep link validity");
-        const foundSolution = this.config.solutions.find(
-          solution => solution.deepLink === value
-        );
+        const foundSolution = this.config.solutions.find(solution => solution.deepLink === value);
         logger.debug(foundSolution);
         if (foundSolution && foundSolution.id !== this.selectedSolution.id) {
           return "That deep link is already taken!!";
@@ -1317,9 +1323,7 @@ export default {
     isValidColor(color) {
       if (color && typeof color === "string" && color.charAt(0) === "#") {
         color = color.substring(1);
-        return (
-          [3, 4, 6, 8].indexOf(color.length) > -1 && !isNaN(parseInt(color, 16))
-        );
+        return [3, 4, 6, 8].indexOf(color.length) > -1 && !isNaN(parseInt(color, 16));
       } else if (color) {
         if (color.toLowerCase() in COLOR_NAMES) {
           return true;

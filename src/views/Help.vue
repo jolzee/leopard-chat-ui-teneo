@@ -17,19 +17,17 @@
               text
               outlined
               @click="sendUserInput(item)"
-            >{{ item }}</v-btn>
+              >{{ item }}</v-btn
+            >
           </v-list-item>
         </ul>
       </v-col>
     </v-row>
     <v-row justify="center" class="pb-3">
       <v-card-actions>
-        <v-btn
-          color="secondary"
-          aria-label="Back to Chat Bot"
-          ripple
-          to="/"
-        >{{ $t('back.to.chat.button') }}</v-btn>
+        <v-btn color="secondary" aria-label="Back to Chat Bot" ripple to="/">{{
+          $t("back.to.chat.button")
+        }}</v-btn>
       </v-card-actions>
     </v-row>
   </v-card>

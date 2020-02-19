@@ -1,6 +1,6 @@
 <template>
   <!-- Reply -->
-  <div v-if="item.type === 'reply'" :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3'  : ''">
+  <div v-if="item.type === 'reply'" :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3' : ''">
     <v-row v-if="itemText !== '<span>'" justify="start" no-gutters class="pr-3 pl-1 pt-2">
       <v-col
         cols="2"
@@ -34,9 +34,7 @@
               <v-list-item @click="menuItem.method" :class="hover ? 'primary' : ''">
                 <v-list-item-title :class="hover ? 'white--text' : ''">
                   <v-icon :color="hover ? 'secondary' : ''" class="mr-2">
-                    {{
-                    menuItem.icon
-                    }}
+                    {{ menuItem.icon }}
                   </v-icon>
                   {{ menuItem.title }}
                 </v-list-item-title>
@@ -49,7 +47,8 @@
           large
           :color="!$vuetify.theme.dark ? responseLookAndFeel.iconColor : 'indigo'"
           class="teneo-response-icon"
-        >{{ getResponseIcon }}</v-icon>
+          >{{ getResponseIcon }}</v-icon
+        >
       </v-col>
       <v-col
         class="text-left"
@@ -62,7 +61,11 @@
         >
           <span
             class="teneo-reply"
-            :class="`${leopardFont} ${responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
+            :class="
+              `${leopardFont} ${
+                responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''
+              }`
+            "
           >
             <span v-html="addAccessibilityPrefix(itemText)"></span>
           </span>
@@ -128,11 +131,9 @@
             <template v-slot:default>
               <thead>
                 <tr>
-                  <th
-                    class="text-left"
-                    v-for="header in extension.headers"
-                    :key="header + uuid"
-                  >{{header}}</th>
+                  <th class="text-left" v-for="header in extension.headers" :key="header + uuid">
+                    {{ header }}
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -178,7 +179,11 @@
           >
             <span
               class="teneo-reply"
-              :class="`${leopardFont} ${responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
+              :class="
+                `${leopardFont} ${
+                  responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''
+                }`
+              "
             >
               <span v-html="addAccessibilityPrefix(chunkText)"></span>
             </span>
@@ -186,16 +191,16 @@
         </v-col>
       </v-row>
     </div>
-    <DelayedResponse v-if="showDelayedResponse && itemIndexInDialog === dialog.length - 1"></DelayedResponse>
+    <DelayedResponse
+      v-if="showDelayedResponse && itemIndexInDialog === dialog.length - 1"
+    ></DelayedResponse>
     <!-- show any options in the response: for example Yes, No Maybe -->
     <v-col cols="12" v-if="routerCheckList && itemIndexInDialog === dialog.length - 1" class="px-3">
       <v-card>
         <div class="d-flex flex-no-wrap justify-space-between">
           <div>
             <h2 class="headline">
-              {{
-              routerCheckList.title
-              }}
+              {{ routerCheckList.title }}
             </h2>
 
             <v-row
@@ -215,17 +220,16 @@
           </div>
 
           <v-avatar class="ma-3" size="100" tile>
-            <v-img src="https://wi.presales.artificial-solutions.com/media/mytelco/router.png"></v-img>
+            <v-img
+              src="https://wi.presales.artificial-solutions.com/media/mytelco/router.png"
+            ></v-img>
           </v-avatar>
         </div>
       </v-card>
     </v-col>
 
     <v-card
-      v-if="
-        hasCollection &&
-          (itemIndexInDialog === dialog.length - 1 || hasPermanentOptions)
-      "
+      v-if="hasCollection && (itemIndexInDialog === dialog.length - 1 || hasPermanentOptions)"
       class="mb-1 mx-3 pt-0 px-1 pb-2 elevation-0 text-center transparent teneo-response-collection"
     >
       <!-- Button Options -->
@@ -241,11 +245,9 @@
             :aria-label="option.aria ? option.aria : option.name"
             @click="optionClicked(option)"
           >
-            <v-icon
-              v-if="option.icon"
-              left
-              style="padding-top: 2px; opacity: 0.7 !important;"
-            >{{`mdi-${option.icon}`}}</v-icon>
+            <v-icon v-if="option.icon" left style="padding-top: 2px; opacity: 0.7 !important;">{{
+              `mdi-${option.icon}`
+            }}</v-icon>
             {{ option.name }}
           </v-btn>
         </span>
@@ -269,7 +271,10 @@
               </v-list-item-icon>
               <v-list-item-content class="text-left">
                 <!-- <v-list-item-title v-html="option.name"></v-list-item-title> -->
-                <v-list-item-subtitle v-html="option.name" style="white-space: unset;"></v-list-item-subtitle>
+                <v-list-item-subtitle
+                  v-html="option.name"
+                  style="white-space: unset;"
+                ></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -290,11 +295,13 @@
           small
           @click="displayFeedbackForm"
         >
-          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;">mdi-thumbs-up-down</v-icon>
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;"
+            >mdi-thumbs-up-down</v-icon
+          >
           {{
-          getFeedbackFormConfig.label && getFeedbackFormConfig.label !== null
-          ? getFeedbackFormConfig.label
-          : "Leave Feedback"
+            getFeedbackFormConfig.label && getFeedbackFormConfig.label !== null
+              ? getFeedbackFormConfig.label
+              : "Leave Feedback"
           }}
         </v-btn>
       </v-col>
@@ -317,15 +324,13 @@
           small
           @click="showForm()"
         >
-          <v-icon
-            left
-            class="teneo-icon"
-            style="opacity: 0.7 !important;"
-          >mdi-file-document-edit-outline</v-icon>
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;"
+            >mdi-file-document-edit-outline</v-icon
+          >
           {{
-          getFormConfig && getFormConfig.openFormButtonText
-          ? getFormConfig.openFormButtonText
-          : "Form"
+            getFormConfig && getFormConfig.openFormButtonText
+              ? getFormConfig.openFormButtonText
+              : "Form"
           }}
         </v-btn>
       </v-col>
@@ -333,8 +338,9 @@
 
     <v-row
       no-gutters
-      v-if="(item.hasExtraData && hasModal(item) && notLiveChatTranscript) ||
-            itemHasLongResponse(item)"
+      v-if="
+        (item.hasExtraData && hasModal(item) && notLiveChatTranscript) || itemHasLongResponse(item)
+      "
       class="mt-0 mr-3"
     >
       <v-col cols="12" class="text-right mb-1">
@@ -345,7 +351,9 @@
           small
           @click="showModal"
         >
-          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;">{{ modalButtonIcon }}</v-icon>
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;">{{
+            modalButtonIcon
+          }}</v-icon>
           {{ modalButtonText.text }}
         </v-btn>
       </v-col>
@@ -396,7 +404,8 @@
       color="primary"
       :timeout="snackBarTimeout"
       top
-    >{{ snackBarText }}</v-snackbar>
+      >{{ snackBarText }}</v-snackbar
+    >
     <AgentAssistCannedResponseForm
       v-if="agentAssist.cannedResponseForm"
       :text="agentAssist.cannedResponseText"
@@ -421,8 +430,7 @@ export default {
   },
   components: {
     Audio: () => import("@/components/Audio"),
-    AgentAssistCannedResponseForm: () =>
-      import("@/components/AgentAssistCannedResponseForm"),
+    AgentAssistCannedResponseForm: () => import("@/components/AgentAssistCannedResponseForm"),
     Carousel: () => import("@/components/Carousel"),
     Card: () => import("@/components/Card"),
     ImageAnimation: () => import("@/components/ImageAnimation"),
@@ -755,25 +763,17 @@ export default {
       return options;
     },
     mustShowDate() {
-      if (
-        decodeURIComponent(this.item.teneoResponse.extraData.datePicker) !==
-        "undefined"
-      ) {
+      if (decodeURIComponent(this.item.teneoResponse.extraData.datePicker) !== "undefined") {
         return true;
       }
       return false;
     },
     notLiveChatTranscript() {
-      let transcript = decodeURIComponent(
-        this.item.teneoResponse.extraData.liveChat
-      );
+      let transcript = decodeURIComponent(this.item.teneoResponse.extraData.liveChat);
       return transcript === "undefined";
     },
     mustShowTime() {
-      if (
-        decodeURIComponent(this.item.teneoResponse.extraData.timePicker) !==
-        "undefined"
-      ) {
+      if (decodeURIComponent(this.item.teneoResponse.extraData.timePicker) !== "undefined") {
         return true;
       }
       return false;
@@ -808,27 +808,18 @@ export default {
         } else if (this.hasInlineType(extension, "vimeo")) {
           finalMessageToAgent += `\nVimeoId: ${this.vimeoId(extension)}`;
         } else if (this.hasInlineType(extension, "video")) {
-          finalMessageToAgent += `\nVideo: ${
-            this.videoInfo(extension).videoUrl
-          }`;
+          finalMessageToAgent += `\nVideo: ${this.videoInfo(extension).videoUrl}`;
         } else if (this.hasInlineType(extension, "map")) {
-          finalMessageToAgent += `\nAddress: ${
-            this.mapInfo(extension).address
-          }`;
+          finalMessageToAgent += `\nAddress: ${this.mapInfo(extension).address}`;
         } else if (this.hasInlineType(extension, "image")) {
           logger.debug(this.imageUrl(extension));
           finalMessageToAgent += `\nImage: ${this.imageUrl(extension)}`;
         } else if (this.hasInlineType(extension, "carousel")) {
-          finalMessageToAgent += `\nImages: ${this.carouselImageArray(
-            extension
-          )}`;
+          finalMessageToAgent += `\nImages: ${this.carouselImageArray(extension)}`;
         }
       });
       if (finalMessageToAgent) {
-        this.$store.dispatch(
-          "putLiveChatAgentMessage",
-          decodeURIComponent(finalMessageToAgent)
-        );
+        this.$store.dispatch("putLiveChatAgentMessage", decodeURIComponent(finalMessageToAgent));
       }
     },
     createLiveChatMoment() {
@@ -923,10 +914,7 @@ export default {
       return null;
     },
     hasCard(item) {
-      if (
-        item.teneoResponse.extraData &&
-        item.teneoResponse.extraData.displayCard
-      ) {
+      if (item.teneoResponse.extraData && item.teneoResponse.extraData.displayCard) {
         return true;
       } else {
         return false;
@@ -958,17 +946,12 @@ export default {
     },
     optionClicked(option) {
       this.$store.commit("SHOW_PROGRESS_BAR");
-      this.$store.commit(
-        "SET_USER_INPUT",
-        option.text ? option.text : option.name
-      );
+      this.$store.commit("SET_USER_INPUT", option.text ? option.text : option.name);
       let optionClickParam = "&isClick=true";
       this.$store
         .dispatch(
           "sendUserInput",
-          option.params
-            ? "&" + option.params + optionClickParam
-            : optionClickParam
+          option.params ? "&" + option.params + optionClickParam : optionClickParam
         )
         .then(() => {
           this.$emit("handleFocus");

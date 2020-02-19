@@ -8,10 +8,7 @@
     no-click-animation
     overlay-opacity="0.7"
     max-width="calc(700px - 5%)"
-    :fullscreen="
-        fullscreen ||
-          $vuetify.breakpoint.mdAndDown
-      "
+    :fullscreen="fullscreen || $vuetify.breakpoint.mdAndDown"
     light
   >
     <v-card style="background-color: #FAFAFA">
@@ -19,9 +16,8 @@
         height="30px"
         light
         :class="{
-            'leopard-config-app-bar-fullscreen':
-              fullscreen || $vuetify.breakpoint.mdAndDown
-          }"
+          'leopard-config-app-bar-fullscreen': fullscreen || $vuetify.breakpoint.mdAndDown
+        }"
       >
         <v-icon>mdi-tune</v-icon>
         <span>
@@ -40,16 +36,15 @@
           :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
           @click="toggleFullscreen"
         >
-          {{
-          fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
-          }}
+          {{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}
         </v-icon>
         <v-icon
           tabindex="0"
           tag="button"
           aria-label="Close Config Area"
           @click="closeConfigArea(false)"
-        >mdi-close</v-icon>
+          >mdi-close</v-icon
+        >
       </v-system-bar>
       <v-app-bar color="#2F286B" max-height="64px">
         <!-- show the nicely formatted view of the full configuration -->
@@ -70,8 +65,7 @@
             </v-btn>
           </template>
           <span>
-            Import an individual/multiple solutions from a
-            backup
+            Import an individual/multiple solutions from a backup
           </span>
         </v-tooltip>
         <v-tooltip open-delay="300" bottom>
@@ -111,8 +105,7 @@
             </v-btn>
           </template>
           <span>
-            Copy the configuration for all solutions to
-            clipboard
+            Copy the configuration for all solutions to clipboard
           </span>
         </v-tooltip>
         <v-tooltip open-delay="300" bottom>
@@ -132,8 +125,7 @@
             </v-btn>
           </template>
           <span>
-            Export the configuration for all solutions to a
-            file
+            Export the configuration for all solutions to a file
           </span>
         </v-tooltip>
         <v-tooltip open-delay="300" bottom>
@@ -168,15 +160,12 @@
               @click="toggleDisplayOfSolutionConfig"
             >
               <v-icon dark>
-                {{
-                displayFullSolutionConfig ? "mdi-eye" : "mdi-eye-off"
-                }}
+                {{ displayFullSolutionConfig ? "mdi-eye" : "mdi-eye-off" }}
               </v-icon>
             </v-btn>
           </template>
           <span>
-            Toggle display of the configuration for all
-            solutions
+            Toggle display of the configuration for all solutions
           </span>
         </v-tooltip>
         <v-tooltip open-delay="300" bottom>
@@ -204,15 +193,11 @@
           left
           overlap
           color="#4051B1"
-          :aria-label="
-              `There are ${config.solutions.length} known teneo solutions`
-            "
+          :aria-label="`There are ${config.solutions.length} known teneo solutions`"
           class="mr-2 d-none d-sm-inline"
         >
           <span slot="badge" style="background-color: #4051B1">
-            {{
-            config.solutions.length
-            }}
+            {{ config.solutions.length }}
           </span>
           <v-icon large color="grey lighten-1">mdi-settings</v-icon>
         </v-badge>
@@ -282,20 +267,17 @@
                             >
                               <v-icon dark>
                                 {{
-                                selectedSolution &&
-                                config.activeSolution ===
-                                selectedSolution.id
-                                ? "mdi-checkbox-marked"
-                                : "mdi-checkbox-blank-outline"
+                                  selectedSolution && config.activeSolution === selectedSolution.id
+                                    ? "mdi-checkbox-marked"
+                                    : "mdi-checkbox-blank-outline"
                                 }}
                               </v-icon>
                             </v-btn>
                           </v-fab-transition>
                         </template>
                         <span>
-                          Make the "{{ getSelectedSolutionName }}" the active
-                          solution. An active solution can be accessed without
-                          the deep link
+                          Make the "{{ getSelectedSolutionName }}" the active solution. An active
+                          solution can be accessed without the deep link
                         </span>
                       </v-tooltip>
                       <v-tooltip open-delay="300" bottom>
@@ -530,7 +512,7 @@
                   <v-system-bar
                     height="30px"
                     color="primary darken-3"
-                    :class="{ 'grab-cursor': !embed && !$vuetify.breakpoint.mdAndDown}"
+                    :class="{ 'grab-cursor': !embed && !$vuetify.breakpoint.mdAndDown }"
                     dark
                   >
                     <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
@@ -540,7 +522,8 @@
                       aria-label="Close dialog"
                       tabindex="0"
                       @click="closeUploadDialog"
-                    >mdi-close</v-icon>
+                      >mdi-close</v-icon
+                    >
                   </v-system-bar>
 
                   <v-app-bar
@@ -594,7 +577,8 @@
                       light
                       small
                       @click="closeUploadDialog"
-                    >Close</v-btn>
+                      >Close</v-btn
+                    >
                     <v-btn
                       :disabled="getUploadConfig === ''"
                       small
@@ -611,7 +595,8 @@
                       color="#2F2869"
                       :timeout="globalSnackbarTimeout"
                       v-model="uploadSnackbar"
-                    >{{ globalSnackbarMessage }}</v-snackbar>
+                      >{{ globalSnackbarMessage }}</v-snackbar
+                    >
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -620,7 +605,10 @@
               <v-dialog v-model="showBackupDialog" persistent max-width="290">
                 <v-card>
                   <v-card-title class="headline">Configuration Backup</v-card-title>
-                  <v-card-text>It's been at least 2 weeks since you performed a backup of your solution configurations. Would you like to perform a backup now?</v-card-text>
+                  <v-card-text
+                    >It's been at least 2 weeks since you performed a backup of your solution
+                    configurations. Would you like to perform a backup now?</v-card-text
+                  >
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="green darken-1" text @click="showBackupDialog = false">No</v-btn>
@@ -637,12 +625,16 @@
                     You changed the selected solution. Should I naviate to:
                     <br />
                     <br />
-                    <span class="leopard-code">{{ selectedSolution ? selectedSolution.name : "" }}</span>
+                    <span class="leopard-code">{{
+                      selectedSolution ? selectedSolution.name : ""
+                    }}</span>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="green darken-1" text @click="closeConfigArea(true)">No</v-btn>
-                    <v-btn color="green darken-1" text @click="doRefreshToSelectedSolution">Yes</v-btn>
+                    <v-btn color="green darken-1" text @click="doRefreshToSelectedSolution"
+                      >Yes</v-btn
+                    >
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -670,7 +662,8 @@
                             :href="result.solution.url"
                             :title="result.solution.url"
                             target="_blank"
-                          >{{ result.solution.url }}</a>
+                            >{{ result.solution.url }}</a
+                          >
                         </td>
                         <td>
                           <v-progress-circular
@@ -690,11 +683,9 @@
                             transition="slide-y-reverse-transition"
                           >
                             <template v-slot:activator>
-                              <v-icon
-                                v-if="result.status === 'success'"
-                                large
-                                color="blue darken-2"
-                              >mdi-check-network-outline</v-icon>
+                              <v-icon v-if="result.status === 'success'" large color="blue darken-2"
+                                >mdi-check-network-outline</v-icon
+                              >
                               <v-icon v-else large color="error darken-2">mdi-close-network</v-icon>
                             </template>
                             <v-btn
@@ -737,12 +728,9 @@
       <v-divider class="ma-0"></v-divider>
       <v-card-actions class="grey lighten-3">
         <v-spacer></v-spacer>
-        <v-btn
-          color="#2F2869"
-          dark
-          small
-          @click="closeConfigArea(false)"
-        >{{ $t("back.to.chat.button") }}</v-btn>
+        <v-btn color="#2F2869" dark small @click="closeConfigArea(false)">{{
+          $t("back.to.chat.button")
+        }}</v-btn>
       </v-card-actions>
       <!-- global snackbar -->
       <v-snackbar
@@ -750,7 +738,8 @@
         :timeout="globalSnackbarTimeout"
         v-model="globalSnackbar"
         :color="globalSnackbarColor"
-      >{{ globalSnackbarMessage }}</v-snackbar>
+        >{{ globalSnackbarMessage }}</v-snackbar
+      >
     </v-card>
   </v-dialog>
 </template>
@@ -770,10 +759,7 @@ import {
 import dayjs from "dayjs";
 // import Prism from "prismjs";
 import copy from "copy-to-clipboard";
-import {
-  STORAGE_KEY,
-  SOLUTION_DEFAULT
-} from "@/constants/solution-config-default.js";
+import { STORAGE_KEY, SOLUTION_DEFAULT } from "@/constants/solution-config-default.js";
 import "prismjs/prism";
 import "prismjs/themes/prism-funky.css";
 import "prismjs/components/prism-json.min.js";
@@ -838,15 +824,13 @@ export default {
       siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
     }
 
-    this.$store
-      .dispatch("shouldBackupSolutionsConfig")
-      .then(shouldBackupSolution => {
-        if (shouldBackupSolution) {
-          setTimeout(() => {
-            this.showBackupDialog = true;
-          }, 2000);
-        }
-      });
+    this.$store.dispatch("shouldBackupSolutionsConfig").then(shouldBackupSolution => {
+      if (shouldBackupSolution) {
+        setTimeout(() => {
+          this.showBackupDialog = true;
+        }, 2000);
+      }
+    });
   },
   watch: {
     selectedSolution() {
@@ -977,19 +961,13 @@ export default {
         const activeSolutionCurrent = this.config.solutions.find(
           solution => solution.id === activeSolutionPast.id
         );
-        if (
-          !skipRefreshDialog &&
-          activeSolutionCurrent.id !== this.selectedSolution.id
-        ) {
+        if (!skipRefreshDialog && activeSolutionCurrent.id !== this.selectedSolution.id) {
           // another solution is selected than what was originally used to enter the config area
           this.showPossibleRefreshDialog = true;
           return;
         }
 
-        if (
-          JSON.stringify(activeSolutionPast) !==
-          JSON.stringify(activeSolutionCurrent)
-        ) {
+        if (JSON.stringify(activeSolutionPast) !== JSON.stringify(activeSolutionCurrent)) {
           this.refreshBrowserToSolution(activeSolutionCurrent);
           return;
         } else {
@@ -1024,17 +1002,13 @@ export default {
       window.location = `${location.protocol}//${location.host}${location.pathname}?dl=${solution.deepLink}${addtionalParams}`;
     },
     toggleFullscreen() {
-      let modalElements = document.getElementsByClassName(
-        "leopard-config-modal"
-      );
+      let modalElements = document.getElementsByClassName("leopard-config-modal");
       modalElements[0].setAttribute("style", "");
       this.fullscreen = !this.fullscreen;
     },
     createShareLinkForSolution() {
       copy(createSharableLink(this.selectedSolution));
-      this.displaySnackBar(
-        "📋 Copied Solution Sharable Import Link to Clipboard 🔗"
-      );
+      this.displaySnackBar("📋 Copied Solution Sharable Import Link to Clipboard 🔗");
       this.snackbarClipboard = true;
     },
     closeAddNewSolutionDialog(result) {
@@ -1182,9 +1156,7 @@ export default {
       }
     },
     setSolutionAsSelected(solutionId) {
-      this.selectedSolution = this.config.solutions.find(
-        solution => solution.id === solutionId
-      );
+      this.selectedSolution = this.config.solutions.find(solution => solution.id === solutionId);
     },
     refreshBrowser() {
       if (this.selectedSolution) {
@@ -1234,17 +1206,12 @@ export default {
         solution => solution.name === newName
       );
       if (duplicateSolutions.length > 0) {
-        clonedSolution.name =
-          clonedSolution.name + " [" + generateRandomId() + "]";
+        clonedSolution.name = clonedSolution.name + " [" + generateRandomId() + "]";
       }
-      clonedSolution.deepLink =
-        clonedSolution.deepLink + "-" + generateRandomId();
+      clonedSolution.deepLink = clonedSolution.deepLink + "-" + generateRandomId();
       this.config.solutions.push(clonedSolution);
       this.selectedSolution = cloneObject(clonedSolution);
-      this.displaySnackBar(
-        "Solution was cloned. New name is " + clonedSolution.name,
-        3000
-      );
+      this.displaySnackBar("Solution was cloned. New name is " + clonedSolution.name, 3000);
       this.saveToLocalStorage();
     },
     displayUploadSnackBar(message, timeout = 2000, color = "#2F2869") {
@@ -1273,9 +1240,7 @@ export default {
       this.saveToLocalStorage();
     },
     editSolutionAudit(solutionId) {
-      let foundSolution = this.config.solutions.find(
-        solution => solution.id === solutionId
-      );
+      let foundSolution = this.config.solutions.find(solution => solution.id === solutionId);
       this.selectedSolution = foundSolution;
       this.solution = cloneObject(this.selectedSolution); // make a copy - we have a save button
       this.dialogTitle = `Editing Solution | ${this.selectedSolution.name}`;
@@ -1342,10 +1307,7 @@ export default {
             newConfig.solutions.forEach(newSolution => {
               this.importSolution(newSolution);
             });
-            this.displaySnackBar(
-              "Merged existing full config with newly uploded",
-              3000
-            );
+            this.displaySnackBar("Merged existing full config with newly uploded", 3000);
           } else {
             // current config is empty
             this.config = fixSolutions(newConfig);
@@ -1365,11 +1327,7 @@ export default {
         this.closeUploadDialog();
         this.saveToLocalStorage();
       } else {
-        this.displayUploadSnackBar(
-          "Please provide a valid configuration",
-          3000,
-          "red"
-        );
+        this.displayUploadSnackBar("Please provide a valid configuration", 3000, "red");
       }
     },
     addSolution() {

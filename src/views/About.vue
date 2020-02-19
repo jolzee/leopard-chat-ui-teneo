@@ -17,13 +17,11 @@
           aria-label="Learn More about Artificial Solutions opens in a new window"
           :href="$t('about.page.url')"
           target="_blank"
-        >{{ $t("about.page.button") }}</v-btn>
-        <v-btn
-          color="secondary"
-          aria-label="Back to Chat Bot"
-          ripple
-          to="/"
-        >{{ $t('back.to.chat.button') }}</v-btn>
+          >{{ $t("about.page.button") }}</v-btn
+        >
+        <v-btn color="secondary" aria-label="Back to Chat Bot" ripple to="/">{{
+          $t("back.to.chat.button")
+        }}</v-btn>
       </v-card-actions>
     </v-row>
   </v-card>

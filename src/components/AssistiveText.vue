@@ -1,9 +1,7 @@
-
-
 <template>
   <div class="assistive-text" :aria-live="ariaLive" aria-relevant="additions">
     <slot></slot>
-    <p v-for="(text, index) in textToRead" :key="index">{{text}}</p>
+    <p v-for="(text, index) in textToRead" :key="index">{{ text }}</p>
   </div>
 </template>
 

@@ -98,9 +98,7 @@ export default {
       this.$emit("hideFeedback");
     },
     sendFeedback() {
-      logger.debug(
-        `Rating: ${this.rating} Reasons: ${this.reasons} Comment: ${this.comment}`
-      );
+      logger.debug(`Rating: ${this.rating} Reasons: ${this.reasons} Comment: ${this.comment}`);
 
       const feedback = {
         rating: this.rating,

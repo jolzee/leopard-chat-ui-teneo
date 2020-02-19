@@ -19,8 +19,7 @@ export default class Firebase {
                 authDomain: window.leopardConfig.firebase.authDomain,
                 projectId: window.leopardConfig.firebase.projectId,
                 storageBucket: window.leopardConfig.firebase.storageBucket,
-                messagingSenderId:
-                  window.leopardConfig.firebase.messagingSenderId
+                messagingSenderId: window.leopardConfig.firebase.messagingSenderId
               });
             }
             Firebase.firebase = firebase;

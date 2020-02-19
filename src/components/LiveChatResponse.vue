@@ -10,7 +10,8 @@
         :color="$vuetify.theme.dark ? 'info darken-3' : 'info lighten-2'"
         icon="mdi-counter"
         elevation="2"
-      >{{ item.text }}</v-alert>
+        >{{ item.text }}</v-alert
+      >
     </div>
 
     <!-- Live Chat Status -->
@@ -27,7 +28,8 @@
         icon="mdi-account-multiple-check"
         elevation="2"
         :class="itemIndexInDialog !== 0 && itemIndexInDialog !== dialog.length - 1 ? 'mb-0' : ''"
-      >{{ item.text }}</v-alert>
+        >{{ item.text }}</v-alert
+      >
     </div>
     <div v-if="item.type === 'liveChatEnded'" class="mt-4">
       <v-alert
@@ -38,7 +40,8 @@
         colored-border
         icon="mdi-account-multiple-minus"
         elevation="2"
-      >{{ item.text }}</v-alert>
+        >{{ item.text }}</v-alert
+      >
     </div>
     <!-- Live Chat Response -->
     <!-- start -->
@@ -66,7 +69,11 @@
           <p class="sr-only">Live agent said.</p>
           <p
             class="teneo-reply"
-            :class="`${leopardFont} ${responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''}`"
+            :class="
+              `${leopardFont} ${
+                responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''
+              }`
+            "
             v-html="item.text"
           ></p>
         </v-card>

@@ -11,9 +11,9 @@
                 v-show="textFieldShowCondition"
                 :disabled="textFieldDisabledCondition"
                 v-shortkey="{
-                    toggle1: ['ctrl', 'alt', '/'],
-                    toggle2: ['ctrl', 'alt', 'arrowdown']
-                  }"
+                  toggle1: ['ctrl', 'alt', '/'],
+                  toggle2: ['ctrl', 'alt', 'arrowdown']
+                }"
                 @shortkey.native="swapInputButton"
                 :prepend-inner-icon="innerIconCondition"
                 :type="determineFieldType"
@@ -106,10 +106,10 @@
                   ripple
                   v-if="showAudioInput"
                   v-shortkey="{
-                      recordAudioOne: ['ctrl', 'alt', '.'],
-                      recordAudioTwo: ['ctrl', 'alt', '`'],
-                      recordAudioThree: ['ctrl', 'alt', 'arrowup']
-                    }"
+                    recordAudioOne: ['ctrl', 'alt', '.'],
+                    recordAudioTwo: ['ctrl', 'alt', '`'],
+                    recordAudioThree: ['ctrl', 'alt', 'arrowup']
+                  }"
                   @shortkey.native="captureAudio"
                   :color="audioButtonColor"
                   :class="!$vuetify.theme.dark ? 'white--text' : 'black--text'"
@@ -139,14 +139,7 @@ const superagent = require("superagent");
 
 export default {
   name: "ChatInput",
-  props: [
-    "passUserInput",
-    "toggleButton",
-    "handleInputFocus",
-    "sendParams",
-    "mustSend",
-    "drawer"
-  ],
+  props: ["passUserInput", "toggleButton", "handleInputFocus", "sendParams", "mustSend", "drawer"],
   directives: {
     "long-press": LongPress,
     mask
@@ -186,9 +179,9 @@ export default {
       }
     },
     drawer: function(newDrawer) {
-        if (!newDrawer) {
-          this.handleFocus();
-        }
+      if (!newDrawer) {
+        this.handleFocus();
+      }
     },
     dialogs: function() {
       this.handleFocus();
@@ -248,7 +241,7 @@ export default {
       "dialogs",
       "dark",
       "float",
-      {userInput: 'storeUserInput'},
+      { userInput: "storeUserInput" },
       "inputHelpText",
       "isMobileDevice",
       "itemInputMask",
@@ -260,11 +253,7 @@ export default {
       "uploadConfig"
     ]),
     determineFieldType() {
-      return this.askingForPassword
-        ? this.showPassword
-          ? "text"
-          : "password"
-        : "text";
+      return this.askingForPassword ? (this.showPassword ? "text" : "password") : "text";
     },
     determineLabelText() {
       return this.inputHelpText
@@ -276,11 +265,7 @@ export default {
         : this.$t("input.box.label");
     },
     innerIconCondition() {
-      return this.askingForPassword
-        ? this.showPassword
-          ? "mdi-eye"
-          : "mdi-eye-off"
-        : "";
+      return this.askingForPassword ? (this.showPassword ? "mdi-eye" : "mdi-eye-off") : "";
     },
     determineMask() {
       return this.itemInputMask || this.nomask;
@@ -295,9 +280,7 @@ export default {
       return this.progressBar || this.drawer;
     },
     shouldDisableSend() {
-      return (
-        this.progressBar || this.userInput === "" || this.userInput === null
-      );
+      return this.progressBar || this.userInput === "" || this.userInput === null;
     },
     inputRules() {
       return this.askingForEmail ? [this.rules.email(this.userInput)] : [];
@@ -336,7 +319,6 @@ export default {
         this.$store.commit("SET_USER_INPUT", this.userInput);
         this.audioButtonColor = "sendButton";
         if (this.userInput && this.userInput.trim()) {
-          console.log(`What is userInput [${this.userInput}]`);
           this.$store.commit("SHOW_PROGRESS_BAR");
           this.$store
             .dispatch("sendUserInput", this.sendParams)
@@ -361,11 +343,14 @@ export default {
           // this.$refs.userInput.focus();
           theInputElement.focus();
           logger.debug(`Handling focus`);
-        } else if (theInputElement && this.isMobileDevice && document.activeElement === theInputElement) {
+        } else if (
+          theInputElement &&
+          this.isMobileDevice &&
+          document.activeElement === theInputElement
+        ) {
           document.activeElement.blur();
         }
       }, 300);
-
     },
     toggleShowPassword() {
       logger.debug("Toggeling Password");
@@ -373,10 +358,7 @@ export default {
     },
     captureAudio() {
       if (
-        Object.prototype.hasOwnProperty.call(
-          window,
-          "webkitSpeechRecognition"
-        ) &&
+        Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
         Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
       ) {
         this.$store.commit("HIDE_CHAT_MODAL");
@@ -423,10 +405,14 @@ export default {
       }
     },
     stopAudioCapture() {
-      logger.debug(`Stopping audio capture`);
-      this.$store.commit("HIDE_LISTENING_OVERLAY");
-      this.$store.dispatch("stopAudioCapture");
-      this.audioButtonColor = "sendButton";
+      if (this.showAudioInput) {
+        logger.debug(`Stopping audio capture`);
+        this.$store.commit("HIDE_LISTENING_OVERLAY");
+        this.$store.dispatch("stopAudioCapture");
+        this.audioButtonColor = "sendButton";
+      } else {
+        this.$store.commit("CLOSE_CHAT_ESC");
+      }
     },
     fileChanged(file) {
       logger.debug(`File Changed`);
@@ -530,5 +516,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

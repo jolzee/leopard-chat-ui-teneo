@@ -62,14 +62,8 @@ Vue.use(require("vue-shortkey"));
 
 Vue.component("teneo-modal", Modal);
 Vue.component("teneo-listening", Listening);
-Vue.component(
-  VueLoadersBallPulseSync.component.name,
-  VueLoadersBallPulseSync.component
-);
-Vue.component(
-  VueLoadersLineScale.component.name,
-  VueLoadersLineScale.component
-);
+Vue.component(VueLoadersBallPulseSync.component.name, VueLoadersBallPulseSync.component);
+Vue.component(VueLoadersLineScale.component.name, VueLoadersLineScale.component);
 Vue.component(
   VueLoadersLineScalePulseOutRapid.component.name,
   VueLoadersLineScalePulseOutRapid.component
@@ -132,8 +126,7 @@ function storeSetup(vuetify) {
       iframe: {
         iframeUrl: config.IFRAME_URL,
         iframeUrlBase: config.IFRAME_URL
-          ? config.IFRAME_URL.substring(0, config.IFRAME_URL.lastIndexOf("/")) +
-            "/"
+          ? config.IFRAME_URL.substring(0, config.IFRAME_URL.lastIndexOf("/")) + "/"
           : config.IFRAME_URL
       },
       promptTriggerInterval: null,
@@ -185,7 +178,8 @@ function storeSetup(vuetify) {
         parent: {},
         showUploadButton: false,
         showChatWindow: false,
-        showChatButton: true
+        showChatButton: true,
+        closeChatEsc: false
       },
       userInput: {
         userInput: "",
@@ -193,15 +187,14 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      mustCloseBecauseOfEscape(state) {
+        return state.ui.closeChatEsc;
+      },
       theme(state) {
         return state.ui.theme;
       },
       fullscreenEmbed(state) {
-        return (
-          state.ui.embed &&
-          state.ui.parent.width &&
-          state.ui.parent.width <= 480
-        );
+        return state.ui.embed && state.ui.parent.width && state.ui.parent.width <= 480;
       },
       accessibleAnouncement(state) {
         return state.accessibleAnouncement;
@@ -256,9 +249,7 @@ function storeSetup(vuetify) {
           "promptTriggers" in state.activeSolution &&
           state.activeSolution.promptTriggers.pollSeconds
         ) {
-          return (
-            parseInt(state.activeSolution.promptTriggers.pollSeconds) * 1000
-          );
+          return parseInt(state.activeSolution.promptTriggers.pollSeconds) * 1000;
         }
         return 10000; // default to 10 seconds
       },
@@ -276,9 +267,7 @@ function storeSetup(vuetify) {
         return uuidv1();
       },
       showButtonOnly(state) {
-        logger.debug(
-          `store: showButtonOnly: ${state.ui.embed && !state.ui.showChatWindow}`
-        );
+        logger.debug(`store: showButtonOnly: ${state.ui.embed && !state.ui.showChatWindow}`);
         return state.ui.embed && !state.ui.showChatWindow;
       },
       getAnimatedIn(state, getters) {
@@ -303,9 +292,7 @@ function storeSetup(vuetify) {
       },
       accentStyling(state) {
         if (state.activeSolution.displayAccent) {
-          return (
-            "border-top: 3px solid" + state.ui.theme.accent + " !important;"
-          );
+          return "border-top: 3px solid" + state.ui.theme.accent + " !important;";
         }
         return "";
       },
@@ -348,13 +335,8 @@ function storeSetup(vuetify) {
         let item = getters.lastReplyItem;
         let isAskingForPassword = false;
         if (item && item.teneoResponse) {
-          let inputType = decodeURIComponent(
-            item.teneoResponse.extraData.inputType
-          );
-          if (
-            inputType !== "undefined" &&
-            inputType.trim().toLowerCase() === "password"
-          ) {
+          let inputType = decodeURIComponent(item.teneoResponse.extraData.inputType);
+          if (inputType !== "undefined" && inputType.trim().toLowerCase() === "password") {
             isAskingForPassword = true;
           }
         }
@@ -364,9 +346,7 @@ function storeSetup(vuetify) {
         let item = getters.lastReplyItem;
         let inputHelpText;
         if (item && item.teneoResponse) {
-          let helpText = decodeURIComponent(
-            item.teneoResponse.extraData.inputHelpText
-          );
+          let helpText = decodeURIComponent(item.teneoResponse.extraData.inputHelpText);
           if (helpText !== "undefined") {
             inputHelpText = helpText;
           }
@@ -389,13 +369,8 @@ function storeSetup(vuetify) {
         let item = getters.lastReplyItem;
         let isAskingForEmail = false;
         if (item && item.teneoResponse) {
-          let inputType = decodeURIComponent(
-            item.teneoResponse.extraData.inputType
-          );
-          if (
-            inputType !== "undefined" &&
-            inputType.trim().toLowerCase() === "email"
-          ) {
+          let inputType = decodeURIComponent(item.teneoResponse.extraData.inputType);
+          if (inputType !== "undefined" && inputType.trim().toLowerCase() === "email") {
             isAskingForEmail = true;
           }
         }
@@ -411,9 +386,7 @@ function storeSetup(vuetify) {
         return state.ui.responseIcon;
       },
       userIcon(state) {
-        return state.auth.userInfo.profileImage
-          ? "account-check"
-          : state.ui.userIcon;
+        return state.auth.userInfo.profileImage ? "account-check" : state.ui.userIcon;
       },
       tts(state) {
         return state.tts.tts;
@@ -434,18 +407,14 @@ function storeSetup(vuetify) {
         return state.userInput.userInputReadyForSending;
       },
       modalPosition: _state => item => {
-        let modalPosition = decodeURIComponent(
-          item.teneoResponse.extraData.modalPosition
-        );
+        let modalPosition = decodeURIComponent(item.teneoResponse.extraData.modalPosition);
         if (modalPosition !== "undefined") {
           modalPosition = modalPosition.toLowerCase();
         }
         return modalPosition;
       },
       modalSize: _state => item => {
-        let modalSize = decodeURIComponent(
-          item.teneoResponse.extraData.modalSize
-        );
+        let modalSize = decodeURIComponent(item.teneoResponse.extraData.modalSize);
         if (modalSize !== "undefined") {
           modalSize = modalSize.toLowerCase();
         }
@@ -526,14 +495,8 @@ function storeSetup(vuetify) {
       },
       itemExtraData: _state => (item, name) => {
         let response = {};
-        if (
-          item &&
-          item.teneoResponse &&
-          name in item.teneoResponse.extraData
-        ) {
-          response = JSON.parse(
-            decodeURIComponent(item.teneoResponse.extraData[name])
-          );
+        if (item && item.teneoResponse && name in item.teneoResponse.extraData) {
+          response = JSON.parse(decodeURIComponent(item.teneoResponse.extraData[name]));
         }
         return response;
       },
@@ -579,10 +542,7 @@ function storeSetup(vuetify) {
         return "";
       },
       hasFeedbackForm: () => item => {
-        if (
-          item.teneoResponse.extraData &&
-          item.teneoResponse.extraData.offerFeedbackForm
-        ) {
+        if (item.teneoResponse.extraData && item.teneoResponse.extraData.offerFeedbackForm) {
           return true;
         } else {
           return false;
@@ -833,23 +793,15 @@ function storeSetup(vuetify) {
           answer = getters.lastReplyItem.text;
         }
 
-        if (
-          getters.settingLongResponsesInModal &&
-          getters.lastItemHasLongResponse
-        ) {
-          answer =
-            answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
+        if (getters.settingLongResponsesInModal && getters.lastItemHasLongResponse) {
+          answer = answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
         }
         return answer;
       },
       itemAnswerTextCropped: (_state, getters) => item => {
         let answer = item.text;
-        if (
-          getters.settingLongResponsesInModal &&
-          getters.itemHasLongResponse(item)
-        ) {
-          answer =
-            answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
+        if (getters.settingLongResponsesInModal && getters.itemHasLongResponse(item)) {
+          answer = answer.substr(0, 300 - 1) + (answer.length > 300 ? "&hellip;" : "");
         }
         return answer;
       },
@@ -865,12 +817,7 @@ function storeSetup(vuetify) {
       },
       itemHasLongResponse: (_state, getters) => item => {
         let hasLongResponse = false;
-        if (
-          getters.settingLongResponsesInModal &&
-          item &&
-          item.text &&
-          item.text.length > 400
-        ) {
+        if (getters.settingLongResponsesInModal && item && item.text && item.text.length > 400) {
           hasLongResponse = true;
         }
         return hasLongResponse;
@@ -897,10 +844,7 @@ function storeSetup(vuetify) {
         logger.debug(
           `Session Storage? ${config.USE_SESSION_STORAGE} Dialog Length ${state.conversation.dialog.length}`
         );
-        if (
-          !config.USE_SESSION_STORAGE &&
-          state.conversation.dialog.length === 0
-        ) {
+        if (!config.USE_SESSION_STORAGE && state.conversation.dialog.length === 0) {
           logger.debug("Checking for stale session - embed");
           // typically here when in production embedded state
           // check if session expired
@@ -911,10 +855,7 @@ function storeSetup(vuetify) {
           if (!lastInteractionTime) {
             logger.debug("No previous interaction time...");
             state.conversation.dialog = JSON.parse(
-              localStorage.getItem(
-                STORAGE_KEY + config.TENEO_CHAT_HISTORY,
-                "[]"
-              )
+              localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
             );
           } else {
             logger.debug(`found last interaction time: ${lastInteractionTime}`);
@@ -923,22 +864,13 @@ function storeSetup(vuetify) {
             let diffMins = Math.abs(Math.round(diff));
             logger.debug(`Minutes Difference: ${diffMins}`);
             if (diffMins > 0) {
-              localStorage.setItem(
-                STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE,
-                now.getTime()
-              );
+              localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
               state.conversation.dialog = [];
-              localStorage.setItem(
-                STORAGE_KEY + config.TENEO_CHAT_HISTORY,
-                "[]"
-              );
+              localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]");
             } else {
               // "session" still active
               state.conversation.dialog = JSON.parse(
-                localStorage.getItem(
-                  STORAGE_KEY + config.TENEO_CHAT_HISTORY,
-                  "[]"
-                )
+                localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
               );
             }
           }
@@ -952,17 +884,11 @@ function storeSetup(vuetify) {
         if (state.conversation.dialogHistory.length === 0) {
           if (config.USE_SESSION_STORAGE) {
             state.conversation.dialogHistory = JSON.parse(
-              sessionStorage.getItem(
-                STORAGE_KEY + config.TENEO_CHAT_HISTORY,
-                "[]"
-              )
+              sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
             );
           } else {
             state.conversation.dialogHistory = JSON.parse(
-              localStorage.getItem(
-                STORAGE_KEY + config.TENEO_CHAT_HISTORY,
-                "[]"
-              )
+              localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
             );
           }
 
@@ -1019,14 +945,10 @@ function storeSetup(vuetify) {
         return state.auth.userInfo.user ? true : false;
       },
       userProfileImage(state) {
-        return state.auth.userInfo.user
-          ? state.auth.userInfo.user.photoURL
-          : "";
+        return state.auth.userInfo.user ? state.auth.userInfo.user.photoURL : "";
       },
       displayName(state) {
-        return state.auth.userInfo.user
-          ? state.auth.userInfo.user.displayName
-          : "Anonymous";
+        return state.auth.userInfo.user ? state.auth.userInfo.user.displayName : "Anonymous";
       },
       dark(state) {
         return state.ui.dark;
@@ -1035,9 +957,7 @@ function storeSetup(vuetify) {
         return state.ui.chatTitle;
       },
       showChatIcons(state) {
-        return state.liveAgent.isAgentAssist
-          ? true
-          : state.activeSolution.showChatIcons;
+        return state.liveAgent.isAgentAssist ? true : state.activeSolution.showChatIcons;
       },
       showUploadButton(state) {
         return state.ui.showUploadButton;
@@ -1063,6 +983,13 @@ function storeSetup(vuetify) {
       },
       SET_CHAT_CONFIG(state, chatConfig) {
         state.chatConfig = chatConfig;
+      },
+      CLOSE_CHAT_ESC(state) {
+        logger.debug(`CLOSE_CHAT_ESC`);
+        state.ui.closeChatEsc = true;
+      },
+      REST_MUST_CLOSE(state) {
+        state.ui.closeChatEsc = false;
       },
       CLOSE_OVERY_ALERT(state) {
         state.overlay.showOverlayAlert = false;
@@ -1113,16 +1040,12 @@ function storeSetup(vuetify) {
           `store: TOGGLE_CHAT_WINDOW_DISPLAY:  state.ui.showChatWindow has toggled to: ${state.ui.showChatWindow}`
         );
         if (state.ui.embed) {
-          logger.debug(
-            `TOGGLE_CHAT_WINDOW_DISPLAY: ${state.ui.showChatWindow}`
-          );
+          logger.debug(`TOGGLE_CHAT_WINDOW_DISPLAY: ${state.ui.showChatWindow}`);
           localStorage.setItem("isChatOpen", state.ui.showChatWindow);
           logger.debug(
             `store: TOGGLE_CHAT_WINDOW_DISPLAY: sending message to parent to ${state.ui.showChatWindow}`
           );
-          sendMessageToParent(
-            state.ui.showChatWindow ? "showLeopard" : "hideLeopard"
-          );
+          sendMessageToParent(state.ui.showChatWindow ? "showLeopard" : "hideLeopard");
         }
       },
       SHOW_CHAT_WINDOW(state) {
@@ -1211,10 +1134,7 @@ function storeSetup(vuetify) {
         state.conversation.dialog.push(miscMessage);
       },
       PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG(state, liveChatResponse) {
-        logger.debug(
-          `Pushing LiveChat response onto chat dialog`,
-          liveChatResponse
-        );
+        logger.debug(`Pushing LiveChat response onto chat dialog`, liveChatResponse);
         state.conversation.dialog.push(liveChatResponse);
       },
       CLEAR_USER_INPUT(state) {
@@ -1291,9 +1211,7 @@ function storeSetup(vuetify) {
 
         if (
           payload.response.teneoResponse &&
-          (Object.keys(payload.response.teneoResponse.extraData).some(function(
-            k
-          ) {
+          (Object.keys(payload.response.teneoResponse.extraData).some(function(k) {
             return ~k.indexOf("extensions");
           }) ||
             payload.response.teneoResponse.extraData.liveChat ||
@@ -1358,9 +1276,7 @@ function storeSetup(vuetify) {
         );
       },
       REMOVE_FORM_CONFIG(state, itemId) {
-        let foundHistory = state.conversation.dialogHistory.find(function(
-          item
-        ) {
+        let foundHistory = state.conversation.dialogHistory.find(function(item) {
           return item.id === itemId;
         });
 
@@ -1472,13 +1388,10 @@ function storeSetup(vuetify) {
         if (document.getElementById("site-frame")) {
           document.getElementById("site-frame").src = newUrl;
         } else if (state.ui.embed) {
-          sendMessageToParent(
-            `runLeopardScript|window.location.href = '${newUrl}';`
-          );
+          sendMessageToParent(`runLeopardScript|window.location.href = '${newUrl}';`);
         }
         state.iframe.iframeUrl = newUrl;
-        state.iframe.iframeUrlBase =
-          newUrl.substring(0, newUrl.lastIndexOf("/")) + "/";
+        state.iframe.iframeUrlBase = newUrl.substring(0, newUrl.lastIndexOf("/")) + "/";
       },
       USER_INFO(state, userInfo) {
         state.auth.userInfo.user = userInfo.user;
@@ -1497,18 +1410,13 @@ function storeSetup(vuetify) {
         return new Promise(resolve => {
           let now = dayjs();
 
-          let lastSolutionBackupDate = localStorage.getItem(
-            STORAGE_KEY + "lastBackupDate"
-          );
+          let lastSolutionBackupDate = localStorage.getItem(STORAGE_KEY + "lastBackupDate");
 
           if (lastSolutionBackupDate) {
             let pastDate = dayjs(lastSolutionBackupDate);
             let daysDiff = now.diff(pastDate, "day");
             if (daysDiff >= 14) {
-              localStorage.setItem(
-                STORAGE_KEY + "lastBackupDate",
-                now.format()
-              );
+              localStorage.setItem(STORAGE_KEY + "lastBackupDate", now.format());
               resolve(true); // backup probably needed
             } else {
               resolve(false); // no backup needed
@@ -1544,10 +1452,7 @@ function storeSetup(vuetify) {
       setupLiveChatAgentAssist(context) {
         logger.debug(">> Before Live Agent Assist Setup");
         if (context.getters.isLiveAgentAssist) {
-          logger.debug(
-            `Is this an Agent Assist App?`,
-            context.getters.isLiveAgentAssist
-          );
+          logger.debug(`Is this an Agent Assist App?`, context.getters.isLiveAgentAssist);
           logger.debug(">> In Live Agent Assist Setup");
           let liveChatAgentAssistLastMessage = null;
           LiveChat.init({ authorize: false })
@@ -1566,9 +1471,7 @@ function storeSetup(vuetify) {
                 if (
                   message.message_source === "visitor" &&
                   message.message_id !== liveChatAgentAssistLastMessage &&
-                  !message.message.includes(
-                    "VIRTUAL ASSISTANT CONVERSATION HISTORY"
-                  )
+                  !message.message.includes("VIRTUAL ASSISTANT CONVERSATION HISTORY")
                 ) {
                   liveChatAgentAssistLastMessage = message.message_id;
                   context.commit("SET_USER_INPUT", message.message);
@@ -1586,20 +1489,11 @@ function storeSetup(vuetify) {
                     logger.error(`Could not init LiveChat accountsSdk`, error);
                   } else {
                     if (data && data.access_token) {
-                      context.commit(
-                        "LIVE_CHAT_API_ACCESS_TOKEN",
-                        data.access_token
-                      );
-                      logger.debug(
-                        "LIVE_CHAT_API_ACCESS_TOKEN",
-                        data.access_token
-                      );
+                      context.commit("LIVE_CHAT_API_ACCESS_TOKEN", data.access_token);
+                      logger.debug("LIVE_CHAT_API_ACCESS_TOKEN", data.access_token);
                     } else {
                       const redirectUrl = `${liveChatConfig.account_url}?response_type=token&client_id=${liveChatConfig.client_id}&redirect_uri=${window.location.href}`;
-                      logger.debug(
-                        "No LiveChat access token. Redirect page to... ",
-                        redirectUrl
-                      );
+                      logger.debug("No LiveChat access token. Redirect page to... ", redirectUrl);
                       window.location.href = redirectUrl;
                     }
                   }
@@ -1648,11 +1542,7 @@ function storeSetup(vuetify) {
                 }
               }
 
-              if (
-                !context.getters.embed &&
-                !context.getters.overlayChat &&
-                siteFrame
-              ) {
+              if (!context.getters.embed && !context.getters.overlayChat && siteFrame) {
                 setTimeout(function() {
                   siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
                 }, 1000);
@@ -1695,11 +1585,9 @@ function storeSetup(vuetify) {
         queryObj.text = ""; // it's a login we don't have to say anything yet
         queryObj.feedback = JSON.stringify(feedback);
 
-        TIE.sendInput(
-          config.TENEO_URL,
-          browserHandledSession,
-          queryObj
-        ).then(() => logger.debug("Feedback sent to Teneo"));
+        TIE.sendInput(config.TENEO_URL, browserHandledSession, queryObj).then(() =>
+          logger.debug("Feedback sent to Teneo")
+        );
       },
       setUserInformation({ commit, getters }) {
         if (!window.leopardConfig.firebase.apiKey) {
@@ -1718,9 +1606,7 @@ function storeSetup(vuetify) {
             retyCount++;
 
             if (getters.firebase) {
-              logger.debug(
-                `SET USER INFORMATION > Firebase > Found on retry: ${retyCount}`
-              );
+              logger.debug(`SET USER INFORMATION > Firebase > Found on retry: ${retyCount}`);
               getters.firebase.auth().onAuthStateChanged(function(user) {
                 if (user) {
                   commit("USER_INFO", { user: user }); // user is still signed in
@@ -1730,9 +1616,7 @@ function storeSetup(vuetify) {
             }
 
             if (retyCount++ > 80) {
-              logger.debug(
-                "SET USER INFORMATION > Firebase > Giving up trying waiting!!"
-              );
+              logger.debug("SET USER INFORMATION > Firebase > Giving up trying waiting!!");
               clearInterval(checkExist);
             }
           }, 100); // check every 100ms
@@ -1851,24 +1735,16 @@ function storeSetup(vuetify) {
             });
         });
       },
-      registerUserWithUsernameEmailPassword(
-        { commit, getters },
-        registrationInfo
-      ) {
+      registerUserWithUsernameEmailPassword({ commit, getters }, registrationInfo) {
         return new Promise((resolve, reject) => {
           if (!window.leopardConfig.firebase.apiKey) {
             resolve();
             return;
           }
-          registrationInfo.photoURL = getters.profileImageFromEmail(
-            registrationInfo.email
-          );
+          registrationInfo.photoURL = getters.profileImageFromEmail(registrationInfo.email);
           getters.firebase
             .auth()
-            .createUserWithEmailAndPassword(
-              registrationInfo.email,
-              registrationInfo.password
-            )
+            .createUserWithEmailAndPassword(registrationInfo.email, registrationInfo.password)
             .then(user => {
               let currentUser = getters.firebase.auth().currentUser;
               logger.debug(registrationInfo.displayName);
@@ -1882,10 +1758,7 @@ function storeSetup(vuetify) {
                   logger.debug("User's profile info updated");
                 })
                 .catch(function(error) {
-                  logger.error(
-                    `Unable to update user's profile information:`,
-                    error
-                  );
+                  logger.error(`Unable to update user's profile information:`, error);
                 });
               commit("USER_INFO", { user: user });
               resolve();
@@ -1940,9 +1813,7 @@ function storeSetup(vuetify) {
               json = convertTeneoJsonNewToOld(json);
               context.commit("HIDE_CHAT_LOADING");
               if ("numActiveFlows" in json.responseData.extraData) {
-                let numActiveFlows = parseInt(
-                  json.responseData.extraData.numActiveFlows
-                );
+                let numActiveFlows = parseInt(json.responseData.extraData.numActiveFlows);
                 if (numActiveFlows > 0) {
                   // mid dialog stop polling
                   context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
@@ -2044,10 +1915,7 @@ function storeSetup(vuetify) {
         let currentUserInput = "";
         if (params.indexOf("command=prompt") === -1) {
           logger.debug("Updating last interaction time in localstorage");
-          localStorage.setItem(
-            STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE,
-            now.getTime()
-          );
+          localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
           currentUserInput = stripHtml(context.getters.userInput);
           context.commit("CLEAR_USER_INPUT");
           // send user input to Teneo when a live chat has not begun
@@ -2073,9 +1941,7 @@ function storeSetup(vuetify) {
           await sleep(context.getters.responseDelay); // delay responses if needed
 
           let queryParams =
-            (config.SEND_CTX_PARAMS === "all"
-              ? config.REQUEST_PARAMETERS + params
-              : params) +
+            (config.SEND_CTX_PARAMS === "all" ? config.REQUEST_PARAMETERS + params : params) +
             context.getters.userInformationParams +
             context.getters.timeZoneParam +
             context.getters.ctxParameters;
@@ -2091,9 +1957,7 @@ function storeSetup(vuetify) {
               }
               if ("numActiveFlows" in json.responseData.extraData) {
                 // deal with polling
-                let numActiveFlows = parseInt(
-                  json.responseData.extraData.numActiveFlows
-                );
+                let numActiveFlows = parseInt(json.responseData.extraData.numActiveFlows);
                 if (numActiveFlows > 0) {
                   // mid dialog stop polling
                   context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
@@ -2111,9 +1975,7 @@ function storeSetup(vuetify) {
                     }, context.getters.getPromptPollingIntervalInMilliseconds);
                     context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
                   } else if (!context.getters.isChatOpen) {
-                    logger.debug(
-                      `Stop prompt trigger polling - chat is closed`
-                    );
+                    logger.debug(`Stop prompt trigger polling - chat is closed`);
                     context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
                   }
                 }
@@ -2155,9 +2017,7 @@ function storeSetup(vuetify) {
 
               if (json.responseData.extraData.offerFeedbackForm) {
                 const feedbackConfig = JSON.parse(
-                  decodeURIComponent(
-                    json.responseData.extraData.offerFeedbackForm
-                  )
+                  decodeURIComponent(json.responseData.extraData.offerFeedbackForm)
                 );
                 context.commit("ADD_FEEDBACK_FORM", feedbackConfig);
               } else {
@@ -2165,12 +2025,9 @@ function storeSetup(vuetify) {
               }
               if (
                 params.indexOf("langSwitch") === -1 &&
-                (json.responseData.isNewSession ||
-                  json.responseData.extraData.newsession)
+                (json.responseData.isNewSession || json.responseData.extraData.newsession)
               ) {
-                logger.debug(
-                  "Session is stale.. keep chat open and continue with the new session"
-                );
+                logger.debug("Session is stale.. keep chat open and continue with the new session");
                 const awayMessage = "This is a new chatbot session.";
                 context.commit("SHOW_SIMPLE_MESSAGE_IN_CHAT", {
                   message: awayMessage,
@@ -2180,9 +2037,7 @@ function storeSetup(vuetify) {
               }
 
               if ("script" in json.responseData.extraData) {
-                let theScript = decodeURIComponent(
-                  json.responseData.extraData.script
-                );
+                let theScript = decodeURIComponent(json.responseData.extraData.script);
                 if (context.getters.embed) {
                   sendMessageToParent("runLeopardScript|" + theScript);
                 } else {
@@ -2230,23 +2085,14 @@ function storeSetup(vuetify) {
                   .getLocator()
                   .then(function(position) {
                     // we now have the user's lat and long
-                    logger.debug(
-                      `${position.coords.latitude}, ${position.coords.longitude}`
-                    );
-                    if (
-                      json.responseData.extraData.inputType ===
-                      "locationLatLong"
-                    ) {
+                    logger.debug(`${position.coords.latitude}, ${position.coords.longitude}`);
+                    if (json.responseData.extraData.inputType === "locationLatLong") {
                       // send the lat and long
                       context
                         .dispatch(
                           "sendUserInput",
                           "&locationLatLong=" +
-                            encodeURI(
-                              position.coords.latitude +
-                                "," +
-                                position.coords.longitude
-                            )
+                            encodeURI(position.coords.latitude + "," + position.coords.longitude)
                         )
                         .then(
                           logger.debug(
@@ -2257,14 +2103,12 @@ function storeSetup(vuetify) {
                           logger.error("Unable to send lat and long info", err);
                           context.commit(
                             "SHOW_MESSAGE_IN_CHAT",
-                            "We were unable to obtain your location information.: " +
-                              err.message
+                            "We were unable to obtain your location information.: " + err.message
                           );
                         });
                     } else if (window.leopardConfig.locationIqKey) {
                       // good we have a licence key we can send all location information back
-                      let locationRequestType =
-                        json.responseData.extraData.inputType;
+                      let locationRequestType = json.responseData.extraData.inputType;
                       superagent
                         .get(
                           `https://us1.locationiq.com/v1/reverse.php?key=${
@@ -2282,9 +2126,7 @@ function storeSetup(vuetify) {
                             queryParam += encodeURI(JSON.stringify(data));
                           } else if (locationRequestType === "locationZip") {
                             queryParam += encodeURI(data.address.postcode);
-                          } else if (
-                            locationRequestType === "locationCityStateZip"
-                          ) {
+                          } else if (locationRequestType === "locationCityStateZip") {
                             queryParam += encodeURI(
                               `${data.address.city}, ${data.address.state} ${data.address.postcode}`
                             );
@@ -2310,9 +2152,7 @@ function storeSetup(vuetify) {
                     } else if (
                       !window.leopardConfig.locationIqKey &&
                       json.responseData.extraData.inputType ===
-                        ("locationCityStateZip" ||
-                          "locationZip" ||
-                          "locationJson")
+                        ("locationCityStateZip" || "locationZip" || "locationJson")
                     ) {
                       // no good. Asking for location information that requires a licence  key
                       context.commit(
@@ -2347,31 +2187,17 @@ function storeSetup(vuetify) {
               if (response.teneoResponse) {
                 let ttsText = stripHtml(cleanEmptyChunks(response.teneoAnswer));
                 if (response.teneoResponse.extraData.tts) {
-                  ttsText = stripHtml(
-                    decodeURIComponent(response.teneoResponse.extraData.tts)
-                  );
+                  ttsText = stripHtml(decodeURIComponent(response.teneoResponse.extraData.tts));
                 }
 
-                context.commit(
-                  "SET_ACCESIBLE_ANOUNCEMENT",
-                  "Chat Bot Said. " + ttsText + "."
-                );
+                context.commit("SET_ACCESIBLE_ANOUNCEMENT", "Chat Bot Said. " + ttsText + ".");
 
                 // check if this browser supports the Web Speech API
                 if (
-                  Object.prototype.hasOwnProperty.call(
-                    window,
-                    "webkitSpeechRecognition"
-                  ) &&
-                  Object.prototype.hasOwnProperty.call(
-                    window,
-                    "speechSynthesis"
-                  )
+                  Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
+                  Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
                 ) {
-                  if (
-                    context.getters.tts &&
-                    context.getters.speakBackResponses
-                  ) {
+                  if (context.getters.tts && context.getters.speakBackResponses) {
                     context.getters.tts.say(ttsText);
                   }
                 }
@@ -2393,32 +2219,21 @@ function storeSetup(vuetify) {
                   context.commit("START_LIVE_CHAT");
                 }
                 if (response.teneoResponse.extraData.chatTitle) {
-                  let chatTitle = decodeURIComponent(
-                    response.teneoResponse.extraData.chatTitle
-                  );
+                  let chatTitle = decodeURIComponent(response.teneoResponse.extraData.chatTitle);
                   if (chatTitle !== "undefined") {
                     context.commit("SET_CHAT_TITLE", chatTitle);
                   }
                 }
 
                 // added on request from Mark J - switch languages based on NER language detection
-                let langInput = decodeURIComponent(
-                  response.teneoResponse.extraData.langinput
-                );
+                let langInput = decodeURIComponent(response.teneoResponse.extraData.langinput);
                 let langEngineUrl = decodeURIComponent(
                   response.teneoResponse.extraData.langengineurl
                 );
-                let lang = decodeURIComponent(
-                  response.teneoResponse.extraData.lang
-                );
-                let langurl = decodeURIComponent(
-                  response.teneoResponse.extraData.langurl
-                );
+                let lang = decodeURIComponent(response.teneoResponse.extraData.lang);
+                let langurl = decodeURIComponent(response.teneoResponse.extraData.langurl);
 
-                if (
-                  langEngineUrl !== "undefined" &&
-                  langInput !== "undefined"
-                ) {
+                if (langEngineUrl !== "undefined" && langInput !== "undefined") {
                   context.commit("UPDATE_TENEO_URL", langEngineUrl);
                   context.commit("SET_USER_INPUT", langInput);
                   context.commit("SHOW_PROGRESS_BAR");
@@ -2434,20 +2249,12 @@ function storeSetup(vuetify) {
 
                   context
                     .dispatch("sendUserInput", "&langSwitch=true")
-                    .then(
-                      logger.debug(
-                        "Sent original lang input to new lang specific solution"
-                      )
-                    )
+                    .then(logger.debug("Sent original lang input to new lang specific solution"))
                     .catch(err => {
-                      logger.error(
-                        "Unable to send lang input to new lang specific solution",
-                        err
-                      );
+                      logger.error("Unable to send lang input to new lang specific solution", err);
                       context.commit(
                         "SHOW_MESSAGE_IN_CHAT",
-                        "Unable to send lang input to new lang specific solution: " +
-                          err.message
+                        "Unable to send lang input to new lang specific solution: " + err.message
                       );
                     });
                 }
@@ -2476,10 +2283,7 @@ function storeSetup(vuetify) {
               }
               context.commit("HIDE_PROGRESS_BAR");
             });
-        } else if (
-          context.getters.isLiveChat &&
-          params.indexOf("command=prompt") === -1
-        ) {
+        } else if (context.getters.isLiveChat && params.indexOf("command=prompt") === -1) {
           // send the input to live chat agent and save user input to history
           let newUserInput = {
             type: "userInput",
@@ -2497,9 +2301,7 @@ function storeSetup(vuetify) {
           }
           context.commit(
             "SET_DIALOG_HISTORY",
-            JSON.parse(
-              sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY)
-            )
+            JSON.parse(sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY))
           );
           if (context.getters.dialogHistory === null) {
             context.commit("SET_DIALOG_HISTORY", context.getters.dialog);
@@ -2575,10 +2377,7 @@ function receiveMessageFromParent(event) {
       logger.debug(messageObject);
       // event.source.postMessage("This is a message sent back from Leopard to the site embedding Leopard", event.origin);
 
-      if (
-        "leopardState" in messageObject &&
-        messageObject.leopardState === "closed"
-      ) {
+      if ("leopardState" in messageObject && messageObject.leopardState === "closed") {
         store.commit("HIDE_CHAT_WINDOW_DISPLAY_EMBED");
         setTimeout(
           function() {
@@ -2586,9 +2385,7 @@ function receiveMessageFromParent(event) {
               // should kill the session and clear dialog history
               logger.info("Killing Teneo Session");
               store.dispatch("endSession");
-              localStorage.removeItem(
-                STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE
-              );
+              localStorage.removeItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE);
               localStorage.removeItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY);
               sessionStorage.removeItem(STORAGE_KEY + "teneo-chat-history");
             }

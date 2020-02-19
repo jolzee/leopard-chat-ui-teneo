@@ -30,34 +30,37 @@
         />
         <v-container class="chat-container-inner">
           <div aria-live="polite">
-              <v-container
-                v-for="(item, i) in dialog"
-                :key="i + 'itemsIter' + uuid"
-                :class="{ 'mt-0 pb-0': i === dialog.length - 1, 'pt-0': i === 0 }"
-                class="px-0 mx-0"
-              >
-                <ChatBroadcastMessage :item="item" class="pb-1"></ChatBroadcastMessage>
+            <v-container
+              v-for="(item, i) in dialog"
+              :key="i + 'itemsIter' + uuid"
+              :class="{ 'mt-0 pb-0': i === dialog.length - 1, 'pt-0': i === 0 }"
+              class="px-0 mx-0"
+            >
+              <ChatBroadcastMessage :item="item" class="pb-1"></ChatBroadcastMessage>
 
-                <LiveChatResponse :itemIndexInDialog="i" :item="item" class="mt-1 pb-1"></LiveChatResponse>
+              <LiveChatResponse
+                :itemIndexInDialog="i"
+                :item="item"
+                class="mt-1 pb-1"
+              ></LiveChatResponse>
 
-                <ChatTeneoResponse
-                  :item="item"
-                  :itemIndexInDialog="i"
-                  @swapInputButton="swapInputButton"
-                  @handleFocus="handleFocus = true"
-                  @toggleDate="showDate = !showDate"
-                  @toggleTime="showTime = !showTime"
-                  @showFeedback="showFeedback = true"
-                ></ChatTeneoResponse>
+              <ChatTeneoResponse
+                :item="item"
+                :itemIndexInDialog="i"
+                @swapInputButton="swapInputButton"
+                @handleFocus="handleFocus = true"
+                @toggleDate="showDate = !showDate"
+                @toggleTime="showTime = !showTime"
+                @showFeedback="showFeedback = true"
+              ></ChatTeneoResponse>
 
-                <ChatUserQuestion
-                  :item="item"
-                  :itemIndexInDialog="i"
-                  @clicked="updateInputBox"
-                  @swapInputButton="swapInputButton"
-                ></ChatUserQuestion>
-
-              </v-container>
+              <ChatUserQuestion
+                :item="item"
+                :itemIndexInDialog="i"
+                @clicked="updateInputBox"
+                @swapInputButton="swapInputButton"
+              ></ChatUserQuestion>
+            </v-container>
           </div>
         </v-container>
 
@@ -223,7 +226,6 @@ export default {
       }
     },
     storeUserInput: debounce(function(userInputStore) {
-      console.log("User input in store has changed to:", userInputStore);
       if (this.userInput !== userInputStore) {
         this.userInput = userInputStore;
       }
@@ -334,7 +336,7 @@ export default {
       this.showDate = false;
       this.showTime = false;
       this.date = "";
-      this.chatInputComponentKey += 1
+      this.chatInputComponentKey += 1;
     },
     updateInputBox(userInput) {
       logger.debug(`Updating Input Box`);
@@ -368,13 +370,13 @@ export default {
           if (scrollToElement) {
             this.$vuetify.goTo(endChatTarget, options);
           } else {
-            this.isScrolling = false
+            this.isScrolling = false;
           }
         } catch {
-          this.isScrolling = false
+          this.isScrolling = false;
         }
         setTimeout(() => {
-          this.isScrolling = false
+          this.isScrolling = false;
         }, 1250);
       }
     },
@@ -390,10 +392,7 @@ export default {
       // Check to make sure this is from our v-html because
       // we don't want to handle clicks from other things in
       // the Vue
-      if (
-        !anchor.classList.contains("sendInput") &&
-        !anchor.classList.contains("openInIframe")
-      ) {
+      if (!anchor.classList.contains("sendInput") && !anchor.classList.contains("openInIframe")) {
         return; // basically treat like a normal link
       } else if (anchor.classList.contains("openInIframe")) {
         logger.debug(`Open Link in IFRAME`);
@@ -490,9 +489,7 @@ div.chat-container .v-expansion-panel-header {
   user-select: text !important;
 }
 
-v-expansion-panel-header
-  div.chat-container
-  .v-expansion-panel:not(:first-child)::after {
+v-expansion-panel-header div.chat-container .v-expansion-panel:not(:first-child)::after {
   border-top: none !important;
 }
 
@@ -519,8 +516,7 @@ div.chat-container .v-expansion-panel::before {
   white-space: unset !important;
 }
 
-@media screen and (-ms-high-contrast: active),
-  screen and (-ms-high-contrast: none) {
+@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
   /* IE10+ specific styles go here */
   /* .chat-card {
     font-size: 1.1em;
@@ -608,10 +604,10 @@ div.options-list a.v-list__tile--link {
 
 .chat-container-inner {
   overflow-x: hide !important;
-  -webkit-box-shadow: 0 2px 20px -1px rgba(0, 0, 0, 0.2),
-    0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
-  box-shadow: 0 2px 20px -1px rgba(0, 0, 0, 0.2),
-    0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  -webkit-box-shadow: 0 2px 20px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 20px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
 }
 
 span.teneo-reply ul {
@@ -619,10 +615,10 @@ span.teneo-reply ul {
 }
 
 .teneo-footer {
-  -webkit-box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12),
-    0px -2px 0px 0 rgba(0, 0, 0, 0.08), 0px -3px 0px 0px rgba(0, 0, 0, 0.04);
-  box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12),
-    0px -2px 0px 0 rgba(0, 0, 0, 0.08), 0px -3px 0px 0px rgba(0, 0, 0, 0.04);
+  -webkit-box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12), 0px -2px 0px 0 rgba(0, 0, 0, 0.08),
+    0px -3px 0px 0px rgba(0, 0, 0, 0.04);
+  box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12), 0px -2px 0px 0 rgba(0, 0, 0, 0.08),
+    0px -3px 0px 0px rgba(0, 0, 0, 0.04);
 
   position: relative;
   bottom: 0px !important;

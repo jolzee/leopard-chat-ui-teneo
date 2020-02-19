@@ -4,8 +4,7 @@
       <v-card>
         <v-card-title>
           <span class="title">
-            <v-icon class="mx-2" color="primary">mdi-book-plus</v-icon> New
-            canned response
+            <v-icon class="mx-2" color="primary">mdi-book-plus</v-icon> New canned response
           </span>
         </v-card-title>
         <v-card-text>
@@ -45,18 +44,12 @@
                   <template v-slot:no-data>
                     <v-list-item>
                       <span class="subheading mr-2">Create</span>
-                      <v-chip
-                        :color="`${colors[nonce - 1]} lighten-3`"
-                        label
-                        small
-                      >
+                      <v-chip :color="`${colors[nonce - 1]} lighten-3`" label small>
                         {{ search | tagify }}
                       </v-chip>
                     </v-list-item>
                   </template>
-                  <template
-                    v-slot:selection="{ attrs, item, parent, selected }"
-                  >
+                  <template v-slot:selection="{ attrs, item, parent, selected }">
                     <v-chip
                       v-if="item === Object(item)"
                       v-bind="attrs"
@@ -69,9 +62,7 @@
                       <span class="pr-2">
                         {{ item.text | tagify }}
                       </span>
-                      <v-icon small @click="parent.selectItem(item)"
-                        >mdi-tag-minus</v-icon
-                      >
+                      <v-icon small @click="parent.selectItem(item)">mdi-tag-minus</v-icon>
                     </v-chip>
                   </template>
                   <template v-slot:item="{ index, item }">
@@ -85,21 +76,13 @@
                       solo
                       @keyup.enter="edit(index, item)"
                     ></v-text-field>
-                    <v-chip
-                      v-else
-                      :color="`${item.color} lighten-3`"
-                      dark
-                      label
-                      small
-                    >
+                    <v-chip v-else :color="`${item.color} lighten-3`" dark label small>
                       {{ item.text | tagify }}
                     </v-chip>
                     <v-spacer></v-spacer>
                     <v-list-item-action @click.stop>
                       <v-btn icon @click.stop.prevent="edit(index, item)">
-                        <v-icon>{{
-                          editing !== item ? "mdi-pencil" : "mdi-check"
-                        }}</v-icon>
+                        <v-icon>{{ editing !== item ? "mdi-pencil" : "mdi-check" }}</v-icon>
                       </v-btn>
                     </v-list-item-action>
                   </template>
@@ -119,9 +102,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging").getLogger(
-  "AgentAssistCannedResponseForm.vue"
-);
+const logger = require("@/utils/logging").getLogger("AgentAssistCannedResponseForm.vue");
 export default {
   name: "AddCannedResponseForm",
   props: ["text"],
@@ -193,11 +174,9 @@ export default {
       //     tags: theTags
       //   }
       // };
-      this.$store
-        .dispatch("liveChatAddCannedResponse", cannedResponse)
-        .then(() => {
-          this.$emit("saved");
-        });
+      this.$store.dispatch("liveChatAddCannedResponse", cannedResponse).then(() => {
+        this.$emit("saved");
+      });
     },
     hideDialog() {
       this.$emit("hideDialog");

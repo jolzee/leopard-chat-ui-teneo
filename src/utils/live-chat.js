@@ -39,10 +39,7 @@ export class LiveChat {
   initialize() {
     const noop = () => {};
     try {
-      if (
-        this.store.getters.enableLiveChat &&
-        window.leopardConfig.liveChat.licenseKey
-      ) {
+      if (this.store.getters.enableLiveChat && window.leopardConfig.liveChat.licenseKey) {
         this.sdk = CustomerSDK.init({
           license: parseInt(window.leopardConfig.liveChat.licenseKey),
           clientId: "5e68dfc9597a892b27eb97740abe1fee"
@@ -58,18 +55,14 @@ export class LiveChat {
         // );
         // window.sdk = this.sdk;
 
-        this.sdk.auth
-          .getToken()
-          .then(token => (this.accessToken = token.accessToken));
+        this.sdk.auth.getToken().then(token => (this.accessToken = token.accessToken));
 
         this.sdk.on("connected", payload => {
           logger.debug(`LiveChat > Conected`, payload);
           if (payload.chatsSummary.length > 0) {
             this.chatId = payload.chatsSummary[0].id;
-            this.lastMessage =
-              payload.chatsSummary[0].lastEventsPerType.message.text;
-            this.lastMessageAuthorId =
-              payload.chatsSummary[0].lastEventsPerType.message.author;
+            this.lastMessage = payload.chatsSummary[0].lastEventsPerType.message.text;
+            this.lastMessageAuthorId = payload.chatsSummary[0].lastEventsPerType.message.author;
             logger.debug(`LiveChat > Last Author ID`, this.lastMessageAuthorId);
             logger.debug(`LiveChat > Last Message Received`, this.lastMessage);
           }
@@ -102,13 +95,8 @@ export class LiveChat {
             } | IsAgent? ${user === this.agent.id} `
           );
           this.chatId = chat;
-          if (
-            user === this.agent.id &&
-            !this.store.state.liveAgent.isLiveChat
-          ) {
-            logger.debug(
-              `LiveChat > Starting live chat form within - user_joined_chat`
-            );
+          if (user === this.agent.id && !this.store.state.liveAgent.isLiveChat) {
+            logger.debug(`LiveChat > Starting live chat form within - user_joined_chat`);
             this.startLiveChat();
           }
         });
@@ -135,10 +123,7 @@ export class LiveChat {
                 bodyText: "",
                 hasExtraData: false
               };
-              this.store.commit(
-                "PUSH_LIVE_CHAT_STATUS_TO_DIALOG",
-                liveChatStatus
-              ); // push the getting message onto the dialog
+              this.store.commit("PUSH_LIVE_CHAT_STATUS_TO_DIALOG", liveChatStatus); // push the getting message onto the dialog
               this.store.commit("STOP_LIVE_CHAT"); // No need directing all inputs if no chat session started yet
             } catch (e) {
               logger.debug(`LiveChat > No lc2 in threadSummary.properties`, e);
@@ -161,14 +146,9 @@ export class LiveChat {
               );
 
               if (event.author === this.agent.id) {
-                if (
-                  !this.store.state.liveAgent.isLiveChat ||
-                  !this.store.state.ui.showChatWindow
-                ) {
+                if (!this.store.state.liveAgent.isLiveChat || !this.store.state.ui.showChatWindow) {
                   this.startLiveChat();
-                  logger.debug(
-                    `LiveChat > Started live chat... from within new_event`
-                  );
+                  logger.debug(`LiveChat > Started live chat... from within new_event`);
                 }
                 logger.debug("new message from agent - ", event.text);
 
@@ -180,19 +160,10 @@ export class LiveChat {
                   bodyText: "",
                   hasExtraData: false
                 };
-                this.store.commit(
-                  "PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG",
-                  liveChatResponse
-                ); // push the getting message onto the dialog
+                this.store.commit("PUSH_LIVE_CHAT_RESPONSE_TO_DIALOG", liveChatResponse); // push the getting message onto the dialog
                 if (
-                  Object.prototype.hasOwnProperty.call(
-                    window,
-                    "webkitSpeechRecognition"
-                  ) &&
-                  Object.prototype.hasOwnProperty.call(
-                    window,
-                    "speechSynthesis"
-                  )
+                  Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
+                  Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
                 ) {
                   if (this.tts && this.store.getters.speakBackResponses) {
                     this.tts.say(stripHtml(event.text));
@@ -207,22 +178,12 @@ export class LiveChat {
                 }
                 this.store.commit(
                   "SET_DIALOG_HISTORY",
-                  JSON.parse(
-                    sessionStorage.getItem(
-                      this.storageKey + this.teneoChatHistory
-                    )
-                  )
+                  JSON.parse(sessionStorage.getItem(this.storageKey + this.teneoChatHistory))
                 );
                 if (this.store.getters.dialogHistory === null) {
-                  this.store.commit(
-                    "SET_DIALOG_HISTORY",
-                    this.store.getters.dialog
-                  );
+                  this.store.commit("SET_DIALOG_HISTORY", this.store.getters.dialog);
                 } else {
-                  this.store.commit(
-                    "PUSH_RESPONSE_TO_DIALOG_HISTORY",
-                    liveChatResponse
-                  );
+                  this.store.commit("PUSH_RESPONSE_TO_DIALOG_HISTORY", liveChatResponse);
                 }
                 sessionStorage.setItem(
                   this.storageKey + this.teneoChatHistory,
@@ -230,10 +191,7 @@ export class LiveChat {
                 );
                 this.store.commit("CLEAR_USER_INPUT");
               } else {
-                logger.debug(
-                  "LiveChat > new user message to agent - ",
-                  event.text
-                );
+                logger.debug("LiveChat > new user message to agent - ", event.text);
               }
               break;
             default:
@@ -272,10 +230,7 @@ export class LiveChat {
               bodyText: "",
               hasExtraData: false
             };
-            this.store.commit(
-              "PUSH_LIVE_CHAT_STATUS_TO_DIALOG",
-              liveChatStatus
-            ); // push the getting message onto the dialog
+            this.store.commit("PUSH_LIVE_CHAT_STATUS_TO_DIALOG", liveChatStatus); // push the getting message onto the dialog
             this.store.commit("STOP_LIVE_CHAT");
             if (!this.store.getters.hasLoggedInTeneo) {
               this.store
@@ -305,10 +260,7 @@ export class LiveChat {
   startLiveChat() {
     if (!this.store.state.liveAgent.isLiveChat) {
       logger.debug(`LiveChat > startLiveChat`);
-      this.store.commit(
-        "CHANGE_CHAT_TITLE",
-        `Speaking with ${this.agent.name}`
-      );
+      this.store.commit("CHANGE_CHAT_TITLE", `Speaking with ${this.agent.name}`);
       // show typing output agentName + ' is typing...'
 
       let message = "You are talking to " + this.agent.name + ".";
@@ -334,10 +286,7 @@ export class LiveChat {
           ); // only show the chat button after a successful login
         })
         .catch(err => {
-          logger.error(
-            "ERROR OPENING CHAT FROM INCOMING LIVE CHAT MESSAGE: ",
-            err
-          );
+          logger.error("ERROR OPENING CHAT FROM INCOMING LIVE CHAT MESSAGE: ", err);
         });
     }
   }
@@ -349,9 +298,7 @@ export class LiveChat {
    */
   sendMessage(message) {
     if (this.chatId && this.sdk) {
-      logger.debug(
-        "Have existing chatId and Sending message to LiveChat Agent:" + message
-      );
+      logger.debug("Have existing chatId and Sending message to LiveChat Agent:" + message);
       this.sdk
         .sendEvent(this.chatId, {
           type: "message",
@@ -379,11 +326,7 @@ export class LiveChat {
           logger.error("LiveChat > Could not start a live chat message", error);
         });
     } else {
-      logger.error(
-        `LiveChat SDK not initialized for user`,
-        this.chatId,
-        this.sdk
-      );
+      logger.error(`LiveChat SDK not initialized for user`, this.chatId, this.sdk);
     }
   }
 }

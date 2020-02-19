@@ -1,14 +1,18 @@
 <template>
   <v-card v-if="isValidCard" class="mx-2 mt-2" max-width="400">
-    <v-img v-if="config.imageUrl" class="white--text align-end" contain :src="config.imageUrl"></v-img>
+    <v-img
+      v-if="config.imageUrl"
+      class="white--text align-end"
+      contain
+      :src="config.imageUrl"
+    ></v-img>
     <v-card-title
       class="subtitle-2 white--text primary cardTitleBackground mb-5"
       v-if="config.title"
-    >{{ config.title }}</v-card-title>
+      >{{ config.title }}</v-card-title
+    >
     <v-card-subtitle v-if="config.subTitle" class="pb-1">
-      {{
-      config.subTitle
-      }}
+      {{ config.subTitle }}
     </v-card-subtitle>
 
     <v-card-text v-if="config.bodyText" class="text--primary">{{ config.bodyText }}</v-card-text>
@@ -16,9 +20,7 @@
     <v-card-text v-if="config.chips" class="my-0 py-0">
       <v-chip-group v-model="chipSelectionIndex" active-class="secondary white--text" column>
         <v-chip v-for="(chip, index) in config.chips" :key="'chip' + index">
-          {{
-          chip.name
-          }}
+          {{ chip.name }}
         </v-chip>
       </v-chip-group>
     </v-card-text>
@@ -32,7 +34,8 @@
         small
         color="secondary"
         @click="actionClicked(action)"
-      >{{ action.name }}</v-btn>
+        >{{ action.name }}</v-btn
+      >
     </v-card-actions>
   </v-card>
 </template>
@@ -49,9 +52,7 @@ export default {
   computed: {
     isValidCard() {
       try {
-        let theConfig = decodeURIComponent(
-          this.item.teneoResponse.extraData.displayCard
-        );
+        let theConfig = decodeURIComponent(this.item.teneoResponse.extraData.displayCard);
         JSON.parse(theConfig);
         return true;
       } catch (e) {
@@ -59,9 +60,7 @@ export default {
       }
     },
     config() {
-      let theConfig = decodeURIComponent(
-        this.item.teneoResponse.extraData.displayCard
-      );
+      let theConfig = decodeURIComponent(this.item.teneoResponse.extraData.displayCard);
       logger.debug(`Card JSON`, theConfig);
       return JSON.parse(theConfig);
     }
@@ -81,11 +80,9 @@ export default {
       this.$store.commit("SHOW_PROGRESS_BAR");
       this.$store.commit("SET_USER_INPUT", responseText);
       let optionClickParam = "&isClick=true";
-      this.$store
-        .dispatch("sendUserInput", responseParameters + optionClickParam)
-        .then(() => {
-          logger.debug("Card info sent to Teneo");
-        });
+      this.$store.dispatch("sendUserInput", responseParameters + optionClickParam).then(() => {
+        logger.debug("Card info sent to Teneo");
+      });
     }
   }
 };

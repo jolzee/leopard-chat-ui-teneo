@@ -13,19 +13,13 @@
         <v-row justify="center" class="pb-3">
           <v-card-actions>
             <v-btn dark color="primary" :to="{ name: 'chat' }">
-              {{
-              $t("menu.chat")
-              }}
+              {{ $t("menu.chat") }}
             </v-btn>
             <v-btn dark color="primary" :to="{ name: 'help' }">
-              {{
-              $t("menu.help")
-              }}
+              {{ $t("menu.help") }}
             </v-btn>
             <v-btn dark color="primary" :to="{ name: 'about' }">
-              {{
-              $t("menu.about")
-              }}
+              {{ $t("menu.about") }}
             </v-btn>
           </v-card-actions>
         </v-row>

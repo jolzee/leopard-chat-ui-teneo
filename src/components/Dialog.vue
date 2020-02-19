@@ -13,10 +13,7 @@
       scrollable
       max-width="80%"
       :width="width ? width : '600px'"
-      :fullscreen="
-        fullscreen ||
-          $vuetify.breakpoint.mdAndDown
-      "
+      :fullscreen="fullscreen || $vuetify.breakpoint.mdAndDown"
       content-class="leopard-dialog resizable"
     >
       <v-card class="mx-auto">
@@ -29,17 +26,18 @@
               type="info"
               elevation="2"
               @click="overlay = false"
-            >"Welcome to my dialog!!"</v-alert>
+              >"Welcome to my dialog!!"</v-alert
+            >
           </v-overlay>
         </v-fade-transition>
         <v-system-bar
           height="25px"
           color="primary darken-3"
           :class="{
-                  'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown,
-                  'teneo-toolbar-embed': embed && !fullscreenEmbed,
-                  'teneo-toolbar-embed-fullscreen': fullscreenEmbed
-                }"
+            'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown,
+            'teneo-toolbar-embed': embed && !fullscreenEmbed,
+            'teneo-toolbar-embed-fullscreen': fullscreenEmbed
+          }"
           dark
         >
           <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
@@ -51,12 +49,12 @@
             :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
             @click="toggleFullscreen"
           >
-            {{
-            fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
-            }}
+            {{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}
           </v-icon>
 
-          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close">mdi-close</v-icon>
+          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close"
+            >mdi-close</v-icon
+          >
         </v-system-bar>
 
         <v-app-bar :color="`primary ${textColor('primary')}`" dense>

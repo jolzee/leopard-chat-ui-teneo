@@ -21,9 +21,9 @@
                 @click="overlay = false"
               >
                 {{
-                formConfig.validationFailedMessage
-                ? formConfig.validationFailedMessage
-                : "Please complete all required fields"
+                  formConfig.validationFailedMessage
+                    ? formConfig.validationFailedMessage
+                    : "Please complete all required fields"
                 }}
               </v-alert>
             </v-overlay>
@@ -31,10 +31,10 @@
           <v-system-bar
             color="primary darken-3"
             :class="{
-                  'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown,
-                  'teneo-toolbar-embed': embed && !fullscreenEmbed,
-                  'teneo-toolbar-embed-fullscreen': fullscreenEmbed
-                }"
+              'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown,
+              'teneo-toolbar-embed': embed && !fullscreenEmbed,
+              'teneo-toolbar-embed-fullscreen': fullscreenEmbed
+            }"
             dark
           >
             <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
@@ -46,12 +46,12 @@
               :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
               @click="fullscreen = !fullscreen"
             >
-              {{
-              fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
-              }}
+              {{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}
             </v-icon>
 
-            <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close">mdi-close</v-icon>
+            <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close"
+              >mdi-close</v-icon
+            >
           </v-system-bar>
 
           <v-app-bar :color="`primary ${textColor('primary')}`" dense>
@@ -86,19 +86,17 @@
                         v-if="field.image"
                         :src="field.image.src"
                         contain
-                        :max-width="
-                          field.image.maxWidth ? field.image.maxWidth : '100%'
-                        "
-                        :max-height="
-                          field.image.maxHeight ? field.image.maxHeight : '600'
-                        "
-                        :alt="
-                          field.image.alt ? field.image.alt : 'Random Picture'
-                        "
+                        :max-width="field.image.maxWidth ? field.image.maxWidth : '100%'"
+                        :max-height="field.image.maxHeight ? field.image.maxHeight : '600'"
+                        :alt="field.image.alt ? field.image.alt : 'Random Picture'"
                       >
                         <template v-slot:placeholder>
                           <v-row class="fill-height ma-0" align="center" justify="center">
-                            <v-progress-circular :size="50" indeterminate color="primary"></v-progress-circular>
+                            <v-progress-circular
+                              :size="50"
+                              indeterminate
+                              color="primary"
+                            ></v-progress-circular>
                           </v-row>
                         </template>
                       </v-img>
@@ -106,19 +104,13 @@
                       <div
                         v-if="field.html"
                         v-html="field.html.label"
-                        :class="
-                          field.html.classes ? field.html.classes.join(' ') : ''
-                        "
+                        :class="field.html.classes ? field.html.classes.join(' ') : ''"
                       ></div>
 
                       <header
                         v-if="field.header"
                         v-html="field.header.label"
-                        :class="
-                          field.header.classes
-                            ? field.header.classes.join(' ')
-                            : ''
-                        "
+                        :class="field.header.classes ? field.header.classes.join(' ') : ''"
                       ></header>
 
                       <hr v-if="field.divider" />
@@ -126,166 +118,90 @@
                       <v-alert
                         v-if="field.alert"
                         :type="field.alert.type ? field.alert.type : 'info'"
-                        :border="
-                          field.alert.border ? field.alert.border : 'left'
-                        "
-                        :elevation="
-                          field.alert.elevation ? field.alert.elevation : 2
-                        "
+                        :border="field.alert.border ? field.alert.border : 'left'"
+                        :elevation="field.alert.elevation ? field.alert.elevation : 2"
                         :colored-border="
-                          field.alert.coloredBorder
-                            ? field.alert.coloredBorder
-                            : true
+                          field.alert.coloredBorder ? field.alert.coloredBorder : true
                         "
-                        :icon="
-                          field.alert.icon
-                            ? 'mdi-' + field.alert.icon
-                            : 'mdi-information'
-                        "
+                        :icon="field.alert.icon ? 'mdi-' + field.alert.icon : 'mdi-information'"
                         :dense="field.alert.dense ? field.alert.dense : false"
-                        :prominent="
-                          field.alert.prominent ? field.alert.prominent : false
-                        "
+                        :prominent="field.alert.prominent ? field.alert.prominent : false"
                         :tile="field.alert.tile ? field.alert.tile : false"
-                        :outlined="
-                          field.alert.outlined ? field.alert.outlined : false
-                        "
+                        :outlined="field.alert.outlined ? field.alert.outlined : false"
                         class="mb-0"
-                      >{{ field.alert.text }}</v-alert>
+                        >{{ field.alert.text }}</v-alert
+                      >
 
                       <ValidationProvider
                         v-if="field.textInput"
-                        :rules="
-                          field.textInput.validations
-                            ? field.textInput.validations
-                            : ''
-                        "
+                        :rules="field.textInput.validations ? field.textInput.validations : ''"
                         v-slot="{ errors, valid }"
                       >
                         <v-text-field
                           v-model="formData[field.textInput.name]"
                           :name="field.textInput.name"
-                          :label="
-                            field.textInput.label ? field.textInput.label : ''
-                          "
+                          :label="field.textInput.label ? field.textInput.label : ''"
                           :success="valid"
                           :error-messages="errors"
-                          :hint="
-                            field.textInput.hint ? field.textInput.hint : ''
-                          "
+                          :hint="field.textInput.hint ? field.textInput.hint : ''"
                           :placeholder="
-                            field.textInput.placeholder
-                              ? field.textInput.placeholder
-                              : ''
+                            field.textInput.placeholder ? field.textInput.placeholder : ''
                           "
-                          :value="
-                            field.textInput.initialValue
-                              ? field.textInput.initialValue
-                              : ''
-                          "
-                          :solo="
-                            field.textInput.style && field.textInput.style.solo
-                              ? true
-                              : false
-                          "
+                          :value="field.textInput.initialValue ? field.textInput.initialValue : ''"
+                          :solo="field.textInput.style && field.textInput.style.solo ? true : false"
                           :filled="
-                            field.textInput.style &&
-                            field.textInput.style.filled
-                              ? true
-                              : false
+                            field.textInput.style && field.textInput.style.filled ? true : false
                           "
                           :outlined="
-                            field.textInput.style &&
-                            field.textInput.style.outlined
-                              ? true
-                              : false
+                            field.textInput.style && field.textInput.style.outlined ? true : false
                           "
-                          :flat="
-                            field.textInput.style && field.textInput.style.flat
-                              ? true
-                              : false
-                          "
+                          :flat="field.textInput.style && field.textInput.style.flat ? true : false"
                           :rounded="
-                            field.textInput.style &&
-                            field.textInput.style.rounded
-                              ? true
-                              : false
+                            field.textInput.style && field.textInput.style.rounded ? true : false
                           "
                           :shaped="
-                            field.textInput.style &&
-                            field.textInput.style.shaped
-                              ? true
-                              : false
+                            field.textInput.style && field.textInput.style.shaped ? true : false
                           "
                           :solo-inverted="
-                            field.textInput.style &&
-                            field.textInput.style.soloInverted
+                            field.textInput.style && field.textInput.style.soloInverted
                               ? true
                               : false
                           "
-                          :clearable="
-                            field.textInput.clearable
-                              ? field.textInput.clearable
-                              : false
-                          "
+                          :clearable="field.textInput.clearable ? field.textInput.clearable : false"
                           :persistent-hint="
-                            field.textInput.persistentHint
-                              ? field.textInput.persistentHint
-                              : false
+                            field.textInput.persistentHint ? field.textInput.persistentHint : false
                           "
-                          :dense="
-                            field.textInput.dense
-                              ? field.textInput.dense
-                              : false
-                          "
-                          :counter="
-                            field.textInput.counter
-                              ? field.textInput.counter
-                              : false
-                          "
+                          :dense="field.textInput.dense ? field.textInput.dense : false"
+                          :counter="field.textInput.counter ? field.textInput.counter : false"
                           :append-icon="
-                            field.textInput.icons &&
-                            field.textInput.icons.append
+                            field.textInput.icons && field.textInput.icons.append
                               ? 'mdi-' + field.textInput.icons.append
                               : ''
                           "
                           :append-outer-icon="
-                            field.textInput.icons &&
-                            field.textInput.icons.appendOuter
+                            field.textInput.icons && field.textInput.icons.appendOuter
                               ? 'mdi-' + field.textInput.icons.appendOuter
                               : ''
                           "
                           :prepend-icon="
-                            field.textInput.icons &&
-                            field.textInput.icons.prepend
+                            field.textInput.icons && field.textInput.icons.prepend
                               ? 'mdi-' + field.textInput.icons.prepend
                               : ''
                           "
                           :prepend-inner-icon="
-                            field.textInput.icons &&
-                            field.textInput.icons.prependInner
+                            field.textInput.icons && field.textInput.icons.prependInner
                               ? 'mdi-' + field.textInput.icons.prependInner
                               : ''
                           "
-                          :mask="
-                            field.textInput.mask ? field.textInput.mask : 100
-                          "
-                          :prefix="
-                            field.textInput.prefix ? field.textInput.prefix : ''
-                          "
-                          :suffix="
-                            field.textInput.suffix ? field.textInput.suffix : ''
-                          "
+                          :mask="field.textInput.mask ? field.textInput.mask : 100"
+                          :prefix="field.textInput.prefix ? field.textInput.prefix : ''"
+                          :suffix="field.textInput.suffix ? field.textInput.suffix : ''"
                         ></v-text-field>
                       </ValidationProvider>
 
                       <ValidationProvider
                         v-if="field.textarea"
-                        :rules="
-                          field.textarea.validations
-                            ? field.textarea.validations
-                            : ''
-                        "
+                        :rules="field.textarea.validations ? field.textarea.validations : ''"
                         v-slot="{ errors, valid }"
                       >
                         <v-textarea
@@ -293,89 +209,44 @@
                           :name="field.textarea.name"
                           :success="valid"
                           :error-messages="errors"
-                          :auto-grow="
-                            field.textarea.autoGrow
-                              ? field.textarea.autoGrow
-                              : true
-                          "
-                          :label="
-                            field.textarea.label ? field.textarea.label : ''
-                          "
+                          :auto-grow="field.textarea.autoGrow ? field.textarea.autoGrow : true"
+                          :label="field.textarea.label ? field.textarea.label : ''"
                           :placeholder="
-                            field.textarea.placeholder
-                              ? field.textarea.placeholder
-                              : ''
+                            field.textarea.placeholder ? field.textarea.placeholder : ''
                           "
-                          :value="
-                            field.textarea.initialValue
-                              ? field.textarea.initialValue
-                              : ''
-                          "
+                          :value="field.textarea.initialValue ? field.textarea.initialValue : ''"
                           :hint="field.textarea.hint ? field.textarea.hint : ''"
-                          :solo="
-                            field.textarea.style && field.textarea.style.solo
-                              ? true
-                              : false
-                          "
+                          :solo="field.textarea.style && field.textarea.style.solo ? true : false"
                           :filled="
-                            field.textarea.style && field.textarea.style.filled
-                              ? true
-                              : false
+                            field.textarea.style && field.textarea.style.filled ? true : false
                           "
                           :outlined="
-                            field.textarea.style &&
-                            field.textarea.style.outlined
-                              ? true
-                              : false
+                            field.textarea.style && field.textarea.style.outlined ? true : false
                           "
-                          :flat="
-                            field.textarea.style && field.textarea.style.flat
-                              ? true
-                              : false
-                          "
+                          :flat="field.textarea.style && field.textarea.style.flat ? true : false"
                           :rounded="
-                            field.textarea.style && field.textarea.style.rounded
-                              ? true
-                              : false
+                            field.textarea.style && field.textarea.style.rounded ? true : false
                           "
                           :shaped="
-                            field.textarea.style && field.textarea.style.shaped
-                              ? true
-                              : false
+                            field.textarea.style && field.textarea.style.shaped ? true : false
                           "
                           :solo-inverted="
-                            field.textarea.style &&
-                            field.textarea.style.soloInverted
-                              ? true
-                              : false
+                            field.textarea.style && field.textarea.style.soloInverted ? true : false
                           "
-                          :clearable="
-                            field.textarea.clearable
-                              ? field.textarea.clearable
-                              : false
-                          "
+                          :clearable="field.textarea.clearable ? field.textarea.clearable : false"
                           :persistent-hint="
-                            field.textarea.persistentHint
-                              ? field.textarea.persistentHint
-                              : false
+                            field.textarea.persistentHint ? field.textarea.persistentHint : false
                           "
-                          :dense="
-                            field.textarea.dense ? field.textarea.dense : false
-                          "
+                          :dense="field.textarea.dense ? field.textarea.dense : false"
                           :rows="field.textarea.rows ? field.textarea.rows : 5"
-                          :counter="
-                            field.textarea.counter
-                              ? field.textarea.counter
-                              : false
-                          "
+                          :counter="field.textarea.counter ? field.textarea.counter : false"
                           :append-icon="
                             field.textarea.icons && field.textarea.icons.append
                               ? 'mdi-' + field.textarea.icons.append
                               : ''
                           "
                           :append-outer-icon="
-                            field.textarea.icons &&
-                            field.textarea.icons.appendOuter
+                            field.textarea.icons && field.textarea.icons.appendOuter
                               ? 'mdi-' + field.textarea.icons.appendOuter
                               : ''
                           "
@@ -385,30 +256,19 @@
                               : ''
                           "
                           :prepend-inner-icon="
-                            field.textarea.icons &&
-                            field.textarea.icons.prependInner
+                            field.textarea.icons && field.textarea.icons.prependInner
                               ? 'mdi-' + field.textarea.icons.prependInner
                               : ''
                           "
-                          :mask="
-                            field.textarea.mask ? field.textarea.mask : 100
-                          "
-                          :prefix="
-                            field.textarea.prefix ? field.textarea.prefix : ''
-                          "
-                          :suffix="
-                            field.textarea.suffix ? field.textarea.suffix : ''
-                          "
+                          :mask="field.textarea.mask ? field.textarea.mask : 100"
+                          :prefix="field.textarea.prefix ? field.textarea.prefix : ''"
+                          :suffix="field.textarea.suffix ? field.textarea.suffix : ''"
                         ></v-textarea>
                       </ValidationProvider>
 
                       <ValidationProvider
                         v-if="field.comboBox"
-                        :rules="
-                          field.comboBox.validations
-                            ? field.comboBox.validations
-                            : ''
-                        "
+                        :rules="field.comboBox.validations ? field.comboBox.validations : ''"
                         v-slot="{ errors, valid }"
                       >
                         <v-autocomplete
@@ -416,90 +276,42 @@
                           :name="field.comboBox.name"
                           :success="valid"
                           :error-messages="errors"
-                          :items="
-                            field.comboBox.items ? field.comboBox.items : []
-                          "
-                          :chips="
-                            field.comboBox.chips ? field.comboBox.chips : false
-                          "
-                          :label="
-                            field.comboBox.label ? field.comboBox.label : ''
-                          "
+                          :items="field.comboBox.items ? field.comboBox.items : []"
+                          :chips="field.comboBox.chips ? field.comboBox.chips : false"
+                          :label="field.comboBox.label ? field.comboBox.label : ''"
                           :hint="field.comboBox.hint ? field.comboBox.hint : ''"
-                          :value="
-                            field.comboBox.initialValue
-                              ? field.comboBox.initialValue
-                              : ''
-                          "
-                          :multiple="
-                            field.comboBox.multiple
-                              ? field.comboBox.multiple
-                              : true
-                          "
+                          :value="field.comboBox.initialValue ? field.comboBox.initialValue : ''"
+                          :multiple="field.comboBox.multiple ? field.comboBox.multiple : true"
                           :hide-selected="
-                            field.comboBox.hideSelected
-                              ? field.comboBox.hideSelected
-                              : true
+                            field.comboBox.hideSelected ? field.comboBox.hideSelected : true
                           "
-                          :clearable="
-                            field.comboBox.clearable
-                              ? field.comboBox.clearable
-                              : true
-                          "
-                          :dense="
-                            field.comboBox.dense ? field.comboBox.dense : false
-                          "
+                          :clearable="field.comboBox.clearable ? field.comboBox.clearable : true"
+                          :dense="field.comboBox.dense ? field.comboBox.dense : false"
                           :deletable-chips="
-                            field.comboBox.deletableChips
-                              ? field.comboBox.deletableChips
-                              : true
+                            field.comboBox.deletableChips ? field.comboBox.deletableChips : true
                           "
                           :persistent-hint="
-                            field.comboBox.persistentHint
-                              ? field.comboBox.persistentHint
-                              : true
+                            field.comboBox.persistentHint ? field.comboBox.persistentHint : true
                           "
-                          :solo="
-                            field.comboBox.style && field.comboBox.style.solo
-                              ? true
-                              : false
-                          "
+                          :solo="field.comboBox.style && field.comboBox.style.solo ? true : false"
                           :filled="
-                            field.comboBox.style && field.comboBox.style.filled
-                              ? true
-                              : false
+                            field.comboBox.style && field.comboBox.style.filled ? true : false
                           "
                           :outlined="
-                            field.comboBox.style &&
-                            field.comboBox.style.outlined
-                              ? true
-                              : false
+                            field.comboBox.style && field.comboBox.style.outlined ? true : false
                           "
-                          :flat="
-                            field.comboBox.style && field.comboBox.style.flat
-                              ? true
-                              : false
-                          "
+                          :flat="field.comboBox.style && field.comboBox.style.flat ? true : false"
                           :rounded="
-                            field.comboBox.style && field.comboBox.style.rounded
-                              ? true
-                              : false
+                            field.comboBox.style && field.comboBox.style.rounded ? true : false
                           "
                           :shaped="
-                            field.comboBox.style && field.comboBox.style.shaped
-                              ? true
-                              : false
+                            field.comboBox.style && field.comboBox.style.shaped ? true : false
                           "
                           :solo-inverted="
-                            field.comboBox.style &&
-                            field.comboBox.style.soloInverted
-                              ? true
-                              : false
+                            field.comboBox.style && field.comboBox.style.soloInverted ? true : false
                           "
                           :open-on-clear="
-                            field.comboBox.openOnClear
-                              ? field.comboBox.openOnClear
-                              : false
+                            field.comboBox.openOnClear ? field.comboBox.openOnClear : false
                           "
                           :append-icon="
                             field.comboBox.icons && field.comboBox.icons.append
@@ -507,8 +319,7 @@
                               : ''
                           "
                           :append-outer-icon="
-                            field.comboBox.icons &&
-                            field.comboBox.icons.appendOuter
+                            field.comboBox.icons && field.comboBox.icons.appendOuter
                               ? 'mdi-' + field.comboBox.icons.appendOuter
                               : ''
                           "
@@ -518,8 +329,7 @@
                               : ''
                           "
                           :prepend-inner-icon="
-                            field.comboBox.icons &&
-                            field.comboBox.icons.prependInner
+                            field.comboBox.icons && field.comboBox.icons.prependInner
                               ? 'mdi-' + field.comboBox.icons.prependInner
                               : ''
                           "
@@ -528,11 +338,7 @@
 
                       <ValidationProvider
                         v-if="field.select"
-                        :rules="
-                          field.select.validations
-                            ? field.select.validations
-                            : ''
-                        "
+                        :rules="field.select.validations ? field.select.validations : ''"
                         v-slot="{ errors, valid }"
                       >
                         <v-select
@@ -542,78 +348,31 @@
                           :error-messages="errors"
                           :items="field.select.items ? field.select.items : []"
                           :label="field.select.label ? field.select.label : ''"
-                          :value="
-                            field.select.initialValue
-                              ? field.select.initialValue
-                              : ''
-                          "
+                          :value="field.select.initialValue ? field.select.initialValue : ''"
                           :hint="field.select.hint ? field.select.hint : ''"
-                          :chips="
-                            field.select.chips ? field.select.chips : false
-                          "
-                          :multiple="
-                            field.select.multiple
-                              ? field.select.multiple
-                              : false
-                          "
-                          :clearable="
-                            field.select.clearable
-                              ? field.select.clearable
-                              : true
-                          "
+                          :chips="field.select.chips ? field.select.chips : false"
+                          :multiple="field.select.multiple ? field.select.multiple : false"
+                          :clearable="field.select.clearable ? field.select.clearable : true"
                           :deletable-chips="
-                            field.select.deletableChips
-                              ? field.select.deletableChips
-                              : true
+                            field.select.deletableChips ? field.select.deletableChips : true
                           "
                           :persistent-hint="
-                            field.select.persistentHint
-                              ? field.select.persistentHint
-                              : true
+                            field.select.persistentHint ? field.select.persistentHint : true
                           "
-                          :dense="
-                            field.select.dense ? field.select.dense : false
-                          "
-                          :solo="
-                            field.select.style && field.select.style.solo
-                              ? true
-                              : false
-                          "
-                          :filled="
-                            field.select.style && field.select.style.filled
-                              ? true
-                              : false
-                          "
+                          :dense="field.select.dense ? field.select.dense : false"
+                          :solo="field.select.style && field.select.style.solo ? true : false"
+                          :filled="field.select.style && field.select.style.filled ? true : false"
                           :outlined="
-                            field.select.style && field.select.style.outlined
-                              ? true
-                              : false
+                            field.select.style && field.select.style.outlined ? true : false
                           "
-                          :flat="
-                            field.select.style && field.select.style.flat
-                              ? true
-                              : false
-                          "
-                          :rounded="
-                            field.select.style && field.select.style.rounded
-                              ? true
-                              : false
-                          "
-                          :shaped="
-                            field.select.style && field.select.style.shaped
-                              ? true
-                              : false
-                          "
+                          :flat="field.select.style && field.select.style.flat ? true : false"
+                          :rounded="field.select.style && field.select.style.rounded ? true : false"
+                          :shaped="field.select.style && field.select.style.shaped ? true : false"
                           :hide-selected="
-                            field.select.hideSelected
-                              ? field.select.hideSelected
-                              : true
+                            field.select.hideSelected ? field.select.hideSelected : true
                           "
                           :solo-inverted="
-                            field.select.style &&
-                            field.select.style.soloInverted
-                              ? true
-                              : false
+                            field.select.style && field.select.style.soloInverted ? true : false
                           "
                           :append-icon="
                             field.select.icons && field.select.icons.append
@@ -631,8 +390,7 @@
                               : ''
                           "
                           :prepend-inner-icon="
-                            field.select.icons &&
-                            field.select.icons.prependInner
+                            field.select.icons && field.select.icons.prependInner
                               ? 'mdi-' + field.select.icons.prependInner
                               : ''
                           "
@@ -642,9 +400,7 @@
                       <ValidationProvider
                         v-if="field.checkbox"
                         :rules="
-                          field.checkbox.mustBeChecked
-                            ? { required: { allowFalse: false } }
-                            : ''
+                          field.checkbox.mustBeChecked ? { required: { allowFalse: false } } : ''
                         "
                         v-slot="{ errors }"
                       >
@@ -652,55 +408,33 @@
                           v-model="formData[field.checkbox.name]"
                           :name="field.checkbox.name"
                           :error-messages="errors"
-                          :label="
-                            field.checkbox.label ? field.checkbox.label : ''
-                          "
+                          :label="field.checkbox.label ? field.checkbox.label : ''"
                           :hint="field.checkbox.hint ? field.checkbox.hint : ''"
-                          :dense="
-                            field.checkbox.dense ? field.checkbox.dense : false
-                          "
+                          :dense="field.checkbox.dense ? field.checkbox.dense : false"
                           :persistent-hint="
-                            field.checkbox.persistentHint
-                              ? field.checkbox.persistentHint
-                              : true
+                            field.checkbox.persistentHint ? field.checkbox.persistentHint : true
                           "
-                          :color="
-                            field.checkbox.color
-                              ? field.checkbox.color
-                              : 'success'
-                          "
+                          :color="field.checkbox.color ? field.checkbox.color : 'success'"
                           ripple
                         ></v-checkbox>
                       </ValidationProvider>
 
                       <ValidationProvider
                         v-if="field.switch"
-                        :rules="
-                          field.switch.validations
-                            ? field.switch.validations
-                            : ''
-                        "
+                        :rules="field.switch.validations ? field.switch.validations : ''"
                         v-slot="{ errors }"
                       >
                         <v-switch
                           v-model="formData[field.switch.name]"
                           :name="field.switch.name"
                           :error-messages="errors"
-                          :color="
-                            field.switch.color ? field.switch.color : 'success'
-                          "
+                          :color="field.switch.color ? field.switch.color : 'success'"
                           :label="field.switch.label ? field.switch.label : ''"
                           :hint="field.switch.hint ? field.switch.hint : ''"
-                          :dense="
-                            field.switch.dense ? field.switch.dense : false
-                          "
-                          :inset="
-                            field.switch.inset ? field.switch.inset : false
-                          "
+                          :dense="field.switch.dense ? field.switch.dense : false"
+                          :inset="field.switch.inset ? field.switch.inset : false"
                           :persistent-hint="
-                            field.switch.persistentHint
-                              ? field.switch.persistentHint
-                              : true
+                            field.switch.persistentHint ? field.switch.persistentHint : true
                           "
                           ripple
                         ></v-switch>
@@ -708,9 +442,7 @@
 
                       <ValidationProvider
                         v-if="field.radio"
-                        :rules="
-                          field.radio.validations ? field.radio.validations : ''
-                        "
+                        :rules="field.radio.validations ? field.radio.validations : ''"
                         v-slot="{ errors }"
                       >
                         <v-radio-group
@@ -720,29 +452,15 @@
                           :label="field.radio.label ? field.radio.label : ''"
                           :hint="field.radio.hint ? field.radio.hint : ''"
                           :persistent-hint="
-                            field.radio.persistentHint
-                              ? field.radio.persistentHint
-                              : true
+                            field.radio.persistentHint ? field.radio.persistentHint : true
                           "
                           :dense="field.radio.dense ? field.radio.dense : false"
-                          :column="
-                            field.radio.row && field.radio.row === true
-                              ? false
-                              : true
-                          "
+                          :column="field.radio.row && field.radio.row === true ? false : true"
                           :row="
-                            field.radio.row && field.radio.row === true
-                              ? field.radio.row
-                              : false
+                            field.radio.row && field.radio.row === true ? field.radio.row : false
                           "
-                          :mandatory="
-                            field.radio.mandatory
-                              ? field.radio.mandatory
-                              : false
-                          "
-                          :multiple="
-                            field.radio.multiple ? field.radio.multiple : false
-                          "
+                          :mandatory="field.radio.mandatory ? field.radio.mandatory : false"
+                          :multiple="field.radio.multiple ? field.radio.multiple : false"
                           :append-icon="
                             field.radio.icons && field.radio.icons.append
                               ? 'mdi-' + field.radio.icons.append
@@ -759,20 +477,14 @@
                             :key="uuid + index"
                             :label="item.label"
                             :value="item.value"
-                            :color="
-                              field.radio.color ? field.radio.color : 'success'
-                            "
+                            :color="field.radio.color ? field.radio.color : 'success'"
                           ></v-radio>
                         </v-radio-group>
                       </ValidationProvider>
 
                       <ValidationProvider
                         v-if="field.slider"
-                        :rules="
-                          field.slider.validations
-                            ? field.slider.validations
-                            : ''
-                        "
+                        :rules="field.slider.validations ? field.slider.validations : ''"
                         v-slot="{ errors }"
                       >
                         <v-slider
@@ -782,69 +494,35 @@
                           :error-messages="errors"
                           :label="field.slider.label ? field.slider.label : ''"
                           :hint="field.slider.hint ? field.slider.hint : ''"
-                          :dense="
-                            field.slider.dense ? field.slider.dense : false
-                          "
+                          :dense="field.slider.dense ? field.slider.dense : false"
                           :persistent-hint="
-                            field.slider.persistentHint
-                              ? field.slider.persistentHint
-                              : true
+                            field.slider.persistentHint ? field.slider.persistentHint : true
                           "
-                          :color="
-                            field.slider.color ? field.slider.color : 'success'
-                          "
+                          :color="field.slider.color ? field.slider.color : 'success'"
                           :append-icon="
-                            field.slider.appendIcon
-                              ? 'mdi-' + field.slider.appendIcon
-                              : ''
+                            field.slider.appendIcon ? 'mdi-' + field.slider.appendIcon : ''
                           "
                           :prepend-icon="
-                            field.slider.prependIcon
-                              ? 'mdi-' + field.slider.prependIcon
-                              : ''
+                            field.slider.prependIcon ? 'mdi-' + field.slider.prependIcon : ''
                           "
                           :max="field.slider.max ? field.slider.max : 100"
                           :min="field.slider.min ? field.slider.min : 0"
                           :step="field.slider.step ? field.slider.step : 1"
                           :thumb-color="
-                            field.slider.thumbColor
-                              ? field.slider.thumbColor
-                              : undefined
+                            field.slider.thumbColor ? field.slider.thumbColor : undefined
                           "
-                          :thumb-label="
-                            field.slider.thumbLabel
-                              ? field.slider.thumbLabel
-                              : true
-                          "
-                          :thumb-size="
-                            field.slider.thumbSize ? field.slider.thumbSize : 32
-                          "
-                          :tick-labels="
-                            field.slider.tickLabels
-                              ? field.slider.tickLabels
-                              : []
-                          "
-                          :tick-size="
-                            field.slider.tickSize ? field.slider.tickSize : 2
-                          "
-                          :ticks="
-                            field.slider.ticks ? field.slider.ticks : false
-                          "
+                          :thumb-label="field.slider.thumbLabel ? field.slider.thumbLabel : true"
+                          :thumb-size="field.slider.thumbSize ? field.slider.thumbSize : 32"
+                          :tick-labels="field.slider.tickLabels ? field.slider.tickLabels : []"
+                          :tick-size="field.slider.tickSize ? field.slider.tickSize : 2"
+                          :ticks="field.slider.ticks ? field.slider.ticks : false"
                           :track-color="
-                            field.slider.trackColor
-                              ? field.slider.trackColor
-                              : undefined
+                            field.slider.trackColor ? field.slider.trackColor : undefined
                           "
                           :track-fill-color="
-                            field.slider.trackFillColor
-                              ? field.slider.trackFillColor
-                              : undefined
+                            field.slider.trackFillColor ? field.slider.trackFillColor : undefined
                           "
-                          :value="
-                            field.slider.initialValue
-                              ? field.slider.initialValue
-                              : undefined
-                          "
+                          :value="field.slider.initialValue ? field.slider.initialValue : undefined"
                         ></v-slider>
                         <v-range-slider
                           v-else
@@ -853,69 +531,35 @@
                           :error-messages="errors"
                           :label="field.slider.label ? field.slider.label : ''"
                           :hint="field.slider.hint ? field.slider.hint : ''"
-                          :dense="
-                            field.slider.dense ? field.slider.dense : false
-                          "
+                          :dense="field.slider.dense ? field.slider.dense : false"
                           :persistent-hint="
-                            field.slider.persistentHint
-                              ? field.slider.persistentHint
-                              : true
+                            field.slider.persistentHint ? field.slider.persistentHint : true
                           "
-                          :color="
-                            field.slider.color ? field.slider.color : 'success'
-                          "
+                          :color="field.slider.color ? field.slider.color : 'success'"
                           :append-icon="
-                            field.slider.appendIcon
-                              ? 'mdi-' + field.slider.appendIcon
-                              : ''
+                            field.slider.appendIcon ? 'mdi-' + field.slider.appendIcon : ''
                           "
                           :prepend-icon="
-                            field.slider.prependIcon
-                              ? 'mdi-' + field.slider.prependIcon
-                              : ''
+                            field.slider.prependIcon ? 'mdi-' + field.slider.prependIcon : ''
                           "
                           :max="field.slider.max ? field.slider.max : 100"
                           :min="field.slider.min ? field.slider.min : 0"
                           :step="field.slider.step ? field.slider.step : 1"
                           :thumb-color="
-                            field.slider.thumbColor
-                              ? field.slider.thumbColor
-                              : undefined
+                            field.slider.thumbColor ? field.slider.thumbColor : undefined
                           "
-                          :thumb-label="
-                            field.slider.thumbLabel
-                              ? field.slider.thumbLabel
-                              : true
-                          "
-                          :thumb-size="
-                            field.slider.thumbSize ? field.slider.thumbSize : 32
-                          "
-                          :tick-labels="
-                            field.slider.tickLabels
-                              ? field.slider.tickLabels
-                              : []
-                          "
-                          :tick-size="
-                            field.slider.tickSize ? field.slider.tickSize : 2
-                          "
-                          :ticks="
-                            field.slider.ticks ? field.slider.ticks : false
-                          "
+                          :thumb-label="field.slider.thumbLabel ? field.slider.thumbLabel : true"
+                          :thumb-size="field.slider.thumbSize ? field.slider.thumbSize : 32"
+                          :tick-labels="field.slider.tickLabels ? field.slider.tickLabels : []"
+                          :tick-size="field.slider.tickSize ? field.slider.tickSize : 2"
+                          :ticks="field.slider.ticks ? field.slider.ticks : false"
                           :track-color="
-                            field.slider.trackColor
-                              ? field.slider.trackColor
-                              : undefined
+                            field.slider.trackColor ? field.slider.trackColor : undefined
                           "
                           :track-fill-color="
-                            field.slider.trackFillColor
-                              ? field.slider.trackFillColor
-                              : undefined
+                            field.slider.trackFillColor ? field.slider.trackFillColor : undefined
                           "
-                          :value="
-                            field.slider.initialValue
-                              ? field.slider.initialValue
-                              : undefined
-                          "
+                          :value="field.slider.initialValue ? field.slider.initialValue : undefined"
                         ></v-range-slider>
                       </ValidationProvider>
                     </v-col>
@@ -928,16 +572,16 @@
           <v-card-actions>
             <v-btn @click="close">
               {{
-              formConfig.button && formConfig.button.closeButtonText
-              ? formConfig.button.closeButtonText
-              : "Close"
+                formConfig.button && formConfig.button.closeButtonText
+                  ? formConfig.button.closeButtonText
+                  : "Close"
               }}
             </v-btn>
             <v-btn @click="clear">
               {{
-              formConfig.button && formConfig.button.clearButtonText
-              ? formConfig.button.clearButtonText
-              : "Clear"
+                formConfig.button && formConfig.button.clearButtonText
+                  ? formConfig.button.clearButtonText
+                  : "Clear"
               }}
             </v-btn>
             <v-spacer></v-spacer>
@@ -949,12 +593,12 @@
             >
               {{ formConfig.button.text ? formConfig.button.text : "Submit" }}
               <v-icon v-if="formConfig.button.icon" right dark>
-                {{
-                formConfig.button.icon ? `mdi-${formConfig.button.icon}` : ""
-                }}
+                {{ formConfig.button.icon ? `mdi-${formConfig.button.icon}` : "" }}
               </v-icon>
             </v-btn>
-            <v-btn v-else color="primary" @click="submit" :disabled="invalid || !validated">Submit</v-btn>
+            <v-btn v-else color="primary" @click="submit" :disabled="invalid || !validated"
+              >Submit</v-btn
+            >
           </v-card-actions>
         </v-card>
         <!--div class='resizer'></div-->
@@ -1043,10 +687,7 @@ export default {
         let params = "";
         if (this.formConfig.postback) {
           if (this.formConfig.postback.userInput) {
-            this.$store.commit(
-              "SET_USER_INPUT",
-              this.formConfig.postback.userInput
-            );
+            this.$store.commit("SET_USER_INPUT", this.formConfig.postback.userInput);
           }
           if (this.formConfig.postback.formDataUrlParam) {
             params = `&${this.formConfig.postback.formDataUrlParam}=`;
@@ -1056,22 +697,14 @@ export default {
           params += encodeURIComponent(JSON.stringify(this.formData));
         } else {
           this.$store.commit("SET_USER_INPUT", ""); // Clear user input
-          params = `&formData=${encodeURIComponent(
-            JSON.stringify(this.formData)
-          )}`;
+          params = `&formData=${encodeURIComponent(JSON.stringify(this.formData))}`;
         }
         logger.debug(JSON.stringify(this.formData));
         this.$store.dispatch("sendUserInput", params).then(() => {
           this.$emit("completed");
           this.$emit("handleFocus");
-          if (
-            this.formConfig.postback &&
-            this.formConfig.postback.confirmationAlert
-          ) {
-            this.$store.commit(
-              "SHOW_MESSAGE_IN_CHAT",
-              this.formConfig.postback.confirmationAlert
-            );
+          if (this.formConfig.postback && this.formConfig.postback.confirmationAlert) {
+            this.$store.commit("SHOW_MESSAGE_IN_CHAT", this.formConfig.postback.confirmationAlert);
           }
         });
       }

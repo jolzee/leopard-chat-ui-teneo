@@ -80,12 +80,9 @@
       </v-container>
     </v-form>-->
     <v-col cols="12" class="my-4 ml-0">
-      <v-btn
-        color="primary"
-        aria-label="Back to Chat Bot"
-        ripple
-        to="/"
-      >{{ $t('back.to.chat.button') }}</v-btn>
+      <v-btn color="primary" aria-label="Back to Chat Bot" ripple to="/">{{
+        $t("back.to.chat.button")
+      }}</v-btn>
     </v-col>
   </v-row>
 </template>

@@ -9,11 +9,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn
-            color="green darken-1"
-            text
-            @click="displayPusherMessage = false"
-          >
+          <v-btn color="green darken-1" text @click="displayPusherMessage = false">
             Close
           </v-btn>
         </v-card-actions>

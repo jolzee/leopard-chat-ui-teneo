@@ -4,8 +4,8 @@
       <div class="plyr__video-embed">
         <iframe
           :src="
-          `https://www.youtube.com/embed/${videoId}?iv_load_policy=3&cc_load_policy=1&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1`
-        "
+            `https://www.youtube.com/embed/${videoId}?iv_load_policy=3&cc_load_policy=1&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1`
+          "
           allowfullscreen
           allowtransparency
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
@@ -20,7 +20,8 @@
       dark
       :href="`https://www.youtube.com/watch?v=${videoId}`"
       target="_blank"
-    >Open in YouTube</v-btn>
+      >Open in YouTube</v-btn
+    >
   </div>
 </template>
 <script>
@@ -37,14 +38,7 @@ export default {
       youtubeSettings: {
         debug: false,
         volume: 0.25,
-        controls: [
-          "play",
-          "progress",
-          "current-time",
-          "mute",
-          "volume",
-          "fullscreen"
-        ],
+        controls: ["play", "progress", "current-time", "mute", "volume", "fullscreen"],
         tooltips: { controls: true, seek: true },
         youtube: {
           noCookie: false,

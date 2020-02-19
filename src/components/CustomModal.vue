@@ -51,7 +51,8 @@
                 v-shortkey="['ctrl', 'alt', 'arrowleft']"
                 @shortkey.native="closeModal"
                 @click.native="closeModal"
-              >{{ $t("back.to.chat.button") }}</v-btn>
+                >{{ $t("back.to.chat.button") }}</v-btn
+              >
             </v-card-actions>
           </v-row>
         </v-card>
@@ -82,11 +83,7 @@ export default {
       return this.$store.getters.dark;
     },
     showCustomModal() {
-      if (
-        this.$store.getters.showCustomModal &&
-        this.items &&
-        this.items.length > 0
-      ) {
+      if (this.$store.getters.showCustomModal && this.items && this.items.length > 0) {
         return true;
       }
       return false;

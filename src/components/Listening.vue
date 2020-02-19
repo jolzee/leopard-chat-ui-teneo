@@ -1,10 +1,5 @@
 <template>
-  <v-dialog
-    v-model="value"
-    persistent
-    content
-    content-class="centered-dialog pa-4"
-  >
+  <v-dialog v-model="value" persistent content content-class="centered-dialog pa-4">
     <v-row class="ma-0">
       <v-col cols="12" class="mt-3 text-center justify-center">
         <vue-loaders-line-scale-pulse-out-rapid

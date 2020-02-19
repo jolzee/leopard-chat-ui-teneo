@@ -20,12 +20,7 @@
         v-html="props.item[header.value]"
       ></td>
     </template>
-    <v-alert
-      slot="no-results"
-      :value="true"
-      color="error"
-      icon="mdi-alert-octagram"
-    >
+    <v-alert slot="no-results" :value="true" color="error" icon="mdi-alert-octagram">
       Your search for "{{ search }}" found no results.
     </v-alert>
     <template v-if="footer" slot="footer">

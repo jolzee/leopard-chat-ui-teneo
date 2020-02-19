@@ -15,7 +15,13 @@
       scrollable
       persistent
       no-click-animation
-      :content-class="embed && !fullscreenEmbed ? 'teneo-modal-embed' : fullscreenEmbed ? 'teneo-modal-fullscreen' : 'teneo-modal'"
+      :content-class="
+        embed && !fullscreenEmbed
+          ? 'teneo-modal-embed'
+          : fullscreenEmbed
+          ? 'teneo-modal-fullscreen'
+          : 'teneo-modal'
+      "
       hide-overlay
       :width="
         currentModalSize === 'small'
@@ -43,17 +49,18 @@
               type="info"
               elevation="2"
               @click="overlay = false"
-            >{{ overlayMessage }}</v-alert>
+              >{{ overlayMessage }}</v-alert
+            >
           </v-overlay>
         </v-fade-transition>
         <v-system-bar
           height="25px"
           color="primary darken-3"
           :class="{
-                  'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown,
-                  'teneo-toolbar-embed': embed && !fullscreenEmbed,
-                  'teneo-toolbar-embed-fullscreen': fullscreenEmbed
-                }"
+            'grab-cursor': !fullscreen && !embed && !$vuetify.breakpoint.mdAndDown,
+            'teneo-toolbar-embed': embed && !fullscreenEmbed,
+            'teneo-toolbar-embed-fullscreen': fullscreenEmbed
+          }"
           dark
         >
           <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
@@ -64,21 +71,22 @@
             @click="toggleFullscreen"
             v-if="
               currentModalPosition !== 'fullscreen' &&
-                currentModalSize !== 'fullscreen' && !embed && !$vuetify.breakpoint.mdAndDown
+                currentModalSize !== 'fullscreen' &&
+                !embed &&
+                !$vuetify.breakpoint.mdAndDown
             "
           >
-            {{
-            fullscreen ? "mdi-window-restore" : "mdi-window-maximize"
-            }}
+            {{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}
           </v-icon>
-          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="hideModal">mdi-close</v-icon>
+          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="hideModal"
+            >mdi-close</v-icon
+          >
         </v-system-bar>
 
         <v-app-bar :dense="title.length < 43" :color="`primary ${textColor('primary')}`">
-          <h2
-            class="subtitle-1"
-            :aria-label="aria ? aria : title ? title : $t('more.info.title')"
-          >{{ title ? title : $t("more.info.title") }}</h2>
+          <h2 class="subtitle-1" :aria-label="aria ? aria : title ? title : $t('more.info.title')">
+            {{ title ? title : $t("more.info.title") }}
+          </h2>
           <v-spacer></v-spacer>
         </v-app-bar>
         <v-card-text
@@ -118,12 +126,7 @@
                 <!-- Show the body text, flight itineary, and any tables if available -->
                 <div
                   class="mt-3"
-                  v-if="
-                    itinerary ||
-                      bodyText ||
-                      transactionItems.length ||
-                      tableRows.length
-                  "
+                  v-if="itinerary || bodyText || transactionItems.length || tableRows.length"
                 >
                   <!-- Show the flight itinerary -->
                   <FlightItinerary :itinerary="itinerary"></FlightItinerary>
@@ -194,7 +197,8 @@
             @click.native="hideModal"
             v-shortkey="['ctrl', 'alt', 'arrowleft']"
             @shortkey.native="hideModal"
-          >{{ $t("back.to.chat.button") }}</v-btn>
+            >{{ $t("back.to.chat.button") }}</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -341,8 +345,7 @@ export default {
         let outputUrl = this.outputLink(item);
         if (outputUrl !== "" && !this.showButtonOnly) {
           if (outputUrl.startsWith("./")) {
-            let currentIframeUrl =
-              this.iFrameUrlBase + outputUrl.substring(2, outputUrl.length);
+            let currentIframeUrl = this.iFrameUrlBase + outputUrl.substring(2, outputUrl.length);
             this.$store.commit("UPDATE_FRAME_URL", currentIframeUrl);
           } else {
             this.$store.commit("UPDATE_FRAME_URL", outputUrl);
@@ -379,10 +382,7 @@ export default {
 
             // check for displayTranactionTable - myBank
             if (extension.name === "displayTable") {
-              if (
-                "overrideTitle" in extension.parameters &&
-                extension.parameters.overrideTitle
-              ) {
+              if ("overrideTitle" in extension.parameters && extension.parameters.overrideTitle) {
                 // this.title = extension.parameters.title;
               } else {
                 // if (!this.title) {
@@ -402,16 +402,14 @@ export default {
               //   this.title = this.getFirstChunk(item.text);
               // }
               this.transactionItems = [];
-              extension.parameters.transactions.transactions.forEach(
-                transaction => {
-                  logger.debug(transaction);
-                  this.transactionItems.push({
-                    date: transaction.Date,
-                    description: transaction.Description,
-                    amount: transaction.Amount
-                  });
-                }
-              );
+              extension.parameters.transactions.transactions.forEach(transaction => {
+                logger.debug(transaction);
+                this.transactionItems.push({
+                  date: transaction.Date,
+                  description: transaction.Description,
+                  amount: transaction.Amount
+                });
+              });
             }
 
             // check for display image action
@@ -496,9 +494,7 @@ export default {
           });
         }
         if (this.itemHasLongResponse(this.modalItem)) {
-          this.title = decodeURIComponent(
-            this.modalItem.teneoResponse.lastinput
-          );
+          this.title = decodeURIComponent(this.modalItem.teneoResponse.lastinput);
           this.bodyText = this.modalItem.text;
           // this.bodyText = this.modalItem.text.replace(
           //   /(?:\r\n|\r|\n)/g,
@@ -570,17 +566,13 @@ export default {
   updated() {
     this.$nextTick(() => {
       setTimeout(() => {
-        let elements = document.getElementsByClassName(
-          "plyr__control--overlaid"
-        );
+        let elements = document.getElementsByClassName("plyr__control--overlaid");
         if (elements.length > 0) {
           elements.forEach(element => {
             element.focus();
           });
         } else {
-          let backButton = document.getElementById(
-            "leopard-back-to-chat-button"
-          );
+          let backButton = document.getElementById("leopard-back-to-chat-button");
           if (backButton) {
             backButton.focus();
           }
@@ -626,27 +618,19 @@ export default {
         logger.debug("Applying custom modal size and position");
         logger.debug("Adding sizing and position styles to modal");
         var modalElements = document.getElementsByClassName("teneo-modal");
-        if (
-          modalElements !== "undefined" &&
-          this.currentModalSize !== "undefined"
-        ) {
+        if (modalElements !== "undefined" && this.currentModalSize !== "undefined") {
           for (var i = 0; i < modalElements.length; i++) {
             if (
               this.currentModalSize !== "fullscreen" &&
               this.currentModalPosition !== "fullscreen"
             ) {
-              modalElements[i].className = removeAll(
-                modalElements[i].className,
-                [
-                  "teneo-modal-left",
-                  "teneo-modal-center",
-                  "teneo-modal-right",
-                  "teneo-modal-fullscreen"
-                ]
-              );
-              modalElements[
-                i
-              ].className += ` teneo-modal-${this.currentModalPosition}`;
+              modalElements[i].className = removeAll(modalElements[i].className, [
+                "teneo-modal-left",
+                "teneo-modal-center",
+                "teneo-modal-right",
+                "teneo-modal-fullscreen"
+              ]);
+              modalElements[i].className += ` teneo-modal-${this.currentModalPosition}`;
             }
           }
         }
@@ -659,9 +643,7 @@ export default {
       var modalElements = document.getElementsByClassName("teneo-modal");
       if (modalElements !== "undefined") {
         for (var i = 0; i < modalElements.length; i++) {
-          logger.debug(
-            "Removing existing modal size and position styles - reset"
-          );
+          logger.debug("Removing existing modal size and position styles - reset");
           modalElements[i].classList.remove("teneo-modal-center");
           modalElements[i].classList.remove("teneo-modal-right");
           modalElements[i].classList.remove("teneo-modal-left");
@@ -681,10 +663,7 @@ export default {
       // Check to make sure this is from our v-html because
       // we don't want to handle clicks from other things in
       // the Vue
-      if (
-        !anchor.classList.contains("sendInput") &&
-        !anchor.classList.contains("openInIframe")
-      ) {
+      if (!anchor.classList.contains("sendInput") && !anchor.classList.contains("openInIframe")) {
         return; // basically treat like a normal link
       } else if (anchor.classList.contains("openInIframe")) {
         // open in iframe

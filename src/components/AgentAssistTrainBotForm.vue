@@ -1,11 +1,6 @@
 <template>
   <v-row justify="center" v-if="dialog">
-    <v-dialog
-      v-model="dialog"
-      persistent
-      max-width="500"
-      content-class="trainbot"
-    >
+    <v-dialog v-model="dialog" persistent max-width="500" content-class="trainbot">
       <v-card>
         <v-card-title class="title">
           <v-icon class="mr-2" color="primary">mdi-teach</v-icon> Train Bot
@@ -55,9 +50,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="$emit('close')"
-            >Cancel</v-btn
-          >
+          <v-btn color="blue darken-1" text @click="$emit('close')">Cancel</v-btn>
           <v-btn color="blue darken-1" text @click="trainTeneo">Train</v-btn>
         </v-card-actions>
       </v-card>
@@ -66,9 +59,7 @@
 </template>
 
 <script>
-const logger = require("@/utils/logging").getLogger(
-  "AgentAssistTrainBotForm.vue"
-);
+const logger = require("@/utils/logging").getLogger("AgentAssistTrainBotForm.vue");
 export default {
   name: "AgentAsssitTrainBotForm",
   props: ["question"],
@@ -88,9 +79,7 @@ export default {
       this.$store.commit("SET_USER_INPUT", "");
       const params = `&command=train&question=${encodeURIComponent(
         this.question
-      )}&answer=${encodeURIComponent(this.answer)}&comment=${encodeURIComponent(
-        this.comment
-      )}`;
+      )}&answer=${encodeURIComponent(this.answer)}&comment=${encodeURIComponent(this.comment)}`;
       this.$store.dispatch("sendUserInput", params);
       this.$emit("sent");
     }
