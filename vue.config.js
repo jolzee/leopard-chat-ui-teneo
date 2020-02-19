@@ -165,9 +165,9 @@ if (!dev) {
       sourceMap: produceSourceMaps, // Must be set to true if using source-maps in production
       terserOptions: {
         output: {
-          comments: true
+          comments: false
         },
-        extractComments: false,
+        extractComments: true,
         exclude: [
           "setup.js",
           "setup",

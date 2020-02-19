@@ -385,21 +385,10 @@ export default class Setup {
     return false;
   }
 
-  addIframeHtml() {
-    const iframeHtml = this.getFunctionHTMLTemplate(function iframeHtml() {
-      /*!
-      <iframe id="site-frame" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" src="" frameborder="0" title="Demonstration Page"></iframe>
-      */
-    });
-    document.body.innerHTML += iframeHtml;
-  }
-
   // eslint-disable-next-line class-methods-use-this
-  getFunctionHTMLTemplate(f) {
-    return f
-      .toString()
-      .replace(/^[^/]+\/\*!?/, "")
-      .replace(/\*\/[^/]+$/, "");
+  addIframeHtml() {
+    const iframeHtml = `<iframe id="site-frame" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" src="" frameborder="0" title="Demonstration Page"></iframe>`;
+    document.body.innerHTML += iframeHtml;
   }
 
   // eslint-disable-next-line class-methods-use-this
