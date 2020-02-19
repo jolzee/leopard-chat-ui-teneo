@@ -100,7 +100,7 @@
     "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
-    "release-it": "^12.4.3",
+    "release-it": "^12.5.0",
     "sass": "^1.25.0",
     "sass-loader": "^8.0.2",
     "vue-cli-plugin-vuetify": "^2.0.5",
