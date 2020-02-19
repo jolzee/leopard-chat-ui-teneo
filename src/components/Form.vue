@@ -718,9 +718,9 @@ export default {
 }
 
 .teneo-toolbar-embed {
-  border-radius: 4px 4px 0 0 !important;
   -moz-border-radius: 4px 4px 0 0 !important;
   -webkit-border-radius: 4px 4px 0 0 !important;
+  border-radius: 4px 4px 0 0 !important;
 }
 
 .v-dialog.v-dialog--active .grab-cursor {

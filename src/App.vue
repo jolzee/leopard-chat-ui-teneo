@@ -50,7 +50,7 @@
           color="primary"
           accesskey="+"
           :class="`elevation-4 leopard-system-bar ${textColor('primary')}`"
-          style="border-left: 4px solid yellowgreen !important; border-right: 4px solid yellowgreen !important;"
+          style=" border-right: 4px solid yellowgreen !important;border-left: 4px solid yellowgreen !important;"
           @click="maximizeChat = true"
           v-on:keydown.enter.prevent="maximizeChat = true"
         >
@@ -1115,20 +1115,20 @@ export default {
 }
 
 .sr-only {
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
   position: absolute;
   width: 1px;
   height: 1px;
-  padding: 0;
   margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  padding: 0;
   border: 0;
 }
 
 .leopard-alternative-views {
+  overflow-x: hidden;
   overflow-y: auto;
   max-height: calc(80vh - 64px);
-  overflow-x: hidden;
 }
 
 .chat-card {
@@ -1136,8 +1136,8 @@ export default {
 }
 
 #leopardSystemBarMinimized:focus {
-  box-shadow: 0 0 0 3px rgba(17, 18, 25, 0.4) !important;
   outline: 0;
+  box-shadow: 0 0 0 3px rgba(17, 18, 25, 0.4) !important;
 }
 
 .leopard-open-close-button.v-btn--fab:hover {
@@ -1157,49 +1157,49 @@ export default {
   div.v-list-item:focus-within,
   div.chat-card:focus-within,
   .v-input__icon--clear:focus-within {
+    outline: 0 !important;
     -webkit-box-shadow: 0 0 0 3px black !important;
     box-shadow: 0 0 0 3px black !important;
-    outline: 0 !important;
   }
 
   a.leopard-img:focus {
-    -webkit-box-shadow: 0 0 0 3px rgb(76, 77, 108) !important;
-    box-shadow: 0 0 0 3px rgb(76, 77, 108) !important;
-    outline: 0;
     display: flex;
-    background: rgba(255, 255, 255, 0.19);
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
+    outline: 0;
+    background: rgba(255, 255, 255, 0.19);
+    -webkit-box-shadow: 0 0 0 3px rgb(76, 77, 108) !important;
+    box-shadow: 0 0 0 3px rgb(76, 77, 108) !important;
   }
 
   #leopard-chat-toolbar-title:focus {
-    box-shadow: 0 0 0 3px red !important;
-    outline: 0;
     padding: 5px !important;
-    background: rgba(255, 255, 255, 0.19);
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
+    outline: 0;
+    background: rgba(255, 255, 255, 0.19);
+    box-shadow: 0 0 0 3px red !important;
   }
 
   .pulse::before {
-    content: "";
     display: block;
     position: absolute;
-    width: 100%;
-    height: 100%;
+    z-index: -1;
     top: 0;
     left: 0;
-    background-color: rgb(139, 139, 214) !important;
+    width: 100%;
+    height: 100%;
     border-radius: inherit;
+    background-color: rgb(139, 139, 214) !important;
+    content: "";
     -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
     transition: opacity 0.3s, -webkit-transform 0.3s;
     transition: opacity 0.3s, transform 0.3s;
     transition: opacity 0.3s, transform 0.3s, -webkit-transform 0.3s;
     -webkit-animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
     animation: pulse-animation 4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
-    z-index: -1;
   }
 }
 
@@ -1226,10 +1226,10 @@ export default {
 }
 
 .leopard-code {
-  background-color: #000000;
-  color: #fafafa;
-  padding-left: 3px;
   padding-right: 3px;
+  padding-left: 3px;
+  color: #fafafa;
+  background-color: #000000;
   font-family: Fira Code, Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
     Bitstream Vera Sans Mono, Courier New;
 }
@@ -1241,12 +1241,12 @@ p {
 }
 
 .leopard-system-bar {
-  cursor: pointer;
-  border-radius: 0.5em;
   position: fixed;
   right: 50px;
   bottom: 30px;
   width: 240px;
+  border-radius: 0.5em;
+  cursor: pointer;
 }
 
 .v-overlay--active {
@@ -1266,17 +1266,17 @@ p {
 }
 
 .application-button {
-  background: transparent !important;
   width: 100%;
+  background: transparent !important;
 }
 
 #chat-open-close-button-embed {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  text-align: center;
   justify-content: center;
   align-items: center;
-  text-align: center;
-  min-height: 100vh;
 }
 
 .teneo-light-bg {
@@ -1288,26 +1288,26 @@ p {
 }
 
 hr {
-  border: 0;
   height: 3px;
-  background: #d7d7d7;
   margin-bottom: 4px;
+  border: 0;
   border-top: 1px dashed #8c8b8b;
+  background: #d7d7d7;
 }
 
 blockquote {
-  border-left: 6px solid #d7d7d7;
   margin: 0.5em 0px;
   padding: 0.5em 10px;
+  border-left: 6px solid #d7d7d7;
   quotes: "\201C""\201D""\2018""\2019";
 }
 blockquote:before {
+  margin-right: 0.25em;
   color: #d7d7d7;
-  content: open-quote;
   font-size: 4em;
   line-height: 0.1em;
-  margin-right: 0.25em;
   vertical-align: -0.4em;
+  content: open-quote;
 }
 blockquote p {
   display: inline;
@@ -1321,31 +1321,31 @@ a:focus-within,
 div.v-list-item:focus-within,
 div.chat-card:focus-within,
 .v-input__icon--clear:focus-within {
+  outline: 0 !important;
   -webkit-box-shadow: 0 0 0 3px #9d99987d !important;
   box-shadow: 0 0 0 3px #9d99987d !important;
-  outline: 0 !important;
 }
 
 a.leopard-img:focus {
-  -webkit-box-shadow: 0 0 0 3px #9d99987d !important;
-  box-shadow: 0 0 0 3px #9d99987d !important;
-  outline: 0;
   display: flex;
-  background: rgba(115, 13, 13, 0.19);
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
+  outline: 0;
+  background: rgba(115, 13, 13, 0.19);
+  -webkit-box-shadow: 0 0 0 3px #9d99987d !important;
+  box-shadow: 0 0 0 3px #9d99987d !important;
 }
 
 #leopard-chat-toolbar-title:focus {
-  -webkit-box-shadow: 0 0 0 3px #9d99987d !important;
-  box-shadow: 0 0 0 3px #9d99987d !important;
-  outline: 0;
   padding: 5px !important;
-  background: rgba(255, 255, 255, 0.19);
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
+  outline: 0;
+  background: rgba(255, 255, 255, 0.19);
+  -webkit-box-shadow: 0 0 0 3px #9d99987d !important;
+  box-shadow: 0 0 0 3px #9d99987d !important;
 }
 
 .v-input__icon--clear i {
@@ -1364,22 +1364,22 @@ div.teneo-footer:focus-within {
 }
 
 .pulse::before {
-  content: "";
   display: block;
   position: absolute;
-  width: 100%;
-  height: 100%;
+  z-index: -1;
   top: 0;
   left: 0;
-  background-color: rgba(17, 18, 25, 0.4) !important;
+  width: 100%;
+  height: 100%;
   border-radius: inherit;
+  background-color: rgba(17, 18, 25, 0.4) !important;
+  content: "";
   -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
   transition: opacity 0.3s, -webkit-transform 0.3s;
   transition: opacity 0.3s, transform 0.3s;
   transition: opacity 0.3s, transform 0.3s, -webkit-transform 0.3s;
   -webkit-animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
   animation: pulse-animation 4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
-  z-index: -1;
 }
 
 @-webkit-keyframes pulse-animation {
@@ -1411,14 +1411,14 @@ div.teneo-footer:focus-within {
 }
 
 .light-scroll::-webkit-scrollbar {
-  height: 14px;
   width: 10px;
+  height: 14px;
   background: #f5f5f5;
 }
 
 .dark-scroll::-webkit-scrollbar {
-  height: 14px;
   width: 10px;
+  height: 14px;
   background: #424242;
 }
 
@@ -1440,8 +1440,8 @@ div.teneo-footer:focus-within {
 
 #chat-open-close-button {
   position: fixed;
-  bottom: 60px;
   right: 60px;
+  bottom: 60px;
 }
 
 .move-button-left-float {
@@ -1453,22 +1453,22 @@ div.teneo-footer:focus-within {
 }
 
 #teneo {
-  width: 360px;
   position: initial !important;
+  width: 360px;
   word-break: break-word;
 }
 
 .teneo-toolbar-float {
-  border-radius: 13px 13px 0px 0px !important;
+  border: 0px solid #000000;
   -moz-border-radius: 13px 13px 0px 0px !important;
   -webkit-border-radius: 13px 13px 0px 0px !important;
-  border: 0px solid #000000;
+  border-radius: 13px 13px 0px 0px !important;
 }
 
 .teneo-toolbar-embed {
-  border-radius: 13px 13px 0 0 !important;
   -moz-border-radius: 13px 13px 0 0 !important;
   -webkit-border-radius: 13px 13px 0 0 !important;
+  border-radius: 13px 13px 0 0 !important;
 }
 
 .show-the-chat {
@@ -1476,36 +1476,36 @@ div.teneo-footer:focus-within {
 }
 
 .application-float {
-  max-height: 80vh !important;
-  height: 80vh !important;
-  right: 5% !important;
+  position: fixed;
   top: 10%;
-  border-radius: 13px !important;
+  right: 5% !important;
+  height: 80vh !important;
+  max-height: 80vh !important;
   -moz-border-radius: 13px !important;
   -webkit-border-radius: 13px !important;
-  position: fixed;
+  border-radius: 13px !important;
 }
 
 .footer-float {
-  border-bottom-right-radius: 13px;
+  z-index: 1 !important;
   -moz-border-bottom-right-radius: 13px;
   -webkit-border-bottom-right-radius: 13px;
-  border-bottom-left-radius: 13px;
+  border-bottom-right-radius: 13px;
   -moz-border-bottom-left-radius: 13px;
   -webkit-border-bottom-left-radius: 13px;
-  z-index: 1 !important;
+  border-bottom-left-radius: 13px;
 }
 
 .v-application {
-  max-width: 360px;
-  max-height: 100vh;
-  height: 100vh !important;
   overflow: inherit;
-  margin: auto;
   position: fixed;
   top: 0;
-  bottom: 0;
   right: 0;
+  bottom: 0;
+  max-width: 360px;
+  height: 100vh !important;
+  max-height: 100vh;
+  margin: auto;
 }
 
 .v-application--wrap {
@@ -1522,87 +1522,87 @@ div.teneo-footer:focus-within {
 }
 
 iframe#site-frame {
-  z-index: -100;
   overflow: hidden;
-  height: 100%;
-  width: 100%;
   position: absolute;
+  z-index: -100;
   top: 0;
-  left: 0;
   right: 0;
   bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .contract-iframe {
+  width: calc(100% - 360px) !important;
   transition: width 1500ms;
   /* transition-delay: 3s; */
   /* transition-property: all; */
   /* transition-timing-function: linear|ease|ease-in|ease-out|ease-in-out|step-start|step-end|steps(int,start|end)|cubic-bezier(n,n,n,n)|initial|inherit; */
   transition-timing-function: ease-out;
-  width: calc(100% - 360px) !important;
 }
 
 .v-expansion-panel__header {
   height: auto !important;
-  padding-left: 1.5em;
   padding-right: 1.5em;
+  padding-left: 1.5em;
 }
 
 @media only screen and (max-height: 480px) {
   .leopard-alternative-views {
-    overflow-y: auto;
     overflow-x: hidden;
+    overflow-y: auto;
     max-height: calc(100vh - 64px);
   }
 
   .v-application {
     max-width: 360px !important;
-    max-height: 100% !important;
     height: 100% !important;
-    border-radius: unset;
+    max-height: 100% !important;
     -moz-border-radius: unset;
     -webkit-border-radius: unset;
+    border-radius: unset;
   }
 
   .application-float {
-    max-height: 100vh !important;
-    height: 100vh !important;
     top: 0;
     right: 5% !important;
-    border-radius: unset;
+    height: 100vh !important;
+    max-height: 100vh !important;
     -moz-border-radius: unset;
     -webkit-border-radius: unset;
+    border-radius: unset;
   }
 
   .application-mobile {
-    min-height: calc(var(--vh, 1vh) * 100) !important;
     height: calc(var(--vh, 1vh) * 100) !important;
+    min-height: calc(var(--vh, 1vh) * 100) !important;
   }
 
   .application-embed {
-    border-radius: 13px !important;
     -moz-border-radius: 13px !important;
     -webkit-border-radius: 13px !important;
+    border-radius: 13px !important;
   }
 
   .teneo-toolbar-float,
   .v-system-bar {
-    border-radius: unset !important;
     -moz-border-radius: unset !important;
     -webkit-border-radius: unset !important;
+    border-radius: unset !important;
   }
 
   .teneo-toolbar-embed-fullscreen {
-    border-radius: unset !important;
     -moz-border-radius: unset !important;
     -webkit-border-radius: unset 0 0 !important;
+    border-radius: unset !important;
   }
 }
 
 @media only screen and (max-width: 480px) {
   .leopard-alternative-views {
-    overflow-y: auto;
     overflow-x: hidden;
+    overflow-y: auto;
     max-height: calc(100vh - 64px);
   }
 
@@ -1613,45 +1613,45 @@ iframe#site-frame {
   }
 
   .v-application {
-    max-width: 100% !important;
-    max-height: 100% !important;
-    height: 100% !important;
-    margin: auto;
     position: fixed;
     top: 0;
-    bottom: 0;
     right: 0 !important;
-    border-radius: unset !important;
+    bottom: 0;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    margin: auto;
     -moz-border-radius: unset !important;
     -webkit-border-radius: unset !important;
+    border-radius: unset !important;
   }
 
   .application-float {
-    max-height: 100vh !important;
-    height: 100vh !important;
-    right: 0 !important;
     top: 0;
-    border-radius: unset !important;
+    right: 0 !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
     -moz-border-radius: unset !important;
     -webkit-border-radius: unset !important;
+    border-radius: unset !important;
   }
 
   .application-mobile {
-    min-height: calc(var(--vh, 1vh) * 100) !important;
     height: calc(var(--vh, 1vh) * 100) !important;
+    min-height: calc(var(--vh, 1vh) * 100) !important;
   }
 
   .application-embed {
-    border-radius: 13px !important;
     -moz-border-radius: 13px !important;
     -webkit-border-radius: 13px !important;
+    border-radius: 13px !important;
   }
 
   .teneo-toolbar-float,
   .v-system-bar {
-    border-radius: unset !important;
     -moz-border-radius: unset !important;
     -webkit-border-radius: unset !important;
+    border-radius: unset !important;
   }
 }
 </style>

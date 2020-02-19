@@ -1353,9 +1353,9 @@ export default {
 
 .leopard-code-font {
   font-family: "Inconsolata", monospace;
-  line-height: normal;
-  font-weight: 500;
   font-size: 1em;
+  font-weight: 500;
+  line-height: normal;
 }
 
 .leopard-radius {
@@ -1371,9 +1371,9 @@ export default {
 div.v-input__slot:focus,
 button:focus,
 a:focus {
+  outline: 0;
   -webkit-box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
   box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
-  outline: 0;
 }
 </style>
 
@@ -1381,9 +1381,9 @@ a:focus {
 div.v-input__slot:focus,
 button:focus,
 a:focus {
+  outline: 0;
   -webkit-box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
   box-shadow: 0 0 0 2px rgba(17, 18, 25, 0.2) !important;
-  outline: 0;
 }
 
 #app {
@@ -1396,17 +1396,17 @@ a:focus {
 }
 
 .upload-btn {
-  padding-left: 16px;
   padding-right: 16px;
+  padding-left: 16px;
 }
 
 .upload-btn input[type="file"] {
-  position: absolute;
-  height: 0.1px;
-  width: 0.1px;
   overflow: hidden;
-  opacity: 0;
+  position: absolute;
   z-index: -1;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
 }
 
 .upload-btn-hover {
@@ -1430,22 +1430,22 @@ a:focus {
 
 .mono-font {
   font-family: "Courier New", Courier, monospace;
-  font-weight: 500;
   font-size: 10px !important;
+  font-weight: 500;
   line-height: 1;
 }
 
 code {
   display: unset !important;
   border-radius: 2px !important;
-  white-space: unset !important;
   font-size: unset !important;
   font-weight: unset !important;
+  white-space: unset !important;
 }
 
 pre[class*="language-"] {
-  background-size: 1.2em 1.2em !important;
-  background-color: rgba(76, 43, 112, 1) !important;
   border-radius: 5px;
+  background-color: rgba(76, 43, 112, 1) !important;
+  background-size: 1.2em 1.2em !important;
 }
 </style>

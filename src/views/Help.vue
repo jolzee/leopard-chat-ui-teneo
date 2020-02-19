@@ -11,7 +11,7 @@
           <v-list-item tag="li" class="pl-0" v-for="(item, i) in knowledgeData" :key="i">
             <v-btn
               class="leopard-help-button ma-2 text-left py-2"
-              style="justify-content: start; text-transform: unset; min-height:36px; height: unset; white-space: normal; width: 200px; "
+              style=" width: 200px; height: unset; min-height:36px; white-space: normal; text-transform: unset;justify-content: start; "
               left
               block
               text

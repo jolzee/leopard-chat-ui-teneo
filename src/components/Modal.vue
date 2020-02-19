@@ -739,8 +739,8 @@ export default {
 
 <style>
 .v-toolbar--fixed {
-  left: unset !important;
   z-index: 5000;
+  left: unset !important;
 }
 
 .modal-container {
@@ -749,8 +749,8 @@ export default {
 }
 
 .modal-height {
-  min-height: calc(100vh - 64px) !important;
   height: fit-content;
+  min-height: calc(100vh - 64px) !important;
 }
 
 .v-menu__content {
@@ -767,14 +767,14 @@ export default {
 }
 
 #chat-modal-html {
-  padding-left: 0px !important;
   padding-right: 0px !important;
+  padding-left: 0px !important;
 }
 
 .cardText table {
   width: 100%;
-  border-spacing: 0;
   border: 1px solid;
+  border-spacing: 0;
 }
 
 .cardText table td,
@@ -784,15 +784,15 @@ export default {
 }
 
 .cardText table thead th {
-  font-size: 1em;
   border-left: 1px solid black;
   color: white;
   background-color: rgb(152, 52, 53);
+  font-size: 1em;
 }
 
 .cardText table td.summaryHeader {
-  background-color: rgb(22, 54, 102, 0.8);
   color: white;
+  background-color: rgb(22, 54, 102, 0.8);
 }
 
 .cardText table tbody td {
@@ -810,31 +810,31 @@ export default {
 }
 
 .teneo-modal {
-  overflow-y: auto;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .teneo-modal-embed {
-  overflow-y: auto;
   overflow-x: hidden;
+  overflow-y: auto;
   border-radius: 4px !important;
 }
 
 .teneo-modal-fullscreen {
-  overflow-y: auto;
   overflow-x: hidden;
+  overflow-y: auto;
   border-radius: 0px !important;
 }
 
 .teneo-modal-card {
-  overflow-y: auto;
   overflow-x: hidden;
+  overflow-y: auto;
   height: auto;
 }
 
 .teneo-modal-right {
-  left: unset;
   right: 20px;
+  left: unset;
 }
 
 .teneo-modal-left {

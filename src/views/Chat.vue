@@ -430,8 +430,8 @@ export default {
 }
 
 #teneo-chat-scroll:focus {
-  box-shadow: inset 0 0 0 1px rgba(17, 18, 25, 0.2) !important;
   outline: 0;
+  box-shadow: inset 0 0 0 1px rgba(17, 18, 25, 0.2) !important;
 }
 
 .container {
@@ -440,20 +440,20 @@ export default {
 
 .teneo-input-loading {
   position: relative;
+  z-index: 1;
   top: -4px;
   margin-bottom: -4px;
-  z-index: 1;
 }
 </style>
 <style>
 div.upload-btn {
-  padding-left: 0 !important;
   padding-right: 0 !important;
+  padding-left: 0 !important;
 }
 
 label.upload-btn {
-  padding-left: 0 !important;
   padding-right: 0 !important;
+  padding-left: 0 !important;
 }
 
 button.v-expansion-panel-header:active {
@@ -472,11 +472,11 @@ div#chat-area p {
 }
 
 div.teneo-footer .v-input__slot {
+  margin-top: 8px !important;
+  padding-right: 0px !important;
+  background: transparent !important;
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
-  background: transparent !important;
-  padding-right: 0px !important;
-  margin-top: 8px !important;
 }
 
 div.teneo-footer .v-text-field__details {
@@ -530,36 +530,36 @@ div.chat-container .v-expansion-panel::before {
 }
 
 .chat-card {
-  font-weight: 400;
-  padding: 8px !important;
-  margin-top: 4px;
-  line-height: 1.4em;
-  width: fit-content;
   display: table;
+  width: fit-content;
+  margin-top: 4px;
+  padding: 8px !important;
+  font-weight: 400;
+  line-height: 1.4em;
 }
 
 .chat-card-left {
-  border-radius: 3px 13px 13px 13px !important;
+  padding-bottom: 3px !important;
   -moz-border-radius: 3px 13px 13px 13px !important;
   -webkit-border-radius: 3px 13px 13px 13px !important;
-  padding-bottom: 3px !important;
+  border-radius: 3px 13px 13px 13px !important;
 }
 
 .chat-card-right {
-  border-radius: 13px 3px 13px 13px !important;
+  margin-left: auto !important;
   -moz-border-radius: 13px 3px 13px 13px !important;
   -webkit-border-radius: 13px 3px 13px 13px !important;
-  margin-left: auto !important;
+  border-radius: 13px 3px 13px 13px !important;
 }
 
 div.options-list a.v-list__tile--link {
-  cursor: pointer;
   height: inherit !important;
+  cursor: pointer;
 }
 
 .teneo-response-icon {
-  margin-left: 0px;
   margin-right: 0px;
+  margin-left: 0px;
 }
 
 .teneo-userinput-icon {
@@ -570,19 +570,19 @@ div.options-list a.v-list__tile--link {
 .teneo-dialog {
   width: 360px;
   max-width: none;
-  border-top: unset !important;
-  padding-left: 10px;
   padding-right: 10px;
+  padding-left: 10px;
+  border-top: unset !important;
   animation-duration: 2s;
   animation-delay: 1s;
 }
 
 .chat-responses-float {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: calc(80vh - 130px);
   min-height: calc(80vh - 130px);
   max-height: calc(80vh - 130px);
-  height: calc(80vh - 130px);
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .chat-responses-float-mobile {
@@ -590,11 +590,11 @@ div.options-list a.v-list__tile--link {
 }
 
 .chat-responses {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: calc(100vh - 130px);
   min-height: calc(100vh - 130px);
   max-height: calc(100vh - 130px);
-  height: calc(100vh - 130px);
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .chat-container {
@@ -615,16 +615,15 @@ span.teneo-reply ul {
 }
 
 .teneo-footer {
+  position: relative;
+  z-index: 5;
+  bottom: 0px !important;
+  width: 100%;
+  height: 67px !important;
   -webkit-box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12), 0px -2px 0px 0 rgba(0, 0, 0, 0.08),
     0px -3px 0px 0px rgba(0, 0, 0, 0.04);
   box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.12), 0px -2px 0px 0 rgba(0, 0, 0, 0.08),
     0px -3px 0px 0px rgba(0, 0, 0, 0.04);
-
-  position: relative;
-  bottom: 0px !important;
-  width: 100%;
-  height: 67px !important;
-  z-index: 5;
 }
 
 @media only screen and (max-height: 480px) {
@@ -634,8 +633,8 @@ span.teneo-reply ul {
   }
 
   .chat-responses-float-mobile {
-    min-height: calc(var(--vh, 1vh) * 100 - 130px);
     height: calc(var(--vh, 1vh) * 100 - 130px);
+    min-height: calc(var(--vh, 1vh) * 100 - 130px);
   }
 }
 
@@ -648,9 +647,9 @@ span.teneo-reply ul {
   }
 
   .teneo-footer {
-    border-radius: unset;
     -moz-border-radius: unset;
     -webkit-border-radius: unset;
+    border-radius: unset;
   }
 
   .chat-responses,
@@ -659,8 +658,8 @@ span.teneo-reply ul {
   }
 
   .chat-responses-float-mobile {
-    min-height: calc(var(--vh, 1vh) * 100 - 130px);
     height: calc(var(--vh, 1vh) * 100 - 130px);
+    min-height: calc(var(--vh, 1vh) * 100 - 130px);
   }
 }
 </style>
