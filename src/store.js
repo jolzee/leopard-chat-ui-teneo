@@ -517,8 +517,10 @@ function storeSetup(vuetify) {
               for (let key in ordered) {
                 if (key.startsWith("extensions")) {
                   let value = parseExtraData(ordered[key]);
-                  logger.debug(`Item Extensions > Key: ${key} Value:`, value);
-                  actions.push(value);
+                  if (value) {
+                    logger.debug(`Item Extensions > Key: ${key} Value:`, value);
+                    actions.push(value);
+                  }
                 }
               }
             } catch (e) {
@@ -1334,7 +1336,11 @@ function storeSetup(vuetify) {
             state.tts.tts.shutUp();
           }
           state.asr.stopAudioCapture = false;
-          state.asr.asr.start();
+          try {
+            state.asr.asr.start();
+          } catch (e) {
+            logger.debug(`Attempted to start ASR when it was already active`, e);
+          }
         }
       },
       ADD_FEEDBACK_FORM(state, feedbackFormConfig) {
