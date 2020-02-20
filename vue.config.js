@@ -90,6 +90,9 @@ let rawdata = fs.readFileSync(`${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
 let solutionConfig = JSON.parse(rawdata);
 
 let buildConfig = {
+  css: {
+    extract: { ignoreOrder: true }
+  },
   devServer: {
     https: false,
     port: 8080,
