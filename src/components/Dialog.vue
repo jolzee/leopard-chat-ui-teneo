@@ -1,8 +1,8 @@
 <template>
   <transition
     name="leopard-dialog-transition"
-    enter-active-class="animated flipInY"
-    leave-active-class="animated fadeOutRightBig"
+    enter-active-class="flipInY"
+    leave-active-class="fadeOutRightBig"
   >
     <v-dialog
       v-show="show"
@@ -26,8 +26,7 @@
               type="info"
               elevation="2"
               @click="overlay = false"
-              >"Welcome to my dialog!!"</v-alert
-            >
+            >"Welcome to my dialog!!"</v-alert>
           </v-overlay>
         </v-fade-transition>
         <v-system-bar
@@ -48,12 +47,9 @@
             tag="button"
             :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
             @click="toggleFullscreen"
-            >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon
-          >
+          >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon>
 
-          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close"
-            >mdi-close</v-icon
-          >
+          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close">mdi-close</v-icon>
         </v-system-bar>
 
         <v-app-bar :color="`primary ${textColor('primary')}`" dense>

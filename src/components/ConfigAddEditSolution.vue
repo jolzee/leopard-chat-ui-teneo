@@ -297,8 +297,8 @@
                 <v-row align="center" justify="center" style=" height: 300px;min-height: 300px;">
                   <transition
                     name="leoaprd-transition"
-                    :enter-active-class="'animated ' + solution.animations.in"
-                    :leave-active-class="'animated ' + solution.animations.out"
+                    :enter-active-class="solution.animations.in"
+                    :leave-active-class="solution.animations.out"
                   >
                     <v-img
                       v-if="showLeopardAnimationImage"

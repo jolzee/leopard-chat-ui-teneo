@@ -2,8 +2,8 @@
   <!-- <transition
     v-if="url"
     name="modal-image-transition"
-    enter-active-class="animated zoomIn"
-	>-->
+    enter-active-class="zoomIn"
+  >-->
   <v-img
     v-if="url"
     :src="url"

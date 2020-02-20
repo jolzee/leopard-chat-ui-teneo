@@ -39,8 +39,8 @@
       <!-- <AssistiveText ref="assistiveText" v-model="accessibleAnouncement"></AssistiveText> -->
       <transition
         name="system-bar-transition"
-        enter-active-class="animated fadeInRightBig"
-        leave-active-class="animated fadeOutRightBig"
+        enter-active-class="fadeInRightBig"
+        leave-active-class="fadeOutRightBig"
       >
         <v-system-bar
           window
@@ -89,8 +89,8 @@
         <!-- start menu -->
         <transition
           name="menu-transition"
-          enter-active-class="animated slideInRight"
-          leave-active-class="animated slideOutRight"
+          enter-active-class="slideInRight"
+          leave-active-class="slideOutRight"
         >
           <v-navigation-drawer
             app
@@ -1136,7 +1136,7 @@ export default {
 }
 
 .leopard-open-close-button.v-btn--fab:hover {
-  color: rgba(12, 161, 22, 0.552) !important;
+  color: rgb(25, 233, 39) !important;
 }
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {

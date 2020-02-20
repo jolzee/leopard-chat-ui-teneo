@@ -274,7 +274,7 @@ function storeSetup(vuetify) {
         }
         let animation = "";
         if ("animations" in state.activeSolution && !getters.embed) {
-          animation = "animated " + state.activeSolution.animations.in;
+          animation = state.activeSolution.animations.in;
         }
         return animation;
       },
@@ -284,7 +284,7 @@ function storeSetup(vuetify) {
         }
         let animation = "";
         if ("animations" in state.activeSolution && !getters.embed) {
-          animation = "animated " + state.activeSolution.animations.out;
+          animation = state.activeSolution.animations.out;
         }
         return animation;
       },
