@@ -1,15 +1,15 @@
 <h1>Leopard Chat Client for Teneo 🐆</h1>
-<p>
-  <a href="https://jolzee.gitbook.io/leopard/">
-    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" target="_blank" />
-  </a>
-  <a href="https://github.com/jolzee/chat-teneo-vue/blob/master/LICENSE">
-    <img alt="License: Apache License 2.0" src="https://img.shields.io/badge/License-Apache License 2.0-yellow.svg" target="_blank" />
-  </a>
-  <a href="https://twitter.com/jolzee">
-    <img alt="Twitter: jolzee" src="https://img.shields.io/twitter/follow/jolzee.svg?style=social" target="_blank" />
-  </a>
-</p>
+
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/jolzee/chat-teneo-vue?style=plastic)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/jolzee/chat-teneo-vue?style=plastic)
+![GitHub](https://img.shields.io/github/license/jolzee/chat-teneo-vue?style=plastic)
+![GitHub top language](https://img.shields.io/github/languages/top/jolzee/chat-teneo-vue?style=plastic)
+<a href="https://jolzee.gitbook.io/leopard/">
+<img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?style=plastic" target="_blank" />
+</a>
+<a href="https://twitter.com/jolzee">
+<img alt="Twitter: jolzee" src="https://img.shields.io/twitter/follow/jolzee.svg?style=social?style=plastic" target="_blank" />
+</a>
 
 > An [Artificial Solutions](https://www.artificial-solutions.com/) based chat client based on Vue and Vuetify.
 
