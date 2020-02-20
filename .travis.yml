@@ -1,5 +1,6 @@
 language: node_js
 dist: xenial
+os: linux
 node_js:
   - 13.9.0
 notifications:
@@ -28,7 +29,7 @@ before_deploy:
   - ssh-add deploy_rsa
 deploy:
   provider: script
-  skip_cleanup: true
+  cleanup: false
   script:
     rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after --quiet ./dist/
     ${SSH_USER}@${SSH_HOST}:/var/www/leopard-chat
