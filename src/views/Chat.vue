@@ -38,11 +38,7 @@
             >
               <ChatBroadcastMessage :item="item" class="pb-1"></ChatBroadcastMessage>
 
-              <LiveChatResponse
-                :itemIndexInDialog="i"
-                :item="item"
-                class="mt-1 pb-1"
-              ></LiveChatResponse>
+              <LiveChatResponse :itemIndexInDialog="i" :item="item" class="mt-1 pb-1"></LiveChatResponse>
 
               <ChatTeneoResponse
                 :item="item"
@@ -158,7 +154,7 @@
 <script>
 const logger = require("@/utils/logging").getLogger("Chat.vue");
 import dayjs from "dayjs";
-import { debounce } from "@/utils/utils.js";
+import { debounce } from "@/utils/utils";
 // import ChatBroadcastMessage from "@/components/ChatBroadcastMessage";
 // import ChatLoading from "@/components/ChatLoading";
 // import ChatNoHistory from "@/components/ChatNoHistory";

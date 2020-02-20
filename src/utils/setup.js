@@ -10,7 +10,7 @@ import {
 import { Ripple } from "vuetify/lib/directives";
 import superagent from "superagent";
 import PromisedLocation from "promised-location";
-import { COLOR_NAMES } from "@/constants/color-names.js";
+import COLOR_NAMES from "@/constants/color-names";
 import Vue from "vue";
 import "@/utils/vee-validate";
 

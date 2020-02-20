@@ -113,9 +113,7 @@
                     tabindex="-1"
                     class="headline white--text font-weight-medium"
                     id="leopard-first-drawer-item"
-                  >
-                    Chat Menu
-                  </h1>
+                  >Chat Menu</h1>
                 </div>
               </v-col>
             </v-row>
@@ -134,23 +132,21 @@
                     <v-icon medium :class="menuClass">mdi-comment-arrow-left-outline</v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title class="subheading" :class="menuClassText"
-                      >Back to chat</v-list-item-title
-                    >
+                    <v-list-item-title class="subheading" :class="menuClassText">Back to chat</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
               <div role="listitem" v-for="(menuItem, i) in activeMenuItems" :key="i + 'menuItem'">
                 <v-list-item ripple :aria-label="menuItem.ariaLabel" :to="menuItem.route">
                   <v-list-item-action>
-                    <v-icon medium :class="menuClass">
-                      {{ menuItem.icon }}
-                    </v-icon>
+                    <v-icon medium :class="menuClass">{{ menuItem.icon }}</v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title class="subheading" :class="menuClassText">{{
+                    <v-list-item-title class="subheading" :class="menuClassText">
+                      {{
                       $t(menuItem.titleKey)
-                    }}</v-list-item-title>
+                      }}
+                    </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -172,9 +168,10 @@
                     ></v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title class="subheading" :class="menuClassText">
-                      {{ $vuetify.theme.dark ? "Light Mode" : "Dark Mode" }}
-                    </v-list-item-title>
+                    <v-list-item-title
+                      class="subheading"
+                      :class="menuClassText"
+                    >{{ $vuetify.theme.dark ? "Light Mode" : "Dark Mode" }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -192,9 +189,7 @@
                     <v-icon medium :class="menuClass">mdi-backburger</v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title class="subheading" :class="menuClassText"
-                      >Close</v-list-item-title
-                    >
+                    <v-list-item-title class="subheading" :class="menuClassText">Close</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -213,9 +208,11 @@
                   <v-icon medium :class="menuClass">mdi-logout-variant</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                  <v-list-item-title class="subheading" :class="menuClassText">{{
+                  <v-list-item-title class="subheading" :class="menuClassText">
+                    {{
                     $t("menu.logout")
-                  }}</v-list-item-title>
+                    }}
+                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -300,9 +297,7 @@
                       @click.stop="drawer = !drawer"
                       class="embed-button-center ml-0"
                     >
-                      <v-icon>
-                        {{ drawer ? "mdi-menu-open" : "mdi-menu" }}
-                      </v-icon>
+                      <v-icon>{{ drawer ? "mdi-menu-open" : "mdi-menu" }}</v-icon>
                     </v-btn>
                   </v-fab-transition>
                 </nav>
@@ -426,9 +421,12 @@
                   </template>
                 </v-simple-table>
                 <br />
-                <v-alert border="top" colored-border type="warning" elevation="2">
-                  Accepting will overwrite other solutions with the same name or deep link.
-                </v-alert>
+                <v-alert
+                  border="top"
+                  colored-border
+                  type="warning"
+                  elevation="2"
+                >Accepting will overwrite other solutions with the same name or deep link.</v-alert>
               </v-card-text>
               <v-card-actions>
                 <div class="flex-grow-1"></div>
@@ -445,9 +443,9 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("App.vue");
-import "wicg-inert/dist/inert.min.js";
+import "wicg-inert/dist/inert.min";
 import { mapGetters } from "vuex";
-import { STORAGE_KEY } from "@/constants/solution-config-default.js";
+import { STORAGE_KEY } from "@/constants/solution-config-default";
 import { debounce, sendMessageToParent, isLight } from "@/utils/utils";
 // import AssistiveText from "@/components/AssistiveText.vue";
 import jsonpack from "jsonpack/main";

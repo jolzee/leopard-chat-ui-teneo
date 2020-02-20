@@ -1,4 +1,4 @@
-export const COLOR_NAMES = {
+const COLOR_NAMES = {
   aliceblue: "#f0f8ff",
   antiquewhite: "#faebd7",
   aqua: "#00ffff",
@@ -148,3 +148,5 @@ export const COLOR_NAMES = {
   yellow: "#ffff00",
   yellowgreen: "#9acd32"
 };
+
+export default COLOR_NAMES;
