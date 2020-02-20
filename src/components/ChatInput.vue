@@ -232,6 +232,10 @@ export default {
   },
   created() {
     logger.info(`Chat Input Created`);
+    if (this.speakBackResponses) {
+      logger.info(`Must speak`);
+      this.showAudioInput = true;
+    }
     this.handleFocus();
   },
   computed: {
@@ -248,6 +252,7 @@ export default {
       "itemInputMask",
       "progressBar",
       "showUploadButton",
+      "speakBackResponses",
       "userInputReadyForSending",
       "uuid",
       "listening",
@@ -329,6 +334,9 @@ export default {
               // this.$refs.userInputForm.resetValidation();
               // this.handleFocus();
               this.$emit("reset");
+              if (this.showAudioInput) {
+                this.$emit("asr");
+              }
               // this.$emit("changeKey");
             })
             .catch(err => {
