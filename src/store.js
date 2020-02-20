@@ -211,9 +211,6 @@ function storeSetup(vuetify) {
       questionLookAndFeel(state) {
         return state.activeSolution.lookAndFeel.question;
       },
-      leopardFont(state) {
-        return state.activeSolution.font;
-      },
       showOverlayAlert(state) {
         return state.overlay.showOverlayAlert;
       },

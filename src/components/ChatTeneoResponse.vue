@@ -33,9 +33,11 @@
             >
               <v-list-item :class="hover ? 'primary' : ''" @click="menuItem.method">
                 <v-list-item-title :class="hover ? 'white--text' : ''">
-                  <v-icon :color="hover ? 'secondary' : ''" class="mr-2">{{
+                  <v-icon :color="hover ? 'secondary' : ''" class="mr-2">
+                    {{
                     menuItem.icon
-                  }}</v-icon>
+                    }}
+                  </v-icon>
                   {{ menuItem.title }}
                 </v-list-item-title>
               </v-list-item>
@@ -47,8 +49,7 @@
           large
           :color="!$vuetify.theme.dark ? responseLookAndFeel.iconColor : 'indigo'"
           class="teneo-response-icon"
-          >{{ getResponseIcon }}</v-icon
-        >
+        >{{ getResponseIcon }}</v-icon>
       </v-col>
       <v-col
         class="text-left"
@@ -131,9 +132,11 @@
             <template v-slot:default>
               <thead>
                 <tr>
-                  <th v-for="header in extension.headers" :key="header + uuid" class="text-left">
-                    {{ header }}
-                  </th>
+                  <th
+                    v-for="header in extension.headers"
+                    :key="header + uuid"
+                    class="text-left"
+                  >{{ header }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -168,7 +171,7 @@
             large
           >
             <v-icon large class="white--text">{{ getResponseIcon }}</v-icon>
-					</v-btn>-->
+          </v-btn>-->
         </v-col>
         <v-col>
           <v-card
@@ -191,9 +194,7 @@
         </v-col>
       </v-row>
     </div>
-    <DelayedResponse
-      v-if="showDelayedResponse && itemIndexInDialog === dialog.length - 1"
-    ></DelayedResponse>
+    <DelayedResponse v-if="showDelayedResponse && itemIndexInDialog === dialog.length - 1"></DelayedResponse>
     <!-- show any options in the response: for example Yes, No Maybe -->
     <v-col v-if="routerCheckList && itemIndexInDialog === dialog.length - 1" cols="12" class="px-3">
       <v-card>
@@ -218,9 +219,7 @@
           </div>
 
           <v-avatar class="ma-3" size="100" tile>
-            <v-img
-              src="https://wi.presales.artificial-solutions.com/media/mytelco/router.png"
-            ></v-img>
+            <v-img src="https://wi.presales.artificial-solutions.com/media/mytelco/router.png"></v-img>
           </v-avatar>
         </div>
       </v-card>
@@ -243,9 +242,11 @@
             :aria-label="option.aria ? option.aria : option.name"
             @click="optionClicked(option)"
           >
-            <v-icon v-if="option.icon" left style="padding-top: 2px; opacity: 0.7 !important;">
-              {{ `mdi-${option.icon}` }}
-            </v-icon>
+            <v-icon
+              v-if="option.icon"
+              left
+              style="padding-top: 2px; opacity: 0.7 !important;"
+            >{{ `mdi-${option.icon}` }}</v-icon>
             {{ option.name }}
           </v-btn>
         </span>
@@ -269,10 +270,7 @@
               </v-list-item-icon>
               <v-list-item-content class="text-left">
                 <!-- <v-list-item-title v-html="option.name"></v-list-item-title> -->
-                <v-list-item-subtitle
-                  style="white-space: unset;"
-                  v-html="option.name"
-                ></v-list-item-subtitle>
+                <v-list-item-subtitle style="white-space: unset;" v-html="option.name"></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -293,13 +291,11 @@
           small
           @click="displayFeedbackForm"
         >
-          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;"
-            >mdi-thumbs-up-down</v-icon
-          >
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;">mdi-thumbs-up-down</v-icon>
           {{
-            getFeedbackFormConfig.label && getFeedbackFormConfig.label !== null
-              ? getFeedbackFormConfig.label
-              : "Leave Feedback"
+          getFeedbackFormConfig.label
+          ? getFeedbackFormConfig.label
+          : "Leave Feedback"
           }}
         </v-btn>
       </v-col>
@@ -322,13 +318,15 @@
           small
           @click="showForm()"
         >
-          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;"
-            >mdi-file-document-edit-outline</v-icon
-          >
+          <v-icon
+            left
+            class="teneo-icon"
+            style="opacity: 0.7 !important;"
+          >mdi-file-document-edit-outline</v-icon>
           {{
-            getFormConfig && getFormConfig.openFormButtonText
-              ? getFormConfig.openFormButtonText
-              : "Form"
+          getFormConfig && getFormConfig.openFormButtonText
+          ? getFormConfig.openFormButtonText
+          : "Form"
           }}
         </v-btn>
       </v-col>
@@ -349,9 +347,7 @@
           small
           @click="showModal"
         >
-          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;">
-            {{ modalButtonIcon }}
-          </v-icon>
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;">{{ modalButtonIcon }}</v-icon>
           {{ modalButtonText.text }}
         </v-btn>
       </v-col>
@@ -402,8 +398,7 @@
       color="primary"
       :timeout="snackBarTimeout"
       top
-      >{{ snackBarText }}</v-snackbar
-    >
+    >{{ snackBarText }}</v-snackbar>
     <AgentAssistCannedResponseForm
       v-if="agentAssist.cannedResponseForm"
       :text="agentAssist.cannedResponseText"

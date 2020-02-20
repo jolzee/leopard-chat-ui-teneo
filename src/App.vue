@@ -831,7 +831,6 @@ export default {
         if (existingSolutionsWithName > 0) {
           this.config.solutions.splice(existingSolutionsWithName, 1);
         }
-        ``;
         this.config.solutions.push(this.importedSolution);
       }
       this.config.activeSolution = this.importedSolution.name;
