@@ -921,12 +921,10 @@ export default {
         logger.debug("Mobile device - Calculating the View Height in JS");
         let vh = null;
         if (this.embed && parent) {
-          var parentHeight = parent.getLeopardElementHeight();
-          // let parentHeight = localStorage.getItem(STORAGE_KEY + "parentHeight");
-          logger.debug(`Frame Height: ${parentHeight}`);
-          vh = parentHeight * 0.01;
-          this.parentHeight = parentHeight;
-          logger.debug(`Parent Height: ${parentHeight}`);
+          let parentHeightLeopard = parent.getLeopardElementHeight();
+          logger.debug(`Frame Height: ${parentHeightLeopard}`);
+          vh = parentHeightLeopard * 0.01;
+          this.parentHeight = parentHeightLeopard;
         } else {
           vh = window.innerHeight * 0.01;
         }
