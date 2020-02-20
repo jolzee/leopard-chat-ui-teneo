@@ -82,7 +82,11 @@
           <YouTube :video-id="youTubeVideoId(extension)" class="mt-2"></YouTube>
         </v-col>
       </v-row>
-      <v-row v-if="hasInlineType(extension, 'audio')" no-gutters class="px-3 pt-2">
+      <v-row
+        v-if="hasInlineType(extension, 'audio') && audioInfo(extension).audioUrl"
+        no-gutters
+        class="px-3 pt-2"
+      >
         <v-col cols="12">
           <Audio :url="audioInfo(extension).audioUrl" class="mt-2"></Audio>
         </v-col>

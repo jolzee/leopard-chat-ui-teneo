@@ -8,11 +8,8 @@
       itemsPerPageOptions: calcRowsPerPage
     }"
   >
-    <template
-      slot="
-    items"
-      slot-scope="props"
-    >
+    <template slot="
+    items" slot-scope="props">
       <td
         v-for="(header, key) in headers"
         :key="key"
@@ -20,9 +17,12 @@
         v-html="props.item[header.value]"
       ></td>
     </template>
-    <v-alert slot="no-results" :value="true" color="error" icon="mdi-alert-octagram"
-      >Your search for "{{ search }}" found no results.</v-alert
-    >
+    <v-alert
+      slot="no-results"
+      :value="true"
+      color="error"
+      icon="mdi-alert-octagram"
+    >Your search for "{{ search }}" found no results.</v-alert>
     <template v-if="footer" slot="footer">
       <td colspan="100%">
         <strong>{{ footer }}</strong>
@@ -43,7 +43,7 @@ export default {
       required: true
     },
     search: {
-      type: Boolean,
+      type: String,
       required: false
     },
     footer: {
@@ -51,7 +51,7 @@ export default {
       required: true
     },
     rowsPerPage: {
-      type: String,
+      type: Array,
       required: true
     }
   },

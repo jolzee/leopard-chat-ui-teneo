@@ -49,8 +49,7 @@
               type="info"
               elevation="2"
               @click="overlay = false"
-              >{{ overlayMessage }}</v-alert
-            >
+            >{{ overlayMessage }}</v-alert>
           </v-overlay>
         </v-fade-transition>
         <v-system-bar
@@ -75,17 +74,15 @@
             tag="button"
             :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
             @click="toggleFullscreen"
-            >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon
-          >
-          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="hideModal"
-            >mdi-close</v-icon
-          >
+          >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon>
+          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="hideModal">mdi-close</v-icon>
         </v-system-bar>
 
         <v-app-bar :dense="title.length < 43" :color="`primary ${textColor('primary')}`">
-          <h2 class="subtitle-1" :aria-label="aria ? aria : title ? title : $t('more.info.title')">
-            {{ title ? title : $t("more.info.title") }}
-          </h2>
+          <h2
+            class="subtitle-1"
+            :aria-label="aria ? aria : title ? title : $t('more.info.title')"
+          >{{ title ? title : $t("more.info.title") }}</h2>
           <v-spacer></v-spacer>
         </v-app-bar>
         <v-card-text
@@ -128,7 +125,7 @@
                   class="mt-3"
                 >
                   <!-- Show the flight itinerary -->
-                  <FlightItinerary :itinerary="itinerary"></FlightItinerary>
+                  <FlightItinerary v-if="itinerary" :itinerary="itinerary"></FlightItinerary>
 
                   <!-- show the body text -->
                   <v-card-text
@@ -196,8 +193,7 @@
             small
             @click.native="hideModal"
             @shortkey.native="hideModal"
-            >{{ $t("back.to.chat.button") }}</v-btn
-          >
+          >{{ $t("back.to.chat.button") }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -705,7 +701,7 @@ export default {
       this.customModalItems = [];
       this.imageUrl = "";
       this.images = [];
-      this.itinerary = "";
+      this.itinerary = null;
       this.fullscreen = false;
       this.overlay = false;
       this.overlayMessage = "";
