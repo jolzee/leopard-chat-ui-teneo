@@ -113,6 +113,23 @@ export const fixSolutions = allSolutions => {
   return allSolutions;
 };
 
+export const parseExtraData = input => {
+  let result = null;
+  if (input) {
+    try {
+      result = decodeURIComponent(input);
+    } catch (e) {
+      result = input;
+    }
+    try {
+      result = JSON.parse(result);
+    } catch (e) {
+      result = null;
+    }
+  }
+  return result;
+};
+
 /**
  * Remove chars from beginning of string.
  */

@@ -9,7 +9,8 @@ import {
   cleanEmptyChunks,
   isLight,
   queryParamStringAsObject,
-  convertTeneoJsonNewToOld
+  convertTeneoJsonNewToOld,
+  parseExtraData
 } from "@/utils/utils";
 import router from "@/router";
 import dayjs from "dayjs";
@@ -493,7 +494,7 @@ function storeSetup(vuetify) {
       itemExtraData: _state => (item, name) => {
         let response = {};
         if (item && item.teneoResponse && name in item.teneoResponse.extraData) {
-          response = JSON.parse(decodeURIComponent(item.teneoResponse.extraData[name]));
+          response = parseExtraData(item.teneoResponse.extraData[name]);
         }
         return response;
       },
@@ -513,11 +514,11 @@ function storeSetup(vuetify) {
                 ordered[key] = item.teneoResponse.extraData[key];
               });
             try {
-              for (var key in ordered) {
+              for (let key in ordered) {
                 if (key.startsWith("extensions")) {
-                  var value = decodeURIComponent(ordered[key]);
-                  logger.debug(`Item Extensions > Key: ${key} Value: ${value}`);
-                  actions.push(JSON.parse(value));
+                  let value = parseExtraData(ordered[key]);
+                  logger.debug(`Item Extensions > Key: ${key} Value:`, value);
+                  actions.push(value);
                 }
               }
             } catch (e) {
