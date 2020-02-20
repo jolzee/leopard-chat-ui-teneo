@@ -1,6 +1,6 @@
 <template>
   <!-- Reply -->
-  <div v-if="item.type === 'reply'" :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3' : ''">
+  <div v-if="item.type === 'reply'" :class="isLastItem ? 'pb-3' : ''">
     <v-row v-if="itemText !== '<span>'" justify="start" no-gutters class="pr-3 pl-1 pt-2">
       <v-col
         v-if="showChatIcons && !$vuetify.breakpoint.smAndDown"
@@ -74,12 +74,7 @@
       </v-col>
     </v-row>
 
-    <Card
-      v-if="hasCard(item) && itemIndexInDialog === dialog.length - 1"
-      :item="item"
-      :ripple="false"
-      class="mb-2"
-    />
+    <Card v-if="hasCard(item) && isLastItem" :item="item" :ripple="false" class="mb-2" />
     <!-- Show Inline Components -->
     <span v-for="(extension, index) in itemExtensions(item)" :key="index + 'inlines' + uuid">
       <v-row v-if="hasInlineType(extension, 'youTube')" no-gutters class="px-3 pt-2">
@@ -194,9 +189,9 @@
         </v-col>
       </v-row>
     </div>
-    <DelayedResponse v-if="showDelayedResponse && itemIndexInDialog === dialog.length - 1"></DelayedResponse>
+    <DelayedResponse v-if="showDelayedResponse && isLastItem"></DelayedResponse>
     <!-- show any options in the response: for example Yes, No Maybe -->
-    <v-col v-if="routerCheckList && itemIndexInDialog === dialog.length - 1" cols="12" class="px-3">
+    <v-col v-if="routerCheckList && isLastItem" cols="12" class="px-3">
       <v-card>
         <div class="d-flex flex-no-wrap justify-space-between">
           <div>
@@ -226,7 +221,7 @@
     </v-col>
 
     <v-card
-      v-if="hasCollection && (itemIndexInDialog === dialog.length - 1 || hasPermanentOptions)"
+      v-if="hasCollection && (isLastItem || hasPermanentOptions)"
       class="mb-1 mx-3 pt-0 px-1 pb-2 elevation-0 text-center transparent teneo-response-collection"
     >
       <!-- Button Options -->
@@ -278,11 +273,7 @@
       </v-list>
     </v-card>
     <!-- more info for modals & calendar picker button -->
-    <v-row
-      v-if="hasFeedbackForm(item) && itemIndexInDialog === dialog.length - 1"
-      no-gutters
-      class="mr-3"
-    >
+    <v-row v-if="hasFeedbackForm(item) && isLastItem" no-gutters class="mr-3">
       <v-col cols="12" class="text-right mb-2">
         <v-btn
           :color="`success ${textColor('success')}`"
@@ -352,11 +343,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row
-      v-if="mustShowDate && itemIndexInDialog === dialog.length - 1"
-      no-gutters
-      class="mt-2 mr-3"
-    >
+    <v-row v-if="mustShowDate && isLastItem" no-gutters class="mt-2 mr-3">
       <!-- Date Picker -->
       <v-col class="text-right" cols="12">
         <v-btn
@@ -372,11 +359,7 @@
       </v-col>
     </v-row>
 
-    <v-row
-      v-if="mustShowTime && itemIndexInDialog === dialog.length - 1"
-      no-gutters
-      class="mt-2 mr-3"
-    >
+    <v-row v-if="mustShowTime && isLastItem" no-gutters class="mt-2 mr-3">
       <!-- Time Picker -->
       <v-col class="text-right" cols="12">
         <v-btn
@@ -542,6 +525,9 @@ export default {
       "mapInfo",
       "youTubeVideoId"
     ]),
+    isLastItem() {
+      return this.itemIndexInDialog === this.dialog.length - 1;
+    },
     routerCheckList() {
       const extensions = this.itemExtensions(this.item);
       let routerCheckList = null;
