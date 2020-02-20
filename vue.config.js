@@ -5,16 +5,33 @@ const BrotliPlugin = require("brotli-webpack-plugin");
 const WebpackDeletePlugin = require("webpack-delete-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
+const environmentVariables = process.env;
+const getEnvValue = (name, fallback = "") => {
+  let result = fallback;
+  if (name in environmentVariables && environmentVariables[name] !== "") {
+    result = environmentVariables[name];
+    if (result === "true") {
+      result = true;
+    } else if (result === "false") {
+      result = false;
+    }
+  }
+  return result;
+};
+
 // const prod = process.env.NODE_ENV === "production";
 const dev = process.env.NODE_ENV === "development";
 // var const = process.env.NODE_ENV === "qa";
+const isLocalDev = getEnvValue("LOCAL", false);
 
 let produceSourceMaps = false;
-if (process.env.VUE_APP_SOURCE_MAP === "true" || dev) {
+if ((process.env.VUE_APP_SOURCE_MAP === "true" || dev) && !isLocalDev) {
   produceSourceMaps = true;
 } else {
   produceSourceMaps = false;
 }
+
+let stopCompression = getEnvValue("LOCAL", false);
 
 console.log(`produceSourceMaps: ${produceSourceMaps}`);
 
@@ -87,22 +104,7 @@ let buildConfig = {
   },
   configureWebpack: {
     devtool: "source-map",
-    plugins:
-      enableJavaScriptCompression || enableCssCompression
-        ? [
-            new CompressionPlugin({
-              test: compressionPluginTest(),
-              exclude: /leopardConfig(?:\..{1,10}?)??\.js/,
-              threshold: 7000
-            }),
-            new BrotliPlugin({
-              asset: "[path].br[query]",
-              test: brotliPluginTest(),
-              threshold: 7000,
-              minRatio: 0.8
-            })
-          ]
-        : []
+    plugins: []
   },
   chainWebpack: config => {
     config.externals({
@@ -135,6 +137,25 @@ let buildConfig = {
     "vue-long-press-directive"
   ]
 };
+
+if (!stopCompression && (enableJavaScriptCompression || enableCssCompression)) {
+  buildConfig.configureWebpack.plugins.push(
+    new CompressionPlugin({
+      test: compressionPluginTest(),
+      exclude: /leopardConfig(?:\..{1,10}?)??\.js/,
+      threshold: 7000
+    })
+  );
+
+  buildConfig.configureWebpack.plugins.push(
+    new BrotliPlugin({
+      asset: "[path].br[query]",
+      test: brotliPluginTest(),
+      threshold: 7000,
+      minRatio: 0.8
+    })
+  );
+}
 
 if (!dev) {
   console.log(`Using TerserPlugin`);
