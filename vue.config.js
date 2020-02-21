@@ -1,5 +1,7 @@
 const path = require("path");
 const fs = require("fs");
+const chalk = require("chalk");
+const ProgressBarPlugin = require("progress-bar-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const BrotliPlugin = require("brotli-webpack-plugin");
 const WebpackDeletePlugin = require("webpack-delete-plugin");
@@ -161,6 +163,14 @@ if (!stopCompression && (enableJavaScriptCompression || enableCssCompression)) {
 }
 
 if (!dev) {
+  buildConfig.configureWebpack.plugins.push(
+    new ProgressBarPlugin({
+      format: `  build [${chalk.greenBright(":bar")}] ${chalk.magentaBright.bold(
+        ":percent"
+      )} (:elapsed seconds)`,
+      clear: false
+    })
+  );
   console.log(`Using TerserPlugin`);
   buildConfig.configureWebpack.plugins.push(
     new TerserPlugin({

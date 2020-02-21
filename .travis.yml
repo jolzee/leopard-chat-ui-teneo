@@ -29,7 +29,6 @@ before_deploy:
   - ssh-add deploy_rsa
 deploy:
   provider: script
-  cleanup: false
-  script:
-    rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after --quiet ./dist/
+  script: rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after --quiet ./dist/
     ${SSH_USER}@${SSH_HOST}:/var/www/leopard-chat
+  edge: true
