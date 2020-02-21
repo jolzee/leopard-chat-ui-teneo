@@ -396,46 +396,56 @@
             </div>
           </div>
         </transition>
-        <v-row v-if="importDialog" justify="center">
-          <v-dialog v-model="importDialog" persistent max-width="600">
-            <v-card>
-              <v-card-title class="headline">Solution Import</v-card-title>
-              <v-card-text>
-                {{ importDialogMessages.message }}
-                <br />
-                <br />
-                <v-simple-table>
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th class="text-left">Name</th>
-                        <th class="text-left">Deep Link</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>{{ importDialogMessages.name }}</td>
-                        <td>{{ importDialogMessages.deepLink }}</td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-                <br />
-                <v-alert
-                  border="top"
-                  colored-border
-                  type="warning"
-                  elevation="2"
-                >Accepting will overwrite other solutions with the same name or deep link.</v-alert>
-              </v-card-text>
-              <v-card-actions>
-                <div class="flex-grow-1"></div>
-                <v-btn color="grey lighten-5" @click="importDialog = false">Cancel</v-btn>
-                <v-btn color="green lighten-2" @click="importSolutionFromUrl">OK</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-row>
+        <Dialog
+          v-if="importDialog"
+          title="Solution Import"
+          show="importDialog"
+          width="600px"
+          @close="this.importDialog = false"
+        >
+          {{ importDialogMessages.message }}
+          <br />
+          <br />
+          <v-alert
+            border="top"
+            colored-border
+            type="warning"
+            elevation="2"
+          >Accepting will overwrite other solutions with the same name or deep link.</v-alert>
+          <v-simple-table>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">Key</th>
+                  <th class="text-left">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template v-for="(value, name, index) in importDialogMessages.solution">
+                  <tr :key="`${index}${name}`">
+                    <td>
+                      <code>{{ name }}</code>
+                    </td>
+                    <td>
+                      <prism
+                        language="json"
+                        style="background-color: unset; display: block;"
+                      >{{ JSON.stringify(value, null, 2) }}</prism>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </template>
+          </v-simple-table>
+
+          <template v-slot:buttons>
+            <v-btn small color="green lighten-4 black--text" @click="importDialog = false">Cancel</v-btn>
+            <v-btn small color="green black--text" @click="importSolutionFromUrl">
+              OK
+              <v-icon right>mdi-database-import</v-icon>
+            </v-btn>
+          </template>
+        </Dialog>
       </template>
     </v-app>
   </div>
@@ -447,6 +457,9 @@ import "wicg-inert/dist/inert.min";
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "@/constants/solution-config-default";
 import { debounce, sendMessageToParent, isLight, isDark } from "@/utils/utils";
+import "prismjs/prism";
+import "prismjs/themes/prism-coy.css";
+import "prismjs/components/prism-json.min";
 // import AssistiveText from "@/components/AssistiveText.vue";
 import jsonpack from "jsonpack/main";
 
@@ -454,7 +467,11 @@ import jsonpack from "jsonpack/main";
 // import { createMessageBoxWidget } from "@livechat/agent-app-sdk";
 
 export default {
-  components: { OverlayAlert: () => import("@/components/OverlayAlert") },
+  components: {
+    OverlayAlert: () => import("@/components/OverlayAlert"),
+    Dialog: () => import("@/components/Dialog"),
+    Prism: () => import("vue-prism-component")
+  },
   data() {
     return {
       liveChatAccessToken: null,
@@ -578,8 +595,7 @@ export default {
     if (solConfig) {
       this.importedSolution = jsonpack.unpack(solConfig);
       this.importDialogMessages.message = `Do you want to import this solution?`;
-      this.importDialogMessages.name = this.importedSolution.name;
-      this.importDialogMessages.deepLink = this.importedSolution.deepLink;
+      this.importDialogMessages.solution = this.importedSolution;
       logger.debug(`Importing the following solution config`, solConfig);
       this.importDialog = true;
     }
@@ -1125,6 +1141,10 @@ export default {
   opacity: 0.7 !important;
 }
 
+code.language-json {
+  display: block !important;
+}
+
 .theme--dark.v-icon {
   opacity: 1 !important;
 }
@@ -1244,14 +1264,14 @@ export default {
   font-size: 19px;
 }
 
-.leopard-code {
+/* .leopard-code {
   padding-right: 3px;
   padding-left: 3px;
   color: #fafafa;
   background-color: #000000;
   font-family: Fira Code, Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
     Bitstream Vera Sans Mono, Courier New;
-}
+} */
 
 p {
   white-space: normal;

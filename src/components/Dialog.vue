@@ -73,7 +73,9 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small color="secondary white--text" @click="close">Close</v-btn>
+          <slot name="buttons">
+            <v-btn small color="secondary white--text" @click="close">Close</v-btn>
+          </slot>
         </v-card-actions>
       </v-card>
     </v-dialog>
