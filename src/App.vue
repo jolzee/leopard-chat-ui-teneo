@@ -401,7 +401,7 @@
           title="Solution Import"
           show="importDialog"
           width="600px"
-          @close="this.importDialog = false"
+          @close="importDialog = false"
         >
           {{ importDialogMessages.message }}
           <br />
