@@ -16,18 +16,18 @@
     }
   ],
   "scripts": {
-    "build": "vue-cli-service build --mode production",
     "build:development": "vue-cli-service build --mode development",
     "build:modern": "vue-cli-service build --modern",
-    "prettier": "prettier --write **/*.{ts,js,css,html,json,vue}",
-    "lint": "vue-cli-service lint",
-    "lint:fix": "vue-cli-service lint --fix",
-    "lint:css": "stylelint **/*.vue",
+    "build": "vue-cli-service build --mode production",
+    "lint:css:check": "stylelint-config-prettier-check",
     "lint:css:fix": "stylelint **/*.vue --fix",
-    "stylelint-check": "stylelint-config-prettier-check",
-    "serve": "cross-env LOCAL=true vue-cli-service serve --mode development --open",
+    "lint:css": "stylelint **/*.vue",
+    "lint:fix": "vue-cli-service lint --fix",
+    "lint": "vue-cli-service lint",
+    "prettier": "prettier --write **/*.{ts,js,css,html,json,vue}",
+    "release:dry-run": "release-it --dry-run",
     "release": "release-it",
-    "release:dry-run": "release-it --dry-run"
+    "serve": "cross-env LOCAL=true vue-cli-service serve --mode development --open"
   },
   "lint-staged": {
     "*.{js,vue}": [
@@ -103,6 +103,7 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-vue": "^6.2.1",
     "fibers": "^4.0.2",
+    "filemanager-webpack-plugin": "^2.0.5",
     "lint-staged": "^10.0.7",
     "postcss-html": "^0.36.0",
     "prettier": "^1.19.1",

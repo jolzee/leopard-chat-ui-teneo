@@ -2,7 +2,8 @@ const path = require("path");
 const fs = require("fs");
 const CompressionPlugin = require("compression-webpack-plugin");
 const BrotliPlugin = require("brotli-webpack-plugin");
-const WebpackDeletePlugin = require("webpack-delete-plugin");
+const FileManagerPlugin = require("filemanager-webpack-plugin");
+// const WebpackDeletePlugin = require("webpack-delete-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
 const environmentVariables = process.env;
@@ -19,29 +20,27 @@ const getEnvValue = (name, fallback = "") => {
   return result;
 };
 
-// const prod = process.env.NODE_ENV === "production";
-const dev = process.env.NODE_ENV === "development";
-// var const = process.env.NODE_ENV === "qa";
+const isDev = process.env.NODE_ENV === "development";
 const isLocalDev = getEnvValue("LOCAL", false);
 
 let produceSourceMaps = false;
-if ((process.env.VUE_APP_SOURCE_MAP === "true" || dev) && !isLocalDev) {
+
+if (!isLocalDev && process.env.VUE_APP_SOURCE_MAP === "true") {
   produceSourceMaps = true;
 } else {
   produceSourceMaps = false;
 }
 
-let stopCompression = getEnvValue("LOCAL", false);
+const enableCssCompression = getEnvValue("VUE_APP_BUILD_COMPRESS_CSS_ASSETS", true);
+const enableJavaScriptCompression = getEnvValue("VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS", true);
 
-console.log(`produceSourceMaps: ${produceSourceMaps}`);
-
-const enableJavaScriptCompression = process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
-  ? process.env.VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS
-  : false;
-
-const enableCssCompression = process.env.VUE_APP_BUILD_COMPRESS_CSS_ASSETS
-  ? process.env.VUE_APP_BUILD_COMPRESS_CSS_ASSETS
-  : true;
+console.log(`NODE_ENV = ${process.env.NODE_ENV}`);
+if (isLocalDev) {
+  console.log(`Local Development - npm run serve: ${isLocalDev}`);
+}
+console.log(`Produce Source Maps: ${produceSourceMaps}`);
+console.log(`Enable CSS Compression: ${enableCssCompression}`);
+console.log(`Enable JavaScript Compression: ${enableJavaScriptCompression}`);
 
 const compressionPluginTest = () => {
   let test = /\.css$|\.html$/;
@@ -63,28 +62,14 @@ const brotliPluginTest = () => {
   return test;
 };
 
-// VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS = true;
-// VUE_APP_BUILD_COMPRESS_CSS_ASSETS = true;
-
-console.log(`NODE_ENV = ${process.env.NODE_ENV}`);
-
 const useInternalSolutionConfig =
   !process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG ||
   process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG === "false";
 
 if (useInternalSolutionConfig) {
-  console.log(`Solution Config = ${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
-} else {
-  console.log(`Solution Config = /static/default.json`);
+  console.log(`Solutions Config JSON = ${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
 }
-
-// const vueVariables = Object.entries(process.env).filter(k => {
-//   return k[0].startsWith("VUE_APP_");
-// });
-// console.log(`Build Variables:`);
-// vueVariables.forEach(variable => {
-//   console.log(`${variable[0]}=${variable[1]}`);
-// });
+const solutionConfigFile = getEnvValue("VUE_APP_SOLUTION_CONFIG_FILE", "./env.solution.json");
 
 let rawdata = fs.readFileSync(`${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
 let solutionConfig = JSON.parse(rawdata);
@@ -106,13 +91,10 @@ let buildConfig = {
     }
   },
   configureWebpack: {
-    devtool: "source-map",
+    devtool: isLocalDev ? "cheap-module-eval-source-map" : produceSourceMaps ? "source-map" : "",
     plugins: []
   },
   chainWebpack: config => {
-    config.externals({
-      leopardConfig: "@/../public/static/config.js"
-    });
     config.module
       .rule("eslint")
       .use("eslint-loader")
@@ -141,7 +123,7 @@ let buildConfig = {
   ]
 };
 
-if (!stopCompression && (enableJavaScriptCompression || enableCssCompression)) {
+if (!isLocalDev && (enableJavaScriptCompression || enableCssCompression)) {
   buildConfig.configureWebpack.plugins.push(
     new CompressionPlugin({
       test: compressionPluginTest(),
@@ -160,7 +142,7 @@ if (!stopCompression && (enableJavaScriptCompression || enableCssCompression)) {
   );
 }
 
-if (!dev) {
+if (!isDev) {
   console.log(`Using TerserPlugin`);
   buildConfig.configureWebpack.plugins.push(
     new TerserPlugin({
@@ -189,10 +171,23 @@ if (!dev) {
   );
 }
 
-if (useInternalSolutionConfig && !dev) {
+if (!useInternalSolutionConfig) {
   buildConfig.configureWebpack.plugins.push(
-    new WebpackDeletePlugin(["./dist/static/default.json", "./dist/static/embed-leopard.js.gz"])
+    new FileManagerPlugin({
+      onEnd: {
+        copy: [{ source: solutionConfigFile, destination: "./dist/static/default.json" }]
+      }
+    })
   );
 }
+
+// if (!isLocalDev) {
+//   buildConfig.configureWebpack.plugins.push(
+//     new WebpackDeletePlugin([
+//       "./dist/static/embed-leopard.js.gz",
+//       "./dist/static/embed-leopard.js.br"
+//     ])
+//   );
+// }
 
 module.exports = buildConfig;
