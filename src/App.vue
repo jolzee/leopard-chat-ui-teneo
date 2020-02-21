@@ -446,7 +446,7 @@ const logger = require("@/utils/logging").getLogger("App.vue");
 import "wicg-inert/dist/inert.min";
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "@/constants/solution-config-default";
-import { debounce, sendMessageToParent, isLight } from "@/utils/utils";
+import { debounce, sendMessageToParent, isLight, isDark } from "@/utils/utils";
 // import AssistiveText from "@/components/AssistiveText.vue";
 import jsonpack from "jsonpack/main";
 
@@ -545,6 +545,7 @@ export default {
   },
   updated() {},
   created() {
+    this.setupChatHoverColor();
     this.$store.dispatch("setupFirebase");
     this.$store.dispatch("setupLiveChatAgentAssist"); // only enabled in certain scenario
   },
@@ -736,6 +737,24 @@ export default {
     }
   },
   methods: {
+    setupChatHoverColor() {
+      console.log(`Theme color is`, this.$vuetify.theme);
+      if (this.$vuetify.theme.dark) {
+        document.documentElement.style.setProperty("--leopard-chat-button-color", "#C6FF00");
+      } else {
+        if (isDark(this.$vuetify.theme.themes.light.secondary)) {
+          document.documentElement.style.setProperty(
+            "--leopard-chat-button-color",
+            this.$vuetify.theme.parsedTheme.secondary.lighten3
+          );
+        } else {
+          document.documentElement.style.setProperty(
+            "--leopard-chat-button-color",
+            this.$vuetify.theme.parsedTheme.secondary.darken3
+          );
+        }
+      }
+    },
     keepBranding() {
       return !window.leopardConfig.hideArtificalSolutionsBranding;
     },
@@ -1139,12 +1158,12 @@ export default {
 }
 
 .leopard-open-close-button.v-btn--fab:hover {
-  color: rgb(25, 233, 39) !important;
+  color: var(--leopard-chat-button-color, "#FFFFFF") !important;
 }
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
   .leopard-open-close-button.v-btn--fab:hover {
-    color: rgb(185, 33, 6) !important;
+    color: rgb(173, 170, 170) !important;
   }
 
   #leopard-chat-toolbar-title:focus,
