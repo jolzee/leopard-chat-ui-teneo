@@ -1,7 +1,6 @@
 {
   "extends": ["./node_modules/prettier-stylelint/config.js", "stylelint-config-prettier"],
   "plugins": ["stylelint-order"],
-  "ignoreFiles": ["/**/*.vue"],
   "rules": {
     "comment-empty-line-before": null,
     "font-family-no-missing-generic-family-keyword": null,
