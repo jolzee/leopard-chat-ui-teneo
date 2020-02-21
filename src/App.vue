@@ -738,7 +738,6 @@ export default {
   },
   methods: {
     setupChatHoverColor() {
-      console.log(`Theme color is`, this.$vuetify.theme);
       if (this.$vuetify.theme.dark) {
         document.documentElement.style.setProperty("--leopard-chat-button-color", "#C6FF00");
       } else {
