@@ -1161,6 +1161,7 @@ function storeSetup(vuetify) {
         state.liveAgent.showLiveChatProcessing = false;
       },
       CLEAR_CHAT_HISTORY(state) {
+        logger.debug(`Clearing Chat History`);
         state.conversation.dialog = [];
         localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]");
       },

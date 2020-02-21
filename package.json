@@ -27,7 +27,7 @@
     "prettier": "prettier --write **/*.{ts,js,css,html,json,vue}",
     "release:dry-run": "release-it --dry-run",
     "release": "release-it",
-    "serve": "cross-env LOCAL=true vue-cli-service serve --mode development --open"
+    "serve": "cross-env LOCAL=true cross-env VUE_APP_GET_STATIC_DEFAULT_CONFIG=false vue-cli-service serve --mode development --open"
   },
   "lint-staged": {
     "*.{js,vue}": [

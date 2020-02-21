@@ -917,7 +917,10 @@ export default {
       this.loginPerformed = false;
       // now end the Teneo Session - user clicked the close button - intention is clear
       this.$store.dispatch("endSession").then(() => {
-        this.$store.commit("CLEAR_CHAT_HISTORY"); // clear the dialogs once we have successfully ended the session
+        setTimeout(() => {
+          this.$store.commit("CLEAR_CHAT_HISTORY");
+        }, 1000);
+        // clear the dialogs once we have successfully ended the session
 
         // show the loading gif as the window is closing. Although delay a bit
         // setTimeout(

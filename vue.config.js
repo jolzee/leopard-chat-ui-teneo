@@ -62,12 +62,12 @@ const brotliPluginTest = () => {
   return test;
 };
 
-const useInternalSolutionConfig =
-  !process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG ||
-  process.env.VUE_APP_GET_STATIC_DEFAULT_CONFIG === "false";
+const useStaticSolutionConfig = getEnvValue("VUE_APP_GET_STATIC_DEFAULT_CONFIG", false);
 
-if (useInternalSolutionConfig) {
+if (!useStaticSolutionConfig) {
   console.log(`Solutions Config JSON = ${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
+} else {
+  console.log(`Solutions Config JSON = dist/static/default.json`);
 }
 const solutionConfigFile = getEnvValue("VUE_APP_SOLUTION_CONFIG_FILE", "./env.solution.json");
 
@@ -171,11 +171,12 @@ if (!isDev) {
   );
 }
 
-if (!useInternalSolutionConfig) {
+if (useStaticSolutionConfig) {
+  console.log(`Copying to solution config to > dist/static/default.json`);
   buildConfig.configureWebpack.plugins.push(
     new FileManagerPlugin({
       onEnd: {
-        copy: [{ source: solutionConfigFile, destination: "./dist/static/default.json" }]
+        copy: [{ source: solutionConfigFile, destination: "dist/static/default.json" }]
       }
     })
   );
