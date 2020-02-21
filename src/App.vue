@@ -768,7 +768,10 @@ export default {
 
       setTimeout(
         function() {
-          document.getElementById("leopardSystemBarMinimized").focus();
+          let systemBarElement = document.getElementById("leopardSystemBarMinimized");
+          if (systemBarElement) {
+            systemBarElement.focus();
+          }
           let appElement = document.getElementById("app");
           appElement.setAttribute("style", "");
         }.bind(this),
