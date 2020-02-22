@@ -713,7 +713,7 @@ export const sleep = (ms = 0) => {
 };
 
 export const queryParamStringAsObject = fullQueryString => {
-  const queryString = {};
+  let queryString = {};
   const query = fullQueryString;
   const vars = query.split("&");
   for (let i = 0; i < vars.length; i++) {
@@ -727,6 +727,10 @@ export const queryParamStringAsObject = fullQueryString => {
       queryString[pair[0]].push(decodeURIComponent(pair[1]));
     }
   }
+  queryString = Object.entries(queryString).reduce(
+    (a, [k, v]) => (k === "" || v == null || v === "undefined" ? a : { ...a, [k]: v }),
+    {}
+  ); // Filter null and undefined values
   return queryString;
 };
 
