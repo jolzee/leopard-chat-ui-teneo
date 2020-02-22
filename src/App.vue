@@ -399,7 +399,7 @@
         <Dialog
           v-if="importDialog"
           title="Solution Import"
-          show="importDialog"
+          :show="importDialog"
           width="600px"
           @close="importDialog = false"
         >
