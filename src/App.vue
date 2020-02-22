@@ -400,18 +400,21 @@
           v-if="importDialog"
           title="Solution Import"
           :show="importDialog"
-          width="600px"
+          width="800px"
           @close="importDialog = false"
         >
           {{ importDialogMessages.message }}
           <br />
           <br />
           <v-alert
-            border="top"
-            colored-border
-            type="warning"
-            elevation="2"
+            text
+            outlined
+            border="left"
+            color="deep-orange"
+            icon="mdi-fire"
+            class="ma-0 elevation-3"
           >Accepting will overwrite other solutions with the same name or deep link.</v-alert>
+
           <v-simple-table>
             <template v-slot:default>
               <thead>
@@ -423,7 +426,7 @@
               <tbody>
                 <template v-for="(value, name, index) in importDialogMessages.solution">
                   <tr :key="`${index}${name}`">
-                    <td>
+                    <td style="vertical-align: top" class="pt-2">
                       <code>{{ name }}</code>
                     </td>
                     <td>
