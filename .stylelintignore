@@ -1,2 +1,3 @@
 dist
 *.vue
+node_modules
