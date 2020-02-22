@@ -6,6 +6,8 @@ const FileManagerPlugin = require("filemanager-webpack-plugin");
 // const WebpackDeletePlugin = require("webpack-delete-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
+// devtool: isLocalDev ? "source-map" : produceSourceMaps ? "source-map" : "",
+
 const environmentVariables = process.env;
 const getEnvValue = (name, fallback = "") => {
   let result = fallback;
@@ -91,7 +93,7 @@ let buildConfig = {
     }
   },
   configureWebpack: {
-    devtool: isLocalDev ? "cheap-module-eval-source-map" : produceSourceMaps ? "source-map" : "",
+    devtool: isLocalDev ? "eval" : produceSourceMaps ? "source-map" : "",
     plugins: []
   },
   chainWebpack: config => {
