@@ -730,6 +730,7 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("Config.vue");
+const superagent = require("superagent");
 import {
   doesParameterExist,
   fixSolutions,
@@ -748,6 +749,7 @@ import "prismjs/prism";
 import "prismjs/themes/prism-funky.css";
 import "prismjs/components/prism-json.min";
 import { mapGetters } from "vuex";
+import { slugify } from "../utils/utils";
 const TIE = require("leopard-tie-client");
 // import ConfigAddEditSolution from "@/components/ConfigAddEditSolution";
 // import Dialog from "@/components/Dialog";
@@ -994,9 +996,35 @@ export default {
       this.fullscreen = !this.fullscreen;
     },
     createShareLinkForSolution() {
-      copy(createSharableLink(this.selectedSolution));
-      this.displaySnackBar("📋 Copied Solution Sharable Import Link to Clipboard 🔗");
-      this.snackbarClipboard = true;
+      const sharableLink = createSharableLink(this.selectedSolution);
+      if (window.leopardConfig.kuttItKey) {
+        superagent
+          .post("https://cors-anywhere.herokuapp.com/https://kutt.it/api/v2/links")
+          .send({
+            target: sharableLink,
+            reuse: true
+          })
+          .set("X-API-KEY", window.leopardConfig.kuttItKey)
+          .set("Accept", "application/json")
+          .then(res => {
+            copy(
+              `${res.body.link}#${slugify(this.selectedSolution.name)}-${dayjs().format(
+                "YYYY-MM-DD"
+              )}`
+            );
+            this.displaySnackBar("📋 Copied Solution Sharable Import Link to Clipboard 🔗");
+            this.snackbarClipboard = true;
+          })
+          .catch(() => {
+            copy(sharableLink);
+            this.displaySnackBar("📋 Copied Solution Sharable Import Link to Clipboard 🔗");
+            this.snackbarClipboard = true;
+          });
+      } else {
+        copy(sharableLink);
+        this.displaySnackBar("📋 Copied Solution Sharable Import Link to Clipboard 🔗");
+        this.snackbarClipboard = true;
+      }
     },
     closeAddNewSolutionDialog(result) {
       logger.info("Supposed to close Add Edit Dialog");

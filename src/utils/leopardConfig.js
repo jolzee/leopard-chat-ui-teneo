@@ -27,6 +27,7 @@ export default {
     licenseKey: getEnvValue("VUE_APP_LIVE_CHAT_INC_KEY"),
     agentAssistServerUrl: getEnvValue("VUE_APP_LIVE_CHAT_AGENT_ASSIST_SERVER")
   },
+  kuttItKey: getEnvValue("VUE_APP_KUTT_IT_API_KEY"),
   pusherKey: getEnvValue("VUE_APP_PUSHER_KEY"),
   locationIqKey: getEnvValue("VUE_APP_LOCATION_IQ_KEY"),
   firebase: {
