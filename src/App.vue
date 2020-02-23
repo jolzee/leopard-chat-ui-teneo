@@ -407,13 +407,14 @@
           <br />
           <br />
           <v-alert
+            v-if="importDialogMessages.hasConflictingSolution"
             text
             outlined
             border="left"
             color="deep-orange"
             icon="mdi-fire"
             class="ma-0 elevation-3"
-          >Accepting will overwrite other solutions with the same name or deep link.</v-alert>
+          >You already have a solution with the same name or deep link.</v-alert>
 
           <v-simple-table>
             <template v-slot:default>
@@ -443,10 +444,25 @@
 
           <template v-slot:buttons>
             <v-btn small color="green lighten-4 black--text" @click="importDialog = false">Cancel</v-btn>
-            <v-btn small color="green black--text" @click="importSolutionFromUrl">
-              OK
+            <v-btn
+              v-if="!importDialogMessages.hasConflictingSolution"
+              small
+              color="green black--text"
+              @click="importNewSolutionFromUrl"
+            >
+              Import
               <v-icon right>mdi-database-import</v-icon>
             </v-btn>
+            <template v-else>
+              <v-btn small color="green black--text" @click="importNewUniqueSolutionFromUrl">
+                Import (new name & deeplink)
+                <v-icon right>mdi-database-import</v-icon>
+              </v-btn>
+              <v-btn small color="green black--text" @click="importReplacementSolutionFromUrl">
+                Replace
+                <v-icon right>mdi-database-import</v-icon>
+              </v-btn>
+            </template>
           </template>
         </Dialog>
       </template>
@@ -459,7 +475,15 @@ const logger = require("@/utils/logging").getLogger("App.vue");
 import "wicg-inert/dist/inert.min";
 import { mapGetters } from "vuex";
 import { STORAGE_KEY } from "@/constants/solution-config-default";
-import { debounce, sendMessageToParent, isLight, isDark } from "@/utils/utils";
+import {
+  debounce,
+  sendMessageToParent,
+  isLight,
+  isDark,
+  hasConflictingSolution,
+  makeSolutionUnique,
+  uuid
+} from "@/utils/utils";
 import "prismjs/prism";
 import "prismjs/themes/prism-coy.css";
 import "prismjs/components/prism-json.min";
@@ -599,6 +623,11 @@ export default {
       this.importedSolution = jsonpack.unpack(solConfig);
       this.importDialogMessages.message = `Do you want to import this solution?`;
       this.importDialogMessages.solution = this.importedSolution;
+      this.importDialogMessages.hasConflictingSolution = hasConflictingSolution(
+        this.importedSolution,
+        this.config
+      );
+
       logger.debug(`Importing the following solution config`, solConfig);
       this.importDialog = true;
     }
@@ -849,7 +878,25 @@ export default {
       }
       return true;
     },
-    importSolutionFromUrl() {
+    importNewSolutionFromUrl() {
+      this.importDialog = false;
+      this.importedSolution.id = uuid();
+      this.config.solutions.push(this.importedSolution); // no conflicts
+      let deepLinkUrl = `${location.protocol}//${location.host}${location.pathname}?dl=${this.importedSolution.deepLink}`;
+      localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
+      logger.debug(`Deep Link Url: `, deepLinkUrl);
+      window.location.href = deepLinkUrl;
+    },
+    importNewUniqueSolutionFromUrl() {
+      this.importDialog = false;
+      this.importSolution = makeSolutionUnique(this.importedSolution);
+      this.config.solutions.push(this.importedSolution); // no conflicts
+      let deepLinkUrl = `${location.protocol}//${location.host}${location.pathname}?dl=${this.importedSolution.deepLink}`;
+      localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
+      logger.debug(`Deep Link Url: `, deepLinkUrl);
+      window.location.href = deepLinkUrl;
+    },
+    importReplacementSolutionFromUrl() {
       this.importDialog = false;
 
       let existingSolutionsWithName = this.config.solutions.findIndex(
@@ -873,7 +920,7 @@ export default {
         }
         this.config.solutions.push(this.importedSolution);
       }
-      this.config.activeSolution = this.importedSolution.name;
+      this.config.activeSolution = this.importedSolution.id;
       let deepLinkUrl = `${location.protocol}//${location.host}${location.pathname}?dl=${this.importedSolution.deepLink}`;
       localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(this.config));
       logger.debug(`Deep Link Url: `, deepLinkUrl);

@@ -13,6 +13,16 @@ const uuidv4 = require("uuid/v4");
 
 export const uuid = () => uuidv4();
 
+export const hasConflictingSolution = (solution, allSolutions) => {
+  let foundSolution = allSolutions.solutions.find(
+    existingSol => existingSol.name === solution.name || existingSol.deepLink === solution.deepLink
+  );
+  if (foundSolution) {
+    return true;
+  }
+  return false;
+};
+
 export const fixSolution = solution => {
   if (!("id" in solution)) {
     const id = uuid();
@@ -885,6 +895,15 @@ export const getParameterByName = (name, url) => {
   if (!results) return null;
   if (!results[2]) return "";
   return decodeURIComponent(results[2].replace(/\+/g, " "));
+};
+
+export const makeSolutionUnique = solution => {
+  let uniqueSol = solution;
+  let randomId = generateRandomId();
+  uniqueSol.id = uuid();
+  uniqueSol.deepLink = slugify(`${solution.deepLink}-${randomId}`);
+  uniqueSol.name = `${solution.name} - ${randomId}`;
+  return uniqueSol;
 };
 
 export const getUrlVarsAsObj = () => {

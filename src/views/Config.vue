@@ -940,6 +940,9 @@ export default {
       });
     },
     closeConfigArea(skipRefreshDialog) {
+      if (this.selectedSolution === null) {
+        this.selectedSolution = this.$store.getters.activeSolution;
+      }
       if (this.$store.getters.activeSolution) {
         const activeSolutionPast = this.$store.getters.activeSolution;
         const activeSolutionCurrent = this.config.solutions.find(
