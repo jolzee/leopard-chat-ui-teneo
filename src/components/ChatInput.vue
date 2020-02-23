@@ -418,7 +418,7 @@ export default {
       if (this.showAudioInput) {
         logger.debug(`Stopping audio capture`);
         this.$store.commit("HIDE_LISTENING_OVERLAY");
-        this.$store.dispatch("handleEscapeKey");
+        this.$store.dispatch("stopAudioCapture");
         this.audioButtonColor = "sendButton";
       } else {
         this.$store.commit("CLOSE_CHAT_ESC");
