@@ -16,8 +16,6 @@ env:
 before_install:
   - openssl aes-256-cbc -K $encrypted_e0272ac8690c_key -iv $encrypted_e0272ac8690c_iv
     -in secrets.tar.enc -out secrets.tar -d
-  - openssl aes-256-cbc -K $encrypted_54a1e4422a70_key -iv $encrypted_54a1e4422a70_iv
-    -in secrets.tar.enc -out secrets.tar -d
   - tar xvf secrets.tar
 install:
   - echo 'Build starting...'
