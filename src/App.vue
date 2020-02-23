@@ -455,7 +455,7 @@
             </v-btn>
             <template v-else>
               <v-btn small color="green black--text" @click="importNewUniqueSolutionFromUrl">
-                Import (new name & deeplink)
+                Import as Copy
                 <v-icon right>mdi-database-import</v-icon>
               </v-btn>
               <v-btn small color="green black--text" @click="importReplacementSolutionFromUrl">
