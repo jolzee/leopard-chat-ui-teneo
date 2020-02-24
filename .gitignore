@@ -19,10 +19,8 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.log
-static/default.json
 .history
 .history/
-public/static/default.json
 secrets.tar
 deploy_rsa
 deploy_rsa.pub
