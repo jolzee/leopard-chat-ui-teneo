@@ -263,14 +263,16 @@ export default class Setup {
       // Reload config for each load. Maybe there a new deployment change that you want to
       if (window.leopardConfig.loadFreshConfigForNewSessions) {
         // localStorage.removeItem(STORAGE_KEY + "config");
-        logger.debug("Using internal build config");
+        logger.debug("Loading fresh solution config");
       } else {
         logger.debug("Looking for Solution Config in localStorage first");
         this.chatConfig = JSON.parse(localStorage.getItem(STORAGE_KEY + "config"));
+        if (this.chatConfig) {
+          logger.debug("Found config in localstorage");
+        }
       }
 
       if (!this.chatConfig || (this.chatConfig && this.chatConfig.solutions.length === 0)) {
-        logger.debug("No Solution Config found in localStorage. Continue looking..");
         this._loadDefaultConfig()
           .then(defaultConfig => {
             this.chatConfig = defaultConfig;
@@ -296,18 +298,18 @@ export default class Setup {
         resolve(window.leopardConfig.solutionConfig.buildConfig);
       } else {
         // look for default config on the server
-        const defaultConfigUrl = `${location.protocol}//${location.host}${location.pathname}/../static/default.json`;
+        const defaultConfigUrl = `${location.protocol}//${location.host}${location.pathname}/../static/config.json`;
         superagent
           .get(defaultConfigUrl)
           .accept("application/json")
           .then(res => {
-            logger.debug("Found and loaded Solution Config from /static/default.json");
+            logger.debug("Found and loaded Solution Config from /static/config.json");
             let defaultConfig = res.body;
             localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(defaultConfig));
             resolve(defaultConfig);
           })
           .catch(function(error) {
-            reject("Could not load default.json from /static/default.json: " + error.message);
+            reject("Could not load config.json from /static/config.json: " + error.message);
           });
       }
     });

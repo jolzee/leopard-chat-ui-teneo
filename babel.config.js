@@ -1,4 +1,4 @@
 module.exports = {
-  plugins: ["@babel/plugin-transform-template-literals"],
+  plugins: ["@babel/plugin-syntax-dynamic-import", "@babel/plugin-transform-template-literals"],
   presets: ["@vue/cli-plugin-babel/preset"]
 };

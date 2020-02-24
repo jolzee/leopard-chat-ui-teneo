@@ -67,14 +67,25 @@ const brotliPluginTest = () => {
 const useStaticSolutionConfig = getEnvValue("VUE_APP_GET_STATIC_DEFAULT_CONFIG", false);
 
 if (!useStaticSolutionConfig) {
-  console.log(`Solutions Config JSON = ${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
-} else {
-  console.log(`Solutions Config JSON = dist/static/default.json`);
+  console.log(
+    `Solutions Config ${process.env.VUE_APP_SOLUTION_CONFIG_FILE} being ported to /dist/assets/js/leopardConfig.*.js`
+  );
 }
 const solutionConfigFile = getEnvValue("VUE_APP_SOLUTION_CONFIG_FILE", "./env.solution.json");
 
 let rawdata = fs.readFileSync(`${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
 let solutionConfig = JSON.parse(rawdata);
+// if (useStaticSolutionConfig) {
+//   const vueVariables = {};
+//   for (let [key, value] of Object.entries(environmentVariables)) {
+//     if (key.startsWith("VUE_APP")) {
+//       vueVariables[key] = value;
+//     }
+//   }
+//   solutionConfig.env = vueVariables;
+// }
+// let data = JSON.stringify(solutionConfig,null, 2);
+// fs.writeFileSync("config.json", data);
 
 let buildConfig = {
   css: {
@@ -173,24 +184,34 @@ if (!isDev) {
   );
 }
 
-if (useStaticSolutionConfig) {
-  console.log(`Copying to solution config to > dist/static/default.json`);
-  buildConfig.configureWebpack.plugins.push(
-    new FileManagerPlugin({
-      onEnd: {
-        copy: [{ source: solutionConfigFile, destination: "dist/static/default.json" }]
-      }
-    })
-  );
-}
+if (!isLocalDev && !isDev) {
+  const fileManagerOptions = {
+    onEnd: {
+      copy: []
+    }
+  };
 
-// if (!isLocalDev) {
-//   buildConfig.configureWebpack.plugins.push(
-//     new WebpackDeletePlugin([
-//       "./dist/static/embed-leopard.js.gz",
-//       "./dist/static/embed-leopard.js.br"
-//     ])
-//   );
-// }
+  if (useStaticSolutionConfig) {
+    console.log(`Copying to solution config to > dist/static/config.json`);
+    fileManagerOptions.onEnd.copy.push({
+      source: solutionConfigFile,
+      destination: "dist/static/config.json"
+    });
+  }
+
+  if (fileManagerOptions.onEnd.copy.length > 0) {
+    buildConfig.configureWebpack.plugins.push(new FileManagerPlugin(fileManagerOptions));
+  }
+
+  try {
+    if (fs.existsSync(`${solutionConfigFile}.token`)) {
+      console.log(`Copying to solution config to > dist/static/config.json.token`);
+      fileManagerOptions.onEnd.copy.push({
+        source: `${solutionConfigFile}.token`,
+        destination: "dist/static/config.json.token"
+      });
+    }
+  } catch (e) {}
+}
 
 module.exports = buildConfig;

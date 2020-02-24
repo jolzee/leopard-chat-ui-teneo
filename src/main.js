@@ -9,7 +9,6 @@ import { doesParameterExist } from "@/utils/utils";
 import Vue from "vue";
 import App from "@/App";
 import router from "@/router";
-
 if (!doesParameterExist("embed") && !doesParameterExist("button")) {
   console.groupCollapsed(
     `%c Powered by %c Leopard Chat UI 💬 %c`,
