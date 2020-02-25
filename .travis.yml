@@ -21,6 +21,9 @@ install:
   - echo 'Build starting...'
   - echo 'Installing Dependencies...'
   - npm ci
+cache:
+  directories:
+    - "$HOME/.npm"
 script:
   - npm run build
 before_deploy:
