@@ -563,10 +563,11 @@ export default {
       if (mustClose) {
         if (this.embed) {
           this.closeChatEmbedded();
-        } else {
+        } else if (this.isChatOpen) {
+          logger.debug(`Must close because of ESC`);
           this.toggleChat();
         }
-        this.$store.commit("REST_MUST_CLOSE");
+        this.$store.commit("RESET_MUST_CLOSE");
       }
     },
     drawer: function(isDrawerOpen) {

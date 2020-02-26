@@ -988,7 +988,7 @@ function storeSetup(vuetify) {
         logger.debug(`CLOSE_CHAT_ESC`);
         state.ui.closeChatEsc = true;
       },
-      REST_MUST_CLOSE(state) {
+      RESET_MUST_CLOSE(state) {
         state.ui.closeChatEsc = false;
       },
       CLOSE_OVERY_ALERT(state) {
