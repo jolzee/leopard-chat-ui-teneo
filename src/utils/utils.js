@@ -9,7 +9,7 @@
 const replaceString = require("replace-string");
 const solutionDefault = require("@/constants/solution-config-default").SOLUTION_DEFAULT;
 const jsonpack = require("jsonpack/main");
-const uuidv4 = require("uuid/v4");
+const { v4: uuidv4 } = require("uuid");
 
 export const uuid = () => uuidv4();
 
@@ -225,6 +225,9 @@ export const truncate = (str, maxChars, append, onlyFullWords) => {
 };
 
 export const lightOrDark = color => {
+  if (!color) {
+    return "light";
+  }
   // Variables for red, green, blue values
   let r;
   let g;
@@ -677,15 +680,15 @@ export const includeFile = file => {
 };
 
 export const isUndefined = e => typeof e === "undefined";
-const isconst = e => typeof e === "function";
+export const isconst = e => typeof e === "function";
 // eslint-disable-next-line no-restricted-globals
-const isNumber = e => typeof e === "number" && isFinite(e);
-const isObject = e => typeof e === "object";
-const isArray = e => Array.isArray(e);
-const isImage = e => e instanceof HTMLImageElement;
-const isNull = e => e === null;
-const isInt = e => Number(e) === e && e % 1 === 0;
-const isFloat = e => Number(e) === e && e % 1 !== 0;
+export const isNumber = e => typeof e === "number" && isFinite(e);
+export const isObject = e => typeof e === "object";
+export const isArray = e => Array.isArray(e);
+export const isImage = e => e instanceof HTMLImageElement;
+export const isNull = e => e === null;
+export const isInt = e => Number(e) === e && e % 1 === 0;
+export const isFloat = e => Number(e) === e && e % 1 !== 0;
 
 export const createSlug = text => {
   return text

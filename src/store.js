@@ -10,7 +10,8 @@ import {
   isLight,
   queryParamStringAsObject,
   convertTeneoJsonNewToOld,
-  parseExtraData
+  parseExtraData,
+  uuid
 } from "@/utils/utils";
 import router from "@/router";
 import dayjs from "dayjs";
@@ -35,7 +36,6 @@ import gravatar from "gravatar";
 var stripHtml = require("striptags");
 var mobile = require("is-mobile");
 import URL from "url-parse";
-import uuidv1 from "uuid/v1";
 import Vue from "vue";
 import Vuex from "vuex";
 import vuexI18n from "vuex-i18n"; // i18n the leopard interface
@@ -262,7 +262,7 @@ function storeSetup(vuetify) {
         return state.ui.hideConfigMenu;
       },
       uuid(_state) {
-        return uuidv1();
+        return uuid();
       },
       showButtonOnly(state) {
         logger.debug(`store: showButtonOnly: ${state.ui.embed && !state.ui.showChatWindow}`);
@@ -1235,7 +1235,7 @@ function storeSetup(vuetify) {
 
         let newReply = {
           type: "reply",
-          id: uuidv1(),
+          id: uuid(),
           text: cleanEmptyChunks(payload.response.teneoAnswer),
           bodyText: "",
           teneoResponse: payload.response.teneoResponse,
@@ -1873,7 +1873,7 @@ function storeSetup(vuetify) {
               }
               const response = {
                 type: "reply",
-                id: uuidv1(),
+                id: uuid(),
                 text: md.render(
                   cleanEmptyChunks(
                     decodeURIComponent(json.responseData.answer).replace(
@@ -2177,7 +2177,7 @@ function storeSetup(vuetify) {
               );
               const response = {
                 userInput: currentUserInput,
-                id: uuidv1(),
+                id: uuid(),
                 teneoAnswer: md.render(
                   cleanEmptyChunks(
                     decodeURIComponent(json.responseData.answer).replace(
