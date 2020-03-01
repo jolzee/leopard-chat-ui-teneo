@@ -50,7 +50,7 @@
     "custom-event-polyfill": "^1.0.7",
     "dayjs": "^1.8.21",
     "element-matches": "^0.1.2",
-    "firebase": "^7.9.2",
+    "firebase": "^7.9.3",
     "gravatar": "^1.8.0",
     "is-html": "^2.0.0",
     "is-mobile": "^2.2.1",
