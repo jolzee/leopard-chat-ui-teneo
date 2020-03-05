@@ -110,7 +110,7 @@
     "prettier": "^1.19.1",
     "prettier-eslint": "^9.0.1",
     "prettier-stylelint": "^0.4.2",
-    "release-it": "^12.6.1",
+    "release-it": "^12.6.3",
     "sass": "^1.26.1",
     "sass-loader": "^8.0.2",
     "stylelint": "^13.2.0",
