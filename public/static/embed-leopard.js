@@ -276,6 +276,12 @@ function receiveLeopardMessage(event) {
           node.className = "teneo-chat-button-widget";
           node.style.display = "block";
           isLeopardAnimating = false;
+          setTimeout(function addFocusToButton() {
+            var leopardFrame = document.getElementById('teneo-chat-widget');
+            var leopardFrameInnerButton = leopardFrame.contentDocument.getElementById('leopard-embed-open-close-button');
+            leopardFrame.focus();
+            leopardFrameInnerButton.focus();
+          }, 300);
         }, 800);
       });
     } else if (event.data === "hideLeopard" && !isLeopardAnimating) {

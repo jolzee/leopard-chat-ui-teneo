@@ -1,11 +1,12 @@
 <template>
   <div>
     <v-app :dark="$vuetify.theme.dark" v-if="showButtonOnly" class="application-button">
-      <div id="chat-open-close-button-embed" @click="openEmbedButton">
+      <div id="chat-open-close-button-embed">
         <v-fab-transition>
           <v-btn
             v-show="showChatButton"
             id="leopard-embed-open-close-button"
+            @click="openEmbedButton"
             fab
             dark
             color="primary"
@@ -1234,22 +1235,24 @@ code.language-json {
   color: var(--leopard-chat-button-color, "#FFFFFF") !important;
 }
 
-@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+/* Edge Styling */
+@supports (-ms-ime-align: auto) {
   .leopard-open-close-button.v-btn--fab:hover {
     color: rgb(173, 170, 170) !important;
   }
 
   #leopard-chat-toolbar-title:focus,
   div.v-input__slot:focus,
-  .v-btn--fab:focus-within:before,
-  button:focus-within:focus,
-  a:focus-within,
-  div.v-list-item:focus-within,
-  div.chat-card:focus-within,
-  .v-input__icon--clear:focus-within {
+  .v-btn--fab:focus,
+  button:focus,
+  a:focus,
+  div.v-list-item:focus,
+  div.chat-card:focus,
+  .leopard-open-close-button.v-btn--fab:focus,
+  .v-input__icon--clear:focus {
     outline: 0 !important;
-    -webkit-box-shadow: 0 0 0 3px black !important;
-    box-shadow: 0 0 0 3px black !important;
+    -webkit-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.421) !important;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.421) !important;
   }
 
   a.leopard-img:focus {
@@ -1282,7 +1285,68 @@ code.language-json {
     width: 100%;
     height: 100%;
     border-radius: inherit;
-    background-color: rgb(139, 139, 214) !important;
+    background-color: rgba(116, 116, 116, 0.069) !important;
+    content: "";
+    -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
+    transition: opacity 0.3s, -webkit-transform 0.3s;
+    transition: opacity 0.3s, transform 0.3s;
+    transition: opacity 0.3s, transform 0.3s, -webkit-transform 0.3s;
+    -webkit-animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    animation: pulse-animation 4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+  }
+}
+
+/* IE 11 styling */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .leopard-open-close-button.v-btn--fab:hover {
+    color: rgb(173, 170, 170) !important;
+  }
+
+  #leopard-chat-toolbar-title:focus,
+  div.v-input__slot:focus,
+  .v-btn--fab:focus,
+  button:focus,
+  a:focus,
+  div.v-list-item:focus,
+  div.chat-card:focus,
+  .leopard-open-close-button.v-btn--fab:focus,
+  .v-input__icon--clear:focus {
+    outline: 0 !important;
+    -webkit-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.421) !important;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.421) !important;
+  }
+
+  a.leopard-img:focus {
+    display: flex;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    outline: 0;
+    background: rgba(255, 255, 255, 0.19);
+    -webkit-box-shadow: 0 0 0 3px rgb(76, 77, 108) !important;
+    box-shadow: 0 0 0 3px rgb(76, 77, 108) !important;
+  }
+
+  #leopard-chat-toolbar-title:focus {
+    padding: 5px !important;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    outline: 0;
+    background: rgba(255, 255, 255, 0.19);
+    box-shadow: 0 0 0 3px red !important;
+  }
+
+  .pulse::before {
+    display: block;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background-color: rgba(116, 116, 116, 0.069) !important;
     content: "";
     -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
     transition: opacity 0.3s, -webkit-transform 0.3s;
