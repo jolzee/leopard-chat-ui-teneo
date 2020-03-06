@@ -129,7 +129,7 @@
             :height="extension.maxHeight ? extension.maxHeight : undefined"
           >
             <template v-slot:default>
-              <thead>
+              <thead v-if="hasHeaders(extension)">
                 <tr>
                   <th
                     v-for="header in extension.headers"
@@ -773,6 +773,17 @@ export default {
     }
   },
   methods: {
+    hasHeaders(extension) {
+      let hasHeaders = false;
+      if (extension.headers) {
+        extension.headers.forEach(header => {
+          if (header.trim() !== "") {
+            hasHeaders = true;
+          }
+        });
+      }
+      return hasHeaders;
+    },
     addAccessibilityPrefix(text) {
       const prefix508 = `<span class="sr-only">Chat bot said.</span>`;
       if (!isHtml(text)) {
