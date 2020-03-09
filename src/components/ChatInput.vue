@@ -231,7 +231,7 @@ export default {
     }
   },
   created() {
-    logger.info(`Chat Input Created`);
+    logger.debug(`Chat Input Created`);
     if (this.speakBackResponses) {
       logger.info(`Must speak`);
       this.showAudioInput = true;
