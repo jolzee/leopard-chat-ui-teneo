@@ -278,10 +278,16 @@ function receiveLeopardMessage(event) {
           node.style.display = "block";
           isLeopardAnimating = false;
           setTimeout(function addFocusToButton() {
-            var leopardFrame = document.getElementById('teneo-chat-widget');
-            var leopardFrameInnerButton = leopardFrame.contentDocument.getElementById('leopard-embed-open-close-button');
-            leopardFrame.focus();
-            leopardFrameInnerButton.focus();
+            var leopardFrame;
+            do {
+              leopardFrame = document.getElementById('teneo-chat-widget');
+              if (leopardFrame) {
+                var leopardFrameInnerButton = leopardFrame.contentDocument.getElementById('leopard-embed-open-close-button');
+                leopardFrame.focus();
+                leopardFrameInnerButton.focus();
+              }
+            }
+            while (!leopardFrame);
           }, 300);
         }, 800);
       });
