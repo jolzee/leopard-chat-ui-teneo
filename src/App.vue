@@ -1012,14 +1012,15 @@ export default {
         // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
         logger.debug("Mobile device - Calculating the View Height in JS");
         let vh = null;
-        if (this.embed && parent) {
-          let parentHeightLeopard = parent.getLeopardElementHeight();
-          logger.debug(`Frame Height: ${parentHeightLeopard}`);
-          vh = parentHeightLeopard * 0.01;
-          this.parentHeight = parentHeightLeopard;
-        } else {
-          vh = window.innerHeight * 0.01;
-        }
+        vh = window.innerHeight * 0.01;
+        // if (this.embed && parent) {
+        //   let parentHeightLeopard = parent.getLeopardElementHeight();
+        //   logger.debug(`Frame Height: ${parentHeightLeopard}`);
+        //   vh = parentHeightLeopard * 0.01;
+        //   this.parentHeight = parentHeightLeopard;
+        // } else {
+        //   vh = window.innerHeight * 0.01;
+        // }
 
         // let vh = 640 * 0.01;
         // Then we set the value in the --vh custom property to the root of the document
