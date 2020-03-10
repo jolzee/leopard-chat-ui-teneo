@@ -113,7 +113,7 @@
     "release-it": "^12.6.3",
     "sass": "^1.26.2",
     "sass-loader": "^8.0.2",
-    "stylelint": "^13.2.0",
+    "stylelint": "^13.2.1",
     "stylelint-config-prettier": "7.0.0",
     "stylelint-order": "^4.0.0",
     "terser-webpack-plugin": "^2.3.5",
