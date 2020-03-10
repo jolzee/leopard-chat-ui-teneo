@@ -178,6 +178,23 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+function checkLeopardButtonFocus() {
+  // class teneo-chat-button-widget
+  var teneoFrame = document.getElementById("teneo-chat-widget");
+  if (teneoFrame && document.activeElement === teneoFrame) {
+    var teneoContainer = document.getElementById("teneo-chat-widget-container");
+    if (teneoContainer && teneoContainer.className === "teneo-chat-button-widget") {
+        var leopardFrameInnerButtonEl = teneoFrame.contentDocument.getElementById('leopard-embed-open-close-button');
+        if (leopardFrameInnerButtonEl) {
+            teneoFrame.focus();
+            leopardFrameInnerButtonEl.focus();
+          }
+      }
+  }
+}
+
+window.setInterval(checkLeopardButtonFocus, 500);
+
 var leopardAnimations = {
   in: "flipInY",
   out: "zoomOutDown"
