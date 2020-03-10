@@ -168,13 +168,15 @@ document.documentElement.style.setProperty(
   "--leopardvh",
   "".concat(leopardViewHeight, "px")
 );
-var leopardTargetElement = document.getElementById("leopardChatWindow");
 
-if (leopardTargetElement) {
-  leopardTargetElement.innerHTML = leopardChatTemplate;
-} else {
-  document.body.insertAdjacentHTML("afterbegin", leopardChatTemplate);
-}
+document.addEventListener('DOMContentLoaded', function () {
+  var leopardTargetElement = document.getElementById("leopardChatWindow");
+  if (leopardTargetElement) {
+    leopardTargetElement.innerHTML = leopardChatTemplate;
+  } else {
+    document.body.insertAdjacentHTML("afterbegin", leopardChatTemplate);
+  }
+});
 
 var leopardAnimations = {
   in: "flipInY",
