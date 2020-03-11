@@ -53,6 +53,7 @@ import { STORAGE_KEY } from "@/constants/solution-config-default"; // applicatio
 import { TRANSLATIONS } from "@/constants/translations"; // add UI translations for different language here
 import Setup from "@/utils/setup";
 
+let teneoSessionId;
 let store;
 let config = new Setup();
 Vue.use(Vuex);
@@ -130,6 +131,7 @@ function storeSetup(vuetify) {
           ? config.IFRAME_URL.substring(0, config.IFRAME_URL.lastIndexOf("/")) + "/"
           : config.IFRAME_URL
       },
+      teneoSessionId: null,
       promptTriggerInterval: null,
       knowledgeData: config.KNOWLEDGE_DATA,
       liveAgent: {
@@ -188,6 +190,9 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      teneoSessionId(state) {
+        return state.teneoSessionId;
+      },
       mustCloseBecauseOfEscape(state) {
         return state.ui.closeChatEsc;
       },
@@ -964,6 +969,12 @@ function storeSetup(vuetify) {
       }
     },
     mutations: {
+      SET_TENEO_SESSION_ID(state, newSessionId) {
+        state.teneoSessionId = newSessionId;
+      },
+      CLEAR_TENEO_SESSION_ID(state) {
+        state.teneoSessionId = null;
+      },
       HIDE_508_CONTENT(state) {
         state.hide508 = true;
       },
@@ -1590,7 +1601,7 @@ function storeSetup(vuetify) {
         queryObj.text = ""; // it's a login we don't have to say anything yet
         queryObj.feedback = JSON.stringify(feedback);
 
-        TIE.sendInput(config.TENEO_URL, browserHandledSession, queryObj).then(() =>
+        TIE.sendInput(config.TENEO_URL, context.getters.teneoSessionId, queryObj).then(() =>
           logger.debug("Feedback sent to Teneo")
         );
       },
@@ -1786,14 +1797,16 @@ function storeSetup(vuetify) {
       },
       endSessionLite(context) {
         context.commit("REMOVE_MODAL_ITEM");
-        TIE.close(config.TENEO_URL, browserHandledSession).then(() =>
-          logger.debug("Session Ended")
-        );
+        TIE.close(config.TENEO_URL, context.getters.teneoSessionId).then(() => {
+          context.commit("CLEAR_TENEO_SESSION_ID");
+          logger.debug("Session Ended");
+        });
       },
       endSession(context) {
         context.commit("CLEAR_DIALOGS");
         context.commit("REMOVE_MODAL_ITEM");
-        TIE.close(config.TENEO_URL, browserHandledSession).then(() => {
+        TIE.close(config.TENEO_URL, context.getters.teneoSessionId).then(() => {
+          context.commit("CLEAR_TENEO_SESSION_ID");
           context.commit("HIDE_CHAT_LOADING");
           context.commit("HIDE_UPLOAD_BUTTON");
           logger.debug("Session Ended");
@@ -1813,8 +1826,9 @@ function storeSetup(vuetify) {
           queryObj.command = "login";
           queryObj.text = ""; // it's a login we don't have to say anything yet
 
-          TIE.sendInput(config.TENEO_URL, browserHandledSession, queryObj)
+          TIE.sendInput(config.TENEO_URL, context.getters.teneoSessionId, queryObj)
             .then(json => {
+              context.commit("SET_TENEO_SESSION_ID", json.sessionId);
               json = convertTeneoJsonNewToOld(json);
               context.commit("HIDE_CHAT_LOADING");
               if ("numActiveFlows" in json.responseData.extraData) {
@@ -1954,7 +1968,7 @@ function storeSetup(vuetify) {
           let queryObj = queryParamStringAsObject(queryParams);
           queryObj.text = currentUserInput.trim();
 
-          TIE.sendInput(config.TENEO_URL, browserHandledSession, queryObj)
+          TIE.sendInput(config.TENEO_URL, context.getters.teneoSessionId, queryObj)
             .then(json => {
               json = convertTeneoJsonNewToOld(json);
               if (params.indexOf("command=train") !== -1) {
