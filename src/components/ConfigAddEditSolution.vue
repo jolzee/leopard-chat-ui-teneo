@@ -1077,7 +1077,7 @@ export default {
         "mdi-face-profile-woman",
         "mdi-face-woman",
         "mdi-emoticon-outline",
-        "mdi-cowboy",
+        "mdi-account-cowboy-hat",
         "mdi-cow",
         "mdi-doctor",
         "mdi-human-greeting",

@@ -184,7 +184,7 @@
           class="mr-2 d-none d-sm-inline"
         >
           <span slot="badge" style="background-color: #4051B1">{{ config.solutions.length }}</span>
-          <v-icon large color="grey lighten-1">mdi-settings</v-icon>
+          <v-icon large color="grey lighten-1">mdi-counter</v-icon>
         </v-badge>
         <!-- <v-chip
             v-if="config.activeSolution"

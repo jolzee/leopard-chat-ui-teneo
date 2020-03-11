@@ -515,7 +515,7 @@ export default {
       drawer: false,
       menuItems: [
         {
-          icon: "mdi-message-settings-variant",
+          icon: "mdi-cog-outline",
           titleKey: "menu.config",
           ariaLabel: "Chat Bot Configuration",
           route: "config"
