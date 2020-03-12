@@ -118,7 +118,7 @@
                   fab
                   @click.native="captureAudio"
                 >
-                  <v-icon>{{ listening ? "mdi-ear-hearing" : "mdi-voice" }}</v-icon>
+                  <v-icon>{{ listening ? "mdi-ear-hearing" : "mdi-account-voice" }}</v-icon>
                 </v-btn>
               </template>
             </v-col>
