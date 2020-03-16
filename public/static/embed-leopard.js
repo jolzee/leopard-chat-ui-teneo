@@ -169,14 +169,16 @@ document.documentElement.style.setProperty(
   "".concat(leopardViewHeight, "px")
 );
 
-document.addEventListener('DOMContentLoaded', function () {
+function loadLeopard() {
   var leopardTargetElement = document.getElementById("leopardChatWindow");
   if (leopardTargetElement) {
     leopardTargetElement.innerHTML = leopardChatTemplate;
   } else {
     document.body.insertAdjacentHTML("afterbegin", leopardChatTemplate);
   }
-});
+}
+
+document.addEventListener('DOMContentLoaded', loadLeopard);
 
 function checkLeopardButtonFocus() {
   // class teneo-chat-button-widget
@@ -352,3 +354,10 @@ window.addEventListener(
   leopardDebounce(updateLeopardVariables, 200, false),
   false
 );
+
+if (document.readyState === "ready" || document.readyState === "complete") {
+  var leopardTargetElement = document.getElementById("leopardChatWindow");
+  if (!leopardTargetElement) {
+    loadLeopard();
+  }
+}
