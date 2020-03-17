@@ -1601,7 +1601,7 @@ function storeSetup(vuetify) {
         queryObj.text = ""; // it's a login we don't have to say anything yet
         queryObj.feedback = JSON.stringify(feedback);
 
-        TIE.sendInput(config.TENEO_URL, context.getters.teneoSessionId, queryObj).then(() =>
+        TIE.sendInput(context.getters.teneoUrl, context.getters.teneoSessionId, queryObj).then(() =>
           logger.debug("Feedback sent to Teneo")
         );
       },
@@ -1797,7 +1797,7 @@ function storeSetup(vuetify) {
       },
       endSessionLite(context) {
         context.commit("REMOVE_MODAL_ITEM");
-        TIE.close(config.TENEO_URL, context.getters.teneoSessionId).then(() => {
+        TIE.close(context.getters.teneoUrl, context.getters.teneoSessionId).then(() => {
           context.commit("CLEAR_TENEO_SESSION_ID");
           logger.debug("Session Ended");
         });
@@ -1805,7 +1805,7 @@ function storeSetup(vuetify) {
       endSession(context) {
         context.commit("CLEAR_DIALOGS");
         context.commit("REMOVE_MODAL_ITEM");
-        TIE.close(config.TENEO_URL, context.getters.teneoSessionId).then(() => {
+        TIE.close(context.getters.teneoUrl, context.getters.teneoSessionId).then(() => {
           context.commit("CLEAR_TENEO_SESSION_ID");
           context.commit("HIDE_CHAT_LOADING");
           context.commit("HIDE_UPLOAD_BUTTON");
@@ -1826,7 +1826,7 @@ function storeSetup(vuetify) {
           queryObj.command = "login";
           queryObj.text = ""; // it's a login we don't have to say anything yet
 
-          TIE.sendInput(config.TENEO_URL, context.getters.teneoSessionId, queryObj)
+          TIE.sendInput(context.getters.teneoUrl, context.getters.teneoSessionId, queryObj)
             .then(json => {
               context.commit("SET_TENEO_SESSION_ID", json.sessionId);
               json = convertTeneoJsonNewToOld(json);
@@ -1968,7 +1968,7 @@ function storeSetup(vuetify) {
           let queryObj = queryParamStringAsObject(queryParams);
           queryObj.text = currentUserInput.trim();
 
-          TIE.sendInput(config.TENEO_URL, context.getters.teneoSessionId, queryObj)
+          TIE.sendInput(context.getters.teneoUrl, context.getters.teneoSessionId, queryObj)
             .then(json => {
               json = convertTeneoJsonNewToOld(json);
               if (params.indexOf("command=train") !== -1) {
@@ -2253,6 +2253,7 @@ function storeSetup(vuetify) {
                 let langurl = decodeURIComponent(response.teneoResponse.extraData.langurl);
 
                 if (langEngineUrl !== "undefined" && langInput !== "undefined") {
+                  context.dispatch("endSessionLite");
                   context.commit("UPDATE_TENEO_URL", langEngineUrl);
                   context.commit("SET_USER_INPUT", langInput);
                   context.commit("SHOW_PROGRESS_BAR");
