@@ -150,7 +150,7 @@ export default {
   },
   data: () => ({
     nomask: {
-      mask: "*".repeat(333),
+      mask: "*".repeat(1000),
       tokens: {
         "*": { pattern: /./ }
       }
