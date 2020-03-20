@@ -227,6 +227,15 @@ function getLeopardElementHeight() {
   return wantedHeight;
 }
 
+function leopardFocusIframe(iframeEl) {
+    if (iframeEl.contentWindow) {
+        iframeEl.contentWindow.focus();
+    } else if (iframeEl.contentDocument && iframeEl.contentDocument.documentElement) {
+        // For old versions of Safari
+        iframeEl.contentDocument.documentElement.focus();
+    }
+}
+
 function animateLeopard(animationName, callback) {
 
   var node = document.getElementById("teneo-chat-widget-container");
@@ -255,7 +264,7 @@ function animateLeopard(animationName, callback) {
         if (teneoFrame) {
           var teneoInputBox = teneoFrame.contentDocument.getElementById('teneo-input-field');
           if (teneoInputBox) {
-            teneoFrame.focus();
+            leopardFocusIframe(teneoFrame);
             teneoInputBox.focus();
             teneoInputBox.click();
           }
