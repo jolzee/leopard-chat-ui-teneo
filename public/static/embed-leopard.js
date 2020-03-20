@@ -169,6 +169,15 @@ document.documentElement.style.setProperty(
   "".concat(leopardViewHeight, "px")
 );
 
+function leopardFocusIframe(iframeEl) {
+    if (iframeEl.contentWindow) {
+        iframeEl.contentWindow.focus();
+    } else if (iframeEl.contentDocument && iframeEl.contentDocument.documentElement) {
+        // For old versions of Safari
+        iframeEl.contentDocument.documentElement.focus();
+    }
+}
+
 function loadLeopard() {
   var leopardTargetElement = document.getElementById("leopardChatWindow");
   if (leopardTargetElement) {
@@ -186,12 +195,12 @@ function checkLeopardButtonFocus() {
   if (teneoFrame && document.activeElement === teneoFrame) {
     var teneoContainer = document.getElementById("teneo-chat-widget-container");
     if (teneoContainer && teneoContainer.className === "teneo-chat-button-widget") {
-        var leopardFrameInnerButtonEl = teneoFrame.contentDocument.getElementById('leopard-embed-open-close-button');
-        if (leopardFrameInnerButtonEl) {
-            teneoFrame.focus();
-            leopardFrameInnerButtonEl.focus();
-          }
+      var leopardFrameInnerButtonEl = teneoFrame.contentDocument.getElementById('leopard-embed-open-close-button');
+      if (leopardFrameInnerButtonEl) {
+        leopardFocusIframe(teneoFrame);
+        leopardFrameInnerButtonEl.focus();
       }
+    }
   }
 }
 
@@ -225,15 +234,6 @@ function getLeopardElementHeight() {
   el.style.position = elPosition;
   el.style.visibility = elVisibility;
   return wantedHeight;
-}
-
-function leopardFocusIframe(iframeEl) {
-    if (iframeEl.contentWindow) {
-        iframeEl.contentWindow.focus();
-    } else if (iframeEl.contentDocument && iframeEl.contentDocument.documentElement) {
-        // For old versions of Safari
-        iframeEl.contentDocument.documentElement.focus();
-    }
 }
 
 function animateLeopard(animationName, callback) {
@@ -348,8 +348,8 @@ function receiveLeopardMessage(event) {
               if (leopardFrame) {
                 var leopardFrameInnerButton = leopardFrame.contentDocument.getElementById('leopard-embed-open-close-button');
                 if (leopardFrameInnerButton) {
-                    leopardFrame.focus();
-                    leopardFrameInnerButton.focus();
+                  leopardFocusIframe(leopardFrame);
+                  leopardFrameInnerButton.focus();
                 }
               }
             }

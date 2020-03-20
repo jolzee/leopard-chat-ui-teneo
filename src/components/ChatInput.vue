@@ -359,7 +359,7 @@ export default {
         ) {
           document.activeElement.blur();
         }
-      }, 300);
+      }, 1000);
     },
     toggleShowPassword() {
       logger.debug("Toggeling Password");
