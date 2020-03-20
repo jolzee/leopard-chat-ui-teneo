@@ -560,6 +560,30 @@ export default {
     };
   },
   watch: {
+    isChatOpen: function(isOpenNew) {
+      if (isOpenNew) {
+        const element = this.$el.querySelector("#teneo-input-field");
+
+        if (!this.isMobileDevice) {
+          if (element) {
+            element.focus();
+            this.$nextTick(() => {
+              // this.$refs.userInput.focus(); // possibly duplicated below
+              element.addEventListener("focusin", e => e.stopPropagation()); // to stop flickering
+              element.focus();
+              try {
+                element.click();
+              } catch (e) {
+                // ignore
+              }
+            });
+          }
+        } else {
+          element.addEventListener("focusin", e => e.stopPropagation()); // to stop flickering
+          document.activeElement.blur();
+        }
+      }
+    },
     mustCloseBecauseOfEscape: function(mustClose) {
       if (mustClose) {
         if (this.embed) {
@@ -599,6 +623,8 @@ export default {
     logger.info("In production: ", this.embed);
     if (this.embed) {
       this.isChatOpenLocalStorage();
+      // window.addEventListener("keyup", debounce(this.handleKeyUpEmbed, 200, false), false);
+      window.addEventListener("keyup", this.handleKeyUpEmbed, true);
     }
     this.$nextTick(function() {
       if (this.isMobileDevice) {
@@ -787,6 +813,25 @@ export default {
     }
   },
   methods: {
+    handleKeyUpEmbed(e) {
+      if (this.showButtonOnly && this.showChatButton) {
+        if (e.shiftKey && e.key === "Tab") {
+          let embedButton = document.getElementById("leopard-embed-open-close-button");
+          if (embedButton !== document.activeElement) {
+            // alert("SHIFT+TAB: INNER");
+            this.sendMessageToParent("shiftTabLeopard");
+          }
+        } else if (e.key === "Tab") {
+          // let embedButton = document.getElementById("leopard-embed-open-close-button");
+          // if (document.body === document.activeElement) {
+          //   let embedButton = document.getElementById("leopard-embed-open-close-button");
+          //   embedButton.focus();
+          // } else if (embedButton === document.activeElement) {
+          //   this.sendMessageToParent("tabLeopard");
+          // }
+        }
+      }
+    },
     setupChatHoverColor() {
       if (this.$vuetify.theme.dark) {
         document.documentElement.style.setProperty("--leopard-chat-button-color", "#C6FF00");
