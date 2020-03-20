@@ -3,7 +3,7 @@ const fs = require("fs");
 const CompressionPlugin = require("compression-webpack-plugin");
 const BrotliPlugin = require("brotli-webpack-plugin");
 const FileManagerPlugin = require("filemanager-webpack-plugin");
-// const WebpackDeletePlugin = require("webpack-delete-plugin");
+const WebpackDeletePlugin = require("webpack-delete-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
 // devtool: isLocalDev ? "source-map" : produceSourceMaps ? "source-map" : "",
@@ -185,6 +185,13 @@ if (!isDev) {
 }
 
 if (!isLocalDev && !isDev) {
+  buildConfig.configureWebpack.plugins.push(
+    new WebpackDeletePlugin([
+      "./dist/static/embed-leopard.js.gz",
+      "./dist/static/embed-leopard.js.br"
+    ])
+  );
+
   const fileManagerOptions = {
     onEnd: {
       copy: []
