@@ -41,7 +41,7 @@
     "@livechat/agent-app-widget-sdk": "^3.0.0",
     "@livechat/customer-sdk": "^2.0.0-alpha.3",
     "@mdi/font": "^5.0.45",
-    "@sentry/browser": "^5.14.0",
+    "@sentry/browser": "^5.15.0",
     "@sentry/integrations": "^5.14.0",
     "artyom.js": "git+http://github.com/jolzee/artyom.js.git",
     "consola": "^2.11.3",
