@@ -37,6 +37,7 @@
         'application-fullscreen': fullscreenEmbed
       }"
     >
+      <vue-snotify></vue-snotify>
       <!-- <AssistiveText ref="assistiveText" v-model="accessibleAnouncement"></AssistiveText> -->
       <transition
         name="system-bar-transition"
@@ -329,7 +330,22 @@
                     </v-btn>
                   </v-fab-transition>
                 </span>
-
+                <v-fab-transition v-if="emergencyConfig">
+                  <v-btn
+                    icon
+                    text
+                    tile
+                    small
+                    ripple
+                    accesskey="."
+                    :color="emergencyConfig.color ? emergencyConfig.color : isLightColor('primary') ? 'black' : 'white'"
+                    aria-label="Minimize Chat"
+                    class="embed-button-center mr-1"
+                    @click="sendEmergencyCode"
+                  >
+                    <v-icon>{{ `mdi-${emergencyConfig.icon}` }}</v-icon>
+                  </v-btn>
+                </v-fab-transition>
                 <template v-if="embed">
                   <span @click="closeChatEmbedded">
                     <v-fab-transition>
@@ -560,6 +576,19 @@ export default {
     };
   },
   watch: {
+    snotify: function(snotifyConfig) {
+      if (snotifyConfig) {
+        if (snotifyConfig.title) {
+          this.$snotify[snotifyConfig.type](
+            snotifyConfig.body,
+            snotifyConfig.title,
+            snotifyConfig.config
+          );
+        } else {
+          this.$snotify[snotifyConfig.type](snotifyConfig.body, snotifyConfig.config);
+        }
+      }
+    },
     isChatOpen: function(isOpenNew) {
       if (isOpenNew) {
         const element = this.$el.querySelector("#teneo-input-field");
@@ -672,11 +701,13 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "emergencyConfig",
       "isLiveAgentAssist",
       "accessibleAnouncement",
       "mustCloseBecauseOfEscape",
       "accentStyling",
       "authenticated",
+      "snotify",
       "hide508",
       "theme",
       "textColor",
@@ -813,6 +844,16 @@ export default {
     }
   },
   methods: {
+    sendEmergencyCode() {
+      this.$store
+        .dispatch("sendUserInput", this.emergencyConfig.params)
+        .then(() => {
+          logger.debug("Emergency code sent to Teneo: ", this.emergencyConfig.params);
+        })
+        .catch(err => {
+          logger.error("Error sending emergency code", err);
+        });
+    },
     handleKeyUpEmbed(e) {
       if (this.showButtonOnly && this.showChatButton) {
         if (e.shiftKey && e.key === "Tab") {
@@ -1233,6 +1274,7 @@ export default {
 </script>
 
 <style>
+@import "~vue-snotify/styles/material.css";
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css";
 
 .teneo-icon {

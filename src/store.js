@@ -20,6 +20,15 @@ import { accountsSdk } from "@livechat/accounts-sdk";
 import liveChatConfig from "@/utils/livechat-config";
 import Firebase from "@/utils/firebase";
 import enableDrag from "@/utils/drag";
+import Snotify, { SnotifyPosition } from "vue-snotify";
+
+const snotifyOptions = {
+  toast: {
+    position: SnotifyPosition.leftBottom
+  }
+};
+
+Vue.use(Snotify, snotifyOptions);
 
 var md = require("markdown-it")({
   html: true,
@@ -53,7 +62,6 @@ import { STORAGE_KEY } from "@/constants/solution-config-default"; // applicatio
 import { TRANSLATIONS } from "@/constants/translations"; // add UI translations for different language here
 import Setup from "@/utils/setup";
 
-let teneoSessionId;
 let store;
 let config = new Setup();
 Vue.use(Vuex);
@@ -171,9 +179,15 @@ function storeSetup(vuetify) {
           ? localStorage.getItem(STORAGE_KEY + "darkTheme") === "true"
           : false,
         embed: config.EMBED,
+        emergencyConfig: {
+          icon: "bell-ring",
+          color: "red",
+          params: "&command=SEND_EMERGENCY"
+        },
         showDelayedResponse: false,
         hideConfigMenu: window.leopardConfig.hideConfigMenu,
         isWebSite: true,
+        snotify: null,
         overlayChat: config.FLOAT,
         responseIcon: config.RESPONSE_ICON,
         theme: config.THEME,
@@ -190,6 +204,12 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      emergencyConfig(state) {
+        return state.ui.emergencyConfig;
+      },
+      snotify(state) {
+        return state.ui.snotify;
+      },
       teneoSessionId(state) {
         return state.teneoSessionId;
       },
@@ -969,6 +989,12 @@ function storeSetup(vuetify) {
       }
     },
     mutations: {
+      SET_EMERGENCY_CONFIG(state, config) {
+        state.ui.emergencyConfig = config;
+      },
+      SET_SNOTIFY(state, config) {
+        state.ui.snotify = config;
+      },
       SET_TENEO_SESSION_ID(state, newSessionId) {
         state.teneoSessionId = newSessionId;
       },
@@ -1831,6 +1857,15 @@ function storeSetup(vuetify) {
               context.commit("SET_TENEO_SESSION_ID", json.sessionId);
               json = convertTeneoJsonNewToOld(json);
               context.commit("HIDE_CHAT_LOADING");
+              if (json.responseData.extraData.snotify) {
+                context.commit("SET_SNOTIFY", JSON.parse(json.responseData.extraData.snotify));
+              }
+              if (json.responseData.extraData.emergency) {
+                context.commit(
+                  "SET_EMERGENCY_CONFIG",
+                  JSON.parse(json.responseData.extraData.emergency)
+                );
+              }
               if ("numActiveFlows" in json.responseData.extraData) {
                 let numActiveFlows = parseInt(json.responseData.extraData.numActiveFlows);
                 if (numActiveFlows > 0) {
@@ -1973,6 +2008,9 @@ function storeSetup(vuetify) {
               json = convertTeneoJsonNewToOld(json);
               if (params.indexOf("command=train") !== -1) {
                 return;
+              }
+              if (json.responseData.extraData.snotify) {
+                context.commit("SET_SNOTIFY", JSON.parse(json.responseData.extraData.snotify));
               }
               if ("numActiveFlows" in json.responseData.extraData) {
                 // deal with polling
