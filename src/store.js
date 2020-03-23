@@ -2034,6 +2034,18 @@ function storeSetup(vuetify) {
               }
               context.commit("HIDE_CHAT_LOADING");
 
+              if (
+                json.responseData.extraData.theme &&
+                json.responseData.extraData.theme === "dark"
+              ) {
+                vuetify.framework.theme.dark = true;
+              } else if (
+                json.responseData.extraData.theme &&
+                json.responseData.extraData.theme === "light"
+              ) {
+                vuetify.framework.theme.dark = false;
+              }
+
               if (json.responseData.extraData.offerFeedbackForm) {
                 const feedbackConfig = JSON.parse(
                   decodeURIComponent(json.responseData.extraData.offerFeedbackForm)
