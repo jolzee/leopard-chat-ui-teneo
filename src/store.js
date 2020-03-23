@@ -179,11 +179,7 @@ function storeSetup(vuetify) {
           ? localStorage.getItem(STORAGE_KEY + "darkTheme") === "true"
           : false,
         embed: config.EMBED,
-        emergencyConfig: {
-          icon: "bell-ring",
-          color: "red",
-          params: "&command=SEND_EMERGENCY"
-        },
+        emergencyConfig: null,
         showDelayedResponse: false,
         hideConfigMenu: window.leopardConfig.hideConfigMenu,
         isWebSite: true,
