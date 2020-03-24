@@ -203,7 +203,7 @@ function storeSetup(vuetify) {
     },
     getters: {
       locationInfo(state) {
-        return generateQueryParams(state.locationInfo);
+        return `&${generateQueryParams(state.locationInfo)}`;
       },
       emergencyConfig(state) {
         return state.ui.emergencyConfig;
