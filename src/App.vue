@@ -578,15 +578,37 @@ export default {
   watch: {
     snotify: function(snotifyConfig) {
       if (snotifyConfig) {
-        if (snotifyConfig.title) {
-          this.$snotify[snotifyConfig.type](
-            snotifyConfig.body,
-            snotifyConfig.title,
-            snotifyConfig.config
-          );
+        if (snotifyConfig instanceof Array) {
+           for (let i = 0; i <= snotifyConfig.length; i++) {
+              let conf = snotifyConfig[i];
+              let that = this;
+              if (conf != null) {
+                console.log(conf);
+                setTimeout(function () {
+                  if (conf.title) {
+                    that.$snotify[conf.type](
+                      conf.body,
+                      conf.title,
+                      conf.config
+                    );
+                  } else {
+                    that.$snotify[conf.type](conf.body, conf.config);
+                  }
+                }, i * 2000);
+              }
+            }
         } else {
-          this.$snotify[snotifyConfig.type](snotifyConfig.body, snotifyConfig.config);
+          if (snotifyConfig.title) {
+            this.$snotify[snotifyConfig.type](
+              snotifyConfig.body,
+              snotifyConfig.title,
+              snotifyConfig.config
+            );
+          } else {
+            this.$snotify[snotifyConfig.type](snotifyConfig.body, snotifyConfig.config);
+          }
         }
+
       }
     },
     isChatOpen: function(isOpenNew) {
