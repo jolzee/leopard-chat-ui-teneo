@@ -173,6 +173,7 @@ function storeSetup(vuetify) {
         tts: initializeTTS(setupConfig.LOCALE)
       },
       ui: {
+        vuetify: vuetify,
         chatTitle: setupConfig.CHAT_TITLE,
         dark: localStorage.getItem(STORAGE_KEY + "darkTheme")
           ? localStorage.getItem(STORAGE_KEY + "darkTheme") === "true"
@@ -1837,6 +1838,7 @@ function storeSetup(vuetify) {
         });
       },
       login(context) {
+        let that = this;
         context.commit("SHOW_CHAT_LOADING");
         // get the greeting message if we haven't done so for this session
         return new Promise((resolve, reject) => {
@@ -1855,6 +1857,13 @@ function storeSetup(vuetify) {
               context.commit("SET_TENEO_SESSION_ID", json.sessionId);
               json = convertTeneoJsonNewToOld(json);
               context.commit("HIDE_CHAT_LOADING");
+              if (json.responseData.extraData.theme) {
+                Object.assign(
+                  vuetify.framework.theme.themes.light,
+                  JSON.parse(json.responseData.extraData.theme)
+                );
+              }
+
               if (json.responseData.extraData.toast) {
                 context.commit("SET_SNOTIFY", JSON.parse(json.responseData.extraData.toast));
               }
@@ -2014,6 +2023,12 @@ function storeSetup(vuetify) {
               }
               if (json.responseData.extraData.toast) {
                 context.commit("SET_SNOTIFY", JSON.parse(json.responseData.extraData.toast));
+              }
+              if (json.responseData.extraData.theme) {
+                Object.assign(
+                  vuetify.framework.theme.themes.light,
+                  JSON.parse(json.responseData.extraData.theme)
+                );
               }
               if ("numActiveFlows" in json.responseData.extraData) {
                 // deal with polling
