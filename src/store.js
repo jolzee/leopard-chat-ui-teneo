@@ -13,6 +13,7 @@ import {
   parseExtraData,
   uuid
 } from "@/utils/utils";
+import PostMessage from "@/utils/postMessage";
 import router from "@/router";
 import dayjs from "dayjs";
 import LiveChat from "@livechat/agent-app-widget-sdk";
@@ -44,7 +45,6 @@ const superagent = require("superagent");
 import gravatar from "gravatar";
 var stripHtml = require("striptags");
 var mobile = require("is-mobile");
-import URL from "url-parse";
 import Vue from "vue";
 import Vuex from "vuex";
 import vuexI18n from "vuex-i18n"; // i18n the leopard interface
@@ -63,10 +63,8 @@ import { TRANSLATIONS } from "@/constants/translations"; // add UI translations 
 import Setup from "@/utils/setup";
 
 let store;
-let config = new Setup();
+let setupConfig = new Setup();
 Vue.use(Vuex);
-
-// Vue.use(VuePlyr);
 
 Vue.use(require("vue-shortkey"));
 
@@ -81,39 +79,40 @@ Vue.component(
 
 Vue.config.productionTip = false;
 let liveChatAssistConnectCount = 0;
-let browserHandledSession = null;
+
+let postMessage;
 
 export default function getStore() {
   return new Promise((resolve, reject) => {
-    config
+    setupConfig
       .init()
       .then(vuetify => {
-        resolve(storeSetup(vuetify));
+        resolve(storeSetup(vuetify)); // { vuetify, store }
       })
       .catch(error => reject(error));
   });
 }
 
 function storeSetup(vuetify) {
-  if (!config.EMBED) {
+  if (!setupConfig.EMBED) {
     enableDrag();
   }
   store = new Vuex.Store({
-    plugins: [...(config.logrocketPlugin ? [config.logrocketPlugin] : [])],
+    plugins: [...(setupConfig.logrocketPlugin ? [setupConfig.logrocketPlugin] : [])],
     state: {
       asr: {
         stopAudioCapture: false,
         asr: null
       },
       accessibleAnouncement: "",
-      chatConfig: config.chatConfig,
-      activeSolution: config.activeSolution,
+      chatConfig: setupConfig.chatConfig,
+      activeSolution: setupConfig.activeSolution,
       connection: {
-        requestParameters: config.REQUEST_PARAMETERS,
+        requestParameters: setupConfig.REQUEST_PARAMETERS,
         ctxParameters: doesParameterExist("teneoCtx")
           ? JSON.parse(getParameterByName("teneoCtx"))
           : "",
-        teneoUrl: config.TENEO_URL
+        teneoUrl: setupConfig.TENEO_URL
       },
       browser: {
         isMobile: mobile(),
@@ -134,22 +133,22 @@ function storeSetup(vuetify) {
         feedbackFormConfig: null
       },
       iframe: {
-        iframeUrl: config.IFRAME_URL,
-        iframeUrlBase: config.IFRAME_URL
-          ? config.IFRAME_URL.substring(0, config.IFRAME_URL.lastIndexOf("/")) + "/"
-          : config.IFRAME_URL
+        iframeUrl: setupConfig.IFRAME_URL,
+        iframeUrlBase: setupConfig.IFRAME_URL
+          ? setupConfig.IFRAME_URL.substring(0, setupConfig.IFRAME_URL.lastIndexOf("/")) + "/"
+          : setupConfig.IFRAME_URL
       },
       teneoSessionId: null,
       promptTriggerInterval: null,
-      knowledgeData: config.KNOWLEDGE_DATA,
+      knowledgeData: setupConfig.KNOWLEDGE_DATA,
       liveAgent: {
         apiAccessToken: null,
         agentAvatar: null,
         agentID: null,
         agentName: null,
-        enableLiveChat: config.ENABLE_LIVE_CHAT,
+        enableLiveChat: setupConfig.ENABLE_LIVE_CHAT,
         isLiveChat: false,
-        isAgentAssist: config.IS_AGENT_ASSIST,
+        isAgentAssist: setupConfig.IS_AGENT_ASSIST,
         liveChatMessage: null,
         showLiveChatProcessing: false
       },
@@ -171,23 +170,23 @@ function storeSetup(vuetify) {
       },
       tts: {
         speakBackResponses: false,
-        tts: initializeTTS(config.LOCALE)
+        tts: initializeTTS(setupConfig.LOCALE)
       },
       ui: {
-        chatTitle: config.CHAT_TITLE,
+        chatTitle: setupConfig.CHAT_TITLE,
         dark: localStorage.getItem(STORAGE_KEY + "darkTheme")
           ? localStorage.getItem(STORAGE_KEY + "darkTheme") === "true"
           : false,
-        embed: config.EMBED,
+        embed: setupConfig.EMBED,
         emergencyConfig: null,
         showDelayedResponse: false,
         hideConfigMenu: window.leopardConfig.hideConfigMenu,
         isWebSite: true,
         snotify: null,
-        overlayChat: config.FLOAT,
-        responseIcon: config.RESPONSE_ICON,
-        theme: config.THEME,
-        userIcon: config.USER_ICON,
+        overlayChat: setupConfig.FLOAT,
+        responseIcon: setupConfig.RESPONSE_ICON,
+        theme: setupConfig.THEME,
+        userIcon: setupConfig.USER_ICON,
         parent: {},
         showUploadButton: false,
         showChatWindow: false,
@@ -523,7 +522,7 @@ function storeSetup(vuetify) {
         let actions = [];
         if (item && item.teneoResponse) {
           if (
-            Object.keys(item.teneoResponse.extraData).some(function(k) {
+            Object.keys(item.teneoResponse.extraData).some(function (k) {
               return ~k.indexOf("extensions");
             })
           ) {
@@ -531,7 +530,7 @@ function storeSetup(vuetify) {
             const ordered = {};
             Object.keys(item.teneoResponse.extraData)
               .sort()
-              .forEach(function(key) {
+              .forEach(function (key) {
                 ordered[key] = item.teneoResponse.extraData[key];
               });
             try {
@@ -863,20 +862,20 @@ function storeSetup(vuetify) {
       },
       dialogs(state) {
         logger.debug(
-          `Session Storage? ${config.USE_SESSION_STORAGE} Dialog Length ${state.conversation.dialog.length}`
+          `Session Storage? ${setupConfig.USE_SESSION_STORAGE} Dialog Length ${state.conversation.dialog.length}`
         );
-        if (!config.USE_SESSION_STORAGE && state.conversation.dialog.length === 0) {
+        if (!setupConfig.USE_SESSION_STORAGE && state.conversation.dialog.length === 0) {
           logger.debug("Checking for stale session - embed");
           // typically here when in production embedded state
           // check if session expired
           let now = new Date();
           let lastInteractionTime = localStorage.getItem(
-            STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE
+            STORAGE_KEY + setupConfig.TENEO_LAST_INTERACTION_DATE
           );
           if (!lastInteractionTime) {
             logger.debug("No previous interaction time...");
             state.conversation.dialog = JSON.parse(
-              localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
+              localStorage.getItem(STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY, "[]")
             );
           } else {
             logger.debug(`found last interaction time: ${lastInteractionTime}`);
@@ -885,13 +884,16 @@ function storeSetup(vuetify) {
             let diffMins = Math.abs(Math.round(diff));
             logger.debug(`Minutes Difference: ${diffMins}`);
             if (diffMins > 0) {
-              localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
+              localStorage.setItem(
+                STORAGE_KEY + setupConfig.TENEO_LAST_INTERACTION_DATE,
+                now.getTime()
+              );
               state.conversation.dialog = [];
-              localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]");
+              localStorage.setItem(STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY, "[]");
             } else {
               // "session" still active
               state.conversation.dialog = JSON.parse(
-                localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
+                localStorage.getItem(STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY, "[]")
               );
             }
           }
@@ -903,13 +905,13 @@ function storeSetup(vuetify) {
       },
       getLatestDialogHistory(state) {
         if (state.conversation.dialogHistory.length === 0) {
-          if (config.USE_SESSION_STORAGE) {
+          if (setupConfig.USE_SESSION_STORAGE) {
             state.conversation.dialogHistory = JSON.parse(
-              sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
+              sessionStorage.getItem(STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY, "[]")
             );
           } else {
             state.conversation.dialogHistory = JSON.parse(
-              localStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]")
+              localStorage.getItem(STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY, "[]")
             );
           }
 
@@ -1009,7 +1011,7 @@ function storeSetup(vuetify) {
       SHOW_OVERLAY_ALERT(state, message) {
         state.overlay.overlayAlertMessage = message;
         state.overlay.showOverlayAlert = true;
-        setTimeout(function() {
+        setTimeout(function () {
           state.overlay.showOverlayAlert = false;
           state.overlay.overlayAlertMessage = "";
         }, 2000);
@@ -1035,7 +1037,7 @@ function storeSetup(vuetify) {
         state.ui.chatTitle = title;
       },
       RESET_CHAT_TITLE(state) {
-        state.ui.chatTitle = config.CHAT_TITLE;
+        state.ui.chatTitle = setupConfig.CHAT_TITLE;
       },
       SHOW_RESPONSE_DELAY(state) {
         state.ui.showDelayedResponse = true;
@@ -1064,7 +1066,7 @@ function storeSetup(vuetify) {
       OPEN_CHAT_WINDOW_DISPLAY_EMBED(state, _getters) {
         state.ui.showChatWindow = true;
         logger.debug(`OPEN_CHAT_WINDOW_DISPLAY_EMBED`);
-        sendMessageToParent("showLeopard");
+        postMessage.sendMessageToParent("showLeopard");
         localStorage.setItem("isChatOpen", true);
       },
       TOGGLE_CHAT_WINDOW_DISPLAY(state, _getters) {
@@ -1078,7 +1080,7 @@ function storeSetup(vuetify) {
           logger.debug(
             `store: TOGGLE_CHAT_WINDOW_DISPLAY: sending message to parent to ${state.ui.showChatWindow}`
           );
-          sendMessageToParent(state.ui.showChatWindow ? "showLeopard" : "hideLeopard");
+          postMessage.sendMessageToParent(state.ui.showChatWindow ? "showLeopard" : "hideLeopard");
         }
       },
       SHOW_CHAT_WINDOW(state) {
@@ -1196,10 +1198,10 @@ function storeSetup(vuetify) {
       CLEAR_CHAT_HISTORY(state) {
         logger.debug(`Clearing Chat History`);
         state.conversation.dialog = [];
-        localStorage.setItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY, "[]");
+        localStorage.setItem(STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY, "[]");
       },
       LIVE_CHAT(_state, transcript) {
-        config.liveChat.sendMessage(transcript);
+        setupConfig.liveChat.sendMessage(transcript);
       },
       START_LIVE_CHAT(state) {
         state.liveAgent.isLiveChat = true;
@@ -1213,7 +1215,7 @@ function storeSetup(vuetify) {
       CHANGE_THEME(state) {
         state.ui.dark = !state.ui.dark;
         localStorage.setItem(
-          STORAGE_KEY + config.TENEO_CHAT_DARK_THEME,
+          STORAGE_KEY + setupConfig.TENEO_CHAT_DARK_THEME,
           JSON.stringify(state.ui.dark)
         );
       },
@@ -1245,7 +1247,7 @@ function storeSetup(vuetify) {
 
         if (
           payload.response.teneoResponse &&
-          (Object.keys(payload.response.teneoResponse.extraData).some(function(k) {
+          (Object.keys(payload.response.teneoResponse.extraData).some(function (k) {
             return ~k.indexOf("extensions");
           }) ||
             payload.response.teneoResponse.extraData.liveChat ||
@@ -1285,14 +1287,14 @@ function storeSetup(vuetify) {
         //state.userInput.userInput = ""; // reset the user input to nothing
 
         // deal with persiting the chat history
-        if (!config.USE_SESSION_STORAGE) {
+        if (!setupConfig.USE_SESSION_STORAGE) {
           localStorage.setItem(
-            STORAGE_KEY + config.TENEO_CHAT_HISTORY,
+            STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY,
             JSON.stringify(state.conversation.dialog)
           );
         }
         state.conversation.dialogHistory = JSON.parse(
-          sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY)
+          sessionStorage.getItem(STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY)
         );
         if (state.conversation.dialogHistory === null) {
           state.conversation.dialogHistory = state.conversation.dialog;
@@ -1305,16 +1307,16 @@ function storeSetup(vuetify) {
         }
         // save the dislaog history in session storage
         sessionStorage.setItem(
-          STORAGE_KEY + config.TENEO_CHAT_HISTORY,
+          STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY,
           JSON.stringify(state.conversation.dialogHistory)
         );
       },
       REMOVE_FORM_CONFIG(state, itemId) {
-        let foundHistory = state.conversation.dialogHistory.find(function(item) {
+        let foundHistory = state.conversation.dialogHistory.find(function (item) {
           return item.id === itemId;
         });
 
-        let found = state.conversation.dialog.find(function(item) {
+        let found = state.conversation.dialog.find(function (item) {
           return item.id === itemId;
         });
 
@@ -1337,7 +1339,7 @@ function storeSetup(vuetify) {
         }
 
         sessionStorage.setItem(
-          STORAGE_KEY + config.TENEO_CHAT_HISTORY,
+          STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY,
           JSON.stringify(state.conversation.dialogHistory)
         );
       },
@@ -1426,7 +1428,7 @@ function storeSetup(vuetify) {
         if (document.getElementById("site-frame")) {
           document.getElementById("site-frame").src = newUrl;
         } else if (state.ui.embed) {
-          sendMessageToParent(`runLeopardScript|window.location.href = '${newUrl}';`);
+          postMessage.sendMessageToParent(`runLeopardScript|window.location.href = '${newUrl}';`);
         }
         state.iframe.iframeUrl = newUrl;
         state.iframe.iframeUrlBase = newUrl.substring(0, newUrl.lastIndexOf("/")) + "/";
@@ -1437,7 +1439,7 @@ function storeSetup(vuetify) {
       },
       CHANGE_ASR_TTS(state, lang) {
         state.tts.tts = initializeTTS(lang);
-        initializeASR(store, config.ASR_CORRECTIONS_MERGED);
+        initializeASR(store, setupConfig.ASR_CORRECTIONS_MERGED);
       },
       CLEAR_USER_INFO(state) {
         state.auth.userInfo.user = null;
@@ -1567,7 +1569,7 @@ function storeSetup(vuetify) {
           context.commit("SHOW_CHAT_LOADING"); // display the loading spinner
           let isChatUiFloating = context.getters.float;
           setTimeout(
-            function() {
+            function () {
               // wait just a bit before animating things - need the chat button to hide first
               context.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // show the chat window
               logger.debug(`In move button left: ${isChatUiFloating}`);
@@ -1581,7 +1583,7 @@ function storeSetup(vuetify) {
               }
 
               if (!context.getters.embed && !context.getters.overlayChat && siteFrame) {
-                setTimeout(function() {
+                setTimeout(function () {
                   siteFrame.setAttribute("class", "contract-iframe"); // animate the iframe
                 }, 1000);
               }
@@ -1596,7 +1598,7 @@ function storeSetup(vuetify) {
                 logger.debug("Successfully logged into chat");
                 context.commit("LOGGED_INTO_TENEO");
                 setTimeout(
-                  function() {
+                  function () {
                     context.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
                     context.commit("HIDE_CHAT_LOADING");
                   }.bind(this),
@@ -1613,7 +1615,7 @@ function storeSetup(vuetify) {
       },
       sendFeedback(context, feedback) {
         let queryParams =
-          config.REQUEST_PARAMETERS +
+          setupConfig.REQUEST_PARAMETERS +
           context.getters.userInformationParams +
           context.getters.timeZoneParam +
           context.getters.ctxParameters;
@@ -1633,19 +1635,19 @@ function storeSetup(vuetify) {
         }
         if (getters.firebase) {
           logger.debug(`SET USER INFORMATION > Located Firebase`);
-          getters.firebase.auth().onAuthStateChanged(function(user) {
+          getters.firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
               commit("USER_INFO", { user: user }); // user is still signed in
             }
           });
         } else {
           let retyCount = 0;
-          let checkExist = setInterval(function() {
+          let checkExist = setInterval(function () {
             retyCount++;
 
             if (getters.firebase) {
               logger.debug(`SET USER INFORMATION > Firebase > Found on retry: ${retyCount}`);
-              getters.firebase.auth().onAuthStateChanged(function(user) {
+              getters.firebase.auth().onAuthStateChanged(function (user) {
                 if (user) {
                   commit("USER_INFO", { user: user }); // user is still signed in
                 }
@@ -1674,7 +1676,7 @@ function storeSetup(vuetify) {
                 commit("CLEAR_USER_INFO");
                 logger.debug("Signed out of chat");
               },
-              function(error) {
+              function (error) {
                 // An error happened.
                 logger.error(error);
               }
@@ -1730,7 +1732,7 @@ function storeSetup(vuetify) {
           getters.firebase
             .auth()
             .signInWithPopup(provider)
-            .then(function(result) {
+            .then(function (result) {
               // This gives you a Google Access Token. You can use it to access the Google API.
               // var token = result.credential.accessToken;
               // The signed-in user info.
@@ -1741,7 +1743,7 @@ function storeSetup(vuetify) {
               });
               resolve();
             })
-            .catch(function(error) {
+            .catch(function (error) {
               // Handle Errors here.
               // var errorCode = error.code;
               // var errorMessage = error.message;
@@ -1768,7 +1770,7 @@ function storeSetup(vuetify) {
               commit("USER_INFO", { user: user });
               resolve();
             })
-            .catch(function(error) {
+            .catch(function (error) {
               reject(error.message);
             });
         });
@@ -1792,16 +1794,16 @@ function storeSetup(vuetify) {
                   displayName: registrationInfo.displayName,
                   photoURL: registrationInfo.photoURL
                 })
-                .then(function() {
+                .then(function () {
                   logger.debug("User's profile info updated");
                 })
-                .catch(function(error) {
+                .catch(function (error) {
                   logger.error(`Unable to update user's profile information:`, error);
                 });
               commit("USER_INFO", { user: user });
               resolve();
             })
-            .catch(function(error) {
+            .catch(function (error) {
               logger.error(error);
               reject(error.message);
             });
@@ -1839,7 +1841,7 @@ function storeSetup(vuetify) {
         // get the greeting message if we haven't done so for this session
         return new Promise((resolve, reject) => {
           let queryParams =
-            config.REQUEST_PARAMETERS +
+            setupConfig.REQUEST_PARAMETERS +
             context.getters.userInformationParams +
             context.getters.timeZoneParam +
             context.getters.ctxParameters;
@@ -1875,7 +1877,7 @@ function storeSetup(vuetify) {
                     context.getters.getActivePromptInterval === null
                   ) {
                     logger.debug("Start up Prompt Trigger Polling");
-                    let interval = setInterval(function() {
+                    let interval = setInterval(function () {
                       context.dispatch("sendUserInput", "&command=prompt");
                     }, context.getters.getPromptPollingIntervalInMilliseconds);
                     context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
@@ -1909,7 +1911,7 @@ function storeSetup(vuetify) {
               let hasExtraData = false;
 
               if (
-                Object.keys(json.responseData.extraData).some(function(k) {
+                Object.keys(json.responseData.extraData).some(function (k) {
                   return ~k.indexOf("extensions");
                 }) ||
                 json.responseData.extraData.liveChat
@@ -1944,7 +1946,7 @@ function storeSetup(vuetify) {
               context.commit("HIDE_CHAT_LOADING");
               const errResp = {
                 error: err,
-                teneoUrl: config.TENEO_URL,
+                teneoUrl: setupConfig.TENEO_URL,
                 message: "Could not send login command to TIE"
               };
               logger.debug(`Problems sending login command`, errResp);
@@ -1965,7 +1967,10 @@ function storeSetup(vuetify) {
         let currentUserInput = "";
         if (params.indexOf("command=prompt") === -1) {
           logger.debug("Updating last interaction time in localstorage");
-          localStorage.setItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE, now.getTime());
+          localStorage.setItem(
+            STORAGE_KEY + setupConfig.TENEO_LAST_INTERACTION_DATE,
+            now.getTime()
+          );
           currentUserInput = stripHtml(context.getters.userInput);
           context.commit("CLEAR_USER_INPUT");
           // send user input to Teneo when a live chat has not begun
@@ -1991,7 +1996,9 @@ function storeSetup(vuetify) {
           await sleep(context.getters.responseDelay); // delay responses if needed
 
           let queryParams =
-            (config.SEND_CTX_PARAMS === "all" ? config.REQUEST_PARAMETERS + params : params) +
+            (setupConfig.SEND_CTX_PARAMS === "all"
+              ? setupConfig.REQUEST_PARAMETERS + params
+              : params) +
             context.getters.userInformationParams +
             context.getters.timeZoneParam +
             context.getters.ctxParameters;
@@ -2023,7 +2030,7 @@ function storeSetup(vuetify) {
                     context.getters.getActivePromptInterval === null
                   ) {
                     logger.debug("Start up Prompt Trigger Polling");
-                    let interval = setInterval(function() {
+                    let interval = setInterval(function () {
                       context.dispatch("sendUserInput", "&command=prompt");
                     }, context.getters.getPromptPollingIntervalInMilliseconds);
                     context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
@@ -2104,7 +2111,7 @@ function storeSetup(vuetify) {
               if ("script" in json.responseData.extraData) {
                 let theScript = decodeURIComponent(json.responseData.extraData.script);
                 if (context.getters.embed) {
-                  sendMessageToParent("runLeopardScript|" + theScript);
+                  postMessage.sendMessageToParent("runLeopardScript|" + theScript);
                 } else {
                   // run locally
                   eval(theScript);
@@ -2146,9 +2153,9 @@ function storeSetup(vuetify) {
                 "inputType" in json.responseData.extraData &&
                 json.responseData.extraData.inputType.startsWith("location")
               ) {
-                config
+                setupConfig
                   .getLocator()
-                  .then(function(position) {
+                  .then(function (position) {
                     // we now have the user's lat and long
                     logger.debug(`${position.coords.latitude}, ${position.coords.longitude}`);
                     if (json.responseData.extraData.inputType === "locationLatLong") {
@@ -2226,7 +2233,7 @@ function storeSetup(vuetify) {
                       );
                     }
                   })
-                  .catch(function(err) {
+                  .catch(function (err) {
                     logger.error("Position Error ", err);
                   });
               }
@@ -2329,7 +2336,7 @@ function storeSetup(vuetify) {
             .catch(err => {
               const errResp = {
                 error: err,
-                teneoUrl: config.TENEO_URL
+                teneoUrl: setupConfig.TENEO_URL
               };
               if (err.status && err.status === 408) {
                 logger.error("Request To Teneo Timed Out: 408", errResp);
@@ -2359,15 +2366,15 @@ function storeSetup(vuetify) {
           };
           context.commit("PUSH_USER_INPUT_TO_DIALOG", newUserInput);
 
-          if (!config.USE_SESSION_STORAGE) {
+          if (!setupConfig.USE_SESSION_STORAGE) {
             localStorage.setItem(
-              STORAGE_KEY + config.TENEO_CHAT_HISTORY,
+              STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY,
               JSON.stringify(context.getters.dialog)
             );
           }
           context.commit(
             "SET_DIALOG_HISTORY",
-            JSON.parse(sessionStorage.getItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY))
+            JSON.parse(sessionStorage.getItem(STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY))
           );
           if (context.getters.dialogHistory === null) {
             context.commit("SET_DIALOG_HISTORY", context.getters.dialog);
@@ -2375,10 +2382,10 @@ function storeSetup(vuetify) {
             context.commit("PUSH_USER_INPUT_TO_DIALOG_HISTORY", newUserInput);
           }
           sessionStorage.setItem(
-            STORAGE_KEY + config.TENEO_CHAT_HISTORY,
+            STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY,
             JSON.stringify(context.getters.dialogHistory)
           );
-          config.liveChat.sendMessage(currentUserInput);
+          setupConfig.liveChat.sendMessage(currentUserInput);
           context.commit("HIDE_PROGRESS_BAR");
           context.commit("CLEAR_USER_INPUT");
         }
@@ -2391,14 +2398,14 @@ function storeSetup(vuetify) {
 
   // setup i18n for Leopard UI
   Vue.use(vuexI18n.plugin, store);
-  Object.keys(TRANSLATIONS).forEach(function(key) {
+  Object.keys(TRANSLATIONS).forEach(function (key) {
     Vue.i18n.add(key, TRANSLATIONS[key]);
   });
-  Vue.i18n.set(config.LOCALE);
+  Vue.i18n.set(setupConfig.LOCALE);
 
   // Setup ASR
   try {
-    initializeASR(store, config.ASR_CORRECTIONS_MERGED);
+    initializeASR(store, setupConfig.ASR_CORRECTIONS_MERGED);
   } catch (err) {
     logger.error(`Error setting up ASR and TTS`, err);
   }
@@ -2407,79 +2414,12 @@ function storeSetup(vuetify) {
   try {
     if (window.leopardConfig.liveChat.licenseKey) {
       logger.debug(`About to try and setup Live Chat`);
-      config.setupLiveChat(store);
+      setupConfig.setupLiveChat(store);
     }
   } catch (e) {
-    logger.error(`Error setting up LiveChat`, e);
+    logger.info(`Error setting up LiveChat`, e);
   }
-
+  postMessage = new PostMessage(store, setupConfig);
   // ok vuetify and store are setup
   return { vuetify, store };
-}
-
-function stoperror() {
-  return true;
-}
-
-function sendMessageToParent(message) {
-  logger.debug(`store: sendMessageToParent: ${message}`);
-  if (parent) {
-    parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
-    logger.debug("Message from Leopard >> Embed : " + message);
-  }
-}
-
-function receiveMessageFromParent(event) {
-  try {
-    // if (event.origin !== "http://example.com:8080") return;
-
-    if (event.data) {
-      let messageObject = JSON.parse(event.data);
-      if ("info" in messageObject && "id" in messageObject) {
-        return true;
-      }
-
-      logger.debug("Recived a message from parent...");
-      logger.debug(messageObject);
-      // event.source.postMessage("This is a message sent back from Leopard to the site embedding Leopard", event.origin);
-
-      if ("leopardState" in messageObject && messageObject.leopardState === "closed") {
-        store.commit("HIDE_CHAT_WINDOW_DISPLAY_EMBED");
-        setTimeout(
-          function() {
-            if (config.EMBED && window.leopardConfig.killSessionOnCloseEmbed) {
-              // should kill the session and clear dialog history
-              logger.info("Killing Teneo Session");
-              store.dispatch("endSession");
-              localStorage.removeItem(STORAGE_KEY + config.TENEO_LAST_INTERACTION_DATE);
-              localStorage.removeItem(STORAGE_KEY + config.TENEO_CHAT_HISTORY);
-              sessionStorage.removeItem(STORAGE_KEY + "teneo-chat-history");
-            }
-            store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
-            return;
-          }.bind(this),
-          1000
-        );
-      }
-      if ("height" in messageObject && "width" in messageObject) {
-        logger.info(`Event from parent`, event);
-        store.state.ui.parent = {
-          height: messageObject.height,
-          width: messageObject.width
-        };
-        logger.debug(
-          `receiveMessageFromParent: height: ${messageObject.height} width: ${messageObject.width}`
-        );
-      } else {
-        store.state.connection.ctxParameters = messageObject;
-      }
-    }
-  } catch (error) {
-    stoperror();
-  }
-}
-
-if (config.EMBED) {
-  logger.info("Listening for messages from parent");
-  window.addEventListener("message", receiveMessageFromParent);
 }
