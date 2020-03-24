@@ -1853,8 +1853,8 @@ function storeSetup(vuetify) {
               context.commit("SET_TENEO_SESSION_ID", json.sessionId);
               json = convertTeneoJsonNewToOld(json);
               context.commit("HIDE_CHAT_LOADING");
-              if (json.responseData.extraData.snotify) {
-                context.commit("SET_SNOTIFY", JSON.parse(json.responseData.extraData.snotify));
+              if (json.responseData.extraData.toast) {
+                context.commit("SET_SNOTIFY", JSON.parse(json.responseData.extraData.toast));
               }
               if (json.responseData.extraData.emergency) {
                 context.commit(
@@ -2005,8 +2005,8 @@ function storeSetup(vuetify) {
               if (params.indexOf("command=train") !== -1) {
                 return;
               }
-              if (json.responseData.extraData.snotify) {
-                context.commit("SET_SNOTIFY", JSON.parse(json.responseData.extraData.snotify));
+              if (json.responseData.extraData.toast) {
+                context.commit("SET_SNOTIFY", JSON.parse(json.responseData.extraData.toast));
               }
               if ("numActiveFlows" in json.responseData.extraData) {
                 // deal with polling
