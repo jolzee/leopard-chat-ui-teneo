@@ -263,7 +263,7 @@ export default class Setup {
                   countryCode: loc.geoplugin_countryCode,
                   countryName: loc.geoplugin_countryName,
                   currencySymbol: loc.geoplugin_currencySymbol,
-                  currentCode: loc.geoplugin_currencyCode,
+                  currencyCode: loc.geoplugin_currencyCode,
                   latitude: loc.geoplugin_latitude,
                   longitude: loc.geoplugin_longitude,
                   regionCode: loc.geoplugin_regionCode,
