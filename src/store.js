@@ -9,6 +9,7 @@ import {
   cleanEmptyChunks,
   isLight,
   queryParamStringAsObject,
+  generateQueryParams,
   convertTeneoJsonNewToOld,
   parseExtraData,
   uuid
@@ -162,6 +163,7 @@ function storeSetup(vuetify) {
         showCustomModal: false,
         showModal: false
       },
+      locationInfo: setupConfig.LOCATION,
       hide508: false,
       progress: {
         listening: false,
@@ -200,6 +202,9 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      locationInfo(state) {
+        return generateQueryParams(state.locationInfo);
+      },
       emergencyConfig(state) {
         return state.ui.emergencyConfig;
       },
@@ -1846,7 +1851,8 @@ function storeSetup(vuetify) {
             setupConfig.REQUEST_PARAMETERS +
             context.getters.userInformationParams +
             context.getters.timeZoneParam +
-            context.getters.ctxParameters;
+            context.getters.ctxParameters +
+            context.getters.locationInfo;
 
           let queryObj = queryParamStringAsObject(queryParams);
           queryObj.command = "login";

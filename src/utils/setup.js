@@ -1,5 +1,6 @@
 const logger = require("@/utils/logging").getLogger("setup.js");
 import "@mdi/font/css/materialdesignicons.css";
+
 // import "typeface-roboto";
 import {
   doesParameterExist,
@@ -248,7 +249,35 @@ export default class Setup {
               });
             }
           }, 2000);
-          resolve(vuetify);
+          if (window.leopardConfig.mustSendLocationAtLogin) {
+            superagent
+              .get("http://www.geoplugin.net/json.gp")
+              .accept("application/json")
+              .then(res => {
+                const loc = JSON.parse(res.text);
+                logger.debug(`Location Information`, loc);
+                this.LOCATION = {
+                  city: loc.geoplugin_city,
+                  continentCode: loc.geoplugin_continentCode,
+                  continentName: loc.geoplugin_continentName,
+                  countryCode: loc.geoplugin_countryCode,
+                  countryName: loc.geoplugin_countryName,
+                  currencySymbol: loc.geoplugin_currencySymbol,
+                  currentCode: loc.geoplugin_currencyCode,
+                  latitude: loc.geoplugin_latitude,
+                  longitude: loc.geoplugin_longitude,
+                  regionCode: loc.geoplugin_regionCode,
+                  regionName: loc.geoplugin_regionName
+                };
+                resolve(vuetify);
+              })
+              .catch(err => {
+                logger.error(`Unable to obtain location info`, err);
+                resolve(vuetify);
+              });
+          } else {
+            resolve(vuetify);
+          }
         })
         .catch(error => {
           console.error("Can't get Vuetify to work", error);
@@ -308,7 +337,7 @@ export default class Setup {
             localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(defaultConfig));
             resolve(defaultConfig);
           })
-          .catch(function(error) {
+          .catch(function (error) {
             reject("Could not load config.json from /static/config.json: " + error.message);
           });
       }
