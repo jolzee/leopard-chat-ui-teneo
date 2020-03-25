@@ -892,7 +892,6 @@ export const generateQueryParams = jsObject => {
       .map(key => `${key}=${jsObject[key]}`)
       .join("&");
   }
-  console.log("RETURN VAL", returnVal);
   return returnVal;
 };
 

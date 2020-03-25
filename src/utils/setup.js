@@ -255,8 +255,7 @@ export default class Setup {
               .then(res => {
                 return superagent
                   .get(
-                    "https://cors-anywhere.herokuapp.com/http://www.geoplugin.net/json.gp?ip=" +
-                      res.text
+                    `https://cors-anywhere.herokuapp.com/http://www.geoplugin.net/json.gp?ip=${res.text}`
                   )
                   .accept("application/json");
               })
