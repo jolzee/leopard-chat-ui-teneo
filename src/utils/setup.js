@@ -251,7 +251,7 @@ export default class Setup {
           }, 2000);
           if (window.leopardConfig.mustSendLocationAtLogin) {
             superagent
-              .get("http://www.geoplugin.net/json.gp")
+              .get("https://cors-anywhere.herokuapp.com/http://www.geoplugin.net/json.gp")
               .accept("application/json")
               .then(res => {
                 const loc = JSON.parse(res.text);
