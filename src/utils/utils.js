@@ -317,7 +317,7 @@ export function debounce(func, wait, immediate) {
  * Smooth scroll
  */
 // easing functions http://goo.gl/5HLl8
-Math.easeInOutQuad = function(t, b, c, d) {
+Math.easeInOutQuad = function (t, b, c, d) {
   t /= d / 2;
   if (t < 1) {
     return (c / 2) * t * t + b;
@@ -326,24 +326,24 @@ Math.easeInOutQuad = function(t, b, c, d) {
   return (-c / 2) * (t * (t - 2) - 1) + b;
 };
 
-Math.easeInCubic = function(t, b, c, d) {
+Math.easeInCubic = function (t, b, c, d) {
   const tc = (t /= d) * t * t;
   return b + c * tc;
 };
 
-Math.inOutQuintic = function(t, b, c, d) {
+Math.inOutQuintic = function (t, b, c, d) {
   const ts = (t /= d) * t;
   const tc = ts * t;
   return b + c * (6 * tc * ts + -15 * ts * ts + 10 * tc);
 };
 
 // requestAnimationFrame for Smart Animating http://goo.gl/sx5sts
-export const requestAnimFrame = (function() {
+export const requestAnimFrame = (function () {
   return (
     window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
     window.mozRequestAnimationFrame ||
-    function(callback) {
+    function (callback) {
       window.setTimeout(callback, 1000 / 60);
     }
   );
@@ -368,7 +368,7 @@ export const scrollTo = (to, callback, duration) => {
   let currentTime = 0;
   const increment = 20;
   duration = typeof duration === "undefined" ? 500 : duration;
-  const animateScroll = function() {
+  const animateScroll = function () {
     // increment the time
     currentTime += increment;
     // find the value with the quadratic in-out easing function
@@ -606,7 +606,7 @@ export const unescapeHtml = str => {
  * Escape string into unicode sequences
  */
 export const escapeUnicode = (str, shouldEscapePrintable) => {
-  return str.replace(/[\s\S]/g, function(ch) {
+  return str.replace(/[\s\S]/g, function (ch) {
     // skip printable ASCII chars if we should not escape them
     if (!shouldEscapePrintable && /[\x20-\x7E]/.test(ch)) {
       return ch;
@@ -834,7 +834,7 @@ export const download = (data, filename, type = "text/plain") => {
     a.download = filename;
     document.body.appendChild(a);
     a.click();
-    setTimeout(function() {
+    setTimeout(function () {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     }, 0);
@@ -885,10 +885,16 @@ export const decodeHTML = html => {
   return txt.value;
 };
 
-export const generateQueryParams = jsObject =>
-  Object.keys(jsObject)
-    .map(key => `${key}=${jsObject[key]}`)
-    .join("&");
+export const generateQueryParams = jsObject => {
+  let returnVal = "";
+  if (jsObject) {
+    returnVal = Object.keys(jsObject)
+      .map(key => `${key}=${jsObject[key]}`)
+      .join("&");
+  }
+  console.log("RETURN VAL", returnVal);
+  return returnVal;
+};
 
 export const getParameterByName = (name, url) => {
   if (!url) url = window.location.href;
@@ -911,7 +917,7 @@ export const makeSolutionUnique = solution => {
 
 export const getUrlVarsAsObj = () => {
   const vars = {};
-  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
     vars[key] = value;
   });
   return vars;

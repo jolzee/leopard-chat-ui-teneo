@@ -251,8 +251,15 @@ export default class Setup {
           }, 2000);
           if (window.leopardConfig.mustSendLocationAtLogin) {
             superagent
-              .get("https://cors-anywhere.herokuapp.com/http://www.geoplugin.net/json.gp")
-              .accept("application/json")
+              .get("https://api.ipify.org")
+              .then(res => {
+                return superagent
+                  .get(
+                    "https://cors-anywhere.herokuapp.com/http://www.geoplugin.net/json.gp?ip=" +
+                      res.text
+                  )
+                  .accept("application/json");
+              })
               .then(res => {
                 const loc = JSON.parse(res.text);
                 logger.debug(`Location Information`, loc);
@@ -272,6 +279,7 @@ export default class Setup {
                 resolve(vuetify);
               })
               .catch(err => {
+                this.LOCATION = "";
                 logger.error(`Unable to obtain location info`, err);
                 resolve(vuetify);
               });
