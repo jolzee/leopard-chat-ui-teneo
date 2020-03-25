@@ -583,7 +583,6 @@ export default {
               let conf = snotifyConfig[i];
               let that = this;
               if (conf != null) {
-                console.log(conf);
                 setTimeout(function () {
                   if (conf.title) {
                     that.$snotify[conf.type](
