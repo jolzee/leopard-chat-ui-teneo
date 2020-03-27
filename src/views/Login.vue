@@ -3,14 +3,22 @@
     <v-col cols="12">
       <p class="subheading font-weight-medium">Login with one of the following methods.</p>
     </v-col>
-    <v-col cols="12">
+    <v-col cols="12" class="d-flex justify-center flex-wrap mb-3">
+      <!-- <v-btn
+        color="#375A9A"
+        class="white--text teneo-social-btn px-1 mr-1 mb-1"
+        @click="loginSocial('microsoft')"
+        aria-label="Microsoft opens in a new window"
+      >
+        <v-icon left light class="ml-1">mdi-microsoft</v-icon>Microsoft
+      </v-btn>-->
       <v-btn
         color="#375A9A"
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
         @click="loginSocial('facebook')"
         aria-label="Facebook opens in a new window"
       >
-        <v-icon left light class="ml-1">mdi-facebook-box</v-icon>Facebook
+        <v-icon left light class="ml-1">mdi-facebook</v-icon>Facebook
       </v-btn>
       <v-btn
         color="#EE4036"
@@ -18,7 +26,7 @@
         aria-label="Google opens in a new window"
         @click="loginSocial('google')"
       >
-        <v-icon left light class="ml-1">mdi-google-plus</v-icon>Google+
+        <v-icon left light class="ml-1">mdi-google</v-icon>Google+
       </v-btn>
       <v-btn
         color="#464646"
@@ -26,7 +34,7 @@
         aria-label="Github opens in a new window"
         @click="loginSocial('github')"
       >
-        <v-icon left light class="ml-1">mdi-github-circle</v-icon>GitHub
+        <v-icon left light class="ml-1">mdi-github</v-icon>GitHub
       </v-btn>
     </v-col>
 
@@ -79,10 +87,12 @@
         </v-row>
       </v-container>
     </v-form>-->
-    <v-col cols="12" class="my-4 ml-0">
-      <v-btn color="primary" aria-label="Back to Chat Bot" ripple to="/">{{
+    <v-col cols="12" class="d-flex justify-center flex-wrap">
+      <v-btn color="primary" aria-label="Back to Chat Bot" ripple to="/">
+        {{
         $t("back.to.chat.button")
-      }}</v-btn>
+        }}
+      </v-btn>
     </v-col>
   </v-row>
 </template>

@@ -1743,6 +1743,26 @@ function storeSetup(vuetify) {
             case "google":
               provider = new getters.firebase.auth.GoogleAuthProvider();
               break;
+            // case "microsoft":
+            //   const scopes = [
+            //     "AccessReview.Read.All",
+            //     "Bookings.Read.All",
+            //     "Organization.Read.All",
+            //     "OrgContact.Read.All",
+            //     "Presence.Read.All",
+            //     "People.Read.All",
+            //     "Notifications.ReadWrite.CreatedByApp"
+            //   ];
+            //   provider = new getters.firebase.auth.OAuthProvider("microsoft.com");
+            //   provider.setCustomParameters({
+            //     prompt: "select_account",
+            //     domain_hint: "artificial-solutions.com"
+            //   });
+            //   scopes.forEach(scope => {
+            //     provider.addScope(scope);
+            //   });
+
+            //   break;
             case "facebook":
               provider = new getters.firebase.auth.FacebookAuthProvider();
               break;
@@ -1761,6 +1781,7 @@ function storeSetup(vuetify) {
             .auth()
             .signInWithPopup(provider)
             .then(function (result) {
+              logger.debug("Authentication Result:", result);
               // This gives you a Google Access Token. You can use it to access the Google API.
               // var token = result.credential.accessToken;
               // The signed-in user info.

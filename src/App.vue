@@ -1298,6 +1298,23 @@ export default {
 @import "~vue-snotify/styles/material.css";
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css";
 
+.v-application code {
+  display: block !important;
+  padding: 10px !important;
+  font-size: 100% !important;
+  font-weight: normal !important;
+  color: whitesmoke !important;
+  background-color: black !important;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.v-application code:after,
+.v-application code:before {
+  content: normal !important;
+  letter-spacing: -1px;
+}
+
 .teneo-icon {
   opacity: 0.7 !important;
 }

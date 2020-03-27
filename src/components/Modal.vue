@@ -120,10 +120,7 @@
                 <Carousel :image-items="images"></Carousel>
 
                 <!-- Show the body text, flight itineary, and any tables if available -->
-                <div
-                  v-if="itinerary || bodyText || transactionItems.length || tableRows.length"
-                  class="mt-3"
-                >
+                <div v-if="itinerary || bodyText || transactionItems.length || tableRows.length">
                   <!-- Show the flight itinerary -->
                   <FlightItinerary v-if="itinerary" :itinerary="itinerary"></FlightItinerary>
 
