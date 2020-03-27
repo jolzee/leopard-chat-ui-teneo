@@ -866,6 +866,9 @@ export default {
   },
   methods: {
     sendEmergencyCode() {
+      if (this.$router.currentRoute.path !== "/") {
+        this.$router.push({ name: "chat" }); // make sure we show the main chat window
+      }
       this.$store
         .dispatch("sendUserInput", this.emergencyConfig.payload)
         .then(() => {
