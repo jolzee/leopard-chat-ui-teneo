@@ -867,9 +867,9 @@ export default {
   methods: {
     sendEmergencyCode() {
       this.$store
-        .dispatch("sendUserInput", this.emergencyConfig.params)
+        .dispatch("sendUserInput", this.emergencyConfig.payload)
         .then(() => {
-          logger.debug("Emergency code sent to Teneo: ", this.emergencyConfig.params);
+          logger.debug("Emergency code sent to Teneo: ", this.emergencyConfig.payload);
         })
         .catch(err => {
           logger.error("Error sending emergency code", err);

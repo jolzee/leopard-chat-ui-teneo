@@ -13,7 +13,7 @@ var md = require("markdown-it")({
   linkify: true,
   typographer: true,
   quotes: "“”‘’"
-}).use(iterator, "url_new_win", "link_open", function(tokens, idx) {
+}).use(iterator, "url_new_win", "link_open", function (tokens, idx) {
   tokens[idx].attrPush(["target", "_blank"]);
 });
 
@@ -41,25 +41,33 @@ export class LiveChat {
     try {
       if (this.store.getters.enableLiveChat && window.leopardConfig.liveChat.licenseKey) {
         this.sdk = CustomerSDK.init({
-          license: parseInt(window.leopardConfig.liveChat.licenseKey),
+          licenseId: parseInt(window.leopardConfig.liveChat.licenseKey),
           clientId: "5e68dfc9597a892b27eb97740abe1fee"
         });
 
-        logger.debug(`LiveChat sdk has been initialized`, this.sdk);
-
         // this.sdk = CustomerSDK.debug(
         //   CustomerSDK.init({
-        //     license: parseInt(window.leopardConfig.liveChat.licenseKey),
+        //     licenseId: parseInt(window.leopardConfig.liveChat.licenseKey),
         //     clientId: "5e68dfc9597a892b27eb97740abe1fee"
         //   })
         // );
-        // window.sdk = this.sdk;
+        window.sdk = this.sdk;
 
-        this.sdk.auth.getToken().then(token => (this.accessToken = token.accessToken));
+        logger.debug(`LiveChat sdk has been initialized`, this.sdk);
+
+        this.sdk.auth
+          .getToken()
+          .then(token => {
+            logger.debug("Live Chat - Access Token", token);
+            this.accessToken = token.accessToken;
+          })
+          .catch(error => {
+            logger.error("Unable to authenticate with LiveChat", error);
+          });
 
         this.sdk.on("connected", payload => {
           logger.debug(`LiveChat > Conected`, payload);
-          if (payload.chatsSummary.length > 0) {
+          if (payload.chatsSummary && payload.chatsSummary.length > 0) {
             this.chatId = payload.chatsSummary[0].id;
             this.lastMessage = payload.chatsSummary[0].lastEventsPerType.message.text;
             this.lastMessageAuthorId = payload.chatsSummary[0].lastEventsPerType.message.author;
@@ -279,7 +287,7 @@ export class LiveChat {
         .then(() => {
           logger.debug("LiveChat > Successfully logged into chat");
           setTimeout(
-            function() {
+            function () {
               this.store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
             }.bind(this),
             1500

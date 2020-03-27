@@ -99,8 +99,8 @@ let buildConfig = {
     open: "Google Chrome",
     progress: true,
     overlay: {
-      warnings: true,
-      errors: true
+      warnings: false,
+      errors: false
     }
   },
   configureWebpack: {

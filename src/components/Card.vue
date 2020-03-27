@@ -1,16 +1,10 @@
 <template>
   <v-card v-if="isValidCard" class="mx-2 mt-2" max-width="400">
-    <v-img
-      v-if="config.imageUrl"
-      class="white--text align-end"
-      contain
-      :src="config.imageUrl"
-    ></v-img>
+    <v-img v-if="config.imageUrl" class="white--text align-end" contain :src="config.imageUrl"></v-img>
     <v-card-title
       v-if="config.title"
       class="subtitle-2 white--text primary cardTitleBackground mb-5"
-      >{{ config.title }}</v-card-title
-    >
+    >{{ config.title }}</v-card-title>
     <v-card-subtitle v-if="config.subTitle" class="pb-1">{{ config.subTitle }}</v-card-subtitle>
 
     <v-card-text v-if="config.bodyText" class="text--primary">{{ config.bodyText }}</v-card-text>
@@ -30,13 +24,13 @@
         small
         color="secondary"
         @click="actionClicked(action)"
-        >{{ action.name }}</v-btn
-      >
+      >{{ action.name }}</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 <script>
 const logger = require("@/utils/logging").getLogger("Card.vue");
+const TIE = require("leopard-tie-client");
 
 export default {
   name: "Card",
@@ -53,18 +47,20 @@ export default {
   },
   computed: {
     isValidCard() {
-      try {
-        const theConfig = decodeURIComponent(this.item.teneoResponse.extraData.displayCard);
-        JSON.parse(theConfig);
-        return true;
-      } catch (e) {
-        return false;
+      let result = false;
+      if (this.item.teneoResponse) {
+        const tResp = TIE.wrap(this.item.teneoResponse);
+        if (tResp.hasParameter("displayCard")) {
+          result = true
+        }
       }
+      return result;
     },
     config() {
-      const theConfig = decodeURIComponent(this.item.teneoResponse.extraData.displayCard);
+      const tResp = TIE.wrap(this.item.teneoResponse);
+      let theConfig = tResp.getParameter("displayCard");
       logger.debug(`Card JSON`, theConfig);
-      return JSON.parse(theConfig);
+      return theConfig;
     }
   },
   methods: {

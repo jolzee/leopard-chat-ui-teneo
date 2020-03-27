@@ -399,6 +399,7 @@
 import LongPress from "vue-directive-long-press";
 import { mapGetters } from "vuex";
 import copy from "copy-to-clipboard";
+const TIE = require("leopard-tie-client");
 
 const logger = require("@/utils/logging").getLogger("ChatTeneoResponse.vue");
 const isHtml = require("is-html");
@@ -546,13 +547,13 @@ export default {
     },
     getResponseIcon() {
       let icon = this.responseIcon;
-      if (
-        "teneoResponse" in this.item &&
-        this.item.teneoResponse.emotion !== "" &&
-        decodeURIComponent(this.item.teneoResponse.emotion).indexOf("|") !== -1
-      ) {
-        const rawEmotion = decodeURIComponent(this.item.teneoResponse.emotion);
-        icon = `mdi-${rawEmotion.split("|")[1].trim()}`;
+
+      if ("teneoResponse" in this.item) {
+        const tResp = TIE.wrap(this.item.teneoResponse);
+        if (tResp.hasEmotion() && tResp.getEmotion().indexOf("|") !== -1) {
+          const rawEmotion = decodeURIComponent(tResp.getEmotion());
+          icon = `mdi-${rawEmotion.split("|")[1].trim()}`;
+        }
       }
       return icon;
     },
@@ -573,6 +574,8 @@ export default {
       return filtered;
     },
     modalButtonText() {
+      const tResp = TIE.wrap(this.item.teneoResponse);
+
       const response = {
         text: this.$t("button.more"),
         aria: this.$t("button.more")
@@ -587,14 +590,14 @@ export default {
       let buttonLabel = this.$t("button.more");
       let aria = this.$t("button.more");
 
-      if (this.item.teneoResponse.link.href !== "") {
+      if (tResp.hasLink()) {
         aria = `Website ${aria}`;
         buttonLabel = this.$t("button.page");
       }
 
       const externalExtensions = extensions.filter(
         extension =>
-          this.item.teneoResponse.link.href === "" &&
+          !tResp.hasLink() &&
           (!String(extension.name).startsWith("displayCollection") ||
             ("inline" in extension && !extension.inline))
       );
@@ -647,11 +650,12 @@ export default {
       return response;
     },
     modalButtonIcon() {
+      const tResp = TIE.wrap(this.item.teneoResponse);
       const extensions = this.itemExtensions(this.item);
       let countOfNonInlines = 0;
       let iconName = "mdi-arrow-top-left-thick";
       extensions.forEach(extension => {
-        if (!extension.inline || this.item.teneoResponse.link.href !== "") {
+        if (!extension.inline || tResp.hasLink()) {
           countOfNonInlines += 1;
         }
 
@@ -672,7 +676,7 @@ export default {
           iconName = "mdi-music-box";
         }
 
-        if (this.item.teneoResponse.link.href !== "") {
+        if (tResp.hasLink()) {
           iconName = "mdi-link-variant";
         }
       });
@@ -756,17 +760,20 @@ export default {
       return options;
     },
     mustShowDate() {
-      if (decodeURIComponent(this.item.teneoResponse.extraData.datePicker) !== "undefined") {
+      const tResp = TIE.wrap(this.item.teneoResponse);
+      if (tResp.hasParameter("datePicker")) {
         return true;
       }
       return false;
     },
     notLiveChatTranscript() {
-      const transcript = decodeURIComponent(this.item.teneoResponse.extraData.liveChat);
-      return transcript === "undefined";
+      const tResp = TIE.wrap(this.item.teneoResponse);
+      return !tResp.hasParameter("liveChat");
     },
     mustShowTime() {
-      if (decodeURIComponent(this.item.teneoResponse.extraData.timePicker) !== "undefined") {
+      const tResp = TIE.wrap(this.item.teneoResponse);
+
+      if (tResp.hasParameter("timePicker")) {
         return true;
       }
       return false;
@@ -837,12 +844,12 @@ export default {
       this.agentAssist.cannedResponseForm = true;
     },
     hasLink() {
-      return this.item.teneoResponse.link.href;
+      return TIE.wrap(this.item.teneoResponse).hasLink();
     },
     sendLinkToLiveAgent() {
       this.$store.dispatch(
         "putLiveChatAgentMessage",
-        decodeURIComponent(this.item.teneoResponse.link.href)
+        decodeURIComponent(TIE.wrap(this.item.teneoResponse).getLink())
       );
     },
     resetBotSession() {
@@ -896,27 +903,22 @@ export default {
       this.displayForm = false;
     },
     hasForm() {
-      if (
-        this.item.teneoResponse &&
-        this.item.teneoResponse.extraData &&
-        this.item.teneoResponse.extraData.formConfig
-      ) {
+      const tResp = TIE.wrap(this.item.teneoResponse);
+      if (tResp.hasParameter("formConfig")) {
         return true;
       }
       return false;
     },
     getFormConfig() {
-      if (
-        this.item.teneoResponse &&
-        this.item.teneoResponse.extraData &&
-        this.item.teneoResponse.extraData.formConfig
-      ) {
-        return JSON.parse(this.item.teneoResponse.extraData.formConfig);
+      const tResp = TIE.wrap(this.item.teneoResponse);
+      if (tResp.hasParameter("formConfig")) {
+        return tResp.getParameter("formConfig");
       }
       return null;
     },
     hasCard(item) {
-      if (item.teneoResponse.extraData && item.teneoResponse.extraData.displayCard) {
+      const tResp = TIE.wrap(item.teneoResponse);
+      if (tResp.hasParameter("displayCard")) {
         return true;
       }
       return false;

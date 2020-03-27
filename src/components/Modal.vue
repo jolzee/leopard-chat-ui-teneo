@@ -236,7 +236,7 @@ export default {
       overlay: false,
       overlayMessage: "",
       currentModalPosition: "center", // left / right / center / fullscreen
-      currentModalSize: "medium", // small / medium / large / x-large / fullscreen "" = full screen
+      currentModalSize: "small", // small / medium / large / x-large / fullscreen "" = full screen
       pusherEnabled: false,
       pusherMessage: "",
       search: "",
@@ -316,7 +316,7 @@ export default {
       return false;
     },
     toolbarWidth() {
-      if (this.currentModalSize !== "") {
+      if (this.currentModalSize) {
         logger.debug("Adjusted the custom modal toolbar style");
         return `teneo-modal-${this.currentModalSize}-width`;
       }
@@ -353,7 +353,7 @@ export default {
 
         // check if user wants to talk to a live agent
         logger.debug(`Live Chat? :${this.isLiveChat}`);
-        if (transcript !== "undefined" && this.isLiveChat) {
+        if (transcript && this.isLiveChat) {
           this.$store.commit(
             "LIVE_CHAT",
             `======= VIRTUAL ASSISTANT CONVERSATION HISTORY =======\n${transcript}====================================================\n`
@@ -385,11 +385,11 @@ export default {
             }
 
             // check for modal sizes and positions
-            if (this.modalSize(item) !== "undefined") {
+            if (this.modalSize(item)) {
               this.currentModalSize = this.modalSize(item);
             }
 
-            if (this.modalPosition(item) !== "undefined") {
+            if (this.modalPosition(item)) {
               this.currentModalPosition = this.modalPosition(item);
             }
 
@@ -612,7 +612,7 @@ export default {
         logger.debug("Applying custom modal size and position");
         logger.debug("Adding sizing and position styles to modal");
         const modalElements = document.getElementsByClassName("teneo-modal");
-        if (modalElements !== "undefined" && this.currentModalSize !== "undefined") {
+        if (modalElements && this.currentModalSize) {
           for (let i = 0; i < modalElements.length; i += 1) {
             if (
               this.currentModalSize !== "fullscreen" &&
@@ -635,7 +635,7 @@ export default {
     removeCustomStylesFromModal() {
       logger.debug("removing custom styles from modal");
       const modalElements = document.getElementsByClassName("teneo-modal");
-      if (modalElements !== "undefined") {
+      if (modalElements) {
         for (let i = 0; i < modalElements.length; i += 1) {
           logger.debug("Removing existing modal size and position styles - reset");
           modalElements[i].classList.remove("teneo-modal-center");

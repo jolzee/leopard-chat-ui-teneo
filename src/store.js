@@ -10,8 +10,6 @@ import {
   isLight,
   queryParamStringAsObject,
   generateQueryParams,
-  convertTeneoJsonNewToOld,
-  parseExtraData,
   uuid
 } from "@/utils/utils";
 import PostMessage from "@/utils/postMessage";
@@ -335,8 +333,8 @@ function storeSetup(vuetify) {
       uploadConfig(_state, getters) {
         let item = getters.lastReplyItem;
         let uploadConfigJson = null;
-        if (getters.itemExtraData(item, "uploadConfig")) {
-          uploadConfigJson = getters.itemExtraData(item, "uploadConfig");
+        if (getters.getItemProperty(item, "uploadConfig")) {
+          uploadConfigJson = getters.getItemProperty(item, "uploadConfig");
         }
 
         return uploadConfigJson;
@@ -360,8 +358,11 @@ function storeSetup(vuetify) {
         let item = getters.lastReplyItem;
         let isAskingForPassword = false;
         if (item && item.teneoResponse) {
-          let inputType = decodeURIComponent(item.teneoResponse.extraData.inputType);
-          if (inputType !== "undefined" && inputType.trim().toLowerCase() === "password") {
+          let tResp = TIE.wrap(item.teneoResponse);
+          if (
+            tResp.hasParameter("inputType") &&
+            tResp.getParameter("inputType").trim().toLowerCase() === "password"
+          ) {
             isAskingForPassword = true;
           }
         }
@@ -371,9 +372,9 @@ function storeSetup(vuetify) {
         let item = getters.lastReplyItem;
         let inputHelpText;
         if (item && item.teneoResponse) {
-          let helpText = decodeURIComponent(item.teneoResponse.extraData.inputHelpText);
-          if (helpText !== "undefined") {
-            inputHelpText = helpText;
+          let tResp = TIE.wrap(item.teneoResponse);
+          if (tResp.hasParameter("inputHelpText") && tResp.getParameter("inputHelpText")) {
+            inputHelpText = tResp.getParameter("inputHelpText");
           }
         }
         return inputHelpText;
@@ -382,9 +383,9 @@ function storeSetup(vuetify) {
         let item = getters.lastReplyItem;
         let itemInputMask;
         if (item && item.teneoResponse) {
-          let mask = decodeURIComponent(item.teneoResponse.extraData.inputMask);
-          if (mask !== "undefined") {
-            itemInputMask = mask;
+          let tResp = TIE.wrap(item.teneoResponse);
+          if (tResp.hasParameter("inputMask")) {
+            itemInputMask = tResp.getParameter("inputMask");
           }
         }
         logger.debug("Input Mask: ", itemInputMask);
@@ -394,8 +395,11 @@ function storeSetup(vuetify) {
         let item = getters.lastReplyItem;
         let isAskingForEmail = false;
         if (item && item.teneoResponse) {
-          let inputType = decodeURIComponent(item.teneoResponse.extraData.inputType);
-          if (inputType !== "undefined" && inputType.trim().toLowerCase() === "email") {
+          let tResp = TIE.wrap(item.teneoResponse);
+          if (
+            tResp.hasParameter("inputType") &&
+            tResp.getParameter("inputType").trim().toLowerCase() === "email"
+          ) {
             isAskingForEmail = true;
           }
         }
@@ -432,24 +436,32 @@ function storeSetup(vuetify) {
         return state.userInput.userInputReadyForSending;
       },
       modalPosition: _state => item => {
-        let modalPosition = decodeURIComponent(item.teneoResponse.extraData.modalPosition);
-        if (modalPosition !== "undefined") {
-          modalPosition = modalPosition.toLowerCase();
+        let modalPosition = null;
+        if (item.teneoResponse) {
+          let tResp = TIE.wrap(item.teneoResponse);
+          if (tResp.hasParameter("modalPosition")) {
+            modalPosition = tResp.getParameter("modalPosition").toLowerCase();
+          }
         }
         return modalPosition;
       },
       modalSize: _state => item => {
-        let modalSize = decodeURIComponent(item.teneoResponse.extraData.modalSize);
-        if (modalSize !== "undefined") {
-          modalSize = modalSize.toLowerCase();
+        let modalSize = null;
+        if (item.teneoResponse) {
+          let tResp = TIE.wrap(item.teneoResponse);
+          if (tResp.hasParameter("modalSize")) {
+            modalSize = tResp.getParameter("modalSize").toLowerCase();
+          }
         }
         return modalSize;
       },
       outputLink: _state => item => {
-        return decodeURIComponent(item.teneoResponse.link.href);
+        const tResp = TIE.wrap(item.teneoResponse);
+        return tResp.getLink();
       },
       liveChatTranscript: _state => item => {
-        return decodeURIComponent(item.teneoResponse.extraData.liveChat);
+        let tResp = TIE.wrap(item.teneoResponse);
+        return tResp.getParameter("liveChat");
       },
       profileImageFromEmail: _state => email => {
         return gravatar.url(email, { protocol: "https" });
@@ -518,35 +530,39 @@ function storeSetup(vuetify) {
         });
         return modalExtensions;
       },
-      itemExtraData: _state => (item, name) => {
+      getItemProperty: _state => (item, name) => {
         let response = {};
-        if (item && item.teneoResponse && name in item.teneoResponse.extraData) {
-          response = parseExtraData(item.teneoResponse.extraData[name]);
+        if (item && item.teneoResponse) {
+          const tResp = TIE.wrap(item.teneoResponse);
+          if (tResp.hasParameter(name)) {
+            response = tResp.getParameter(name);
+          }
         }
         return response;
       },
       itemExtensions: _state => item => {
         let actions = [];
         if (item && item.teneoResponse) {
+          const tResp = TIE.wrap(item.teneoResponse);
           if (
-            Object.keys(item.teneoResponse.extraData).some(function (k) {
+            Object.keys(tResp.getJson().output.parameters).some(function (k) {
               return ~k.indexOf("extensions");
             })
           ) {
             // sort the keys for ordering of extensions
             const ordered = {};
-            Object.keys(item.teneoResponse.extraData)
+            Object.keys(tResp.getJson().output.parameters)
               .sort()
               .forEach(function (key) {
-                ordered[key] = item.teneoResponse.extraData[key];
+                ordered[key] = tResp.getParameter(key);
               });
             try {
               for (let key in ordered) {
                 if (key.startsWith("extensions")) {
-                  let value = parseExtraData(ordered[key]);
-                  if (value) {
-                    logger.debug(`Item Extensions > Key: ${key} Value:`, value);
-                    actions.push(value);
+                  // let value = parseExtraData(ordered[key]);
+                  if (ordered[key]) {
+                    logger.debug(`Item Extensions > Key: ${key} Value:`, ordered[key]);
+                    actions.push(ordered[key]);
                   }
                 }
               }
@@ -569,11 +585,14 @@ function storeSetup(vuetify) {
         return "";
       },
       hasFeedbackForm: () => item => {
-        if (item.teneoResponse.extraData && item.teneoResponse.extraData.offerFeedbackForm) {
-          return true;
-        } else {
-          return false;
+        let result = false;
+        if (item.teneoResponse) {
+          const tResp = TIE.wrap(item.teneoResponse);
+          if (tResp.hasParameter("offerFeedbackForm")) {
+            result = true;
+          }
         }
+        return result;
       },
       hasModal: (_state, getters) => item => {
         let extensions = getters.itemExtensions(item);
@@ -995,6 +1014,7 @@ function storeSetup(vuetify) {
     },
     mutations: {
       SET_EMERGENCY_CONFIG(state, config) {
+        config.payload = config.payload.split("?").join("&");
         state.ui.emergencyConfig = config;
       },
       SET_SNOTIFY(state, config) {
@@ -1251,16 +1271,17 @@ function storeSetup(vuetify) {
       },
       UPDATE_CHAT_WINDOW_AND_STORAGE(state, payload) {
         let hasExtraData = false;
-
-        if (
-          payload.response.teneoResponse &&
-          (Object.keys(payload.response.teneoResponse.extraData).some(function (k) {
-            return ~k.indexOf("extensions");
-          }) ||
-            payload.response.teneoResponse.extraData.liveChat ||
-            payload.response.teneoResponse.link.href)
-        ) {
-          hasExtraData = true;
+        if (payload.response.teneoResponse) {
+          const tResp = TIE.wrap(payload.response.teneoResponse);
+          if (
+            Object.keys(tResp.getJson().output.parameters).some(function (k) {
+              return ~k.indexOf("extensions");
+            }) ||
+            tResp.hasParameter("liveChat") ||
+            tResp.hasLink()
+          ) {
+            hasExtraData = true;
+          }
         }
 
         let newUserInput = {
@@ -1323,26 +1344,26 @@ function storeSetup(vuetify) {
           return item.id === itemId;
         });
 
+        let tResHis = null;
+        if (foundHistory && foundHistory.teneoResponse) {
+          tResHis = TIE.wrap(foundHistory.teneoResponse);
+        }
+
+        if (tResHis && tResHis.hasParameter("formConfig")) {
+          delete foundHistory.teneoResponse.output.parameters.formConfig;
+        }
+
         let found = state.conversation.dialog.find(function (item) {
           return item.id === itemId;
         });
 
-        if (
-          found &&
-          found.teneoResponse &&
-          found.teneoResponse.extraData &&
-          found.teneoResponse.extraData.formConfig
-        ) {
-          delete found.teneoResponse.extraData.formConfig;
+        let tResConv = null;
+        if (found && found.teneoResponse) {
+          tResConv = TIE.wrap(found.teneoResponse);
         }
 
-        if (
-          foundHistory &&
-          foundHistory.teneoResponse &&
-          foundHistory.teneoResponse.extraData &&
-          foundHistory.teneoResponse.extraData.formConfig
-        ) {
-          delete foundHistory.teneoResponse.extraData.formConfig;
+        if (tResConv && tResConv.hasParameter("formConfig")) {
+          delete found.teneoResponse.output.parameters.formConfig;
         }
 
         sessionStorage.setItem(
@@ -1862,26 +1883,22 @@ function storeSetup(vuetify) {
           TIE.sendInput(context.getters.teneoUrl, context.getters.teneoSessionId, queryObj)
             .then(json => {
               context.commit("SET_TENEO_SESSION_ID", json.sessionId);
-              json = convertTeneoJsonNewToOld(json);
+              logger.info("PARSED Teneo Resp: ", json);
+              const tResp = TIE.wrap(json);
+
               context.commit("HIDE_CHAT_LOADING");
-              if (json.responseData.extraData.theme) {
-                Object.assign(
-                  vuetify.framework.theme.themes.light,
-                  JSON.parse(json.responseData.extraData.theme)
-                );
+              if (tResp.hasParameter("theme")) {
+                Object.assign(vuetify.framework.theme.themes.light, tResp.getParameter("theme"));
               }
 
-              if (json.responseData.extraData.toast) {
-                context.commit("SET_SNOTIFY", JSON.parse(json.responseData.extraData.toast));
+              if (tResp.hasParameter("toast")) {
+                context.commit("SET_SNOTIFY", tResp.getParameter("toast"));
               }
-              if (json.responseData.extraData.emergency) {
-                context.commit(
-                  "SET_EMERGENCY_CONFIG",
-                  JSON.parse(json.responseData.extraData.emergency)
-                );
+              if (tResp.hasParameter("emergency")) {
+                context.commit("SET_EMERGENCY_CONFIG", tResp.getParameter("emergency"));
               }
-              if ("numActiveFlows" in json.responseData.extraData) {
-                let numActiveFlows = parseInt(json.responseData.extraData.numActiveFlows);
+              if (tResp.hasParameter("numActiveFlows")) {
+                let numActiveFlows = parseInt(tResp.getParameter("numActiveFlows"));
                 if (numActiveFlows > 0) {
                   // mid dialog stop polling
                   context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
@@ -1900,7 +1917,7 @@ function storeSetup(vuetify) {
                   }
                 }
               } else if (
-                !("numActiveFlows" in json.responseData.extraData) &&
+                !tResp.hasParameter("numActiveFlows") &&
                 context.getters.isPromptPollingActive
               ) {
                 console.groupCollapsed(
@@ -1920,17 +1937,17 @@ function storeSetup(vuetify) {
               context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
               logger.debug(
                 `Login Message from Teneo: ${decodeURIComponent(
-                  cleanEmptyChunks(json.responseData.answer)
+                  cleanEmptyChunks(tResp.getOutputText())
                 )}`
               );
 
               let hasExtraData = false;
 
               if (
-                Object.keys(json.responseData.extraData).some(function (k) {
+                Object.keys(json.output.parameters).some(function (k) {
                   return ~k.indexOf("extensions");
                 }) ||
-                json.responseData.extraData.liveChat
+                tResp.hasParameter("liveChat")
               ) {
                 hasExtraData = true;
               }
@@ -1939,14 +1956,14 @@ function storeSetup(vuetify) {
                 id: uuid(),
                 text: md.render(
                   cleanEmptyChunks(
-                    decodeURIComponent(json.responseData.answer).replace(
+                    decodeURIComponent(tResp.getOutputText()).replace(
                       /onclick="[^"]+"/g,
                       'class="sendInput"'
                     )
                   )
                 ),
                 bodyText: "",
-                teneoResponse: json.responseData,
+                teneoResponse: json,
                 hasExtraData: hasExtraData
               };
               // sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(response))
@@ -2024,22 +2041,21 @@ function storeSetup(vuetify) {
 
           TIE.sendInput(context.getters.teneoUrl, context.getters.teneoSessionId, queryObj)
             .then(json => {
-              json = convertTeneoJsonNewToOld(json);
+              context.commit("SET_TENEO_SESSION_ID", json.sessionId);
+              logger.info("PARSED Teneo Resp: ", json);
+              let tResp = TIE.wrap(json);
               if (params.indexOf("command=train") !== -1) {
                 return;
               }
-              if (json.responseData.extraData.toast) {
-                context.commit("SET_SNOTIFY", JSON.parse(json.responseData.extraData.toast));
+              if (tResp.hasParameter("toast")) {
+                context.commit("SET_SNOTIFY", tResp.getParameter("toast"));
               }
-              if (json.responseData.extraData.theme) {
-                Object.assign(
-                  vuetify.framework.theme.themes.light,
-                  JSON.parse(json.responseData.extraData.theme)
-                );
+              if (tResp.hasParameter("theme")) {
+                Object.assign(vuetify.framework.theme.themes.light, tResp.getParameter("theme"));
               }
-              if ("numActiveFlows" in json.responseData.extraData) {
+              if (tResp.hasParameter("numActiveFlows")) {
                 // deal with polling
-                let numActiveFlows = parseInt(json.responseData.extraData.numActiveFlows);
+                let numActiveFlows = parseInt(tResp.getParameter("numActiveFlows"));
                 if (numActiveFlows > 0) {
                   // mid dialog stop polling
                   context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
@@ -2062,7 +2078,7 @@ function storeSetup(vuetify) {
                   }
                 }
               } else if (
-                !("numActiveFlows" in json.responseData.extraData) &&
+                !tResp.hasParameter("numActiveFlows") &&
                 context.getters.isPromptPollingActive
               ) {
                 console.groupCollapsed(
@@ -2081,14 +2097,14 @@ function storeSetup(vuetify) {
               }
               if (
                 params.indexOf("command=prompt") !== -1 &&
-                cleanEmptyChunks(json.responseData.answer) === ""
+                cleanEmptyChunks(tResp.getOutputText()) === ""
               ) {
                 logger.debug(`Poll returned nothing..`);
                 return;
               } else if (
                 params !== "" &&
                 params.indexOf("command=prompt") !== -1 &&
-                cleanEmptyChunks(json.responseData.answer) !== ""
+                cleanEmptyChunks(tResp.getOutputText()) !== ""
               ) {
                 try {
                   var audio = new Audio(require("@/assets/notification.mp3"));
@@ -2097,41 +2113,33 @@ function storeSetup(vuetify) {
               }
               context.commit("HIDE_CHAT_LOADING");
 
-              if (
-                json.responseData.extraData.theme &&
-                json.responseData.extraData.theme === "dark"
-              ) {
+              if (tResp.hasParameter("theme") && tResp.getParameter("theme") === "dark") {
                 vuetify.framework.theme.dark = true;
-              } else if (
-                json.responseData.extraData.theme &&
-                json.responseData.extraData.theme === "light"
-              ) {
+              } else if (tResp.hasParameter("theme") && tResp.getParameter("theme") === "light") {
                 vuetify.framework.theme.dark = false;
               }
 
-              if (json.responseData.extraData.offerFeedbackForm) {
-                const feedbackConfig = JSON.parse(
-                  decodeURIComponent(json.responseData.extraData.offerFeedbackForm)
-                );
+              if (tResp.hasParameter("offerFeedbackForm")) {
+                const feedbackConfig = tResp.getParameter("offerFeedbackForm");
                 context.commit("ADD_FEEDBACK_FORM", feedbackConfig);
               } else {
                 context.commit("CLEAR_FEEDBACK_FORM");
               }
-              if (
-                params.indexOf("langSwitch") === -1 &&
-                (json.responseData.isNewSession || json.responseData.extraData.newsession)
-              ) {
-                logger.debug("Session is stale.. keep chat open and continue with the new session");
-                const awayMessage = "This is a new chatbot session.";
-                context.commit("SHOW_SIMPLE_MESSAGE_IN_CHAT", {
-                  message: awayMessage,
-                  icon: "mdi-timer"
-                });
-                context.commit("SET_ACCESIBLE_ANOUNCEMENT", awayMessage);
-              }
+              // if (
+              //   params.indexOf("langSwitch") === -1 &&
+              //   (json.responseData.isNewSession || json.responseData.extraData.newsession)
+              // ) {
+              //   logger.debug("Session is stale.. keep chat open and continue with the new session");
+              //   const awayMessage = "This is a new chatbot session.";
+              //   context.commit("SHOW_SIMPLE_MESSAGE_IN_CHAT", {
+              //     message: awayMessage,
+              //     icon: "mdi-timer"
+              //   });
+              //   context.commit("SET_ACCESIBLE_ANOUNCEMENT", awayMessage);
+              // }
 
-              if ("script" in json.responseData.extraData) {
-                let theScript = decodeURIComponent(json.responseData.extraData.script);
+              if (tResp.hasParameter("script")) {
+                let theScript = decodeURIComponent(tResp.getParameter("script"));
                 if (context.getters.embed) {
                   postMessage.sendMessageToParent("runLeopardScript|" + theScript);
                 } else {
@@ -2140,10 +2148,7 @@ function storeSetup(vuetify) {
                 }
               }
               // Start of delay logic
-              if (
-                "command" in json.responseData.extraData &&
-                json.responseData.extraData.command === "delay"
-              ) {
+              if (tResp.hasParameter("command") && tResp.getParameter("command") === "delay") {
                 context.commit("SHOW_RESPONSE_DELAY");
                 context.commit("SET_USER_INPUT", "");
                 context
@@ -2163,24 +2168,21 @@ function storeSetup(vuetify) {
               }
               // end of delay logic
 
-              if (
-                "inputType" in json.responseData.extraData &&
-                json.responseData.extraData.inputType === "upload"
-              ) {
+              if (tResp.hasParameter("inputType") && tResp.getParameter("inputType") === "upload") {
                 context.commit("SHOW_UPLOAD_BUTTON");
               }
               // look for request for location information in the response
 
               if (
-                "inputType" in json.responseData.extraData &&
-                json.responseData.extraData.inputType.startsWith("location")
+                tResp.hasParameter("inputType") &&
+                tResp.getParameter("inputType").startsWith("location")
               ) {
                 setupConfig
                   .getLocator()
                   .then(function (position) {
                     // we now have the user's lat and long
                     logger.debug(`${position.coords.latitude}, ${position.coords.longitude}`);
-                    if (json.responseData.extraData.inputType === "locationLatLong") {
+                    if (tResp.getParameter("inputType") === "locationLatLong") {
                       // send the lat and long
                       context
                         .dispatch(
@@ -2202,7 +2204,7 @@ function storeSetup(vuetify) {
                         });
                     } else if (window.leopardConfig.locationIqKey) {
                       // good we have a licence key we can send all location information back
-                      let locationRequestType = json.responseData.extraData.inputType;
+                      let locationRequestType = tResp.getParameter("inputType");
                       superagent
                         .get(
                           `https://us1.locationiq.com/v1/reverse.php?key=${
@@ -2245,7 +2247,7 @@ function storeSetup(vuetify) {
                         .catch(err => logger.error(err));
                     } else if (
                       !window.leopardConfig.locationIqKey &&
-                      json.responseData.extraData.inputType ===
+                      tResp.getParameter("inputType") ===
                         ("locationCityStateZip" || "locationZip" || "locationJson")
                     ) {
                       // no good. Asking for location information that requires a licence  key
@@ -2262,26 +2264,26 @@ function storeSetup(vuetify) {
 
               logger.debug(
                 `Response 💬: `,
-                decodeURIComponent(cleanEmptyChunks(json.responseData.answer))
+                decodeURIComponent(cleanEmptyChunks(tResp.getOutputText()))
               );
               const response = {
                 userInput: currentUserInput,
                 id: uuid(),
                 teneoAnswer: md.render(
                   cleanEmptyChunks(
-                    decodeURIComponent(json.responseData.answer).replace(
+                    decodeURIComponent(tResp.getOutputText()).replace(
                       /onclick="[^"]+"/g,
                       'class="sendInput"'
                     )
                   )
                 ),
-                teneoResponse: json.responseData
+                teneoResponse: json
               };
 
               if (response.teneoResponse) {
                 let ttsText = stripHtml(cleanEmptyChunks(response.teneoAnswer));
-                if (response.teneoResponse.extraData.tts) {
-                  ttsText = stripHtml(decodeURIComponent(response.teneoResponse.extraData.tts));
+                if (tResp.hasParameter("tts")) {
+                  ttsText = stripHtml(decodeURIComponent(tResp.getParameter("tts")));
                 }
 
                 context.commit("SET_ACCESIBLE_ANOUNCEMENT", "Chat Bot Said. " + ttsText + ".");
@@ -2309,37 +2311,29 @@ function storeSetup(vuetify) {
                 }
 
                 context.commit("HIDE_PROGRESS_BAR");
-                if (response.teneoResponse.extraData.liveChat) {
+                if (tResp.hasParameter("liveChat")) {
                   context.commit("START_LIVE_CHAT");
                 }
-                if (response.teneoResponse.extraData.chatTitle) {
-                  let chatTitle = decodeURIComponent(response.teneoResponse.extraData.chatTitle);
+                if (tResp.hasParameter("chatTitle")) {
+                  let chatTitle = decodeURIComponent(tResp.getParameter("chatTitle"));
                   if (chatTitle !== "undefined") {
                     context.commit("SET_CHAT_TITLE", chatTitle);
                   }
                 }
 
-                // added on request from Mark J - switch languages based on NER language detection
-                let langInput = decodeURIComponent(response.teneoResponse.extraData.langinput);
-                let langEngineUrl = decodeURIComponent(
-                  response.teneoResponse.extraData.langengineurl
-                );
-                let lang = decodeURIComponent(response.teneoResponse.extraData.lang);
-                let langurl = decodeURIComponent(response.teneoResponse.extraData.langurl);
-
-                if (langEngineUrl !== "undefined" && langInput !== "undefined") {
+                if (tResp.hasParameter("langengineurl") && tResp.hasParameter("langinput")) {
                   context.dispatch("endSessionLite");
-                  context.commit("UPDATE_TENEO_URL", langEngineUrl);
-                  context.commit("SET_USER_INPUT", langInput);
+                  context.commit("UPDATE_TENEO_URL", tRes.getParameter("langengineurl"));
+                  context.commit("SET_USER_INPUT", tRes.getParameter("langinput"));
                   context.commit("SHOW_PROGRESS_BAR");
 
-                  if (lang !== "undefined") {
-                    context.commit("UPDATE_UI_LOCALE", lang);
-                    context.commit("CHANGE_ASR_TTS", lang);
+                  if (tResp.hasParameter("lang")) {
+                    context.commit("UPDATE_UI_LOCALE", tResp.getParameter("lang"));
+                    context.commit("CHANGE_ASR_TTS", tResp.getParameter("lang"));
                   }
 
-                  if (langurl !== "undefined") {
-                    context.commit("UPDATE_FRAME_URL", langurl);
+                  if (tResp.hasParameter("langurl")) {
+                    context.commit("UPDATE_FRAME_URL", tResp.getParameter("langurl"));
                   }
 
                   context
@@ -2407,7 +2401,7 @@ function storeSetup(vuetify) {
             STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY,
             JSON.stringify(context.getters.dialogHistory)
           );
-          setupConfig.liveChat.sendMessage(currentUserInput);
+          setupConfig.liveChat.sendMessage(currentUserInput.trim());
           context.commit("HIDE_PROGRESS_BAR");
           context.commit("CLEAR_USER_INPUT");
         }
