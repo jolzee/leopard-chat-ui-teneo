@@ -1,5 +1,6 @@
 const logger = require("@/utils/logging").getLogger("setup.js");
 import "@mdi/font/css/materialdesignicons.css";
+import { LocalStorage } from "ttl-localstorage";
 
 // import "typeface-roboto";
 import {
@@ -250,38 +251,26 @@ export default class Setup {
             }
           }, 2000);
           if (window.leopardConfig.mustSendLocationAtLogin) {
-            superagent
-              .get("https://api.ipify.org")
-              .then(res => {
-                return superagent
-                  .get(
-                    `https://cors-anywhere.herokuapp.com/http://www.geoplugin.net/json.gp?ip=${res.text}`
-                  )
-                  .accept("application/json");
-              })
-              .then(res => {
-                const loc = JSON.parse(res.text);
-                logger.debug(`Location Information`, loc);
-                this.LOCATION = {
-                  city: loc.geoplugin_city,
-                  continentCode: loc.geoplugin_continentCode,
-                  continentName: loc.geoplugin_continentName,
-                  countryCode: loc.geoplugin_countryCode,
-                  countryName: loc.geoplugin_countryName,
-                  currencySymbol: loc.geoplugin_currencySymbol,
-                  currencyCode: loc.geoplugin_currencyCode,
-                  latitude: loc.geoplugin_latitude,
-                  longitude: loc.geoplugin_longitude,
-                  regionCode: loc.geoplugin_regionCode,
-                  regionName: loc.geoplugin_regionName
-                };
-                resolve(vuetify);
-              })
-              .catch(err => {
-                this.LOCATION = "";
-                logger.error(`Unable to obtain location info`, err);
-                resolve(vuetify);
-              });
+            LocalStorage.keyExists(STORAGE_KEY + "loc").then(exists => {
+              if (exists) {
+                LocalStorage.get(STORAGE_KEY + "loc").then(data => {
+                  superagent.get("https://api.ipify.org").then(res => {
+                    if (res.text === data.ip) {
+                      logger.debug(
+                        `📍 Found Location Info in LocalStorage. IP hasn't changed`,
+                        data
+                      );
+                      this.LOCATION = data;
+                      resolve(vuetify);
+                    } else {
+                      this.obtainLocation(resolve, vuetify);
+                    }
+                  });
+                });
+              } else {
+                this.obtainLocation(resolve, vuetify);
+              }
+            });
           } else {
             resolve(vuetify);
           }
@@ -291,6 +280,45 @@ export default class Setup {
           reject(error);
         });
     });
+  }
+
+  obtainLocation(resolve, vuetify) {
+    let browserIp;
+    superagent
+      .get("https://api.ipify.org")
+      .then(res => {
+        browserIp = res.text;
+        return superagent
+          .get(
+            `https://cors-anywhere.herokuapp.com/http://www.geoplugin.net/json.gp?ip=${res.text}`
+          )
+          .accept("application/json");
+      })
+      .then(res => {
+        const loc = JSON.parse(res.text);
+        logger.debug(`📍 Obtained New Location Information`, loc);
+        this.LOCATION = {
+          ip: browserIp,
+          city: loc.geoplugin_city,
+          continentCode: loc.geoplugin_continentCode,
+          continentName: loc.geoplugin_continentName,
+          countryCode: loc.geoplugin_countryCode,
+          countryName: loc.geoplugin_countryName,
+          currencySymbol: loc.geoplugin_currencySymbol,
+          currencyCode: loc.geoplugin_currencyCode,
+          latitude: loc.geoplugin_latitude,
+          longitude: loc.geoplugin_longitude,
+          regionCode: loc.geoplugin_regionCode,
+          regionName: loc.geoplugin_regionName
+        };
+        LocalStorage.put(STORAGE_KEY + "loc", this.LOCATION); // cache so we don't do this too often
+        resolve(vuetify);
+      })
+      .catch(err => {
+        this.LOCATION = "";
+        logger.error(`📍 Unable to obtain location info`, err);
+        resolve(vuetify);
+      });
   }
 
   getSolutionConfig() {
