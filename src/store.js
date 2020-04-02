@@ -2344,8 +2344,8 @@ function storeSetup(vuetify) {
 
                 if (tResp.hasParameter("langengineurl") && tResp.hasParameter("langinput")) {
                   context.dispatch("endSessionLite");
-                  context.commit("UPDATE_TENEO_URL", tRes.getParameter("langengineurl"));
-                  context.commit("SET_USER_INPUT", tRes.getParameter("langinput"));
+                  context.commit("UPDATE_TENEO_URL", tResp.getParameter("langengineurl"));
+                  context.commit("SET_USER_INPUT", tResp.getParameter("langinput"));
                   context.commit("SHOW_PROGRESS_BAR");
 
                   if (tResp.hasParameter("lang")) {
