@@ -194,10 +194,12 @@ function checkLeopardButtonFocus() {
     if (teneoFrame && document.activeElement === teneoFrame) {
         var teneoContainer = document.getElementById("teneo-chat-widget-container");
         if (teneoContainer && teneoContainer.className === "teneo-chat-button-widget") {
-            var leopardFrameInnerButtonEl = teneoFrame.contentDocument.getElementById('leopard-embed-open-close-button');
-            if (leopardFrameInnerButtonEl) {
-                leopardFocusIframe(teneoFrame);
-                leopardFrameInnerButtonEl.focus();
+            if (teneoFrame.contentDocument) {
+                var leopardFrameInnerButtonEl = teneoFrame.contentDocument.getElementById('leopard-embed-open-close-button');
+                if (leopardFrameInnerButtonEl) {
+                    leopardFocusIframe(teneoFrame);
+                    leopardFrameInnerButtonEl.focus();
+                }
             }
         }
     }
