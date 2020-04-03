@@ -132,7 +132,8 @@ let buildConfig = {
     "vue-plyr",
     "replace-string",
     "url-regex",
-    "vue-long-press-directive"
+    "vue-long-press-directive",
+    "ttl-localstorage"
   ]
 };
 
