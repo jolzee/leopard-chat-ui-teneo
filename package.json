@@ -36,11 +36,11 @@
     ]
   },
   "dependencies": {
-    "@livechat/accounts-sdk": "^1.3.4",
+    "@livechat/accounts-sdk": "^1.4.0",
     "@livechat/agent-app-sdk": "^1.4.1",
     "@livechat/agent-app-widget-sdk": "^3.0.0",
     "@livechat/customer-auth": "^0.4.0-alpha.6",
-    "@livechat/customer-sdk": "^2.0.0-beta.1",
+    "@livechat/customer-sdk": "^2.0.0-beta.2",
     "@mdi/font": "^5.0.45",
     "@sentry/browser": "^5.15.4",
     "@sentry/integrations": "^5.15.4",

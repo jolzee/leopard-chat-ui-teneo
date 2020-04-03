@@ -349,8 +349,34 @@ function storeSetup(vuetify) {
       },
       userInformationParams(state) {
         let userInfoParams = "";
+
+        // {
+        //   user: user,
+        //   providerId: "microsoft.com",
+        //   additional: {
+        //     credentials: result.credentials,
+        //     mail: result.additionalUserInfo.profile.mail,
+        //     phone: result.additionalUserInfo.profile.mobilePhone,
+        //     displayName: result.additionalUserInfo.profile.displayName,
+        //     surname: result.additionalUserInfo.profile.surname,
+        //     givenName: result.additionalUserInfo.profile.givenName,
+        //     jobTitle: result.additionalUserInfo.profile.jobTitle,
+        //     userPrincipleName: result.additionalUserInfo.profile.userPrincipleName,
+        //     accessToken: result.credential.accessToken,
+        //     providerId: "microsoft.com"
+        //   }
+        // }
         if (state.auth.userInfo.user) {
-          userInfoParams = `&name=${state.auth.userInfo.user.displayName}&email=${state.auth.userInfo.user.email}`;
+          logger.info(`USER-INFO`, state.auth.userInfo.user.additional);
+          if (
+            "providerId" in state.auth.userInfo.user &&
+            state.auth.userInfo.user.providerId === "microsoft.com"
+          ) {
+            userInfoParams = `&${generateQueryParams(state.auth.userInfo.user.additional)}`;
+            logger.debug(`Microsoft query Params:`, userInfoParams);
+          } else {
+            userInfoParams = `&name=${state.auth.userInfo.user.user.displayName}&email=${state.auth.userInfo.user.user.email}`;
+          }
         }
         return userInfoParams;
       },
@@ -994,7 +1020,7 @@ function storeSetup(vuetify) {
         return state.auth.userInfo.user ? true : false;
       },
       userProfileImage(state) {
-        return state.auth.userInfo.user ? state.auth.userInfo.user.photoURL : "";
+        return state.auth.userInfo.user.user ? state.auth.userInfo.user.user.photoURL : "";
       },
       displayName(state) {
         return state.auth.userInfo.user ? state.auth.userInfo.user.displayName : "Anonymous";
@@ -1462,7 +1488,7 @@ function storeSetup(vuetify) {
         state.iframe.iframeUrlBase = newUrl.substring(0, newUrl.lastIndexOf("/")) + "/";
       },
       USER_INFO(state, userInfo) {
-        state.auth.userInfo.user = userInfo.user;
+        state.auth.userInfo.user = userInfo;
         // TODO: tell sentry and logrocket
       },
       CHANGE_ASR_TTS(state, lang) {
@@ -1664,7 +1690,7 @@ function storeSetup(vuetify) {
         if (getters.firebase) {
           logger.debug(`SET USER INFORMATION > Located Firebase`);
           getters.firebase.auth().onAuthStateChanged(function (user) {
-            if (user) {
+            if (user && !getters.authenticated) {
               commit("USER_INFO", { user: user }); // user is still signed in
             }
           });
@@ -1676,7 +1702,7 @@ function storeSetup(vuetify) {
             if (getters.firebase) {
               logger.debug(`SET USER INFORMATION > Firebase > Found on retry: ${retyCount}`);
               getters.firebase.auth().onAuthStateChanged(function (user) {
-                if (user) {
+                if (user && !getters.authenticated) {
                   commit("USER_INFO", { user: user }); // user is still signed in
                 }
               });
@@ -1743,26 +1769,19 @@ function storeSetup(vuetify) {
             case "google":
               provider = new getters.firebase.auth.GoogleAuthProvider();
               break;
-            // case "microsoft":
-            //   const scopes = [
-            //     "AccessReview.Read.All",
-            //     "Bookings.Read.All",
-            //     "Organization.Read.All",
-            //     "OrgContact.Read.All",
-            //     "Presence.Read.All",
-            //     "People.Read.All",
-            //     "Notifications.ReadWrite.CreatedByApp"
-            //   ];
-            //   provider = new getters.firebase.auth.OAuthProvider("microsoft.com");
-            //   provider.setCustomParameters({
-            //     prompt: "select_account",
-            //     domain_hint: "artificial-solutions.com"
-            //   });
-            //   scopes.forEach(scope => {
-            //     provider.addScope(scope);
-            //   });
+            case "microsoft":
+              const scopes = ["User.Read.All"];
+              provider = new getters.firebase.auth.OAuthProvider("microsoft.com");
+              provider.setCustomParameters({
+                prompt: "select_account",
+                tenant: window.leopardConfig.auth.microsoft.tenant,
+                domain_hint: window.leopardConfig.auth.microsoft.domainHint
+              });
+              scopes.forEach(scope => {
+                provider.addScope(scope);
+              });
 
-            //   break;
+              break;
             case "facebook":
               provider = new getters.firebase.auth.FacebookAuthProvider();
               break;
@@ -1787,9 +1806,32 @@ function storeSetup(vuetify) {
               // The signed-in user info.
               let user = result.user;
               logger.debug(user);
-              commit("USER_INFO", {
-                user: user
-              });
+              if (socialProvider === "microsoft") {
+                let userInfo = {
+                  user: user,
+                  providerId: "microsoft.com",
+                  additional: {
+                    credentials: result.credential,
+                    email: result.additionalUserInfo.profile.mail,
+                    phone: result.additionalUserInfo.profile.mobilePhone,
+                    displayName: result.additionalUserInfo.profile.displayName,
+                    surname: result.additionalUserInfo.profile.surname,
+                    givenName: result.additionalUserInfo.profile.givenName,
+                    name: result.additionalUserInfo.profile.givenName,
+                    jobTitle: result.additionalUserInfo.profile.jobTitle,
+                    userPrincipleName: result.additionalUserInfo.profile.userPrincipalName,
+                    accessToken: result.credential.accessToken,
+                    providerId: "microsoft.com"
+                  }
+                };
+                logger.debug(`Microsoft User Info:`, userInfo);
+                commit("USER_INFO", userInfo);
+              } else {
+                commit("USER_INFO", {
+                  user: user
+                });
+              }
+
               resolve();
             })
             .catch(function (error) {

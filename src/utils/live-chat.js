@@ -66,9 +66,11 @@ export class LiveChat {
           });
 
         this.sdk.on("connected", payload => {
+          logger.debug(`CUSTOMER DATA`, payload.customer);
           logger.debug(`LiveChat > Conected`, payload);
           if (payload.chatsSummary && payload.chatsSummary.length > 0) {
             this.chatId = payload.chatsSummary[0].id;
+            logger.debug(`CHAT ID::`, this.chatId);
             this.lastMessage = payload.chatsSummary[0].lastEventsPerType.message.text;
             this.lastMessageAuthorId = payload.chatsSummary[0].lastEventsPerType.message.author;
             logger.debug(`LiveChat > Last Author ID`, this.lastMessageAuthorId);
@@ -112,7 +114,7 @@ export class LiveChat {
         this.sdk.on("thread_summary", threadSummary => {
           logger.debug(`LiveChat > thread_summary`, threadSummary);
           logger.debug(`LiveChat > Thread Summary: `, threadSummary);
-          this.chatId = threadSummary.chat;
+          this.chatId = threadSummary.chatId;
           if ("lc2" in threadSummary.properties) {
             try {
               let secondsWait = threadSummary.properties.lc2.queue_waiting_time;
@@ -225,8 +227,8 @@ export class LiveChat {
           }
         });
 
-        this.sdk.on("thread_closed", () => {
-          logger.debug(`LiveChat > thread_closed`);
+        this.sdk.on("chat_deactivate", () => {
+          logger.debug(`LiveChat > chat_deactivate`);
           if (this.store.state.liveAgent.isLiveChat) {
             let message =
               "Chat with live agent ended. You are now talking with the virtual assistant. ";
@@ -308,7 +310,8 @@ export class LiveChat {
     if (this.chatId && this.sdk) {
       logger.debug("Have existing chatId and Sending message to LiveChat Agent:" + message);
       this.sdk
-        .sendEvent(this.chatId, {
+        .sendEvent({
+          chatId: this.chatId,
           type: "message",
           text: message
         })
@@ -317,14 +320,26 @@ export class LiveChat {
         });
     } else if (this.sdk) {
       logger.debug("STARTING LiveChat with message" + message);
+      // .startChat({
+      //     events: [
+      //       {
+      //         type: "message",
+      //         text: message
+      //       }
+      //     ]
+      //   })
       this.sdk
         .startChat({
-          events: [
-            {
-              type: "message",
-              text: message
+          chat: {
+            thread: {
+              events: [
+                {
+                  type: "message",
+                  text: message
+                }
+              ]
             }
-          ]
+          }
         })
         .then(chat => {
           this.chatId = chat;

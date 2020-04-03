@@ -613,24 +613,23 @@ export default {
     isChatOpen: function(isOpenNew) {
       if (isOpenNew) {
         const element = this.$el.querySelector("#teneo-input-field");
-
-        if (!this.isMobileDevice) {
-          if (element) {
-            element.focus();
-            this.$nextTick(() => {
-              // this.$refs.userInput.focus(); // possibly duplicated below
-              element.addEventListener("focusin", e => e.stopPropagation()); // to stop flickering
+        if (element) {
+          if (!this.isMobileDevice) {
               element.focus();
-              try {
-                element.click();
-              } catch (e) {
-                // ignore
-              }
-            });
+              this.$nextTick(() => {
+                // this.$refs.userInput.focus(); // possibly duplicated below
+                element.addEventListener("focusin", e => e.stopPropagation()); // to stop flickering
+                element.focus();
+                try {
+                  element.click();
+                } catch (e) {
+                  // ignore
+                }
+              });
+          } else {
+            element.addEventListener("focusin", e => e.stopPropagation()); // to stop flickering
+            document.activeElement.blur();
           }
-        } else {
-          element.addEventListener("focusin", e => e.stopPropagation()); // to stop flickering
-          document.activeElement.blur();
         }
       }
     },

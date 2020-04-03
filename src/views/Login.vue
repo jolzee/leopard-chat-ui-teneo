@@ -4,14 +4,14 @@
       <p class="subheading font-weight-medium">Login with one of the following methods.</p>
     </v-col>
     <v-col cols="12" class="d-flex justify-center flex-wrap mb-3">
-      <!-- <v-btn
+      <v-btn
         color="#375A9A"
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
         @click="loginSocial('microsoft')"
         aria-label="Microsoft opens in a new window"
       >
         <v-icon left light class="ml-1">mdi-microsoft</v-icon>Microsoft
-      </v-btn>-->
+      </v-btn>
       <v-btn
         color="#375A9A"
         class="white--text teneo-social-btn px-1 mr-1 mb-1"

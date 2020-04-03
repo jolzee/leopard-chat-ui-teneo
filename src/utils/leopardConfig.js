@@ -39,6 +39,12 @@ export default {
     storageBucket: getEnvValue("VUE_APP_FIREBASE_STORAGE_BUCKET"),
     messagingSenderId: getEnvValue("VUE_APP_FIREBASE_MESSAGING_SENDER_ID")
   },
+  auth: {
+    microsoft: {
+      tenant: getEnvValue("VUE_APP_AUTH_MS_TENANT"),
+      domainHint: getEnvValue("VUE_APP_AUTH_MS_DOMAIN_HINT")
+    }
+  },
   logging: {
     sentryDsn: getEnvValue("VUE_APP_SENTRY_DSN"),
     logRocket: getEnvValue("VUE_APP_LOG_ROCKET")
