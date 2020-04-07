@@ -68,6 +68,7 @@
         >
           <v-alert
             min-width="100%"
+            dense
             color="info"
             border="left"
             elevation="2"
@@ -216,6 +217,13 @@ export default {
     };
   },
   watch: {
+    showLiveChatProcessing: function(val) {
+      console.log(`SHOW LIVE CHAT PROCESSING`, val);
+      setTimeout(() => {
+        this.mustScroll = true;
+        this.scrollToBottom();
+      }, 8000);
+    },
     date: function(newDate) {
       if (newDate !== "") {
         this.updateInputBox(dayjs(newDate).format("D MMMM YYYY"));
@@ -354,8 +362,10 @@ export default {
       logger.debug("Scroll to bottom");
       const endChatTarget = this.$refs.endChat;
       if (endChatTarget) {
+
         this.isScrolling = true;
         let scrollToElement = document.getElementById("teneo-chat-scroll");
+        console.log(`JJJJJJJJJJOLZEEE`, scrollToElement);
         const options = {
           duration: 1200,
           offset: -50,
@@ -377,7 +387,6 @@ export default {
       }
     },
     scrollToBottom() {
-      // debounce(this.debounceScroll(), 2000, false);
       this.debounceScroll();
     },
     onHtmlClick(event) {
