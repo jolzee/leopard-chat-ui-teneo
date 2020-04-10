@@ -1998,11 +1998,7 @@ function storeSetup(vuetify) {
                 console.groupEnd();
               }
               context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
-              logger.debug(
-                `Login Message from Teneo: ${decodeURIComponent(
-                  cleanEmptyChunks(tResp.getOutputText())
-                )}`
-              );
+              logger.debug(`Login Message from Teneo: ${cleanEmptyChunks(tResp.getOutputText())}`);
 
               let hasExtraData = false;
 
@@ -2018,11 +2014,9 @@ function storeSetup(vuetify) {
                 type: "reply",
                 id: uuid(),
                 text: md.render(
-                  cleanEmptyChunks(
-                    decodeURIComponent(tResp.getOutputText()).replace(
-                      /onclick="[^"]+"/g,
-                      'class="sendInput"'
-                    )
+                  cleanEmptyChunks(tResp.getOutputText()).replace(
+                    /onclick="[^"]+"/g,
+                    'class="sendInput"'
                   )
                 ),
                 bodyText: "",
@@ -2325,19 +2319,14 @@ function storeSetup(vuetify) {
                   });
               }
 
-              logger.debug(
-                `Response 💬: `,
-                decodeURIComponent(cleanEmptyChunks(tResp.getOutputText()))
-              );
+              logger.debug(`Response 💬: `, cleanEmptyChunks(tResp.getOutputText()));
               const response = {
                 userInput: currentUserInput,
                 id: uuid(),
                 teneoAnswer: md.render(
-                  cleanEmptyChunks(
-                    decodeURIComponent(tResp.getOutputText()).replace(
-                      /onclick="[^"]+"/g,
-                      'class="sendInput"'
-                    )
+                  cleanEmptyChunks(tResp.getOutputText()).replace(
+                    /onclick="[^"]+"/g,
+                    'class="sendInput"'
                   )
                 ),
                 teneoResponse: json
@@ -2346,7 +2335,7 @@ function storeSetup(vuetify) {
               if (response.teneoResponse) {
                 let ttsText = stripHtml(cleanEmptyChunks(response.teneoAnswer));
                 if (tResp.hasParameter("tts")) {
-                  ttsText = stripHtml(decodeURIComponent(tResp.getParameter("tts")));
+                  ttsText = stripHtml(tResp.getParameter("tts"));
                 }
 
                 context.commit("SET_ACCESIBLE_ANOUNCEMENT", "Chat Bot Said. " + ttsText + ".");
@@ -2378,7 +2367,7 @@ function storeSetup(vuetify) {
                   context.commit("START_LIVE_CHAT");
                 }
                 if (tResp.hasParameter("chatTitle")) {
-                  let chatTitle = decodeURIComponent(tResp.getParameter("chatTitle"));
+                  let chatTitle = tResp.getParameter("chatTitle");
                   if (chatTitle !== "undefined") {
                     context.commit("SET_CHAT_TITLE", chatTitle);
                   }
