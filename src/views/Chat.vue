@@ -365,7 +365,6 @@ export default {
 
         this.isScrolling = true;
         let scrollToElement = document.getElementById("teneo-chat-scroll");
-        console.log(`JJJJJJJJJJOLZEEE`, scrollToElement);
         const options = {
           duration: 1200,
           offset: -50,
