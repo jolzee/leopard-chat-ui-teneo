@@ -253,11 +253,10 @@ export default class Setup {
           if (window.leopardConfig.mustSendLocationAtLogin) {
             LocalStorage.keyExists(STORAGE_KEY + "loc").then(exists => {
               if (exists) {
-                LocalStorage.get(STORAGE_KEY + "loc").then(data => {
-                  superagent
-                    .get("https://cors-anywhere.herokuapp.com/https://api.ipify.org")
-                    .then(res => {
-                      if (res.text === data.ip) {
+                try {
+                  LocalStorage.get(STORAGE_KEY + "loc").then(data => {
+                    superagent.get("http://jaguar.jolzee.xyz/utils/ip").then(res => {
+                      if (res.body.indexOf(data.ip) > -1) {
                         logger.debug(
                           `📍 Found Location Info in LocalStorage. IP hasn't changed`,
                           data
@@ -268,9 +267,18 @@ export default class Setup {
                         this.obtainLocation(resolve, vuetify);
                       }
                     });
-                });
+                  });
+                } catch (e) {
+                  logger.debug(`Unable to get Geo location data from 3rd parties`, e.message);
+                  resolve(vuetify);
+                }
               } else {
-                this.obtainLocation(resolve, vuetify);
+                try {
+                  this.obtainLocation(resolve, vuetify);
+                } catch (e) {
+                  logger.debug(`Unable to get Geo location data from 3rd parties`, e.message);
+                  resolve(vuetify);
+                }
               }
             });
           } else {
@@ -287,33 +295,27 @@ export default class Setup {
   obtainLocation(resolve, vuetify) {
     let browserIp;
     superagent
-      .get("https://cors-anywhere.herokuapp.com/https://api.ipify.org")
+      .get("http://jaguar.jolzee.xyz/utils/ip")
       .then(res => {
-        browserIp = res.text;
+        const browserIps = res.body;
+
+        browserIp = browserIps.length === 1 ? browserIps[0] : browserIps[1];
+        // http://www.geoplugin.net/json.gp?ip=${res.text}
         return superagent
-          .get(
-            `https://cors-anywhere.herokuapp.com/http://www.geoplugin.net/json.gp?ip=${res.text}`
-          )
+          .get(`http://jaguar.jolzee.xyz/utils/geo?ip=${browserIp}`)
           .accept("application/json");
       })
       .then(res => {
-        const loc = JSON.parse(res.text);
-        logger.debug(`📍 Obtained New Location Information`, loc);
-        this.LOCATION = {
-          ip: browserIp,
-          city: loc.geoplugin_city,
-          continentCode: loc.geoplugin_continentCode,
-          continentName: loc.geoplugin_continentName,
-          countryCode: loc.geoplugin_countryCode,
-          countryName: loc.geoplugin_countryName,
-          currencySymbol: loc.geoplugin_currencySymbol,
-          currencyCode: loc.geoplugin_currencyCode,
-          latitude: loc.geoplugin_latitude,
-          longitude: loc.geoplugin_longitude,
-          regionCode: loc.geoplugin_regionCode,
-          regionName: loc.geoplugin_regionName
-        };
-        LocalStorage.put(STORAGE_KEY + "loc", this.LOCATION); // cache so we don't do this too often
+        const loc = res.body;
+        if ("ip" in loc) {
+          logger.debug(`📍 Obtained New Location Information`, loc);
+          this.LOCATION = loc;
+          LocalStorage.put(STORAGE_KEY + "loc", this.LOCATION); // cache so we don't do this too often
+        } else {
+          this.LOCATION = "";
+          logger.debug(`📍 Jaguar wasn't able to return geo`, loc);
+        }
+
         resolve(vuetify);
       })
       .catch(err => {
