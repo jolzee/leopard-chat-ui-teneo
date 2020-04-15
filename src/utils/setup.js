@@ -254,20 +254,18 @@ export default class Setup {
             LocalStorage.keyExists(STORAGE_KEY + "loc").then(exists => {
               if (exists) {
                 LocalStorage.get(STORAGE_KEY + "loc").then(data => {
-                  superagent
-                    .get("https://cors-anywhere.herokuapp.com/https://api.ipify.org")
-                    .then(res => {
-                      if (res.text === data.ip) {
-                        logger.debug(
-                          `📍 Found Location Info in LocalStorage. IP hasn't changed`,
-                          data
-                        );
-                        this.LOCATION = data;
-                        resolve(vuetify);
-                      } else {
-                        this.obtainLocation(resolve, vuetify);
-                      }
-                    });
+                  superagent.get("https://ipapi.co/ip/").then(res => {
+                    if (res.text === data.ip) {
+                      logger.debug(
+                        `📍 Found Location Info in LocalStorage. IP hasn't changed`,
+                        data
+                      );
+                      this.LOCATION = data;
+                      resolve(vuetify);
+                    } else {
+                      this.obtainLocation(resolve, vuetify);
+                    }
+                  });
                 });
               } else {
                 this.obtainLocation(resolve, vuetify);
@@ -287,7 +285,7 @@ export default class Setup {
   obtainLocation(resolve, vuetify) {
     let browserIp;
     superagent
-      .get("https://cors-anywhere.herokuapp.com/https://api.ipify.org")
+      .get("https://ipapi.co/ip/")
       .then(res => {
         browserIp = res.text;
         return superagent
