@@ -399,7 +399,17 @@ window.addEventListener(
     false
 );
 
+function addListener(event, obj, fn) {
+    if (obj.addEventListener) {
+       obj.addEventListener(event, fn, false);   // modern browsers
+    } else {
+       obj.attachEvent("on"+event, fn);          // older versions of IE
+    }
+}
 
-window.addEventListener('load', function () {
-    loadLeopard();
+addListener('load', window, function (event) {
+    var leopardTargetElement = document.getElementById("leopardChatWindow");
+    if (!leopardTargetElement) {
+        loadLeopard();
+    }
 });
