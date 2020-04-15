@@ -224,18 +224,18 @@
                 align="center"
                 justify="center"
                 class="primary darken-2"
-                style="height:67px"
+                style="height:90px"
               >
                 <div class="pa-2">
                   <a
-                    href="https://www.artificial-solutions.com/"
+                    href="https://www.artificial-solutions.com/teneo"
                     class="leopard-img"
                     target="_blank"
                     aria-label="Artificial Solutions information will open in a new window"
                   >
                     <img
-                      src="@/assets/as-logo.png"
-                      alt="Artificial Solutions logo"
+                      src="@/assets/powered-by-teneo.png"
+                      alt="Powered by Teneo"
                       class="text-center"
                       width="150"
                     />

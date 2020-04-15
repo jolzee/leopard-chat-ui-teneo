@@ -1,132 +1,157 @@
 <template>
-  <v-row class="teneo-footer" :class="{ 'footer-float': float }" no-gutters>
-    <v-col>
-      <v-form v-model="valid" v-on:submit.prevent ref="userInputForm">
-        <v-container class="fill-height py-0">
-          <v-row no-gutters align="center" justify="center">
-            <v-col class="text-center">
-              <v-text-field
-                id="teneo-input-field"
-                aria-label="Chat bot send message"
-                v-show="textFieldShowCondition"
-                :disabled="textFieldDisabledCondition"
-                v-shortkey="{
+  <div>
+    <v-row class="teneo-footer" :class="{ 'footer-float': float }" no-gutters>
+      <v-col>
+        <v-form v-model="valid" v-on:submit.prevent ref="userInputForm">
+          <v-container class="fill-height py-0">
+            <v-row no-gutters align="center" justify="center">
+              <v-col class="text-center">
+                <v-text-field
+                  id="teneo-input-field"
+                  aria-label="Chat bot send message"
+                  v-show="textFieldShowCondition"
+                  :disabled="textFieldDisabledCondition"
+                  v-shortkey="{
                   toggle1: ['ctrl', 'alt', '/'],
                   toggle2: ['ctrl', 'alt', 'arrowdown']
                 }"
-                @shortkey.native="swapInputButton"
-                @keyup.esc="handleEscapeKey"
-                :prepend-inner-icon="innerIconCondition"
-                :type="determineFieldType"
-                @click:prepend-inner="toggleShowPassword()"
-                :rules="inputRules"
-                :clearable="!isUserInputEmpty"
-                clear-icon="mdi-comment-remove-outline"
-                auto-grow
-                color="sendButton"
-                required
-                solo
-                tabindex="0"
-                return-masked-value
-                v-mask="determineMask"
-                name="userInput"
-                ref="userInput"
-                autocomplete="off"
-                v-model.lazy="userInput"
-                v-on:keydown.enter.prevent="sendUserInput()"
-                :label="determineLabelText"
-                single-line
-                data-lpignore="true"
-              >
-                <template v-if="showAudioInput" v-slot:append>
+                  @shortkey.native="swapInputButton"
+                  @keyup.esc="handleEscapeKey"
+                  :prepend-inner-icon="innerIconCondition"
+                  :type="determineFieldType"
+                  @click:prepend-inner="toggleShowPassword()"
+                  :rules="inputRules"
+                  :clearable="!isUserInputEmpty"
+                  clear-icon="mdi-comment-remove-outline"
+                  auto-grow
+                  color="sendButton"
+                  required
+                  solo
+                  tabindex="0"
+                  return-masked-value
+                  v-mask="determineMask"
+                  name="userInput"
+                  ref="userInput"
+                  autocomplete="off"
+                  v-model.lazy="userInput"
+                  v-on:keydown.enter.prevent="sendUserInput()"
+                  :label="determineLabelText"
+                  single-line
+                  data-lpignore="true"
+                >
+                  <template v-if="showAudioInput" v-slot:append>
+                    <v-btn
+                      :disabled="isUserInputEmpty"
+                      @click="sendUserInput"
+                      aria-label="Send Question to Chat Bot"
+                      large
+                      tabindex="0"
+                      text
+                      icon
+                      ripple
+                    >
+                      <v-icon color="sendButton">mdi-send</v-icon>
+                    </v-btn>
+                  </template>
+                </v-text-field>
+                <span v-shortkey="['esc']" @shortkey="handleEscapeKey"></span>
+              </v-col>
+              <v-col cols="3" sm="2" class="text-center">
+                <upload-btn
+                  icon
+                  tabindex="0"
+                  aria-label="Select File for Upload"
+                  v-if="showUploadButton"
+                  @file-update="fileChanged"
+                  large
+                  hover
+                  color="sendButton"
+                  class="elevation-2 v-btn v-btn--fab v-btn--round v-size--small sendButton white--text mt-3"
+                >
+                  <template slot="icon">
+                    <v-icon dark class="py-2">mdi-paperclip</v-icon>
+                  </template>
+                </upload-btn>
+                <v-progress-circular
+                  v-if="showUploadProgress"
+                  :rotate="360"
+                  :size="40"
+                  :width="10"
+                  :value="progressValue"
+                  color="accent"
+                  class="mt-3"
+                ></v-progress-circular>
+                <template v-if="notUploadingCondition">
                   <v-btn
-                    :disabled="isUserInputEmpty"
-                    @click="sendUserInput"
-                    aria-label="Send Question to Chat Bot"
-                    large
-                    tabindex="0"
                     text
                     icon
-                    ripple
+                    tabindex="0"
+                    :disabled="isUserInputEmpty"
+                    :loading="progressBar"
+                    v-long-press="1000"
+                    @long-press-start="swapInputButton"
+                    aria-label="Send"
+                    v-if="!showAudioInput"
+                    large
+                    @click.native="sendUserInput"
                   >
                     <v-icon color="sendButton">mdi-send</v-icon>
                   </v-btn>
-                </template>
-              </v-text-field>
-              <span v-shortkey="['esc']" @shortkey="handleEscapeKey"></span>
-            </v-col>
-            <v-col cols="3" sm="2" class="text-center">
-              <upload-btn
-                icon
-                tabindex="0"
-                aria-label="Select File for Upload"
-                v-if="showUploadButton"
-                @file-update="fileChanged"
-                large
-                hover
-                color="sendButton"
-                class="elevation-2 v-btn v-btn--fab v-btn--round v-size--small sendButton white--text mt-3"
-              >
-                <template slot="icon">
-                  <v-icon dark class="py-2">mdi-paperclip</v-icon>
-                </template>
-              </upload-btn>
-              <v-progress-circular
-                v-if="showUploadProgress"
-                :rotate="360"
-                :size="40"
-                :width="10"
-                :value="progressValue"
-                color="accent"
-                class="mt-3"
-              ></v-progress-circular>
-              <template v-if="notUploadingCondition">
-                <v-btn
-                  text
-                  icon
-                  tabindex="0"
-                  :disabled="isUserInputEmpty"
-                  :loading="progressBar"
-                  v-long-press="1000"
-                  @long-press-start="swapInputButton"
-                  aria-label="Send"
-                  v-if="!showAudioInput"
-                  large
-                  @click.native="sendUserInput"
-                >
-                  <v-icon color="sendButton">mdi-send</v-icon>
-                </v-btn>
 
-                <v-btn
-                  tabindex="0"
-                  aria-label="Send"
-                  :disabled="progressBar"
-                  :loading="progressBar"
-                  v-long-press="1000"
-                  @long-press-start="swapInputButton"
-                  ripple
-                  v-if="showAudioInput"
-                  v-shortkey="{
+                  <v-btn
+                    tabindex="0"
+                    aria-label="Send"
+                    :disabled="progressBar"
+                    :loading="progressBar"
+                    v-long-press="1000"
+                    @long-press-start="swapInputButton"
+                    ripple
+                    v-if="showAudioInput"
+                    v-shortkey="{
                     recordAudioOne: ['ctrl', 'alt', '.'],
                     recordAudioTwo: ['ctrl', 'alt', '`'],
                     recordAudioThree: ['ctrl', 'alt', 'arrowup']
                   }"
-                  @shortkey.native="captureAudio"
-                  :color="audioButtonColor"
-                  :class="!$vuetify.theme.dark ? 'white--text' : 'black--text'"
-                  small
-                  fab
-                  @click.native="captureAudio"
-                >
-                  <v-icon>{{ listening ? "mdi-ear-hearing" : "mdi-account-voice" }}</v-icon>
-                </v-btn>
-              </template>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-form>
-    </v-col>
-  </v-row>
+                    @shortkey.native="captureAudio"
+                    :color="audioButtonColor"
+                    :class="!$vuetify.theme.dark ? 'white--text' : 'black--text'"
+                    small
+                    fab
+                    @click.native="captureAudio"
+                  >
+                    <v-icon>{{ listening ? "mdi-ear-hearing" : "mdi-account-voice" }}</v-icon>
+                  </v-btn>
+                </template>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </v-col>
+    </v-row>
+    <!-- <v-row class no-gutters>
+      <v-col cols="12" tabindex="0" align="center" justify="center" style="height:45px">
+        <div
+          style="height:45px"
+          class="teneo-powered-footer elevation-3"
+          :class="{ 'footer-powered-float': float }"
+        >
+          <a
+            href="https://www.artificial-solutions.com/teneo"
+            class="leopard-img"
+            target="_blank"
+            aria-label="Artificial Solutions information will open in a new window"
+          >
+            <img
+              src="@/assets/powered-by-teneo-wide.png"
+              alt="Powered by Teneo"
+              class="text-center"
+              width="250"
+            />
+          </a>
+        </div>
+      </v-col>
+    </v-row>-->
+  </div>
 </template>
 
 <script>
@@ -526,4 +551,19 @@ export default {
   }
 };
 </script>
-<style></style>
+<style>
+.footer-powered-float {
+  z-index: -1 !important;
+  -moz-border-bottom-right-radius: 13px;
+  border-bottom-right-radius: 13px;
+  -moz-border-bottom-left-radius: 13px;
+  border-bottom-left-radius: 13px;
+}
+.teneo-powered-footer {
+  background-color: darkturquoise;
+  position: relative;
+  z-index: 5;
+  bottom: 10px !important;
+  height: 45px !important;
+}
+</style>
