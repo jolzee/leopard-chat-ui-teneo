@@ -369,6 +369,7 @@ function receiveLeopardMessage(event) {
             eval(results[1]);
         }
     } catch (err) {
+        console.log(err);
         /* ignore as it's most likely another message from another source */
     }
 }
@@ -398,9 +399,7 @@ window.addEventListener(
     false
 );
 
-if (document.readyState === "ready" || document.readyState === "complete") {
-    var leopardTargetElement = document.getElementById("leopardChatWindow");
-    if (!leopardTargetElement) {
-        loadLeopard();
-    }
-}
+
+window.addEventListener('load', function () {
+    loadLeopard();
+});
