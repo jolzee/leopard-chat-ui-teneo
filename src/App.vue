@@ -223,8 +223,7 @@
                 v-if="keepBranding()"
                 align="center"
                 justify="center"
-                class="primary darken-2"
-                style="height:90px"
+                style="height:90px; background-color: #2F286E;"
               >
                 <div class="pa-2">
                   <a
