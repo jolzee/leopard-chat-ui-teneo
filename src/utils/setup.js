@@ -78,6 +78,7 @@ export default class Setup {
     this.CHAT_TITLE = "Configure Me";
     this.IS_AGENT_ASSIST = doesParameterExist("plugin_id");
     this.EMBED = doesParameterExist("embed");
+    this.sheetId = getParameterByName("sheetId");
     this.ENABLE_LIVE_CHAT = false;
     this.FLOAT = false;
     this.THEME = {
@@ -111,6 +112,7 @@ export default class Setup {
       this.getSolutionConfig()
         .then(() => {
           this.chatConfig = fixSolutions(this.chatConfig);
+
           if (!this.EMBED) {
             this.addIframeHtml();
           }
@@ -149,6 +151,24 @@ export default class Setup {
                 } else {
                   this.activeSolution = this.chatConfig.solutions[0];
                 }
+              }
+            }
+            if (this.sheetId) {
+              let targetContext = this.activeSolution.contextParams.find(
+                element => element.name === "sheetId"
+              );
+              if (targetContext) {
+                targetContext.values[0].text = this.sheetId;
+              } else {
+                this.activeSolution.contextParams.push({
+                  name: "sheetId",
+                  values: [
+                    {
+                      text: this.sheetId,
+                      active: true
+                    }
+                  ]
+                });
               }
             }
             this.ASR_CORRECTIONS_MERGED = this.getMergedAsrCorrections(ASR_CORRECTIONS);
@@ -254,18 +274,24 @@ export default class Setup {
             LocalStorage.keyExists(STORAGE_KEY + "loc").then(exists => {
               if (exists) {
                 LocalStorage.get(STORAGE_KEY + "loc").then(data => {
-                  superagent.get("https://ipapi.co/ip/").then(res => {
-                    if (res.text === data.ip) {
-                      logger.debug(
-                        `📍 Found Location Info in LocalStorage. IP hasn't changed`,
-                        data
-                      );
-                      this.LOCATION = data;
-                      resolve(vuetify);
-                    } else {
-                      this.obtainLocation(resolve, vuetify);
-                    }
-                  });
+                  superagent
+                    .get(
+                      window.leopardConfig.ipUrl
+                        ? window.leopardConfig.ipUrl
+                        : "https://ipapi.co/ip/"
+                    )
+                    .then(res => {
+                      if (res.text === data.ip) {
+                        logger.debug(
+                          `📍 Found Location Info in LocalStorage. IP hasn't changed`,
+                          data
+                        );
+                        this.LOCATION = data;
+                        resolve(vuetify);
+                      } else {
+                        this.obtainLocation(resolve, vuetify);
+                      }
+                    });
                 });
               } else {
                 this.obtainLocation(resolve, vuetify);
@@ -284,33 +310,53 @@ export default class Setup {
 
   obtainLocation(resolve, vuetify) {
     let browserIp;
+    let ipUrl = window.leopardConfig.ipUrl ? window.leopardConfig.ipUrl : "https://ipapi.co/ip/";
+    logger.debug(`ipUrl`, ipUrl);
     superagent
-      .get("https://ipapi.co/ip/")
+      .get(ipUrl)
       .then(res => {
         browserIp = res.text;
-        return superagent
-          .get(
-            `https://cors-anywhere.herokuapp.com/http://www.geoplugin.net/json.gp?ip=${res.text}`
-          )
-          .accept("application/json");
+        let geoUrl = window.leopardConfig.geoUrl
+          ? window.leopardConfig.geoUrl
+          : `https://cors-anywhere.herokuapp.com/http://www.geoplugin.net/json.gp?ip=${res.text}`;
+        logger.debug(`geoUrl`, geoUrl);
+        return superagent.get(geoUrl).accept("application/json");
       })
       .then(res => {
         const loc = JSON.parse(res.text);
         logger.debug(`📍 Obtained New Location Information`, loc);
-        this.LOCATION = {
-          ip: browserIp,
-          city: loc.geoplugin_city,
-          continentCode: loc.geoplugin_continentCode,
-          continentName: loc.geoplugin_continentName,
-          countryCode: loc.geoplugin_countryCode,
-          countryName: loc.geoplugin_countryName,
-          currencySymbol: loc.geoplugin_currencySymbol,
-          currencyCode: loc.geoplugin_currencyCode,
-          latitude: loc.geoplugin_latitude,
-          longitude: loc.geoplugin_longitude,
-          regionCode: loc.geoplugin_regionCode,
-          regionName: loc.geoplugin_regionName
-        };
+        if (window.leopardConfig.geoUrl) {
+          this.LOCATION = {
+            ip: browserIp,
+            city: loc.city,
+            continentCode: loc.continentCode,
+            continentName: loc.continentName,
+            countryCode: loc.countryCode,
+            countryName: loc.countryName,
+            currencySymbol: loc.currencySymbol,
+            currencyCode: loc.currencyCode,
+            latitude: loc.latitude,
+            longitude: loc.longitude,
+            regionCode: loc.regionCode,
+            regionName: loc.regionName
+          };
+        } else {
+          this.LOCATION = {
+            ip: browserIp,
+            city: loc.geoplugin_city,
+            continentCode: loc.geoplugin_continentCode,
+            continentName: loc.geoplugin_continentName,
+            countryCode: loc.geoplugin_countryCode,
+            countryName: loc.geoplugin_countryName,
+            currencySymbol: loc.geoplugin_currencySymbol,
+            currencyCode: loc.geoplugin_currencyCode,
+            latitude: loc.geoplugin_latitude,
+            longitude: loc.geoplugin_longitude,
+            regionCode: loc.geoplugin_regionCode,
+            regionName: loc.geoplugin_regionName
+          };
+        }
+
         LocalStorage.put(STORAGE_KEY + "loc", this.LOCATION); // cache so we don't do this too often
         resolve(vuetify);
       })
