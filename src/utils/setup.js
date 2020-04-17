@@ -78,6 +78,7 @@ export default class Setup {
     this.CHAT_TITLE = "Configure Me";
     this.IS_AGENT_ASSIST = doesParameterExist("plugin_id");
     this.EMBED = doesParameterExist("embed");
+    this.sheetId = getParameterByName("sheetId");
     this.ENABLE_LIVE_CHAT = false;
     this.FLOAT = false;
     this.THEME = {
@@ -111,6 +112,7 @@ export default class Setup {
       this.getSolutionConfig()
         .then(() => {
           this.chatConfig = fixSolutions(this.chatConfig);
+
           if (!this.EMBED) {
             this.addIframeHtml();
           }
@@ -149,6 +151,24 @@ export default class Setup {
                 } else {
                   this.activeSolution = this.chatConfig.solutions[0];
                 }
+              }
+            }
+            if (this.sheetId) {
+              let targetContext = this.activeSolution.contextParams.find(
+                element => element.name === "sheetId"
+              );
+              if (targetContext) {
+                targetContext.values[0].text = this.sheetId;
+              } else {
+                this.activeSolution.contextParams.push({
+                  name: "sheetId",
+                  values: [
+                    {
+                      text: this.sheetId,
+                      active: true
+                    }
+                  ]
+                });
               }
             }
             this.ASR_CORRECTIONS_MERGED = this.getMergedAsrCorrections(ASR_CORRECTIONS);
