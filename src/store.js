@@ -3,7 +3,7 @@ import "regenerator-runtime/runtime";
 const logger = require("@/utils/logging").getLogger("store.js");
 const replaceString = require("replace-string");
 const TIE = require("leopard-tie-client");
-// Controls Data Store and Flow for Components
+// Controls Data Store and Flow for Components...
 import {
   doesParameterExist,
   getParameterByName,
