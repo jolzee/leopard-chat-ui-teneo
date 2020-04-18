@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import "regenerator-runtime/runtime";
 const logger = require("@/utils/logging").getLogger("store.js");
+const replaceString = require("replace-string");
 const TIE = require("leopard-tie-client");
 import {
   doesParameterExist,
@@ -1675,6 +1676,8 @@ function storeSetup(vuetify) {
           context.getters.timeZoneParam +
           context.getters.ctxParameters;
 
+        queryParams = replaceString(queryParams, "CURL_CONNECT_TIMEOUT", "");
+
         let queryObj = queryParamStringAsObject(queryParams);
         queryObj.command = "feedback";
         queryObj.text = ""; // it's a login we don't have to say anything yet
@@ -1941,6 +1944,8 @@ function storeSetup(vuetify) {
             context.getters.ctxParameters +
             context.getters.locationInfo;
 
+          queryParams = replaceString(queryParams, "CURL_CONNECT_TIMEOUT", "");
+
           let queryObj = queryParamStringAsObject(queryParams);
           queryObj.command = "login";
           queryObj.text = ""; // it's a login we don't have to say anything yet
@@ -2095,6 +2100,8 @@ function storeSetup(vuetify) {
             window.leopardConfig.requestParams +
             context.getters.timeZoneParam +
             context.getters.ctxParameters;
+
+          queryParams = replaceString(queryParams, "CURL_CONNECT_TIMEOUT", "");
 
           let queryObj = queryParamStringAsObject(queryParams);
           queryObj.text = currentUserInput.trim();
