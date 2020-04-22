@@ -200,6 +200,14 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      isAuthProviderEnabled: _state => provider => {
+        let authProviders = window.leopardConfig.firebase.authProviders;
+        if (authProviders) {
+          return authProviders.indexOf(provider) > -1;
+        } else {
+          return true; // just so those that haven't added the env variable get all the existing auth providers
+        }
+      },
       locationInfo(state) {
         let locationInfo = state.locationInfo;
         return locationInfo ? `&${generateQueryParams(locationInfo)}` : "";

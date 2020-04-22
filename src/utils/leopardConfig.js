@@ -34,6 +34,7 @@ export default {
   pusherKey: getEnvValue("VUE_APP_PUSHER_KEY"),
   locationIqKey: getEnvValue("VUE_APP_LOCATION_IQ_KEY"),
   firebase: {
+    authProviders: getEnvValue("VUE_APP_FIREBASE_AUTH_PROVIDERS"),
     apiKey: getEnvValue("VUE_APP_FIREBASE_API_KEY"),
     authDomain: getEnvValue("VUE_APP_FIREBASE_AUTH_DOMAIN"),
     databaseUrl: getEnvValue("VUE_APP_FIREBASE_DATABASE_URL"),

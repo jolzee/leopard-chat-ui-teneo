@@ -10,6 +10,7 @@
     </v-col>
     <v-col cols="12" class="d-flex justify-center flex-wrap mb-6">
       <v-btn
+        v-if="isAuthProviderEnabled('microsoft')"
         color="#375A9A"
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
         @click="loginSocial('microsoft')"
@@ -18,6 +19,7 @@
         <v-icon left light class="ml-1">mdi-microsoft</v-icon>Microsoft
       </v-btn>
       <v-btn
+        v-if="isAuthProviderEnabled('facebook')"
         color="#375A9A"
         aria-label="Facebook opens in a new window"
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
@@ -26,6 +28,7 @@
         <v-icon left light class="ml-1">mdi-facebook</v-icon>Facebook
       </v-btn>
       <v-btn
+        v-if="isAuthProviderEnabled('google')"
         color="#EE4036"
         aria-label="Google opens in a new window"
         class="white--text teneo-social-btn px-1 mr-1 mb-1"
@@ -34,6 +37,7 @@
         <v-icon left light class="ml-1">mdi-google</v-icon>Google+
       </v-btn>
       <v-btn
+        v-if="isAuthProviderEnabled('facebook')"
         color="#464646"
         aria-label="Github opens in a new window"
         class="white--text teneo-social-btn px-1 mr-0 mb-1"
@@ -114,6 +118,7 @@
 
 <script>
 const logger = require("@/utils/logging").getLogger("Register.vue");
+import { mapGetters } from "vuex";
 export default {
   name: "register",
   components: {},
@@ -195,7 +200,11 @@ export default {
       }
     }
   },
-  computed: {}
+  computed: {
+    ...mapGetters([
+      "isAuthProviderEnabled"
+    ])
+  }
 };
 </script>
 
