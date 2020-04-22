@@ -28,7 +28,6 @@
           @showFeedback="showFeedback = true"
           @hideFeedback="showFeedback = false"
         />
-
         <v-container class="chat-container-inner">
           <div aria-live="polite">
             <v-container

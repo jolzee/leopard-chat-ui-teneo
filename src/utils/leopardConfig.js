@@ -26,6 +26,10 @@ export default {
   hideArtificalSolutionsBranding: getEnvValue("VUE_APP_HIDE_AS_BRANDING", false),
   loadFreshConfigForNewSessions: getEnvValue("VUE_APP_LOAD_FRESH_CONFIG_FOR_NEW_SESSIONS", false),
   mustGetStaticDefaultConfig: getEnvValue("VUE_APP_GET_STATIC_DEFAULT_CONFIG", false),
+  requestParams:
+    getEnvValue("VUE_APP_REQUEST_PARAMS").indexOf("CURL") !== -1
+      ? ""
+      : getEnvValue("VUE_APP_REQUEST_PARAMS"),
   liveChat: {
     licenseKey: getEnvValue("VUE_APP_LIVE_CHAT_INC_KEY"),
     agentAssistServerUrl: getEnvValue("VUE_APP_LIVE_CHAT_AGENT_ASSIST_SERVER")
