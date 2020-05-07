@@ -264,8 +264,8 @@
               dense
               @click="optionClicked(option)"
             >
-              <v-list-item-icon class="mr-4">
-                <v-icon>{{ getLongListIcon(altOptionIndex) }}</v-icon>
+              <v-list-item-icon v-if="!('showIcon' in option) || option.showIcon" class="mr-4">
+                <v-icon>{{ option.icon ? `mdi-${option.icon}` : getLongListIcon(altOptionIndex) }}</v-icon>
               </v-list-item-icon>
               <v-list-item-content class="text-left">
                 <!-- <v-list-item-title v-html="option.name"></v-list-item-title> -->
