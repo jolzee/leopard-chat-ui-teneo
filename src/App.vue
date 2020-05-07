@@ -443,12 +443,13 @@
               <tbody>
                 <template v-for="(value, name, index) in importDialogMessages.solution">
                   <tr :key="`${index}${name}`">
-                    <td style="vertical-align: top" class="pt-2">
-                      <code>{{ name }}</code>
+                    <td style="vertical-align: top" class>
+                      <code class="leopard-import">{{ name }}</code>
                     </td>
                     <td>
                       <prism
                         language="json"
+                        class="leopard-import"
                         style="background-color: unset; display: block;"
                       >{{ JSON.stringify(value, null, 2) }}</prism>
                     </td>
@@ -1314,6 +1315,12 @@ export default {
 .v-application code:before {
   content: normal !important;
   letter-spacing: -1px;
+}
+
+code.leopard-import,
+pre.leopard-import code {
+  background: #f8f8f8 !important;
+  color: black !important;
 }
 
 .teneo-icon {
