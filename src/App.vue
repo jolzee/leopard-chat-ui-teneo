@@ -345,7 +345,7 @@
                     <v-icon>{{ `mdi-${emergencyConfig.icon}` }}</v-icon>
                   </v-btn>
                 </v-fab-transition>
-                <template v-if="embed">
+                <template v-if="embedAndShowClose">
                   <span @click="closeChatEmbedded">
                     <v-fab-transition>
                       <v-btn
@@ -363,6 +363,7 @@
                     </v-fab-transition>
                   </span>
                 </template>
+                <template v-else-if="embed"></template>
                 <!-- Handle close button in demo mode -->
                 <template v-else>
                   <v-fab-transition v-if="!embed || isLiveAgentAssist">
@@ -755,7 +756,11 @@ export default {
       "isChatOpen",
       "socialAuthEnabled"
     ]),
-
+    embedAndShowClose() {
+      let showCloseButton = this.embed && window.leopardConfig.embed.showCloseButton;
+      logger.debug("EMBED: Show close button?", showCloseButton);
+      return showCloseButton;
+    },
     hasDifferentHistory() {
       if (this.getLatestDialogHistory.length !== this.dialogs.length) {
         logger.debug(`Should show 'History' menu option`);
@@ -956,11 +961,16 @@ export default {
       );
     },
     isChatOpenLocalStorage() {
+
       let isChatOpen = localStorage.getItem("isChatOpen");
       if (isChatOpen === null) {
         isChatOpen = false;
       } else {
         isChatOpen = JSON.parse(isChatOpen);
+      }
+
+      if (window.leopardConfig.embed.isInitialStateOpen) {
+        isChatOpen = true;
       }
 
       let result = false;
@@ -1041,7 +1051,7 @@ export default {
       localStorage.setItem("isChatOpen", "false");
       sendMessageToParent("hideLeopard");
       this.calculateMobileHeight(); // only called on mobile devices
-      if (window.leopardConfig.killSessionOnCloseEmbed) {
+      if (window.leopardConfig.embed.killSessionOnCloseEmbed) {
         this.loginPerformed = false;
       }
       logger.debug("Close Chat Embedded");

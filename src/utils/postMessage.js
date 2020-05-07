@@ -43,7 +43,7 @@ export default class PostMessage {
           this.store.commit("HIDE_CHAT_WINDOW_DISPLAY_EMBED");
           setTimeout(
             function () {
-              if (this.config.EMBED && window.leopardConfig.killSessionOnCloseEmbed) {
+              if (this.config.EMBED && window.leopardConfig.embed.killSessionOnCloseEmbed) {
                 // should kill the session and clear dialog history
                 logger.info("Killing Teneo Session");
                 this.store.dispatch("endSession");
