@@ -637,6 +637,7 @@ function storeSetup(vuetify) {
           if (
             extension &&
             !extension.inline &&
+            extension.name &&
             !extension.name.startsWith("displayCollection") &&
             !extension.name.startsWith("displayRouterCheckList")
           ) {
@@ -729,6 +730,11 @@ function storeSetup(vuetify) {
           switch (type) {
             case "youTube":
               if (getters.youTubeVideoId(extension)) {
+                return true;
+              }
+              break;
+            case "alert":
+              if (extension.name === "displayAlert") {
                 return true;
               }
               break;

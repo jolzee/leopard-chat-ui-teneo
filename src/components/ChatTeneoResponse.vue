@@ -1,6 +1,11 @@
 <template>
   <!-- Reply -->
   <div v-if="item.type === 'reply'" :class="isLastItem ? 'pb-3' : ''">
+    <v-row v-if="beforeAnswerAlert" no-gutters class="pt-2">
+      <v-col cols="12">
+        <Alert :config="beforeAnswerAlert"></Alert>
+      </v-col>
+    </v-row>
     <v-row v-if="itemText !== '<span>'" justify="start" no-gutters class="pr-3 pl-1 pt-2">
       <v-col
         v-if="showChatIcons && !$vuetify.breakpoint.smAndDown"
@@ -77,6 +82,11 @@
     <Card v-if="hasCard(item) && isLastItem" :item="item" :ripple="false" class="mb-2" />
     <!-- Show Inline Components -->
     <span v-for="(extension, index) in itemExtensions(item)" :key="index + 'inlines' + uuid">
+      <v-row v-if="afterAnswerAlert" no-gutters class="pt-2">
+        <v-col cols="12">
+          <Alert :config="afterAnswerAlert"></Alert>
+        </v-col>
+      </v-row>
       <v-row v-if="hasInlineType(extension, 'youTube')" no-gutters class="px-3 pt-2">
         <v-col cols="12">
           <YouTube :video-id="youTubeVideoId(extension)" class="mt-2"></YouTube>
@@ -412,6 +422,7 @@ export default {
   },
   components: {
     Audio: () => import("@/components/Audio"),
+    Alert: () => import("@/components/Alert"),
     AgentAssistCannedResponseForm: () => import("@/components/AgentAssistCannedResponseForm"),
     Carousel: () => import("@/components/Carousel"),
     Card: () => import("@/components/Card"),
@@ -532,6 +543,35 @@ export default {
     ]),
     isLastItem() {
       return this.itemIndexInDialog === this.dialog.length - 1;
+    },
+    beforeAnswerAlert() {
+      const extensions = this.itemExtensions(this.item);
+      let alertConfig = null;
+      console.log(this.item);
+      console.log(extensions);
+
+      extensions.forEach(extension => {
+        console.log(extension.name);
+        if (String(extension.name).startsWith("displayAlert") && extension.beforeAnswer === true) {
+          alertConfig = extension;
+        }
+      });
+
+      console.log("Alert Config:", alertConfig);
+
+      return alertConfig;
+    },
+    afterAnswerAlert() {
+      const extensions = this.itemExtensions(this.item);
+      let alertConfig = null;
+
+      extensions.forEach(extension => {
+        if (String(extension.name).startsWith("displayAlert") && extension.beforeAnswer === false) {
+          alertConfig = extension;
+        }
+      });
+
+      return alertConfig;
     },
     routerCheckList() {
       const extensions = this.itemExtensions(this.item);
