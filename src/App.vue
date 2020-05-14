@@ -1103,7 +1103,7 @@ export default {
       // this.$store.commit("TOGGLE_CHAT_BUTTON_DISPLAY"); // was removed
       this.loginPerformed = false;
       // now end the Teneo Session - user clicked the close button - intention is clear
-      this.$store.dispatch("endSession").then(() => {
+      this.$store.dispatch("endTeneoSession").then(() => {
         setTimeout(() => {
           this.$store.commit("CLEAR_CHAT_HISTORY");
         }, 1000);
@@ -1169,7 +1169,7 @@ export default {
         this.loginPerformed = true;
         let that = this;
         this.$store
-          .dispatch("login")
+          .dispatch("beginTeneoSession")
           .then(() => {
             that.loginPerformed = true;
             logger.debug("Successfully established chat session");
@@ -1277,7 +1277,7 @@ export default {
         }
         this.loginPerformed = false;
         // now end the Teneo Session - user clicked the close button - intention is clear
-        this.$store.dispatch("endSession").then(() => {
+        this.$store.dispatch("endTeneoSession").then(() => {
           this.$store.commit("CLEAR_CHAT_HISTORY"); // clear the dialogs once we have successfully ended the session
           // show the loading gif as the window is closing. Although delay a bit
           setTimeout(

@@ -123,54 +123,12 @@ export default class Setup {
             logger.debug(`Active Solution: ${this.chatConfig.activeSolution}`);
             let deepLink = getParameterByName("dl"); // look for deep link
             if (!deepLink) {
-              logger.debug(`No deep link found in the current url - load default solution`);
-              this.activeSolution = this.chatConfig.activeSolution;
-              const matchingSolutions = this.chatConfig.solutions.filter(
-                solution => solution.id === this.activeSolution
-              );
-              if (matchingSolutions.length > 0) {
-                this.activeSolution = matchingSolutions[0];
-              } else {
-                this.activeSolution = this.chatConfig.solutions[0];
-              }
+              this.setupNoDeepLink();
             } else {
               // allow for deep linking to a specific solution ?dl=<deepLink>
-              const matchingSolutions = this.chatConfig.solutions.filter(
-                solution => solution.deepLink === deepLink
-              );
-              if (matchingSolutions.length > 0) {
-                this.activeSolution = matchingSolutions[0];
-              } else {
-                // fall back to default
-                this.activeSolution = this.chatConfig.activeSolution;
-                const matchingSolutions = this.chatConfig.solutions.filter(
-                  solution => solution.id === this.activeSolution
-                );
-                if (matchingSolutions.length > 0) {
-                  this.activeSolution = matchingSolutions[0];
-                } else {
-                  this.activeSolution = this.chatConfig.solutions[0];
-                }
-              }
+              this.setupDeepLink(deepLink);
             }
-            if (this.sheetId) {
-              let targetContext = this.activeSolution.contextParams.find(
-                element => element.name === "sheetId"
-              );
-              if (targetContext) {
-                targetContext.values[0].text = this.sheetId;
-              } else {
-                this.activeSolution.contextParams.push({
-                  name: "sheetId",
-                  values: [
-                    {
-                      text: this.sheetId,
-                      active: true
-                    }
-                  ]
-                });
-              }
-            }
+            this.setupTivaSheetId();
             this.ASR_CORRECTIONS_MERGED = this.getMergedAsrCorrections(ASR_CORRECTIONS);
             logger.debug("Merged ASR Corrections");
             this.CHAT_TITLE = this.activeSolution.chatTitle;
@@ -200,111 +158,140 @@ export default class Setup {
               (window.location.href.indexOf("mobile=true") > -1 ? "_mobile" : "");
             document.title = this.activeSolution.name;
 
-            let self = this;
-            // find active CTX parameters and build the parameters part of the URL
-            this.activeSolution.contextParams.forEach(contextParam => {
-              if (contextParam) {
-                contextParam.values.forEach(value => {
-                  if (value.active) {
-                    self.REQUEST_PARAMETERS =
-                      self.REQUEST_PARAMETERS +
-                      "&" +
-                      contextParam.name +
-                      "=" +
-                      encodeURIComponent(value.text);
-                  }
-                });
-              }
-            });
+            this.setupContextParams();
           }
 
           // update the IFRAME URL
-          if (!this.EMBED && document.getElementById("site-frame")) {
-            document.getElementById("site-frame").src = this.IFRAME_URL;
-            logger.debug("Updated IFRAME url", this.IFRAME_URL);
-          }
+          this.seupIframeInNonEmbedMode();
           logger.debug("About to initialize Vuetify");
-          let vuetify = new Vuetify({
-            breakpoint: {
-              thresholds: {
-                xs: 0,
-                sm: 300,
-                md: 480,
-                lg: 1000,
-                xl: 1300
-              }
-            },
-            theme: {
-              dark: false,
-              options: {
-                customProperties: false
-              },
-              themes: {
-                light: this.THEME,
-                dark: {
-                  primary: "#161616",
-                  secondary: "#0F6695",
-                  accent: "#00FF00",
-                  error: "#FF4B4B",
-                  info: "#1E92D0",
-                  success: "#335f13",
-                  warning: "#FDFF00",
-                  anchor: "#67BAD7",
-                  sendButton: "#FFFFFF",
-                  focusButton: "#CEFF00",
-                  textButton: "#FFFFFF"
-                }
-              }
-            },
-            directives: {
-              Ripple
-            }
-          });
-          setTimeout(() => {
-            if (logRocket && sentry) {
-              logRocket.getSessionURL(sessionURL => {
-                sentry.configureScope(scope => {
-                  scope.setExtra("teneoSolutionURL", createSharableLink(this.activeSolution));
-                  scope.setExtra("sessionURL", sessionURL);
-                });
-              });
-            }
-          }, 2000);
-          if (window.leopardConfig.mustSendLocationAtLogin) {
-            LocalStorage.keyExists(STORAGE_KEY + "loc").then(exists => {
-              if (exists) {
-                LocalStorage.get(STORAGE_KEY + "loc").then(data => {
-                  superagent
-                    .get(
-                      window.leopardConfig.ipUrl
-                        ? window.leopardConfig.ipUrl
-                        : "https://ipapi.co/ip/"
-                    )
-                    .then(res => {
-                      if (res.text === data.ip) {
-                        logger.debug(
-                          `📍 Found Location Info in LocalStorage. IP hasn't changed`,
-                          data
-                        );
-                        this.LOCATION = data;
-                        resolve(vuetify);
-                      } else {
-                        this.obtainLocation(resolve, vuetify);
-                      }
-                    });
-                });
-              } else {
-                this.obtainLocation(resolve, vuetify);
-              }
-            });
-          } else {
-            resolve(vuetify);
-          }
+          let vuetify = this.setupVuetifyConfig();
+          setupThirdPartyLogging();
+          this.setupGeoCapture(resolve, vuetify);
+          resolve(vuetify);
         })
         .catch(error => {
           console.error("Can't get Vuetify to work", error);
           reject(error);
         });
+    });
+  }
+
+  seupIframeInNonEmbedMode() {
+    if (!this.EMBED && document.getElementById("site-frame")) {
+      document.getElementById("site-frame").src = this.IFRAME_URL;
+      logger.debug("Updated IFRAME url", this.IFRAME_URL);
+    }
+  }
+
+  setupContextParams() {
+    let self = this;
+    // find active CTX parameters and build the parameters part of the URL
+    this.activeSolution.contextParams.forEach(contextParam => {
+      if (contextParam) {
+        contextParam.values.forEach(value => {
+          if (value.active) {
+            self.REQUEST_PARAMETERS =
+              self.REQUEST_PARAMETERS +
+              "&" +
+              contextParam.name +
+              "=" +
+              encodeURIComponent(value.text);
+          }
+        });
+      }
+    });
+  }
+
+  setupNoDeepLink() {
+    logger.debug(`No deep link found in the current url - load default solution`);
+    this.activeSolution = this.chatConfig.activeSolution;
+    const matchingSolutions = this.chatConfig.solutions.filter(
+      solution => solution.id === this.activeSolution
+    );
+    if (matchingSolutions.length > 0) {
+      this.activeSolution = matchingSolutions[0];
+    } else {
+      this.activeSolution = this.chatConfig.solutions[0];
+    }
+  }
+
+  setupDeepLink(deepLink) {
+    const matchingSolutions = this.chatConfig.solutions.filter(
+      solution => solution.deepLink === deepLink
+    );
+    if (matchingSolutions.length > 0) {
+      this.activeSolution = matchingSolutions[0];
+    } else {
+      // fall back to default
+      this.activeSolution = this.chatConfig.activeSolution;
+      const matchingSolutions = this.chatConfig.solutions.filter(
+        solution => solution.id === this.activeSolution
+      );
+      if (matchingSolutions.length > 0) {
+        this.activeSolution = matchingSolutions[0];
+      } else {
+        this.activeSolution = this.chatConfig.solutions[0];
+      }
+    }
+  }
+
+  setupTivaSheetId() {
+    if (this.sheetId) {
+      let targetContext = this.activeSolution.contextParams.find(
+        element => element.name === "sheetId"
+      );
+      if (targetContext) {
+        targetContext.values[0].text = this.sheetId;
+      } else {
+        this.activeSolution.contextParams.push({
+          name: "sheetId",
+          values: [
+            {
+              text: this.sheetId,
+              active: true
+            }
+          ]
+        });
+      }
+    }
+  }
+
+  setupVuetifyConfig() {
+    return new Vuetify({
+      breakpoint: {
+        thresholds: {
+          xs: 0,
+          sm: 300,
+          md: 480,
+          lg: 1000,
+          xl: 1300
+        }
+      },
+      theme: {
+        dark: false,
+        options: {
+          customProperties: false
+        },
+        themes: {
+          light: this.THEME,
+          dark: {
+            primary: "#161616",
+            secondary: "#0F6695",
+            accent: "#00FF00",
+            error: "#FF4B4B",
+            info: "#1E92D0",
+            success: "#335f13",
+            warning: "#FDFF00",
+            anchor: "#67BAD7",
+            sendButton: "#FFFFFF",
+            focusButton: "#CEFF00",
+            textButton: "#FFFFFF"
+          }
+        }
+      },
+      directives: {
+        Ripple
+      }
     });
   }
 
@@ -480,6 +467,30 @@ export default class Setup {
       .replace(/\*\/[^/]+$/, "");
   }
 
+  setupGeoCapture(resolve, vuetify) {
+    if (window.leopardConfig.mustSendLocationAtLogin) {
+      LocalStorage.keyExists(STORAGE_KEY + "loc").then(exists => {
+        if (exists) {
+          LocalStorage.get(STORAGE_KEY + "loc").then(data => {
+            superagent
+              .get(window.leopardConfig.ipUrl ? window.leopardConfig.ipUrl : "https://ipapi.co/ip/")
+              .then(res => {
+                if (res.text === data.ip) {
+                  logger.debug(`📍 Found Location Info in LocalStorage. IP hasn't changed`, data);
+                  this.LOCATION = data;
+                  resolve(vuetify);
+                } else {
+                  this.obtainLocation(resolve, vuetify);
+                }
+              });
+          });
+        } else {
+          this.obtainLocation(resolve, vuetify);
+        }
+      });
+    }
+  }
+
   setupPusher() {
     // if (this.isPusherEnabled()) {
     //   Vue.use(require("vue-pusher"), {
@@ -492,4 +503,17 @@ export default class Setup {
     //   });
     // }
   }
+}
+
+function setupThirdPartyLogging() {
+  setTimeout(() => {
+    if (logRocket && sentry) {
+      logRocket.getSessionURL(sessionURL => {
+        sentry.configureScope(scope => {
+          scope.setExtra("teneoSolutionURL", createSharableLink(this.activeSolution));
+          scope.setExtra("sessionURL", sessionURL);
+        });
+      });
+    }
+  }, 2000);
 }

@@ -1,28 +1,42 @@
 /* eslint-disable no-unused-vars */
+// import VuePlyr from "vue-plyr";
+import Listening from "@/components/Listening.vue"; // component dialog that shows then capturing audio
+import Modal from "@/components/Modal.vue";
+import { STORAGE_KEY } from "@/constants/solution-config-default"; // application storage key
+import { TRANSLATIONS } from "@/constants/translations"; // add UI translations for different language here
+import router from "@/router";
+import { initializeASR, initializeTTS } from "@/utils/asr-tts";
+import enableDrag from "@/utils/drag";
+import Firebase from "@/utils/firebase";
+import liveChatConfig from "@/utils/livechat-config";
+import PostMessage from "@/utils/postMessage";
+import Setup from "@/utils/setup";
+// Controls Data Store and Flow for Components...
+import {
+  cleanEmptyChunks,
+  doesParameterExist,
+  generateQueryParams,
+  getParameterByName,
+  isLight,
+  queryParamStringAsObject,
+  sleep,
+  uuid
+} from "@/utils/utils";
+import { accountsSdk } from "@livechat/accounts-sdk";
+import LiveChat from "@livechat/agent-app-widget-sdk";
+import dayjs from "dayjs";
+import gravatar from "gravatar";
 import "regenerator-runtime/runtime";
+import Vue from "vue";
+import VueLoadersBallPulseSync from "vue-loaders/dist/loaders/ball-pulse-sync";
+import VueLoadersLineScale from "vue-loaders/dist/loaders/line-scale";
+import VueLoadersLineScalePulseOutRapid from "vue-loaders/dist/loaders/line-scale-pulse-out-rapid";
+import Snotify, { SnotifyPosition } from "vue-snotify";
+import Vuex from "vuex";
+import vuexI18n from "vuex-i18n"; // i18n the leopard interface
 const logger = require("@/utils/logging").getLogger("store.js");
 const replaceString = require("replace-string");
 const TIE = require("leopard-tie-client");
-// Controls Data Store and Flow for Components...
-import {
-  doesParameterExist,
-  getParameterByName,
-  sleep,
-  cleanEmptyChunks,
-  isLight,
-  queryParamStringAsObject,
-  generateQueryParams,
-  uuid
-} from "@/utils/utils";
-import PostMessage from "@/utils/postMessage";
-import router from "@/router";
-import dayjs from "dayjs";
-import LiveChat from "@livechat/agent-app-widget-sdk";
-import { accountsSdk } from "@livechat/accounts-sdk";
-import liveChatConfig from "@/utils/livechat-config";
-import Firebase from "@/utils/firebase";
-import enableDrag from "@/utils/drag";
-import Snotify, { SnotifyPosition } from "vue-snotify";
 
 const snotifyOptions = {
   toast: {
@@ -43,25 +57,8 @@ var md = require("markdown-it")({
 });
 
 const superagent = require("superagent");
-import gravatar from "gravatar";
 var stripHtml = require("striptags");
 var mobile = require("is-mobile");
-import Vue from "vue";
-import Vuex from "vuex";
-import vuexI18n from "vuex-i18n"; // i18n the leopard interface
-// import VuePlyr from "vue-plyr";
-import Listening from "@/components/Listening.vue"; // component dialog that shows then capturing audio
-import Modal from "@/components/Modal.vue";
-
-import VueLoadersBallPulseSync from "vue-loaders/dist/loaders/ball-pulse-sync";
-import VueLoadersLineScale from "vue-loaders/dist/loaders/line-scale";
-import VueLoadersLineScalePulseOutRapid from "vue-loaders/dist/loaders/line-scale-pulse-out-rapid";
-
-import { initializeASR, initializeTTS } from "@/utils/asr-tts";
-
-import { STORAGE_KEY } from "@/constants/solution-config-default"; // application storage key
-import { TRANSLATIONS } from "@/constants/translations"; // add UI translations for different language here
-import Setup from "@/utils/setup";
 
 let store;
 let setupConfig = new Setup();
@@ -1663,7 +1660,7 @@ function storeSetup(vuetify) {
           logger.debug("Toggle Chat: Send Login");
           if (mustLogin) {
             context
-              .dispatch("login")
+              .dispatch("beginTeneoSession")
               .then(() => {
                 logger.debug("Successfully logged into chat");
                 context.commit("LOGGED_INTO_TENEO");
@@ -1929,14 +1926,14 @@ function storeSetup(vuetify) {
           context.commit("STOP_AUDIO_CAPTURE");
         }
       },
-      endSessionLite(context) {
+      endTeneoSessionLite(context) {
         context.commit("REMOVE_MODAL_ITEM");
         TIE.close(context.getters.teneoUrl, context.getters.teneoSessionId).then(() => {
           context.commit("CLEAR_TENEO_SESSION_ID");
           logger.debug("Session Ended");
         });
       },
-      endSession(context) {
+      endTeneoSession(context) {
         context.commit("CLEAR_DIALOGS");
         context.commit("REMOVE_MODAL_ITEM");
         TIE.close(context.getters.teneoUrl, context.getters.teneoSessionId).then(() => {
@@ -1946,127 +1943,19 @@ function storeSetup(vuetify) {
           logger.debug("Session Ended");
         });
       },
-      login(context) {
+      beginTeneoSession(context) {
         let that = this;
         context.commit("SHOW_CHAT_LOADING");
         // get the greeting message if we haven't done so for this session
         return new Promise((resolve, reject) => {
-          let queryParams =
-            setupConfig.REQUEST_PARAMETERS +
-            window.leopardConfig.requestParams +
-            context.getters.userInformationParams +
-            context.getters.timeZoneParam +
-            context.getters.ctxParameters +
-            context.getters.locationInfo;
-
-          queryParams = replaceString(queryParams, "CURL_CONNECT_TIMEOUT", "");
-
-          let queryObj = queryParamStringAsObject(queryParams);
-          queryObj.command = "login";
-          queryObj.text = ""; // it's a login we don't have to say anything yet
+          let queryObj = buildQueryParamsObjectNewTeneoSession(context); // it's a login we don't have to say anything yet
 
           TIE.sendInput(context.getters.teneoUrl, context.getters.teneoSessionId, queryObj)
             .then(json => {
-              context.commit("SET_TENEO_SESSION_ID", json.sessionId);
-              logger.info("PARSED Teneo Resp: ", json);
-              const tResp = TIE.wrap(json);
-
-              context.commit("HIDE_CHAT_LOADING");
-              if (tResp.hasParameter("theme")) {
-                Object.assign(vuetify.framework.theme.themes.light, tResp.getParameter("theme"));
-              }
-
-              if (tResp.hasParameter("toast")) {
-                context.commit("SET_SNOTIFY", tResp.getParameter("toast"));
-              }
-              if (tResp.hasParameter("emergency")) {
-                context.commit("SET_EMERGENCY_CONFIG", tResp.getParameter("emergency"));
-              }
-              if (tResp.hasParameter("numActiveFlows")) {
-                let numActiveFlows = parseInt(tResp.getParameter("numActiveFlows"));
-                if (numActiveFlows > 0) {
-                  // mid dialog stop polling
-                  context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
-                  logger.debug("Stop polling - there active dialogs");
-                } else if (context.getters.isPromptPollingActive) {
-                  // setup the polling again if needed
-                  if (
-                    !context.getters.showButtonOnly &&
-                    context.getters.getActivePromptInterval === null
-                  ) {
-                    logger.debug("Start up Prompt Trigger Polling");
-                    let interval = setInterval(function () {
-                      context.dispatch("sendUserInput", "&command=prompt");
-                    }, context.getters.getPromptPollingIntervalInMilliseconds);
-                    context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
-                  }
-                }
-              } else if (
-                !tResp.hasParameter("numActiveFlows") &&
-                context.getters.isPromptPollingActive
-              ) {
-                console.groupCollapsed(
-                  `%c Config Error!! ⚠ %c Leopard Chat UI 💬 %c`,
-                  "background:#C60909 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",
-                  "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
-                  "background:transparent"
-                );
-                logger.error(
-                  "Prompt polling is active but you are not returning the numActiveFlows from Teneo"
-                );
-                logger.error(
-                  "Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
-                );
-                console.groupEnd();
-              }
-              context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
-              logger.debug(`Login Message from Teneo: ${cleanEmptyChunks(tResp.getOutputText())}`);
-
-              let hasExtraData = false;
-
-              if (
-                Object.keys(json.output.parameters).some(function (k) {
-                  return ~k.indexOf("extensions");
-                }) ||
-                tResp.hasParameter("liveChat")
-              ) {
-                hasExtraData = true;
-              }
-              const response = {
-                type: "reply",
-                id: uuid(),
-                text: md.render(
-                  cleanEmptyChunks(tResp.getOutputText()).replace(
-                    /onclick="[^"]+"/g,
-                    'class="sendInput"'
-                  )
-                ),
-                bodyText: "",
-                teneoResponse: json,
-                hasExtraData: hasExtraData
-              };
-              // sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(response))
-              context.commit("PUSH_RESPONSE_TO_DIALOG", response); // push the getting message onto the dialog
-              context.commit("SET_ACCESIBLE_ANOUNCEMENT", response.text);
-              if (hasExtraData) {
-                context.commit("SHOW_CHAT_MODAL", response);
-              }
-              context.commit("LOGGED_INTO_TENEO");
-              resolve();
+              handleLoginResponse(context, json, vuetify, resolve);
             })
             .catch(err => {
-              context.commit("HIDE_CHAT_LOADING");
-              const errResp = {
-                error: err,
-                teneoUrl: setupConfig.TENEO_URL,
-                message: "Could not send login command to TIE"
-              };
-              logger.debug(`Problems sending login command`, errResp);
-              context.commit(
-                "SHOW_MESSAGE_IN_CHAT",
-                "Problems sending login to TIE: Is your solution published and online? Is your TIE url correct?"
-              );
-              reject(errResp);
+              handleTieErrorReponse(context, err, reject);
             });
         });
       },
@@ -2077,410 +1966,16 @@ function storeSetup(vuetify) {
         }
         let now = new Date();
         let currentUserInput = "";
-        if (params.indexOf("command=prompt") === -1) {
-          logger.debug("Updating last interaction time in localstorage");
-          localStorage.setItem(
-            STORAGE_KEY + setupConfig.TENEO_LAST_INTERACTION_DATE,
-            now.getTime()
-          );
-          currentUserInput = stripHtml(context.getters.userInput);
-          context.commit("CLEAR_USER_INPUT");
-          // send user input to Teneo when a live chat has not begun
-          if (context.getters.tts && context.getters.tts.isSpeaking()) {
-            // tts is speaking something. Let's shut it up
-            context.getters.tts.shutUp();
-          }
-          context.commit("HIDE_CUSTOM_MODAL");
-          context.commit("HIDE_CHAT_MODAL");
-          context.commit("REMOVE_MODAL_ITEM");
-        }
+        currentUserInput = handlePromptBefore(params, now, currentUserInput, context);
 
-        if (currentUserInput) {
-          try {
-            var audio = new Audio(require("@/assets/notification.mp3"));
-            audio.play();
-          } catch {}
-        }
+        playAudioConfirmation(currentUserInput);
 
         if (!context.getters.isLiveChat) {
-          logger.debug("Question 💬", currentUserInput.trim());
-
-          await sleep(context.getters.responseDelay); // delay responses if needed
-
-          let queryParams =
-            (setupConfig.SEND_CTX_PARAMS === "all"
-              ? setupConfig.REQUEST_PARAMETERS + params
-              : params) +
-            context.getters.userInformationParams +
-            window.leopardConfig.requestParams +
-            context.getters.timeZoneParam +
-            context.getters.ctxParameters;
-
-          queryParams = replaceString(queryParams, "CURL_CONNECT_TIMEOUT", "");
-
-          let queryObj = queryParamStringAsObject(queryParams);
-          queryObj.text = currentUserInput.trim();
-
-          TIE.sendInput(context.getters.teneoUrl, context.getters.teneoSessionId, queryObj)
-            .then(json => {
-              context.commit("SET_TENEO_SESSION_ID", json.sessionId);
-              logger.info("PARSED Teneo Resp: ", json);
-              let tResp = TIE.wrap(json);
-              if (params.indexOf("command=train") !== -1) {
-                return;
-              }
-              if (tResp.hasParameter("toast")) {
-                context.commit("SET_SNOTIFY", tResp.getParameter("toast"));
-              }
-              if (tResp.hasParameter("theme")) {
-                Object.assign(vuetify.framework.theme.themes.light, tResp.getParameter("theme"));
-              }
-              if (tResp.hasParameter("numActiveFlows")) {
-                // deal with polling
-                let numActiveFlows = parseInt(tResp.getParameter("numActiveFlows"));
-                if (numActiveFlows > 0) {
-                  // mid dialog stop polling
-                  context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
-                  logger.debug("Stop polling - there active dialogs");
-                } else if (context.getters.isPromptPollingActive) {
-                  // setup the polling again if needed
-                  if (
-                    !context.getters.showButtonOnly &&
-                    context.getters.isChatOpen &&
-                    context.getters.getActivePromptInterval === null
-                  ) {
-                    logger.debug("Start up Prompt Trigger Polling");
-                    let interval = setInterval(function () {
-                      context.dispatch("sendUserInput", "&command=prompt");
-                    }, context.getters.getPromptPollingIntervalInMilliseconds);
-                    context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
-                  } else if (!context.getters.isChatOpen) {
-                    logger.debug(`Stop prompt trigger polling - chat is closed`);
-                    context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
-                  }
-                }
-              } else if (
-                !tResp.hasParameter("numActiveFlows") &&
-                context.getters.isPromptPollingActive
-              ) {
-                console.groupCollapsed(
-                  `%c Config Error!! ⚠ %c Leopard Chat UI 💬 %c`,
-                  "background:#C60909 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",
-                  "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
-                  "background:transparent"
-                );
-                logger.debug(
-                  "Prompt polling is active but you are not returning the numActiveFlows from Teneo"
-                );
-                logger.debug(
-                  "Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
-                );
-                console.groupEnd();
-              }
-              if (
-                params.indexOf("command=prompt") !== -1 &&
-                cleanEmptyChunks(tResp.getOutputText()) === ""
-              ) {
-                logger.debug(`Poll returned nothing..`);
-                return;
-              } else if (
-                params !== "" &&
-                params.indexOf("command=prompt") !== -1 &&
-                cleanEmptyChunks(tResp.getOutputText()) !== ""
-              ) {
-                try {
-                  var audio = new Audio(require("@/assets/notification.mp3"));
-                  audio.play();
-                } catch {}
-              }
-              context.commit("HIDE_CHAT_LOADING");
-
-              if (tResp.hasParameter("theme") && tResp.getParameter("theme") === "dark") {
-                vuetify.framework.theme.dark = true;
-              } else if (tResp.hasParameter("theme") && tResp.getParameter("theme") === "light") {
-                vuetify.framework.theme.dark = false;
-              }
-
-              if (tResp.hasParameter("offerFeedbackForm")) {
-                const feedbackConfig = tResp.getParameter("offerFeedbackForm");
-                context.commit("ADD_FEEDBACK_FORM", feedbackConfig);
-              } else {
-                context.commit("CLEAR_FEEDBACK_FORM");
-              }
-              // if (
-              //   params.indexOf("langSwitch") === -1 &&
-              //   (json.responseData.isNewSession || json.responseData.extraData.newsession)
-              // ) {
-              //   logger.debug("Session is stale.. keep chat open and continue with the new session");
-              //   const awayMessage = "This is a new chatbot session.";
-              //   context.commit("SHOW_SIMPLE_MESSAGE_IN_CHAT", {
-              //     message: awayMessage,
-              //     icon: "mdi-timer"
-              //   });
-              //   context.commit("SET_ACCESIBLE_ANOUNCEMENT", awayMessage);
-              // }
-
-              if (tResp.hasParameter("script")) {
-                let theScript = decodeURIComponent(tResp.getParameter("script"));
-                if (context.getters.embed) {
-                  postMessage.sendMessageToParent("runLeopardScript|" + theScript);
-                } else {
-                  // run locally
-                  eval(theScript);
-                }
-              }
-              // Start of delay logic
-              if (tResp.hasParameter("command") && tResp.getParameter("command") === "delay") {
-                context.commit("SHOW_RESPONSE_DELAY");
-                context.commit("SET_USER_INPUT", "");
-                context
-                  .dispatch("sendUserInput", "&command=continue")
-                  .then(logger.debug(`Continue with long operation`))
-                  .catch(err => {
-                    logger.error("Unable to continue conversation", err);
-                    context.commit(
-                      "SHOW_MESSAGE_IN_CHAT",
-                      "We're sorry for the inconvience: " + err.message
-                    );
-                  });
-              }
-
-              if (params.indexOf("command=continue") !== -1) {
-                context.commit("HIDE_RESPONSE_DELAY");
-              }
-              // end of delay logic
-
-              if (tResp.hasParameter("inputType") && tResp.getParameter("inputType") === "upload") {
-                context.commit("SHOW_UPLOAD_BUTTON");
-              }
-              // look for request for location information in the response
-
-              if (
-                tResp.hasParameter("inputType") &&
-                tResp.getParameter("inputType").startsWith("location")
-              ) {
-                setupConfig
-                  .getLocator()
-                  .then(function (position) {
-                    // we now have the user's lat and long
-                    logger.debug(`${position.coords.latitude}, ${position.coords.longitude}`);
-                    if (tResp.getParameter("inputType") === "locationLatLong") {
-                      // send the lat and long
-                      context
-                        .dispatch(
-                          "sendUserInput",
-                          "&locationLatLong=" +
-                            encodeURI(position.coords.latitude + "," + position.coords.longitude)
-                        )
-                        .then(
-                          logger.debug(
-                            `Sent user's lat and long: ${position.coords.latitude}, ${position.coords.longitude}`
-                          )
-                        )
-                        .catch(err => {
-                          logger.error("Unable to send lat and long info", err);
-                          context.commit(
-                            "SHOW_MESSAGE_IN_CHAT",
-                            "We were unable to obtain your location information.: " + err.message
-                          );
-                        });
-                    } else if (window.leopardConfig.locationIqKey) {
-                      // good we have a licence key we can send all location information back
-                      let locationRequestType = tResp.getParameter("inputType");
-                      superagent
-                        .get(
-                          `https://us1.locationiq.com/v1/reverse.php?key=${
-                            window.leopardConfig.locationIqKey
-                          }&lat=${position.coords.latitude}&lon=${
-                            position.coords.longitude
-                          }&format=json&normalizecity=1&t=${new Date().valueOf()}`
-                        )
-                        .accept("application/json")
-                        .then(res => {
-                          let data = res.body;
-
-                          let queryParam = `&${locationRequestType}=`;
-                          if (locationRequestType === "locationJson") {
-                            queryParam += encodeURI(JSON.stringify(data));
-                          } else if (locationRequestType === "locationZip") {
-                            queryParam += encodeURI(data.address.postcode);
-                          } else if (locationRequestType === "locationCityStateZip") {
-                            queryParam += encodeURI(
-                              `${data.address.city}, ${data.address.state} ${data.address.postcode}`
-                            );
-                          }
-
-                          context
-                            .dispatch("sendUserInput", queryParam)
-                            .then(
-                              logger.debug(
-                                `Sent user's location information: ${data.address.city}, ${data.address.state} ${data.address.postcode}`
-                              )
-                            )
-                            .catch(err => {
-                              logger.error("Unable to send user location", err);
-                              context.commit(
-                                "SHOW_MESSAGE_IN_CHAT",
-                                "We were unable to obtain your location information.: " +
-                                  err.message
-                              );
-                            });
-                        })
-                        .catch(err => logger.error(err));
-                    } else if (
-                      !window.leopardConfig.locationIqKey &&
-                      tResp.getParameter("inputType") ===
-                        ("locationCityStateZip" || "locationZip" || "locationJson")
-                    ) {
-                      // no good. Asking for location information that requires a licence  key
-                      context.commit(
-                        "SHOW_MESSAGE_IN_CHAT",
-                        "A licence key for https://locationiq.com/ is needed to obtain the requested location information. Check the documentation."
-                      );
-                    }
-                  })
-                  .catch(function (err) {
-                    logger.error("Position Error ", err);
-                  });
-              }
-
-              logger.debug(`Response 💬: `, cleanEmptyChunks(tResp.getOutputText()));
-              const response = {
-                userInput: currentUserInput,
-                id: uuid(),
-                teneoAnswer: md.render(
-                  cleanEmptyChunks(tResp.getOutputText()).replace(
-                    /onclick="[^"]+"/g,
-                    'class="sendInput"'
-                  )
-                ),
-                teneoResponse: json
-              };
-
-              if (response.teneoResponse) {
-                let ttsText = stripHtml(cleanEmptyChunks(response.teneoAnswer));
-                if (tResp.hasParameter("tts")) {
-                  ttsText = stripHtml(tResp.getParameter("tts"));
-                }
-
-                context.commit("SET_ACCESIBLE_ANOUNCEMENT", "Chat Bot Said. " + ttsText + ".");
-
-                // check if this browser supports the Web Speech API
-                if (
-                  Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
-                  Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
-                ) {
-                  if (context.getters.tts && context.getters.speakBackResponses) {
-                    context.getters.tts.say(ttsText);
-                  }
-                }
-
-                if (context.getters.askingForPassword) {
-                  context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", {
-                    response,
-                    mask: true
-                  });
-                } else {
-                  context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", {
-                    response,
-                    mask: false
-                  });
-                }
-
-                context.commit("HIDE_PROGRESS_BAR");
-                if (tResp.hasParameter("liveChat")) {
-                  context.commit("START_LIVE_CHAT");
-                }
-                if (tResp.hasParameter("chatTitle")) {
-                  let chatTitle = tResp.getParameter("chatTitle");
-                  if (chatTitle !== "undefined") {
-                    context.commit("SET_CHAT_TITLE", chatTitle);
-                  }
-                }
-
-                if (tResp.hasParameter("langengineurl") && tResp.hasParameter("langinput")) {
-                  context.dispatch("endSessionLite");
-                  context.commit("UPDATE_TENEO_URL", tResp.getParameter("langengineurl"));
-                  context.commit("SET_USER_INPUT", tResp.getParameter("langinput"));
-                  context.commit("SHOW_PROGRESS_BAR");
-
-                  if (tResp.hasParameter("lang")) {
-                    context.commit("UPDATE_UI_LOCALE", tResp.getParameter("lang"));
-                    context.commit("CHANGE_ASR_TTS", tResp.getParameter("lang"));
-                  }
-
-                  if (tResp.hasParameter("langurl")) {
-                    context.commit("UPDATE_FRAME_URL", tResp.getParameter("langurl"));
-                  }
-
-                  context
-                    .dispatch("sendUserInput", "&langSwitch=true")
-                    .then(logger.debug("Sent original lang input to new lang specific solution"))
-                    .catch(err => {
-                      logger.error("Unable to send lang input to new lang specific solution", err);
-                      context.commit(
-                        "SHOW_MESSAGE_IN_CHAT",
-                        "Unable to send lang input to new lang specific solution: " + err.message
-                      );
-                    });
-                }
-              }
-            })
-            .catch(err => {
-              const errResp = {
-                error: err,
-                teneoUrl: setupConfig.TENEO_URL
-              };
-              if (err.status && err.status === 408) {
-                logger.error("Request To Teneo Timed Out: 408", errResp);
-                context.commit(
-                  "SHOW_MESSAGE_IN_CHAT",
-                  "I'm sorry but the request timed out - Please try again."
-                );
-              } else if (err.status && err.status === 400) {
-                logger.error("Request To Teneo Timed Out: 400", errResp);
-                context.commit(
-                  "SHOW_MESSAGE_IN_CHAT",
-                  "I'm sorry, I wasn't able to communicate with the virtual assitant. Please check your internet connection."
-                );
-              } else {
-                logger.error("Could not communicate with Teneo", errResp);
-                context.commit("SHOW_MESSAGE_IN_CHAT", err.message);
-              }
-              context.commit("HIDE_PROGRESS_BAR");
-            });
+          // normal user input - discussion with the VA
+          await handleTeneoResponse(currentUserInput, context, params, vuetify);
         } else if (context.getters.isLiveChat && params.indexOf("command=prompt") === -1) {
-          // send the input to live chat agent and save user input to history
-          let newUserInput = {
-            type: "userInput",
-            text: currentUserInput,
-            bodyText: "",
-            hasExtraData: false
-          };
-          context.commit("PUSH_USER_INPUT_TO_DIALOG", newUserInput);
-
-          if (!setupConfig.USE_SESSION_STORAGE) {
-            localStorage.setItem(
-              STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY,
-              JSON.stringify(context.getters.dialog)
-            );
-          }
-          context.commit(
-            "SET_DIALOG_HISTORY",
-            JSON.parse(sessionStorage.getItem(STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY))
-          );
-          if (context.getters.dialogHistory === null) {
-            context.commit("SET_DIALOG_HISTORY", context.getters.dialog);
-          } else {
-            context.commit("PUSH_USER_INPUT_TO_DIALOG_HISTORY", newUserInput);
-          }
-          sessionStorage.setItem(
-            STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY,
-            JSON.stringify(context.getters.dialogHistory)
-          );
-          setupConfig.liveChat.sendMessage(currentUserInput.trim());
-          context.commit("HIDE_PROGRESS_BAR");
-          context.commit("CLEAR_USER_INPUT");
+          // live chat discussion
+          handleLiveChatResponse(currentUserInput, context);
         }
       },
       captureAudio(context) {
@@ -2490,20 +1985,34 @@ function storeSetup(vuetify) {
   });
 
   // setup i18n for Leopard UI
-  Vue.use(vuexI18n.plugin, store);
-  Object.keys(TRANSLATIONS).forEach(function (key) {
-    Vue.i18n.add(key, TRANSLATIONS[key]);
-  });
-  Vue.i18n.set(setupConfig.LOCALE);
+  setupI18n();
 
   // Setup ASR
-  try {
-    initializeASR(store, setupConfig.ASR_CORRECTIONS_MERGED);
-  } catch (err) {
-    logger.error(`Error setting up ASR and TTS`, err);
-  }
+  setupAsr();
 
   // setup Live Chat
+  setupLiveChat();
+
+  // ok vuetify and store are setup
+  return { vuetify, store };
+}
+
+function buildQueryParamsObjectNewTeneoSession(context) {
+  let queryParams =
+    setupConfig.REQUEST_PARAMETERS +
+    window.leopardConfig.requestParams +
+    context.getters.userInformationParams +
+    context.getters.timeZoneParam +
+    context.getters.ctxParameters +
+    context.getters.locationInfo;
+  queryParams = replaceString(queryParams, "CURL_CONNECT_TIMEOUT", "");
+  let queryObj = queryParamStringAsObject(queryParams);
+  queryObj.command = "login";
+  queryObj.text = ""; // it's a login we don't have to say anything yet
+  return queryObj;
+}
+
+function setupLiveChat() {
   try {
     if (window.leopardConfig.liveChat.licenseKey) {
       logger.debug(`About to try and setup Live Chat`);
@@ -2513,6 +2022,545 @@ function storeSetup(vuetify) {
     logger.info(`Error setting up LiveChat`, e);
   }
   postMessage = new PostMessage(store, setupConfig);
-  // ok vuetify and store are setup
-  return { vuetify, store };
+}
+
+function setupAsr() {
+  try {
+    initializeASR(store, setupConfig.ASR_CORRECTIONS_MERGED);
+  } catch (err) {
+    logger.error(`Error setting up ASR and TTS`, err);
+  }
+}
+
+function setupI18n() {
+  Vue.use(vuexI18n.plugin, store);
+  Object.keys(TRANSLATIONS).forEach(function (key) {
+    Vue.i18n.add(key, TRANSLATIONS[key]);
+  });
+  Vue.i18n.set(setupConfig.LOCALE);
+}
+
+function handleTieErrorReponse(context, err, reject) {
+  context.commit("HIDE_CHAT_LOADING");
+  const errResp = {
+    error: err,
+    teneoUrl: setupConfig.TENEO_URL,
+    message: "Could not send login command to TIE"
+  };
+  logger.debug(`Problems sending login command`, errResp);
+  context.commit(
+    "SHOW_MESSAGE_IN_CHAT",
+    "Problems sending login to TIE: Is your solution published and online? Is your TIE url correct?"
+  );
+  reject(errResp);
+}
+
+async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
+  logger.debug("Question 💬", currentUserInput.trim());
+  await sleep(context.getters.responseDelay); // delay responses if needed
+  let queryObj = buildQueryParamsObjectUserInput(params, context, currentUserInput);
+  TIE.sendInput(context.getters.teneoUrl, context.getters.teneoSessionId, queryObj)
+    .then(json => {
+      // live chat assist - train
+      if (params.indexOf("command=train") !== -1) {
+        return;
+      }
+
+      let tResp = handleTeneoResponseEarly(context, json);
+      handleToastResponse(tResp, context);
+      handleThemeResponse(tResp, vuetify);
+
+      let mustStop = handlePromptPollingResponse(tResp, context, params);
+      if (mustStop) {
+        return;
+      }
+      context.commit("HIDE_CHAT_LOADING");
+      handleDarkLightThemeResponse(tResp, vuetify);
+      handleFeedbackFormResponse(tResp, context);
+
+      // if (
+      //   params.indexOf("langSwitch") === -1 &&
+      //   (json.responseData.isNewSession || json.responseData.extraData.newsession)
+      // ) {
+      //   logger.debug("Session is stale.. keep chat open and continue with the new session");
+      //   const awayMessage = "This is a new chatbot session.";
+      //   context.commit("SHOW_SIMPLE_MESSAGE_IN_CHAT", {
+      //     message: awayMessage,
+      //     icon: "mdi-timer"
+      //   });
+      //   context.commit("SET_ACCESIBLE_ANOUNCEMENT", awayMessage);
+      // }
+
+      handleScriptResponse(tResp, context);
+      handleDelayResponse(tResp, context, params);
+      handleUploadResponse(tResp, context);
+      handleLocationResponse(tResp, context);
+
+      logger.debug(`Response 💬: `, cleanEmptyChunks(tResp.getOutputText()));
+      const response = {
+        userInput: currentUserInput,
+        id: uuid(),
+        teneoAnswer: md.render(
+          cleanEmptyChunks(tResp.getOutputText()).replace(/onclick="[^"]+"/g, 'class="sendInput"')
+        ),
+        teneoResponse: json
+      };
+      if (response.teneoResponse) {
+        let ttsText = stripHtml(cleanEmptyChunks(response.teneoAnswer));
+        if (tResp.hasParameter("tts")) {
+          ttsText = stripHtml(tResp.getParameter("tts"));
+        }
+        context.commit("SET_ACCESIBLE_ANOUNCEMENT", "Chat Bot Said. " + ttsText + ".");
+        // check if this browser supports the Web Speech API
+        if (
+          Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
+          Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
+        ) {
+          if (context.getters.tts && context.getters.speakBackResponses) {
+            context.getters.tts.say(ttsText);
+          }
+        }
+
+        let finalLeopardPayload = {
+          response,
+          mask: false
+        };
+
+        if (context.getters.askingForPassword) {
+          finalLeopardPayload.mask = true;
+        }
+
+        context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", finalLeopardPayload);
+        context.commit("HIDE_PROGRESS_BAR");
+        handleSignalToStartLiveChatReponse(tResp, context);
+        handleChangeChatTitleResponse(tResp, context);
+        handleTieUrlSwitchResponse(tResp, context);
+      }
+    })
+    .catch(err => {
+      const errResp = {
+        error: err,
+        teneoUrl: setupConfig.TENEO_URL
+      };
+      if (err.status && err.status === 408) {
+        logger.error("Request To Teneo Timed Out: 408", errResp);
+        context.commit(
+          "SHOW_MESSAGE_IN_CHAT",
+          "I'm sorry but the request timed out - Please try again."
+        );
+      } else if (err.status && err.status === 400) {
+        logger.error("Request To Teneo Timed Out: 400", errResp);
+        context.commit(
+          "SHOW_MESSAGE_IN_CHAT",
+          "I'm sorry, I wasn't able to communicate with the virtual assitant. Please check your internet connection."
+        );
+      } else {
+        logger.error("Could not communicate with Teneo", errResp);
+        context.commit("SHOW_MESSAGE_IN_CHAT", err.message);
+      }
+      context.commit("HIDE_PROGRESS_BAR");
+    });
+}
+
+function handleChangeChatTitleResponse(tResp, context) {
+  if (tResp.hasParameter("chatTitle")) {
+    let chatTitle = tResp.getParameter("chatTitle");
+    if (chatTitle !== "undefined") {
+      context.commit("SET_CHAT_TITLE", chatTitle);
+    }
+  }
+}
+
+function handleSignalToStartLiveChatReponse(tResp, context) {
+  if (tResp.hasParameter("liveChat")) {
+    context.commit("START_LIVE_CHAT");
+  }
+}
+
+function handleTieUrlSwitchResponse(tResp, context) {
+  if (tResp.hasParameter("langengineurl") && tResp.hasParameter("langinput")) {
+    context.dispatch("endTeneoSessionLite");
+    context.commit("UPDATE_TENEO_URL", tResp.getParameter("langengineurl"));
+    context.commit("SET_USER_INPUT", tResp.getParameter("langinput"));
+    context.commit("SHOW_PROGRESS_BAR");
+    if (tResp.hasParameter("lang")) {
+      context.commit("UPDATE_UI_LOCALE", tResp.getParameter("lang"));
+      context.commit("CHANGE_ASR_TTS", tResp.getParameter("lang"));
+    }
+    if (tResp.hasParameter("langurl")) {
+      context.commit("UPDATE_FRAME_URL", tResp.getParameter("langurl"));
+    }
+    context
+      .dispatch("sendUserInput", "&langSwitch=true")
+      .then(logger.debug("Sent original lang input to new lang specific solution"))
+      .catch(err => {
+        logger.error("Unable to send lang input to new lang specific solution", err);
+        context.commit(
+          "SHOW_MESSAGE_IN_CHAT",
+          "Unable to send lang input to new lang specific solution: " + err.message
+        );
+      });
+  }
+}
+
+function handlePromptPollingResponse(tResp, context, params) {
+  let mustStop = false;
+  if (tResp.hasParameter("numActiveFlows")) {
+    // deal with polling
+    let numActiveFlows = parseInt(tResp.getParameter("numActiveFlows"));
+    if (numActiveFlows > 0) {
+      // mid dialog stop polling
+      context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
+      logger.debug("Stop polling - there active dialogs");
+    } else if (context.getters.isPromptPollingActive) {
+      // setup the polling again if needed
+      if (
+        !context.getters.showButtonOnly &&
+        context.getters.isChatOpen &&
+        context.getters.getActivePromptInterval === null
+      ) {
+        logger.debug("Start up Prompt Trigger Polling");
+        let interval = setInterval(function () {
+          context.dispatch("sendUserInput", "&command=prompt");
+        }, context.getters.getPromptPollingIntervalInMilliseconds);
+        context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
+      } else if (!context.getters.isChatOpen) {
+        logger.debug(`Stop prompt trigger polling - chat is closed`);
+        context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
+      }
+    }
+  } else if (!tResp.hasParameter("numActiveFlows") && context.getters.isPromptPollingActive) {
+    console.groupCollapsed(
+      `%c Config Error!! ⚠ %c Leopard Chat UI 💬 %c`,
+      "background:#C60909 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",
+      "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
+      "background:transparent"
+    );
+    logger.debug(
+      "Prompt polling is active but you are not returning the numActiveFlows from Teneo"
+    );
+    logger.debug(
+      "Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
+    );
+    console.groupEnd();
+  }
+  if (params.indexOf("command=prompt") !== -1 && cleanEmptyChunks(tResp.getOutputText()) === "") {
+    logger.debug(`Poll returned nothing..`);
+    mustStop = true;
+  } else if (
+    params !== "" &&
+    params.indexOf("command=prompt") !== -1 &&
+    cleanEmptyChunks(tResp.getOutputText()) !== ""
+  ) {
+    try {
+      var audio = new Audio(require("@/assets/notification.mp3"));
+      audio.play();
+    } catch {}
+  }
+  return mustStop;
+}
+
+function buildQueryParamsObjectUserInput(params, context, currentUserInput) {
+  let queryParams =
+    (setupConfig.SEND_CTX_PARAMS === "all" ? setupConfig.REQUEST_PARAMETERS + params : params) +
+    context.getters.userInformationParams +
+    window.leopardConfig.requestParams +
+    context.getters.timeZoneParam +
+    context.getters.ctxParameters;
+  queryParams = replaceString(queryParams, "CURL_CONNECT_TIMEOUT", "");
+  let queryObj = queryParamStringAsObject(queryParams);
+  queryObj.text = currentUserInput.trim();
+  return queryObj;
+}
+
+function handleDarkLightThemeResponse(tResp, vuetify) {
+  if (tResp.hasParameter("theme") && tResp.getParameter("theme") === "dark") {
+    vuetify.framework.theme.dark = true;
+  } else if (tResp.hasParameter("theme") && tResp.getParameter("theme") === "light") {
+    vuetify.framework.theme.dark = false;
+  }
+}
+
+function handleFeedbackFormResponse(tResp, context) {
+  if (tResp.hasParameter("offerFeedbackForm")) {
+    const feedbackConfig = tResp.getParameter("offerFeedbackForm");
+    context.commit("ADD_FEEDBACK_FORM", feedbackConfig);
+  } else {
+    context.commit("CLEAR_FEEDBACK_FORM");
+  }
+}
+
+function handleTeneoResponseEarly(context, json) {
+  context.commit("SET_TENEO_SESSION_ID", json.sessionId);
+  logger.info("PARSED Teneo Resp: ", json);
+  let tResp = TIE.wrap(json);
+  return tResp;
+}
+
+function handleToastResponse(tResp, context) {
+  if (tResp.hasParameter("toast")) {
+    context.commit("SET_SNOTIFY", tResp.getParameter("toast"));
+  }
+}
+
+function handleThemeResponse(tResp, vuetify) {
+  if (tResp.hasParameter("theme")) {
+    Object.assign(vuetify.framework.theme.themes.light, tResp.getParameter("theme"));
+  }
+}
+
+function handleScriptResponse(tResp, context) {
+  if (tResp.hasParameter("script")) {
+    let theScript = decodeURIComponent(tResp.getParameter("script"));
+    if (context.getters.embed) {
+      postMessage.sendMessageToParent("runLeopardScript|" + theScript);
+    } else {
+      // run locally
+      eval(theScript);
+    }
+  }
+}
+
+function handleUploadResponse(tResp, context) {
+  if (tResp.hasParameter("inputType") && tResp.getParameter("inputType") === "upload") {
+    context.commit("SHOW_UPLOAD_BUTTON");
+  }
+}
+
+function handleDelayResponse(tResp, context, params) {
+  if (tResp.hasParameter("command") && tResp.getParameter("command") === "delay") {
+    context.commit("SHOW_RESPONSE_DELAY");
+    context.commit("SET_USER_INPUT", "");
+    context
+      .dispatch("sendUserInput", "&command=continue")
+      .then(logger.debug(`Continue with long operation`))
+      .catch(err => {
+        logger.error("Unable to continue conversation", err);
+        context.commit("SHOW_MESSAGE_IN_CHAT", "We're sorry for the inconvience: " + err.message);
+      });
+  }
+  if (params.indexOf("command=continue") !== -1) {
+    context.commit("HIDE_RESPONSE_DELAY");
+  }
+}
+
+function handleLocationResponse(tResp, context) {
+  if (tResp.hasParameter("inputType") && tResp.getParameter("inputType").startsWith("location")) {
+    setupConfig
+      .getLocator()
+      .then(function (position) {
+        // we now have the user's lat and long
+        logger.debug(`${position.coords.latitude}, ${position.coords.longitude}`);
+        if (tResp.getParameter("inputType") === "locationLatLong") {
+          // send the lat and long
+          context
+            .dispatch(
+              "sendUserInput",
+              "&locationLatLong=" +
+                encodeURI(position.coords.latitude + "," + position.coords.longitude)
+            )
+            .then(
+              logger.debug(
+                `Sent user's lat and long: ${position.coords.latitude}, ${position.coords.longitude}`
+              )
+            )
+            .catch(err => {
+              logger.error("Unable to send lat and long info", err);
+              context.commit(
+                "SHOW_MESSAGE_IN_CHAT",
+                "We were unable to obtain your location information.: " + err.message
+              );
+            });
+        } else if (window.leopardConfig.locationIqKey) {
+          // good we have a licence key we can send all location information back
+          let locationRequestType = tResp.getParameter("inputType");
+          superagent
+            .get(
+              `https://us1.locationiq.com/v1/reverse.php?key=${
+                window.leopardConfig.locationIqKey
+              }&lat=${position.coords.latitude}&lon=${
+                position.coords.longitude
+              }&format=json&normalizecity=1&t=${new Date().valueOf()}`
+            )
+            .accept("application/json")
+            .then(res => {
+              let data = res.body;
+              let queryParam = `&${locationRequestType}=`;
+              if (locationRequestType === "locationJson") {
+                queryParam += encodeURI(JSON.stringify(data));
+              } else if (locationRequestType === "locationZip") {
+                queryParam += encodeURI(data.address.postcode);
+              } else if (locationRequestType === "locationCityStateZip") {
+                queryParam += encodeURI(
+                  `${data.address.city}, ${data.address.state} ${data.address.postcode}`
+                );
+              }
+              context
+                .dispatch("sendUserInput", queryParam)
+                .then(
+                  logger.debug(
+                    `Sent user's location information: ${data.address.city}, ${data.address.state} ${data.address.postcode}`
+                  )
+                )
+                .catch(err => {
+                  logger.error("Unable to send user location", err);
+                  context.commit(
+                    "SHOW_MESSAGE_IN_CHAT",
+                    "We were unable to obtain your location information.: " + err.message
+                  );
+                });
+            })
+            .catch(err => logger.error(err));
+        } else if (
+          !window.leopardConfig.locationIqKey &&
+          tResp.getParameter("inputType") ===
+            ("locationCityStateZip" || "locationZip" || "locationJson")
+        ) {
+          // no good. Asking for location information that requires a licence  key
+          context.commit(
+            "SHOW_MESSAGE_IN_CHAT",
+            "A licence key for https://locationiq.com/ is needed to obtain the requested location information. Check the documentation."
+          );
+        }
+      })
+      .catch(function (err) {
+        logger.error("Position Error ", err);
+      });
+  }
+}
+
+function handleLiveChatResponse(currentUserInput, context) {
+  // send the input to live chat agent and save user input to history
+  let newUserInput = {
+    type: "userInput",
+    text: currentUserInput,
+    bodyText: "",
+    hasExtraData: false
+  };
+  context.commit("PUSH_USER_INPUT_TO_DIALOG", newUserInput);
+  if (!setupConfig.USE_SESSION_STORAGE) {
+    localStorage.setItem(
+      STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY,
+      JSON.stringify(context.getters.dialog)
+    );
+  }
+  context.commit(
+    "SET_DIALOG_HISTORY",
+    JSON.parse(sessionStorage.getItem(STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY))
+  );
+  if (context.getters.dialogHistory === null) {
+    context.commit("SET_DIALOG_HISTORY", context.getters.dialog);
+  } else {
+    context.commit("PUSH_USER_INPUT_TO_DIALOG_HISTORY", newUserInput);
+  }
+  sessionStorage.setItem(
+    STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY,
+    JSON.stringify(context.getters.dialogHistory)
+  );
+  setupConfig.liveChat.sendMessage(currentUserInput.trim());
+  context.commit("HIDE_PROGRESS_BAR");
+  context.commit("CLEAR_USER_INPUT");
+}
+
+function playAudioConfirmation(currentUserInput) {
+  if (currentUserInput) {
+    try {
+      var audio = new Audio(require("@/assets/notification.mp3"));
+      audio.play();
+    } catch {}
+  }
+}
+
+function handlePromptBefore(params, now, currentUserInput, context) {
+  if (params.indexOf("command=prompt") === -1) {
+    logger.debug("Updating last interaction time in localstorage");
+    localStorage.setItem(STORAGE_KEY + setupConfig.TENEO_LAST_INTERACTION_DATE, now.getTime());
+    currentUserInput = stripHtml(context.getters.userInput);
+    context.commit("CLEAR_USER_INPUT");
+    // send user input to Teneo when a live chat has not begun
+    if (context.getters.tts && context.getters.tts.isSpeaking()) {
+      // tts is speaking something. Let's shut it up
+      context.getters.tts.shutUp();
+    }
+    context.commit("HIDE_CUSTOM_MODAL");
+    context.commit("HIDE_CHAT_MODAL");
+    context.commit("REMOVE_MODAL_ITEM");
+  }
+  return currentUserInput;
+}
+
+function handleLoginResponse(context, json, vuetify, resolve) {
+  context.commit("SET_TENEO_SESSION_ID", json.sessionId);
+  logger.info("PARSED Teneo Resp: ", json);
+  const tResp = TIE.wrap(json);
+  context.commit("HIDE_CHAT_LOADING");
+  if (tResp.hasParameter("theme")) {
+    Object.assign(vuetify.framework.theme.themes.light, tResp.getParameter("theme"));
+  }
+  if (tResp.hasParameter("toast")) {
+    context.commit("SET_SNOTIFY", tResp.getParameter("toast"));
+  }
+  if (tResp.hasParameter("emergency")) {
+    context.commit("SET_EMERGENCY_CONFIG", tResp.getParameter("emergency"));
+  }
+  if (tResp.hasParameter("numActiveFlows")) {
+    let numActiveFlows = parseInt(tResp.getParameter("numActiveFlows"));
+    if (numActiveFlows > 0) {
+      // mid dialog stop polling
+      context.commit("CLEAR_PROMPT_TRIGGER_INTERVAL");
+      logger.debug("Stop polling - there active dialogs");
+    } else if (context.getters.isPromptPollingActive) {
+      // setup the polling again if needed
+      if (!context.getters.showButtonOnly && context.getters.getActivePromptInterval === null) {
+        logger.debug("Start up Prompt Trigger Polling");
+        let interval = setInterval(function () {
+          context.dispatch("sendUserInput", "&command=prompt");
+        }, context.getters.getPromptPollingIntervalInMilliseconds);
+        context.commit("SET_PROMPT_TRIGGER_INTERVAL", interval);
+      }
+    }
+  } else if (!tResp.hasParameter("numActiveFlows") && context.getters.isPromptPollingActive) {
+    console.groupCollapsed(
+      `%c Config Error!! ⚠ %c Leopard Chat UI 💬 %c`,
+      "background:#C60909 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",
+      "background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff",
+      "background:transparent"
+    );
+    logger.error(
+      "Prompt polling is active but you are not returning the numActiveFlows from Teneo"
+    );
+    logger.error(
+      "Documentation: https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
+    );
+    console.groupEnd();
+  }
+  context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
+  logger.debug(`Login Message from Teneo: ${cleanEmptyChunks(tResp.getOutputText())}`);
+  let hasExtraData = false;
+  if (
+    Object.keys(json.output.parameters).some(function (k) {
+      return ~k.indexOf("extensions");
+    }) ||
+    tResp.hasParameter("liveChat")
+  ) {
+    hasExtraData = true;
+  }
+  const response = {
+    type: "reply",
+    id: uuid(),
+    text: md.render(
+      cleanEmptyChunks(tResp.getOutputText()).replace(/onclick="[^"]+"/g, 'class="sendInput"')
+    ),
+    bodyText: "",
+    teneoResponse: json,
+    hasExtraData: hasExtraData
+  };
+  // sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(response))
+  context.commit("PUSH_RESPONSE_TO_DIALOG", response); // push the getting message onto the dialog
+  context.commit("SET_ACCESIBLE_ANOUNCEMENT", response.text);
+  if (hasExtraData) {
+    context.commit("SHOW_CHAT_MODAL", response);
+  }
+  context.commit("LOGGED_INTO_TENEO");
+  resolve();
 }

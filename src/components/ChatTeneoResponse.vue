@@ -547,17 +547,12 @@ export default {
     beforeAnswerAlert() {
       const extensions = this.itemExtensions(this.item);
       let alertConfig = null;
-      console.log(this.item);
-      console.log(extensions);
 
       extensions.forEach(extension => {
-        console.log(extension.name);
         if (String(extension.name).startsWith("displayAlert") && extension.beforeAnswer === true) {
           alertConfig = extension;
         }
       });
-
-      console.log("Alert Config:", alertConfig);
 
       return alertConfig;
     },
@@ -893,7 +888,7 @@ export default {
       );
     },
     resetBotSession() {
-      this.$store.dispatch("endSessionLite").then(() => {
+      this.$store.dispatch("endTeneoSessionLite").then(() => {
         this.snackBarText = "♻ Bot session reset";
         this.snackbar = true;
       });

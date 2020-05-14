@@ -101,9 +101,13 @@
           <v-icon large>{{ userIcon }}</v-icon>
         </v-btn>
       </template>
-      <v-snackbar v-model="snackbar" absolute color="primary" :timeout="snackBarTimeout" top>
-        {{ snackBarText }}
-      </v-snackbar>
+      <v-snackbar
+        v-model="snackbar"
+        absolute
+        color="primary"
+        :timeout="snackBarTimeout"
+        top
+      >{{ snackBarText }}</v-snackbar>
       <AgentAssistTrainBotForm
         v-if="agentAssist.trainForm"
         :question="agentAssist.trainFormQuestion"
@@ -220,7 +224,7 @@ export default {
       this.snackbar = true;
     },
     resetBotSession() {
-      this.$store.dispatch("endSessionLite").then(() => {
+      this.$store.dispatch("endTeneoSessionLite").then(() => {
         this.snackBarText = "♻ Bot session reset";
         this.snackbar = true;
       });

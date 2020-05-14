@@ -46,7 +46,7 @@ export default class PostMessage {
               if (this.config.EMBED && window.leopardConfig.embed.killSessionOnCloseEmbed) {
                 // should kill the session and clear dialog history
                 logger.info("Killing Teneo Session");
-                this.store.dispatch("endSession");
+                this.store.dispatch("endTeneoSession");
                 localStorage.removeItem(STORAGE_KEY + this.config.TENEO_LAST_INTERACTION_DATE);
                 localStorage.removeItem(STORAGE_KEY + this.config.TENEO_CHAT_HISTORY);
                 sessionStorage.removeItem(STORAGE_KEY + "teneo-chat-history");

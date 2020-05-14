@@ -277,7 +277,7 @@ export class LiveChat {
       this.store.commit("STOP_LIVE_CHAT");
       if (!this.store.getters.hasLoggedInTeneo) {
         this.store
-          .dispatch("login")
+          .dispatch("beginTeneoSession")
           .then(() => {
             logger.debug("Successfully established chat session");
           })
