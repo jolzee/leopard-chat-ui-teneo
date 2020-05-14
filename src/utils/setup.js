@@ -110,8 +110,8 @@ export default class Setup {
   init() {
     return new Promise((resolve, reject) => {
       this.getSolutionConfig()
-        .then(() => {
-          this.chatConfig = fixSolutions(this.chatConfig);
+        .then(config => {
+          this.chatConfig = fixSolutions(config);
 
           if (!this.EMBED) {
             this.addIframeHtml();
@@ -165,7 +165,7 @@ export default class Setup {
           this.seupIframeInNonEmbedMode();
           logger.debug("About to initialize Vuetify");
           let vuetify = this.setupVuetifyConfig();
-          setupThirdPartyLogging();
+          this.setupThirdPartyLogging();
           this.setupGeoCapture(resolve, vuetify);
           resolve(vuetify);
         })
@@ -363,9 +363,12 @@ export default class Setup {
         logger.debug("Loading fresh solution config");
       } else {
         logger.debug("Looking for Solution Config in localStorage first");
-        this.chatConfig = JSON.parse(localStorage.getItem(STORAGE_KEY + "config"));
-        if (this.chatConfig) {
-          logger.debug("Found config in localstorage");
+        let configInLocalStorage = localStorage.getItem(STORAGE_KEY + "config");
+        if (configInLocalStorage && configInLocalStorage !== "null") {
+          this.chatConfig = JSON.parse(configInLocalStorage);
+          if (this.chatConfig) {
+            logger.debug("Found config in localstorage");
+          }
         }
       }
 
@@ -402,8 +405,12 @@ export default class Setup {
           .then(res => {
             logger.debug("Found and loaded Solution Config from /static/config.json");
             let defaultConfig = res.body;
-            localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(defaultConfig));
-            resolve(defaultConfig);
+            if (defaultConfig) {
+              localStorage.setItem(STORAGE_KEY + "config", JSON.stringify(defaultConfig));
+              resolve(defaultConfig);
+            } else {
+              reject("Could not load config.json from /static/config.json");
+            }
           })
           .catch(function (error) {
             reject("Could not load config.json from /static/config.json: " + error.message);
@@ -491,6 +498,19 @@ export default class Setup {
     }
   }
 
+  setupThirdPartyLogging() {
+    setTimeout(() => {
+      if (logRocket && sentry) {
+        logRocket.getSessionURL(sessionURL => {
+          sentry.configureScope(scope => {
+            scope.setExtra("teneoSolutionURL", createSharableLink(this.activeSolution));
+            scope.setExtra("sessionURL", sessionURL);
+          });
+        });
+      }
+    }, 2000);
+  }
+
   setupPusher() {
     // if (this.isPusherEnabled()) {
     //   Vue.use(require("vue-pusher"), {
@@ -503,17 +523,4 @@ export default class Setup {
     //   });
     // }
   }
-}
-
-function setupThirdPartyLogging() {
-  setTimeout(() => {
-    if (logRocket && sentry) {
-      logRocket.getSessionURL(sessionURL => {
-        sentry.configureScope(scope => {
-          scope.setExtra("teneoSolutionURL", createSharableLink(this.activeSolution));
-          scope.setExtra("sessionURL", sessionURL);
-        });
-      });
-    }
-  }, 2000);
 }
