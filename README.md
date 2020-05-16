@@ -1,104 +1,183 @@
-<h1>Leopard Chat Client for Teneo 🐆</h1>
+<h1 align="center">
+  <br>
+  <a href="https://github.com/ArmynC/ArminC-AutoExec/archive/master.zip"><img src="https://github.com/jolzee/assets/raw/master/leopard/leopard-logo.png" alt="Leopard Chat"></a>
+</h1>
 
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/jolzee/chat-teneo-vue?style=plastic)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/jolzee/chat-teneo-vue?style=plastic)
-![GitHub](https://img.shields.io/github/license/jolzee/chat-teneo-vue?style=plastic)
-![GitHub top language](https://img.shields.io/github/languages/top/jolzee/chat-teneo-vue?style=plastic)
+<h4 align="center">A Chat Client for Teneo</h4>
+
+<div align="center">
+<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/jolzee/chat-teneo-vue?style=plastic" target="_blank" />
+<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/jolzee/chat-teneo-vue?style=plastic" target="_blank" />
+<img alt="GitHub" src="https://img.shields.io/github/license/jolzee/chat-teneo-vue?style=plastic" target="_blank" />
+<img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?style=plastic" target="_blank" />
+<img alt="GitHub top language" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?style=plastic" target="_blank" />
 <a href="https://jolzee.gitbook.io/leopard/">
 <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?style=plastic" target="_blank" />
 </a>
-[![Build Status](https://travis-ci.org/jolzee/chat-teneo-vue.svg?branch=master)](https://travis-ci.org/jolzee/chat-teneo-vue)
+<img alt="Build Status" src="https://travis-ci.org/jolzee/chat-teneo-vue.svg?branch=master)](https://travis-ci.org/jolzee/chat-teneo-vue" target="_blank" />
 <a href="https://twitter.com/jolzee">
 <img alt="Twitter: jolzee" src="https://img.shields.io/twitter/follow/jolzee.svg?style=plastic" target="_blank" />
 </a>
+</div>
 
-> An [Artificial Solutions](https://www.artificial-solutions.com/) chat client based on Vue and Vuetify.
+<p align="center">
+  <a href="#about">About</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#features">Features</a> •
+  <a href="#documentation">Documentation</a> •
+  <a href="#contributing">Contributing</a> •
+  <a href="#author">Author</a> •
+  <a href="#support">Support</a> •
+  <a href="#license">License</a>
+</p>
 
-<a href="https://youtu.be/cidZ9WxSMVY"  target="_blank"><img src="https://user-images.githubusercontent.com/36912049/58361444-b10f7680-7e43-11e9-83f7-cad45a5a4ae7.jpg" alt="Leopard Chat UI" style="width:300px;"/></a>
+---
 
-### 🎛 Features
+## About
 
-- **Performant**
-  - Based on Vue.js and Vuetify
-- **UI is mostly localized in**
-  - English, French, German, Danish, Dutch, Norwegian, Spanish, Swedish, Russian and Japanese
-- **ASR and TTS**
-  - Fully supported in Chrome Male/Female US/UK voices for English
-  - Coverage for English (Male/Female US/UK voices), French, German, Danish, Dutch, Norwegian, Spanish, Swedish, Russian and Japanese
-  - configured against your language selection
-  - Configurable in that you can define known ASR corrections and they will be fixed before getting to Teneo:
-    - Pizza » Peter
-    - This » That
-- **Configurable Integrations** to:
-  - Firebase for user registration and authentication
-  - Social Authentication
-    - Facebook, Google and GitHub using Firebase Auth.
-  - LiveChat.inc for seamless live chat handover
-  - Geo-Location
-- **Theme able**
-- **Loading images for expected but expensive Teneo operations**
-- **Language auto switch**
-  - user begins speaking Spanish to an English solution - Leopard can switch communication to a Spanish TIE end point. Also the UI can switch its localization on the fly too + ASR & TTS
-- **Field Types**
-  - passwords, emails, file upload, date pickers, time pickers
-- **Field Masks**
-  - instruct Leopard to accept a custom input format - SSN, phone number, credit-card etc.
-- **Markdown support**
-  - Write a mixture of HTML and Markdown in answer text
-- **Video and audio players**
-  - YouTube, Vimeo, mp3, mp4
-- **Rich responses (inline in the chat or in a modal pop out)**
-  - Images & Carousels, Google Maps, videos, buttons (with custom request params when needed), tables (paginated, searchable and sortable), custom modals containing a mix of images, html, maps, etc. (size & position configurable)
-  - Deep links to different solutions
-    - useful when using in a Sales Engineering capacity and a single install of Leopard
-- **Desktop and Mobile views**
-- **Embeddable in production**
-  - support for IE11 , Edge, Firefox, Opera, Chrome and Safari
-  - Variables from the target page can be passed to Leopard and inturn to Teneo - useful for understanding context
-- **Comprehensive web based configuration area with the ability to import and backup configurations**
+<table>
+<tr>
+<td>
 
-### 🏡 [Teneo AI](https://www.teneo.ai/)
+**Leopard Chat UI** is a **feature rich** chat client for Teneo. Teneo is cappable of returning rich data along with each response and Leopard leverages these responses to present an interactive experience.
 
-### 📖 [Leopard Documentation](https://jolzee.gitbook.io/leopard/)
+Leopard can be used in both production and in a Sales Engineering modes. The Sales Engineering mode allows for numerious conversational demonstrations to be easily configured, configured or shared.
 
-## Install
+<a href="http://lychee.joles.xyz/#15895788995003" target="_blank"><img src="https://github.com/jolzee/assets/raw/master/leopard/screenshots.png" alt="Leopard Chat"></a>
+
+</td>
+</tr>
+</table>
+
+## Installation
+
+##### Windows Users
+
+If you're developing on windows you will most likely have to install `node-gyp` before you attempt to run `npm install`. You will need to compile some native node modules. To enable this on Windows you can run this one liner. It's going to take a while to complete but it only has to be run once. Start **PowerShell as Administrator** and run:
 
 ```sh
+npm install --global windows-build-tools
+```
+
+#### Downloading and installing steps:
+
+```sh
+git clone https://github.com/jolzee/leopard-chat-ui-teneo
+cd leopard-chat-ui-teneo
 npm install
 ```
 
-## Compiles and hot-reloads for development
+#### Configuration
+
+Leopard is configured using [`.env`](https://jolzee.gitbook.io/leopard/installation#leopard-environment-variables) files and through the [`.env.solution.json`](https://jolzee.gitbook.io/leopard/configuration/leopard-config-page#default-configuration) file in the root of the project. If you want to make some changes prior to running/building Leopard then do so now.
+
+#### Run Locally in Development Mode
 
 ```sh
 npm run serve
 ```
 
-## Compiles and minifies for production
+#### Build for production
+
+The build process runs the source code through Webpack and produces the final build into the `/dist` folder.
 
 ```sh
 npm run build
 ```
 
-## 🧑🏻 Author
+#### Deployment
 
-**Peter Joles**
+Copy all the files within `/dist` to any web server - For example `https://mydomain.com/leopard/`.
 
-- Twitter: [@jolzee](https://twitter.com/jolzee)
-- Github: [@jolzee](https://github.com/jolzee)
+The Chat UI can then be used in Sales Engineering mode by visiting `https://mydomain.com/leopard/`
 
-## 🤝 Contributing
+#### Embed in Production
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/jolzee/chat-teneo-vue/issues).
+You can inject Leopard Chat UI into a specific element on a page. This might be beneficial if you want to place it in a specific tab order. To enable this add a `<div id="leopardChatWindow"></div>` anywhere on the page. This is not required though and if absent the UI will automatically be injected at the beginning of the body.
 
-## Show your support
+```html
+<script type="text/javascript">
+  window.TENEOCTX || (TENEOCTX = {});
+  TENEOCTX = {
+    pageTitle: document.title,
+    pageUrl: window.location.href,
+    pageTopic: "Help",
+    message: "This was sent from the customer's web site"
+  };
+</script>
 
-Give a ⭐️ if this project helped you!
+<div id="leopardChatWindow"></div>
 
-## 📝 License
+<script src="https://mydomain.com/leopard/static/embed-leopard.js"></script>
+```
 
-Copyright © 2019 [Peter Joles](https://github.com/jolzee).<br />
-This project is [Apache License 2.0](https://github.com/jolzee/chat-teneo-vue/blob/master/LICENSE) licensed.
+## Features
 
----
+|                                                                                                                                                  | Supported |
+| ------------------------------------------------------------------------------------------------------------------------------------------------ | :-------: |
+| [ASR & TTS](https://jolzee.gitbook.io/leopard/configuration/asr-and-tts)                                                                         |    ✔️     |
+| [Alerts](https://jolzee.gitbook.io/leopard/configuration/components/modals/alerts)                                                               |    ✔️     |
+| [All modern browsers & IE 11](https://jolzee.gitbook.io/leopard/#browser-compatibility)                                                          |    ✔️     |
+| [Answer Text Formatting](https://jolzee.gitbook.io/leopard/configuration/response-options/answer-text-formatting) - HTML and Markdown            |    ✔️     |
+| [Audio Player](https://jolzee.gitbook.io/leopard/configuration/components/modals/audio)                                                          |    ✔️     |
+| [Auto Switch Solutions](https://jolzee.gitbook.io/leopard/configuration/language-auto-switch)                                                    |    ✔️     |
+| [Buttons](https://jolzee.gitbook.io/leopard/configuration/response-options/buttons-and-lists)                                                    |    ✔️     |
+| [Cards](https://jolzee.gitbook.io/leopard/configuration/response-options/card)                                                                   |    ✔️     |
+| [Custom Forms](https://jolzee.gitbook.io/leopard/configuration/components/modals/forms)                                                          |    ✔️     |
+| [Custom HTML Modals](https://jolzee.gitbook.io/leopard/configuration/components/modals/custom)                                                   |    ✔️     |
+| [Custom Response Icons](https://jolzee.gitbook.io/leopard/configuration/response-options/custom-response-icons)                                  |    ✔️     |
+| Dark Mode                                                                                                                                        |    ✔️     |
+| [Date and Time Pickers](https://jolzee.gitbook.io/leopard/configuration/components/date-and-time-pickers)                                        |    ✔️     |
+| [Deep Link to Question](https://jolzee.gitbook.io/leopard/configuration/deep-linked-question)                                                    |    ✔️     |
+| [Dynamic Theme Changes](https://jolzee.gitbook.io/leopard/configuration/response-options/dynamic-theme-change)                                   |    ✔️     |
+| [Emergency Button](https://jolzee.gitbook.io/leopard/configuration/response-options/emergency-button)                                            |    ✔️     |
+| [Expensive Operations](https://jolzee.gitbook.io/leopard/configuration/response-options/expensive-operations)                                    |    ✔️     |
+| [Feedback Forms](https://jolzee.gitbook.io/leopard/configuration/response-options/feedback-form)                                                 |    ✔️     |
+| [Field Masks](https://jolzee.gitbook.io/leopard/configuration/response-options/field-masks)                                                      |    ✔️     |
+| [Field Types](https://jolzee.gitbook.io/leopard/configuration/response-options/field-types) - [email / password / location / upload]             |    ✔️     |
+| [Firebase Social Authentication](https://jolzee.gitbook.io/leopard/configuration/integrations/social-authentication#firebase-and-leopard-config) |    ✔️     |
+| [Geo Context Capture](https://jolzee.gitbook.io/leopard/context-parameters)                                                                      |    ✔️     |
+| [Hyperlinks that send input back to Teneo](https://jolzee.gitbook.io/leopard/configuration/response-options/hyperlinks)                          |    ✔️     |
+| [Image Carousels](https://jolzee.gitbook.io/leopard/configuration/components/modals/image-carousel)                                              |    ✔️     |
+| [Images](https://jolzee.gitbook.io/leopard/configuration/components/modals/image)                                                                |    ✔️     |
+| [Input Field Help Text](https://jolzee.gitbook.io/leopard/configuration/response-options/input-field-help-text)                                  |    ✔️     |
+| [LiveChatInc.com](https://jolzee.gitbook.io/leopard/configuration/integrations/live-chat)                                                        |    ✔️     |
+| [Maps](https://jolzee.gitbook.io/leopard/configuration/components/modals/maps)                                                                   |    ✔️     |
+| [Proactive Dialogs](https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling)                                                      |    ✔️     |
+| [Responsive](https://jolzee.gitbook.io/leopard/configuration/views/mobile)                                                                       |    ✔️     |
+| [Sentry and LogRocket](https://jolzee.gitbook.io/leopard/logging-reporting) - Logging and Reporting                                              |    ✔️     |
+| [Split Answers](https://jolzee.gitbook.io/leopard/configuration/response-options/splitting-a-response)                                           |    ✔️     |
+| [Tables](https://jolzee.gitbook.io/leopard/configuration/components/modals/table)                                                                |    ✔️     |
+| Themable                                                                                                                                         |    ✔️     |
+| [Toasts](https://jolzee.gitbook.io/leopard/configuration/response-options/toasts)                                                                |    ✔️     |
+| [Video Player](https://jolzee.gitbook.io/leopard/configuration/components/modals/video) (YouTube, Vimeo, mp4)                                    |    ✔️     |
+| [i18n](https://jolzee.gitbook.io/leopard/configuration/asr-and-tts#supported-languages)                                                          |    ✔️     |
 
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
+## Screenshots
+
+<a href="http://lychee.joles.xyz/#15895788995003" target="_blank"><img src="https://github.com/jolzee/assets/raw/master/leopard/screenshots2.png" alt="Leopard Chat"></a>
+
+## Documentation
+
+Do you **need some help**? Check the [_complete documentation_](https://jolzee.gitbook.io/leopard/).
+
+## Contributing
+
+Got **something interesting** you'd like to **share**? Learn about [contributing](https://github.com/jolzee/leopard-chat-ui-teneo/blob/master/.github/CONTRIBUTING.md).
+
+## Author
+
+| [![Peter Joles](https://github.com/jolzee/assets/raw/master/peter.png)](https://www.linkedin.com/in/peterjoles/) |
+| :--------------------------------------------------------------------------------------------------------------: |
+|                                                 **Peter Joles**                                                  |
+
+## Support
+
+Reach out to me at one of the following places:
+
+- Website at [peter.joles.xyz](http://peter.joles.xyz/)
+- E-Mail: **peter.joles@artificial-solutions.com**
+
+## License
+
+Distributed under the Apache License 2.0. See [**LICENSE**](https://github.com/jolzee/leopard-chat-ui-teneo/blob/master/LICENSE) for more information.
