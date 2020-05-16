@@ -5,15 +5,15 @@
 <h4 align="center">A Feature Rich Chat Client for Teneo</h4>
 
 <div align="center">
-<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/jolzee/chat-teneo-vue?style=plastic" target="_blank" />
-<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/jolzee/chat-teneo-vue?style=plastic" target="_blank" />
-<img alt="GitHub" src="https://img.shields.io/github/license/jolzee/chat-teneo-vue?style=plastic" target="_blank" />
+<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/jolzee/cleopard-chat-ui-teneo?style=plastic" target="_blank" />
+<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/jolzee/leopard-chat-ui-teneo?style=plastic" target="_blank" />
+<img alt="GitHub" src="https://img.shields.io/github/license/jolzee/leopard-chat-ui-teneo?style=plastic" target="_blank" />
 <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?style=plastic" target="_blank" />
 <img alt="GitHub top language" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?style=plastic" target="_blank" />
 <a href="https://jolzee.gitbook.io/leopard/">
 <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?style=plastic" target="_blank" />
 </a>
-<img alt="Build Status" src="https://travis-ci.org/jolzee/chat-teneo-vue.svg?branch=master)](https://travis-ci.org/jolzee/chat-teneo-vue" target="_blank" />
+<img alt="Build Status" src="https://travis-ci.org/jolzee/leopard-chat-ui-teneo.svg?branch=master)](https://travis-ci.org/jolzee/leopard-chat-ui-teneo" target="_blank" />
 <a href="https://twitter.com/jolzee">
 <img alt="Twitter: jolzee" src="https://img.shields.io/twitter/follow/jolzee.svg?style=plastic" target="_blank" />
 </a>
@@ -38,9 +38,11 @@
 <tr>
 <td>
 
-**Leopard Chat UI** is a **feature rich** chat client for Teneo. Teneo is cappable of returning rich data along with each response and Leopard leverages these responses to present an interactive experience.
+**Leopard Chat UI** is a **feature rich** chat client for <a href="https://www.teneo.ai/" target="_blank">Teneo</a>. Teneo is capable of returning rich data along with each response and Leopard leverages these responses to present an interactive experience.
 
-Leopard can be used in both production and in a Sales Engineering modes. The Sales Engineering mode allows for numerious conversational demonstrations to be easily configured, configured or shared.
+Leopard can be used in both production and in a Sales Engineering modes. The Sales Engineering mode allows for numerous conversational demonstrations to be easily configured, deep linked to or shared.
+
+Leopard exposes an administration interface where you can tweak the look and feel of the chat UI per conversational solution.
 
 <a href="http://lychee.joles.xyz/#15895788995003" target="_blank"><img src="https://github.com/jolzee/assets/raw/master/leopard/screenshots.png" alt="Leopard Chat"></a>
 
@@ -56,11 +58,18 @@ Leopard can be used in both production and in a Sales Engineering modes. The Sal
 
 ##### Windows Users
 
+<table>
+<tr>
+<td>
 If you're developing on windows you will most likely have to install `node-gyp` before you attempt to run `npm install`. You will need to compile some native node modules. To enable this on Windows you can run this one liner. It's going to take a while to complete but it only has to be run once. Start **PowerShell as Administrator** and run:
 
 ```sh
 npm install --global windows-build-tools
 ```
+
+</td>
+</tr>
+</table>
 
 #### Downloading and installing steps:
 
@@ -135,6 +144,7 @@ You can inject Leopard Chat UI into a specific element on a page. This might be 
 | [Dynamic Theme Changes](https://jolzee.gitbook.io/leopard/configuration/response-options/dynamic-theme-change)                                   |    ✔️     |
 | [Emergency Button](https://jolzee.gitbook.io/leopard/configuration/response-options/emergency-button)                                            |    ✔️     |
 | [Expensive Operations](https://jolzee.gitbook.io/leopard/configuration/response-options/expensive-operations)                                    |    ✔️     |
+| [Extension Helper (Groovy)](https://jolzee.gitbook.io/leopard/installation#extensionhelper)                                                      |    ✔️     |
 | [Feedback Forms](https://jolzee.gitbook.io/leopard/configuration/response-options/feedback-form)                                                 |    ✔️     |
 | [Field Masks](https://jolzee.gitbook.io/leopard/configuration/response-options/field-masks)                                                      |    ✔️     |
 | [Field Types](https://jolzee.gitbook.io/leopard/configuration/response-options/field-types) - [email / password / location / upload]             |    ✔️     |
