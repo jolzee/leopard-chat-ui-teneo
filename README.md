@@ -1,9 +1,8 @@
 <h1 align="center">
-  <br>
   <a href="https://github.com/ArmynC/ArminC-AutoExec/archive/master.zip"><img src="https://github.com/jolzee/assets/raw/master/leopard/leopard-logo.png" alt="Leopard Chat"></a>
 </h1>
 
-<h4 align="center">A Chat Client for Teneo</h4>
+<h4 align="center">A Feature Rich Chat Client for Teneo</h4>
 
 <div align="center">
 <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/jolzee/chat-teneo-vue?style=plastic" target="_blank" />
