@@ -45,6 +45,10 @@ Leopard can be used in both production and in a Sales Engineering modes. The Sal
 
 <a href="http://lychee.joles.xyz/#15895788995003" target="_blank"><img src="https://github.com/jolzee/assets/raw/master/leopard/screenshots.png" alt="Leopard Chat"></a>
 
+### Built with
+
+- [Vue.js](https://vuejs.org/)
+- [Vuetify](https://vuetifyjs.com/en/)
 </td>
 </tr>
 </table>
@@ -175,9 +179,13 @@ Got **something interesting** you'd like to **share**? Learn about [contributing
 
 Reach out to me at one of the following places:
 
-- Website at [peter.joles.xyz](http://peter.joles.xyz/)
-- E-Mail: **peter.joles@artificial-solutions.com**
+- [peter.joles.xyz](http://peter.joles.xyz/)
+- **peter.joles@artificial-solutions.com**
 
 ## License
 
 Distributed under the Apache License 2.0. See [**LICENSE**](https://github.com/jolzee/leopard-chat-ui-teneo/blob/master/LICENSE) for more information.
+
+## Attributions
+
+Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
