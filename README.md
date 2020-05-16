@@ -44,7 +44,7 @@
 
 **Leopard Chat UI** is a **feature rich** chat client for <a href="https://www.teneo.ai/" target="_blank">Teneo</a>. Teneo is capable of returning rich data along with each response and Leopard leverages these responses to present an interactive chat experience.
 
-Leopard can be used in both production and in a Sales Engineering modes. The Sales Engineering mode allows for numerous conversational demonstrations to be easily configured, deep linked to or shared.
+Leopard can be used in both production and in a Sales Engineering mode. The Sales Engineering mode allows for numerous conversational demonstrations to be easily configured, deep linked to or shared.
 
 An administration interface is provided where you can tweak the look and feel of the chat UI per conversational solution.
 
