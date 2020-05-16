@@ -5,16 +5,20 @@
 <h4 align="center">A Feature Rich Chat Client for Teneo</h4>
 
 <div align="center">
-<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/jolzee/leopard-chat-ui-teneo?style=plastic" target="_blank" />
-<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/jolzee/leopard-chat-ui-teneo?style=plastic" target="_blank" />
-<img alt="GitHub" src="https://img.shields.io/github/license/jolzee/leopard-chat-ui-teneo?style=plastic" target="_blank" />
-<img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?style=plastic" target="_blank" />
-<img alt="GitHub top language" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?style=plastic" target="_blank" />
-<a href="https://jolzee.gitbook.io/leopard/">
-<img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?style=plastic" target="_blank" />
+<a href="https://github.com/jolzee/leopard-chat-ui-teneo/releases">
+<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/jolzee/leopard-chat-ui-teneo"></a>
+<a href="https://github.com/jolzee/leopard-chat-ui-teneo/commits/master">
+<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/jolzee/leopard-chat-ui-teneo"></a>
+<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/jolzee/leopard-chat-ui-teneo">
+<img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/jolzee/leopard-chat-ui-teneo">
+<img alt="Vue" src="https://img.shields.io/github/package-json/dependency-version/jolzee/leopard-chat-ui-teneo/vue">
+<img alt="Vuetify" src="https://img.shields.io/github/package-json/dependency-version/jolzee/leopard-chat-ui-teneo/vuetify">
+<a href="https://jolzee.gitbook.io/leopard/" target="_blank">
+<img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" target="_blank" />
 </a>
+<img alt="GitHub" src="https://img.shields.io/github/license/jolzee/leopard-chat-ui-teneo">
 <a href="https://twitter.com/jolzee">
-<img alt="Twitter: jolzee" src="https://img.shields.io/twitter/follow/jolzee.svg?style=plastic" target="_blank" />
+<img alt="Twitter: jolzee" src="https://img.shields.io/twitter/follow/jolzee.svg" target="_blank" />
 </a>
 </div>
 
