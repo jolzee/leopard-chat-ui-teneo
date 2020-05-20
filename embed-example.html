@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Client's Website</title>
+    <script type="text/javascript">
+      // [optional] only include this if you want to send info to Teneo via Leopard
+      window.TENEOCTX || (TENEOCTX = {});
+      TENEOCTX = {
+        eventSource: "leopard-embed",
+        pageTitle: document.title,
+        pageUrl: window.location.href,
+        pageTopic: "Help",
+        message: "This was sent from the customer's web site"
+      };
+
+      // [optional] If you want to be able to react client side to data send by Teneo via Leopard
+      var leopardState = {
+        data: {},
+        listener: function (val) {},
+        setData: function (val) {
+          this.data = val;
+          this.listener(val);
+        },
+        getData: function () {
+          return this.data;
+        },
+        registerListener: function (listener) {
+          this.listener = listener;
+        }
+      };
+
+      // [optional] Some external JavaScript can then listen for state changes by registering a listener
+      if (leopardState) {
+        leopardState.registerListener(function (dataFromLeopard) {
+          alert("Leopard just sent this data to the page: " + JSON.stringify(dataFromLeopard));
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <!-- (function() {
+    var b = document.body;
+    var scr = document.createElement('script');
+    scr.src = 'https://192.168.1.112:8080/static/embed-leopard.js';
+    b.appendChild(scr);
+    })(); -->
+    <!-- use the full url to static/embed-leopard.js below | https://domain.com/static/embed-leopard.js -->
+    <div id="leopardChatWindow"></div>
+    <script src="static/embed-leopard.js"></script>
+  </body>
+</html>

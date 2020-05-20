@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["chunk-2d0e4c16"],{9229:function(n,e,t){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default=function(n){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:function(n){return n};return function(t){t.subscribe((function(t){var u=e(t);u&&n.log("mutation",u)}))}},n.exports=e.default}}]);
+//# sourceMappingURL=chunk-2d0e4c16.1a2c4d03.js.map
