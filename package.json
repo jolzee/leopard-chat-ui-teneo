@@ -71,7 +71,7 @@
     "ttl-localstorage": "^1.5.3",
     "url-parse": "^1.4.7",
     "url-regex": "^5.0.0",
-    "uuid": "^7.0.2",
+    "uuid": "^7.0.3",
     "vee-validate": "^3.3.0",
     "vue": "^2.6.11",
     "vue-directive-long-press": "^1.1.0",
