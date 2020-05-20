@@ -399,19 +399,19 @@ export default {
     "long-press": LongPress
   },
   components: {
-    Audio: () => import("@/components/Audio"),
-    Alert: () => import("@/components/Alert"),
     AgentAssistCannedResponseForm: () => import("@/components/AgentAssistCannedResponseForm"),
-    Carousel: () => import("@/components/Carousel"),
+    Alert: () => import("@/components/Alert"),
+    Audio: () => import("@/components/Audio"),
     Card: () => import("@/components/Card"),
-    ImageAnimation: () => import("@/components/ImageAnimation"),
+    Carousel: () => import("@/components/Carousel"),
     DelayedResponse: () => import("@/components/DelayedResponse"),
+    Form: () => import("@/components/Form"),
+    ImageAnimation: () => import("@/components/ImageAnimation"),
     Map: () => import("@/components/Map"),
+    SimpleTable: () => import("@/components/SimpleTable"),
     Video: () => import("@/components/Video"),
     Vimeo: () => import("@/components/Vimeo"),
-    YouTube: () => import("@/components/YouTube"),
-    Form: () => import("@/components/Form"),
-    SimpleTable: () => import("@/components/SimpleTable")
+    YouTube: () => import("@/components/YouTube")
   },
   props: {
     item: {
