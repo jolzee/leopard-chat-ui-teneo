@@ -1,6 +1,6 @@
 {
   "name": "leopard-chat-ui-teneo",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "description": "A Teneo Chat Client based on Vue and Vuetify",
   "author": "Peter Joles",
   "repository": {
