@@ -75,7 +75,7 @@
     "vee-validate": "^3.3.0",
     "vue": "^2.6.11",
     "vue-directive-long-press": "^1.1.0",
-    "vue-loader": "^15.9.1",
+    "vue-loader": "^15.9.2",
     "vue-loaders": "^3.3.0",
     "vue-plyr": "^6.0.4",
     "vue-prism-component": "^1.2.0",
