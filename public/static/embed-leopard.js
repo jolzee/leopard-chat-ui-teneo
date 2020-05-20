@@ -359,6 +359,12 @@ var leopardChatUi = (function() {
     }
 
     function init() {
+        if (!String.prototype.startsWith) {
+            String.prototype.startsWith = function(searchString, position) {
+                position = position || 0;
+                return this.indexOf(searchString, position) === position;
+            };
+        }
         for (var i = 0; i < leopardPageScripts.length; i += 1) {
             if (isLeopard(leopardPageScripts[i])) {
                 leopardEmbedSrc = leopardPageScripts[i].getAttribute("src");
