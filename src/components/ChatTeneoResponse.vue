@@ -145,12 +145,13 @@
                     v-for="header in extension.headers"
                     :key="header + uuid"
                     class="text-left"
-                  >{{ header }}</th>
+                    v-html="header"
+                  ></th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(row, rowIndex) in extension.rows" :key="rowIndex + uuid">
-                  <td v-for="(column, colIndex) in row" :key="colIndex + uuid">{{ column }}</td>
+                  <td v-for="(column, colIndex) in row" :key="colIndex + uuid" v-html="column"></td>
                 </tr>
               </tbody>
             </template>
