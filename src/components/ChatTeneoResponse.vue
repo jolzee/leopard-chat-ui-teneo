@@ -225,7 +225,7 @@
             height="25"
             class="option-btn mr-2 mt-2"
             x-small
-            :color="`success ${textColor('success')}`"
+            :color="option.color || `success ${textColor('success')}`"
             :aria-label="option.aria ? option.aria : option.name"
             @click="optionClicked(option)"
           >
@@ -240,8 +240,8 @@
       </v-card-text>
       <!-- Line based List Options -->
 
-      <v-list v-else class="mt-2 elevation-2">
-        <v-list-item-group color="primary">
+      <v-list v-else class="mt-2 elevation-2" :color="getListColor">
+        <v-list-item-group>
           <template v-for="(option, altOptionIndex) in getOptions.items">
             <v-list-item
               :key="altOptionIndex + 'tile' + uuid"
@@ -249,7 +249,10 @@
               :aria-label="option.aria ? option.aria : option.name"
               class="text-left pl-2 pr-2"
               style="height: 40px;"
+              :color="option.color || ``"
               dense
+              ripple
+              :input-value="option.color ? true : false"
               @click="optionClicked(option)"
             >
               <v-list-item-icon v-if="!('showIcon' in option) || option.showIcon" class="mr-4">
@@ -750,6 +753,17 @@ export default {
         }
       });
       return hasLongOptions;
+    },
+    getListColor() {
+      const extensions = this.itemExtensions(this.item);
+      // only get the first set of options.
+      let listColor = ``;
+      extensions.forEach(extension => {
+        if (extension.name === "displayCollection") {
+          listColor = extension.parameters.content.color || ``;
+        }
+      });
+      return listColor;
     },
     getOptions() {
       const extensions = this.itemExtensions(this.item);
