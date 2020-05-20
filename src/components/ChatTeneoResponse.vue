@@ -132,30 +132,7 @@
       </v-row>
       <v-row v-if="hasInlineType(extension, 'table')" no-gutters class="px-3 pt-2">
         <v-col cols="12">
-          <v-simple-table
-            class="elevation-2"
-            :dense="extension.dense"
-            :fixed-header="extension.fixedHeader"
-            :height="extension.maxHeight ? extension.maxHeight : undefined"
-          >
-            <template v-slot:default>
-              <thead v-if="hasHeaders(extension)">
-                <tr>
-                  <th
-                    v-for="header in extension.headers"
-                    :key="header + uuid"
-                    class="text-left"
-                    v-html="header"
-                  ></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(row, rowIndex) in extension.rows" :key="rowIndex + uuid">
-                  <td v-for="(column, colIndex) in row" :key="colIndex + uuid" v-html="column"></td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
+          <SimpleTable :extension="extension"></SimpleTable>
         </v-col>
       </v-row>
     </span>
@@ -433,7 +410,8 @@ export default {
     Video: () => import("@/components/Video"),
     Vimeo: () => import("@/components/Vimeo"),
     YouTube: () => import("@/components/YouTube"),
-    Form: () => import("@/components/Form")
+    Form: () => import("@/components/Form"),
+    SimpleTable: () => import("@/components/SimpleTable")
   },
   props: {
     item: {
@@ -447,17 +425,6 @@ export default {
   },
   data() {
     return {
-      simpleTable: {
-        name: "displaySimpleTable",
-        dense: false,
-        maxHeight: null,
-        fixedHeader: false,
-        headers: ["Account", "Balance"],
-        rows: [
-          ["Current", "$1271.21"],
-          ["Private", "$137.54"]
-        ]
-      },
       snackbar: false,
       snackBarTimeout: 1500,
       snackBarText: "Success",
@@ -816,17 +783,6 @@ export default {
     }
   },
   methods: {
-    hasHeaders(extension) {
-      let hasHeaders = false;
-      if (extension.headers) {
-        extension.headers.forEach(header => {
-          if (header.trim() !== "") {
-            hasHeaders = true;
-          }
-        });
-      }
-      return hasHeaders;
-    },
     addAccessibilityPrefix(text) {
       const prefix508 = `<span class="sr-only">Chat bot said.</span>`;
       if (!isHtml(text)) {
