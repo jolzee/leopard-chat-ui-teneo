@@ -27,7 +27,7 @@ export default {
   ipUrl: getEnvValue("VUE_APP_IP_URL"),
   geoUrl: getEnvValue("VUE_APP_GEO_URL"),
   hideConfigMenu: getEnvValue("VUE_APP_HIDE_CONFIG_MENU", true),
-  hideArtificalSolutionsBranding: getEnvValue("VUE_APP_HIDE_AS_BRANDING", false),
+  hideArtificialSolutionsBranding: getEnvValue("VUE_APP_HIDE_AS_BRANDING", false),
   loadFreshConfigForNewSessions: getEnvValue("VUE_APP_LOAD_FRESH_CONFIG_FOR_NEW_SESSIONS", false),
   mustGetStaticDefaultConfig: getEnvValue("VUE_APP_GET_STATIC_DEFAULT_CONFIG", false),
   requestParams:

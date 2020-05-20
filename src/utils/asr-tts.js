@@ -89,15 +89,15 @@ export function initializeASR(store, asrCorrections) {
     store.state.asr.asr = store.state.tts.tts.newDictation({
       soundex: true,
       continuous: false, // Enable continuous if HTTPS connection
-      onResult: function(text) {
+      onResult: function (text) {
         clearTimeout(timeoutVar);
         // Do something with the text
         if (text) {
-          //text = text.replace(/^\w/, c => c.toUpperCase()); // upercases first letter of user input -- use cautiously
+          //text = text.replace(/^\w/, c => c.toUpperCase()); // uppercase first letter of user input -- use cautiously
           text = text.replace(/what's/gi, "what is");
           store.commit("SET_USER_INPUT", text);
         }
-        timeoutVar = setTimeout(function() {
+        timeoutVar = setTimeout(function () {
           logger.debug("timeout - aborting recognition");
           store.state.asr.asr.stop();
           if (text) {
@@ -105,10 +105,10 @@ export function initializeASR(store, asrCorrections) {
           }
         }, 800);
       },
-      onStart: function() {
+      onStart: function () {
         logger.debug("ASR capture started");
       },
-      onEnd: function() {
+      onEnd: function () {
         store.commit("HIDE_LISTENING_OVERLAY");
 
         if (store.getters.stopAudioCapture) {
@@ -118,7 +118,7 @@ export function initializeASR(store, asrCorrections) {
           // store.state.asr.stopAudioCapture = false;
           return;
         }
-        // let's fix sany ASR transcription erros
+        // let's fix any ASR transcription errors
 
         if (store.getters.userInput) {
           let fixedUserInput = store.getters.userInput;
@@ -133,7 +133,7 @@ export function initializeASR(store, asrCorrections) {
                 replacement[1].toLowerCase()
               );
             } else {
-              let search = replacement[0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"); // escase any special characters
+              let search = replacement[0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"); // escape any special characters
               var re = new RegExp("\\b" + search + "\\b", "gi");
               // fixedUserInput = fixedUserInput.toLowerCase().replace(re, replacement[1].toLowerCase());
               fixedUserInput = fixedUserInput.replace(re, replacement[1]);
@@ -155,7 +155,7 @@ export function initializeASR(store, asrCorrections) {
             logger.debug(`Final Transcription: ${fixedUserInput}`);
           }
 
-          setTimeout(function() {
+          setTimeout(function () {
             store.commit("USER_INPUT_READY_FOR_SENDING");
           }, 500);
         }

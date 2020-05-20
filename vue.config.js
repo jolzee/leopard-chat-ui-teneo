@@ -73,8 +73,8 @@ if (!useStaticSolutionConfig) {
 }
 const solutionConfigFile = getEnvValue("VUE_APP_SOLUTION_CONFIG_FILE", "./env.solution.json");
 
-let rawdata = fs.readFileSync(`${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
-let solutionConfig = JSON.parse(rawdata);
+let rawData = fs.readFileSync(`${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
+let solutionConfig = JSON.parse(rawData);
 // if (useStaticSolutionConfig) {
 //   const vueVariables = {};
 //   for (let [key, value] of Object.entries(environmentVariables)) {

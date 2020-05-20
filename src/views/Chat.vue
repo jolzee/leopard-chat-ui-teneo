@@ -20,7 +20,7 @@
         }"
         ref="chatContainer"
       >
-        <!-- show the initial loding ball animation when first loading the chat window -->
+        <!-- show the initial loading ball animation when first loading the chat window -->
         <ChatLoading v-if="showChatLoading"></ChatLoading>
         <Feedback
           v-if="showFeedback"
@@ -117,19 +117,6 @@
         </v-date-picker>
       </v-dialog>
     </v-col>
-
-    <!-- <Dialog
-      @close="showLeopardDialog = false"
-      :show="showLeopardDialog"
-      title="Hi there this is the title"
-    >
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita id
-        doloremque eius, et at dicta sapiente ullam eum sequi dolorum incidunt
-        veritatis ipsam laudantium? Consequatur tenetur voluptas facere
-        provident magnam!
-      </p>
-    </Dialog>-->
 
     <!-- Time picker dialog -->
     <v-col cols="12" v-if="showTime" :key="'timePicker' + uuid">

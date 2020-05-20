@@ -20,7 +20,7 @@ export default class PostMessage {
   sendMessageToParent(message) {
     logger.debug(`store: sendMessageToParent: ${message}`);
     if (parent) {
-      parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
+      parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specify origin for each post.
       logger.debug("Message from Leopard >> Embed : " + message);
     }
   }
@@ -35,7 +35,7 @@ export default class PostMessage {
           return true;
         }
 
-        logger.debug("Recived a message from parent...");
+        logger.debug("Received a message from parent...");
         logger.debug(messageObject);
         // event.source.postMessage("This is a message sent back from Leopard to the site embedding Leopard", event.origin);
 

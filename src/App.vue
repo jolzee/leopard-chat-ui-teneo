@@ -38,7 +38,7 @@
       }"
     >
       <vue-snotify></vue-snotify>
-      <!-- <AssistiveText ref="assistiveText" v-model="accessibleAnouncement"></AssistiveText> -->
+      <!-- <AssistiveText ref="assistiveText" v-model="accessibleAnnouncement"></AssistiveText> -->
       <transition
         name="system-bar-transition"
         enter-active-class="fadeInRightBig"
@@ -724,7 +724,7 @@ export default {
     ...mapGetters([
       "emergencyConfig",
       "isLiveAgentAssist",
-      "accessibleAnouncement",
+      "accessibleAnnouncement",
       "mustCloseBecauseOfEscape",
       "accentStyling",
       "authenticated",
@@ -919,7 +919,7 @@ export default {
       }
     },
     keepBranding() {
-      return !window.leopardConfig.hideArtificalSolutionsBranding;
+      return !window.leopardConfig.hideArtificialSolutionsBranding;
     },
     isLightColor(themeColorName) {
       if (!this.$vuetify.theme.dark) {
@@ -994,7 +994,7 @@ export default {
     },
     sendMessageToParent(message) {
       if (parent) {
-        parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
+        parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specify origin for each post.
         logger.debug("Message from Leopard >> Embed : " + message);
       }
       return true;
@@ -1367,7 +1367,7 @@ code.language-json {
 }
 
 .chat-card {
-  cursor: defaul;
+  cursor: default;
 }
 
 #leopardSystemBarMinimized:focus {

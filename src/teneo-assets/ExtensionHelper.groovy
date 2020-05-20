@@ -120,7 +120,7 @@ class ExtensionHelper {
 
     static String displayImageCarousel(Map config) {
         Map params = [images: config.images]
-        Map attachment = [name: 'displayImageCarousel', title: config.get("title", ""), aria: config.get("aria", config.get("title", "Showing an Image Caroucel")), parameters: params, inline: config.get('inline', true)]
+        Map attachment = [name: 'displayImageCarousel', title: config.get("title", ""), aria: config.get("aria", config.get("title", "Showing an Image Carousel")), parameters: params, inline: config.get('inline', true)]
         JsonOutput.toJson(attachment)
     }
 

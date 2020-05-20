@@ -158,7 +158,7 @@ You can inject Leopard Chat UI into a specific element on a page. This might be 
 | [Sentry and LogRocket](https://jolzee.gitbook.io/leopard/logging-reporting) - Logging and Reporting                                              |    ✔️     |
 | [Split Answers](https://jolzee.gitbook.io/leopard/configuration/response-options/splitting-a-response)                                           |    ✔️     |
 | [Tables](https://jolzee.gitbook.io/leopard/configuration/components/modals/table)                                                                |    ✔️     |
-| Themable                                                                                                                                         |    ✔️     |
+| Themeable                                                                                                                                        |    ✔️     |
 | [Toasts](https://jolzee.gitbook.io/leopard/configuration/response-options/toasts)                                                                |    ✔️     |
 | [Video Player](https://jolzee.gitbook.io/leopard/configuration/components/modals/video) (YouTube, Vimeo, mp4)                                    |    ✔️     |
 | [i18n](https://jolzee.gitbook.io/leopard/configuration/asr-and-tts#supported-languages)                                                          |    ✔️     |

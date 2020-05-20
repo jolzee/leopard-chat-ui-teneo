@@ -242,7 +242,7 @@ export class LiveChat {
 
         this.sdk.on("connected", payload => {
           logger.debug(`CUSTOMER DATA`, payload.customer);
-          logger.debug(`LiveChat > Conected`, payload);
+          logger.debug(`LiveChat > Connected`, payload);
           this.sdk.listChats().then(existingChats => {
             logger.info(`Existing LiveChats`, existingChats);
             if (existingChats.chatsSummary.length > 0) {
@@ -460,7 +460,7 @@ export class LiveChat {
       this.store.commit("PUSH_LIVE_CHAT_STATUS_TO_DIALOG", liveChatStatus); // push the getting message onto the dialog
       this.store.commit("STOP_LIVE_CHAT"); // No need directing all inputs if no chat session started yet
     } catch (e) {
-      logger.error(`LiveChat > Remue/Start Chat`, e);
+      logger.error(`LiveChat > Resume/Start Chat`, e);
     }
   }
 }

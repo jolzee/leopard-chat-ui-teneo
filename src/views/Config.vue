@@ -604,7 +604,7 @@
                 <v-card>
                   <v-card-title class="title">Refresh to Selected Solution?</v-card-title>
                   <v-card-text>
-                    You changed the selected solution. Should I naviate to:
+                    You changed the selected solution. Should I navigate to:
                     <br />
                     <br />
                     <span class="leopard-code">
@@ -909,7 +909,7 @@ export default {
       this.audit.show = false;
       this.audit.results = [];
     },
-    testSoluton(solution) {
+    testSolution(solution) {
       let targetReportResult = this.audit.results.find(
         result => result.solution.id === solution.id
       );
@@ -938,7 +938,7 @@ export default {
           status: "checking",
           solution: solution
         });
-        this.testSoluton(solution);
+        this.testSolution(solution);
       });
     },
     closeConfigArea(skipRefreshDialog) {
@@ -976,19 +976,19 @@ export default {
       this.showPossibleRefreshDialog = false;
       this.refresh = true;
       sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
-      let addtionalParams = "";
+      let additionalParams = "";
       if (doesParameterExist("plugin_id")) {
         const params = new URLSearchParams(window.location.search);
         const pluginId = params.get("plugin_id");
-        addtionalParams += `&plugin_id=${pluginId}`;
+        additionalParams += `&plugin_id=${pluginId}`;
       }
       if (doesParameterExist("embed")) {
-        addtionalParams += "&embed";
+        additionalParams += "&embed";
       }
       if (doesParameterExist("button")) {
-        addtionalParams += "&button";
+        additionalParams += "&button";
       }
-      window.location = `${location.protocol}//${location.host}${location.pathname}?dl=${solution.deepLink}${addtionalParams}`;
+      window.location = `${location.protocol}//${location.host}${location.pathname}?dl=${solution.deepLink}${additionalParams}`;
     },
     toggleFullscreen() {
       let modalElements = document.getElementsByClassName("leopard-config-modal");
@@ -1177,19 +1177,19 @@ export default {
       if (this.selectedSolution) {
         this.refresh = true;
         sessionStorage.removeItem("teneo-chat-history"); // new config delete chat history
-        let addtionalParams = "";
+        let additionalParams = "";
         if (doesParameterExist("plugin_id")) {
           const params = new URLSearchParams(window.location.search);
           const pluginId = params.get("plugin_id");
-          addtionalParams += `&plugin_id=${pluginId}`;
+          additionalParams += `&plugin_id=${pluginId}`;
         }
         if (doesParameterExist("embed")) {
-          addtionalParams += "&embed";
+          additionalParams += "&embed";
         }
         if (doesParameterExist("button")) {
-          addtionalParams += "&button";
+          additionalParams += "&button";
         }
-        window.location = `${location.protocol}//${location.host}${location.pathname}?dl=${this.selectedSolution.deepLink}${addtionalParams}`;
+        window.location = `${location.protocol}//${location.host}${location.pathname}?dl=${this.selectedSolution.deepLink}${additionalParams}`;
       } else {
         window.location = `${location.protocol}//${location.host}${location.pathname}`;
       }
@@ -1204,7 +1204,7 @@ export default {
         this.dialogTitle = "Editing Solution";
         this.currentModeEdit = "edit";
         this.solution = cloneObject(this.selectedSolution); // make a copy - we have a save button
-        logger.info("Trying to open Add Edit Dialod");
+        logger.info("Trying to open Add Edit Dialog");
         this.showAddEditDialog();
       }
     },
@@ -1322,7 +1322,7 @@ export default {
             newConfig.solutions.forEach(newSolution => {
               this.importSolution(newSolution);
             });
-            this.displaySnackBar("Merged existing full config with newly uploded", 3000);
+            this.displaySnackBar("Merged existing full config with newly uploaded", 3000);
           } else {
             // current config is empty
             this.config = fixSolutions(newConfig);

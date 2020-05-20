@@ -2,7 +2,6 @@ const logger = require("@/utils/logging").getLogger("setup.js");
 import "@mdi/font/css/materialdesignicons.css";
 import { LocalStorage } from "ttl-localstorage";
 
-// import "typeface-roboto";
 import {
   doesParameterExist,
   getParameterByName,
@@ -162,7 +161,7 @@ export default class Setup {
           }
 
           // update the IFRAME URL
-          this.seupIframeInNonEmbedMode();
+          this.setupIframeInNonEmbedMode();
           logger.debug("About to initialize Vuetify");
           let vuetify = this.setupVuetifyConfig();
           this.setupThirdPartyLogging();
@@ -176,7 +175,7 @@ export default class Setup {
     });
   }
 
-  seupIframeInNonEmbedMode() {
+  setupIframeInNonEmbedMode() {
     if (!this.EMBED && document.getElementById("site-frame")) {
       document.getElementById("site-frame").src = this.IFRAME_URL;
       logger.debug("Updated IFRAME url", this.IFRAME_URL);
@@ -431,7 +430,7 @@ export default class Setup {
   getMergedAsrCorrections(leopardDefaultCorrections) {
     let finalCorrections = leopardDefaultCorrections;
     if (this.activeSolution && "asrCorrections" in this.activeSolution) {
-      let solutionResplacements = [];
+      let solutionReplacements = [];
       let lines = this.activeSolution.asrCorrections.split(/\r?\n/);
       lines.forEach(replacement => {
         if (replacement.trim() !== "") {
@@ -439,11 +438,11 @@ export default class Setup {
           if (thisThatArray.length === 2) {
             thisThatArray[0] = thisThatArray[0].trim();
             thisThatArray[1] = thisThatArray[1].trim();
-            solutionResplacements.push(thisThatArray);
+            solutionReplacements.push(thisThatArray);
           }
         }
       });
-      finalCorrections = leopardDefaultCorrections.concat(solutionResplacements);
+      finalCorrections = leopardDefaultCorrections.concat(solutionReplacements);
     }
     return finalCorrections;
   }

@@ -49,7 +49,7 @@
     <!-- <v-col cols="12" class="mt-2">
       <p
         class="subheading font-weight-medium"
-      >Or signup using your email address. (All fields required)</p>
+      >Or sign up using your email address. (All fields required)</p>
     </v-col>
     <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="registerUser">
       <v-container fluid>

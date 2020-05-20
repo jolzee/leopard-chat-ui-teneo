@@ -102,7 +102,7 @@ function storeSetup(vuetify) {
         stopAudioCapture: false,
         asr: null
       },
-      accessibleAnouncement: "",
+      accessibleAnnouncement: "",
       chatConfig: setupConfig.chatConfig,
       activeSolution: setupConfig.activeSolution,
       connection: {
@@ -229,8 +229,8 @@ function storeSetup(vuetify) {
       fullscreenEmbed(state) {
         return state.ui.embed && state.ui.parent.width && state.ui.parent.width <= 480;
       },
-      accessibleAnouncement(state) {
-        return state.accessibleAnouncement;
+      accessibleAnnouncement(state) {
+        return state.accessibleAnnouncement;
       },
       responseDelay(state) {
         return state.activeSolution.responseDelay;
@@ -1071,8 +1071,8 @@ function storeSetup(vuetify) {
       SHOW_508_CONTENT(state) {
         state.hide508 = false;
       },
-      SET_ACCESIBLE_ANOUNCEMENT(state, message) {
-        state.accessibleAnouncement = stripHtml(message);
+      SET_ACCESSIBLE_ANNOUNCEMENT(state, message) {
+        state.accessibleAnnouncement = stripHtml(message);
       },
       SHOW_OVERLAY_ALERT(state, message) {
         state.overlay.overlayAlertMessage = message;
@@ -1092,7 +1092,7 @@ function storeSetup(vuetify) {
       RESET_MUST_CLOSE(state) {
         state.ui.closeChatEsc = false;
       },
-      CLOSE_OVERY_ALERT(state) {
+      CLOSE_OVERLAY_ALERT(state) {
         state.overlay.showOverlayAlert = false;
         state.overlay.overlayAlertMessage = "";
       },
@@ -1197,7 +1197,7 @@ function storeSetup(vuetify) {
           borderPosition: "left",
           alertType: null,
           color: "info",
-          primient: false,
+          prominent: false,
           outlined: false,
           icon: null,
           bodyText: "",
@@ -1226,7 +1226,7 @@ function storeSetup(vuetify) {
           borderPosition: borderPosition,
           alertType: type,
           color: color,
-          primient: prominent,
+          prominent: prominent,
           outlined: outlined,
           icon: icon,
           bodyText: "",
@@ -1353,7 +1353,7 @@ function storeSetup(vuetify) {
 
         //state.userInput.userInput = ""; // reset the user input to nothing
 
-        // deal with persiting the chat history
+        // deal with persisting the chat history
         if (!setupConfig.USE_SESSION_STORAGE) {
           localStorage.setItem(
             STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY,
@@ -1372,7 +1372,7 @@ function storeSetup(vuetify) {
           }
           state.conversation.dialogHistory.push(newReply);
         }
-        // save the dislaog history in session storage
+        // save the dialog history in session storage
         sessionStorage.setItem(
           STORAGE_KEY + setupConfig.TENEO_CHAT_HISTORY,
           JSON.stringify(state.conversation.dialogHistory)
@@ -1545,7 +1545,7 @@ function storeSetup(vuetify) {
           .send(config)
           .then(res => {
             // res.body = json, res.headers, res.status
-            logger.debug("Agent Assist: Canned Resposne Created", res.body);
+            logger.debug("Agent Assist: Canned Response Created", res.body);
           })
           .catch(err => {
             // err.message, err.response
@@ -1711,12 +1711,12 @@ function storeSetup(vuetify) {
             }
           });
         } else {
-          let retyCount = 0;
+          let retryCount = 0;
           let checkExist = setInterval(function () {
-            retyCount++;
+            retryCount++;
 
             if (getters.firebase) {
-              logger.debug(`SET USER INFORMATION > Firebase > Found on retry: ${retyCount}`);
+              logger.debug(`SET USER INFORMATION > Firebase > Found on retry: ${retryCount}`);
               getters.firebase.auth().onAuthStateChanged(function (user) {
                 if (user && !getters.authenticated) {
                   commit("USER_INFO", { user: user }); // user is still signed in
@@ -1725,7 +1725,7 @@ function storeSetup(vuetify) {
               clearInterval(checkExist);
             }
 
-            if (retyCount++ > 80) {
+            if (retryCount++ > 80) {
               logger.debug("SET USER INFORMATION > Firebase > Giving up trying waiting!!");
               clearInterval(checkExist);
             }
@@ -1955,7 +1955,7 @@ function storeSetup(vuetify) {
               handleLoginResponse(context, json, vuetify, resolve);
             })
             .catch(err => {
-              handleTieErrorReponse(context, err, reject);
+              handleTieErrorResponse(context, err, reject);
             });
         });
       },
@@ -2040,7 +2040,7 @@ function setupI18n() {
   Vue.i18n.set(setupConfig.LOCALE);
 }
 
-function handleTieErrorReponse(context, err, reject) {
+function handleTieErrorResponse(context, err, reject) {
   context.commit("HIDE_CHAT_LOADING");
   const errResp = {
     error: err,
@@ -2083,12 +2083,12 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
       //   (json.responseData.isNewSession || json.responseData.extraData.newsession)
       // ) {
       //   logger.debug("Session is stale.. keep chat open and continue with the new session");
-      //   const awayMessage = "This is a new chatbot session.";
+      //   const awayMessage = "This is a new chat bot session.";
       //   context.commit("SHOW_SIMPLE_MESSAGE_IN_CHAT", {
       //     message: awayMessage,
       //     icon: "mdi-timer"
       //   });
-      //   context.commit("SET_ACCESIBLE_ANOUNCEMENT", awayMessage);
+      //   context.commit("SET_ACCESSIBLE_ANNOUNCEMENT", awayMessage);
       // }
 
       handleScriptResponse(tResp, context);
@@ -2110,7 +2110,7 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
         if (tResp.hasParameter("tts")) {
           ttsText = stripHtml(tResp.getParameter("tts"));
         }
-        context.commit("SET_ACCESIBLE_ANOUNCEMENT", "Chat Bot Said. " + ttsText + ".");
+        context.commit("SET_ACCESSIBLE_ANNOUNCEMENT", "Chat Bot Said. " + ttsText + ".");
         // check if this browser supports the Web Speech API
         if (
           Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
@@ -2132,7 +2132,7 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
 
         context.commit("UPDATE_CHAT_WINDOW_AND_STORAGE", finalLeopardPayload);
         context.commit("HIDE_PROGRESS_BAR");
-        handleSignalToStartLiveChatReponse(tResp, context);
+        handleSignalToStartLiveChatResponse(tResp, context);
         handleChangeChatTitleResponse(tResp, context);
         handleTieUrlSwitchResponse(tResp, context);
       }
@@ -2152,7 +2152,7 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
         logger.error("Request To Teneo Timed Out: 400", errResp);
         context.commit(
           "SHOW_MESSAGE_IN_CHAT",
-          "I'm sorry, I wasn't able to communicate with the virtual assitant. Please check your internet connection."
+          "I'm sorry, I wasn't able to communicate with the virtual assistant. Please check your internet connection."
         );
       } else {
         logger.error("Could not communicate with Teneo", errResp);
@@ -2171,7 +2171,7 @@ function handleChangeChatTitleResponse(tResp, context) {
   }
 }
 
-function handleSignalToStartLiveChatReponse(tResp, context) {
+function handleSignalToStartLiveChatResponse(tResp, context) {
   if (tResp.hasParameter("liveChat")) {
     context.commit("START_LIVE_CHAT");
   }
@@ -2336,7 +2336,7 @@ function handleDelayResponse(tResp, context, params) {
       .then(logger.debug(`Continue with long operation`))
       .catch(err => {
         logger.error("Unable to continue conversation", err);
-        context.commit("SHOW_MESSAGE_IN_CHAT", "We're sorry for the inconvience: " + err.message);
+        context.commit("SHOW_MESSAGE_IN_CHAT", "We're sorry for the inconvenience: " + err.message);
       });
   }
   if (params.indexOf("command=continue") !== -1) {
@@ -2557,7 +2557,7 @@ function handleLoginResponse(context, json, vuetify, resolve) {
   };
   // sessionStorage.setItem(STORAGE_KEY + TENEO_CHAT_HISTORY, JSON.stringify(response))
   context.commit("PUSH_RESPONSE_TO_DIALOG", response); // push the getting message onto the dialog
-  context.commit("SET_ACCESIBLE_ANOUNCEMENT", response.text);
+  context.commit("SET_ACCESSIBLE_ANNOUNCEMENT", response.text);
   if (hasExtraData) {
     context.commit("SHOW_CHAT_MODAL", response);
   }
