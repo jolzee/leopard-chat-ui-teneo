@@ -8,6 +8,8 @@ executors:
       - image: circleci/buildpack-deps
 jobs:
   build:
+    branches:
+      only: master
     executor: node/default
     steps:
       - checkout
