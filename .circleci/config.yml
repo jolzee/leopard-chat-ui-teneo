@@ -17,6 +17,7 @@ jobs:
           node --version
           mkdir -p config && touch $_/local.js
           echo $FULL_CONFIG  > ./config/local.js
+          cat ./config/local.js
       - node/install-packages
       - run: npm run build
       - persist_to_workspace:
