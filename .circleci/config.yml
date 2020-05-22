@@ -53,9 +53,9 @@ workflows:
   build-deploy:
     jobs:
       - build:
-          branches:
-            only:
-              - master
+          filters:
+            branches:
+              only: master
           context: leopard-presales-ctx
       - deploy-artisol:
           context: leopard-presales-ctx
