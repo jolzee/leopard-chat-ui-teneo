@@ -8,8 +8,6 @@ executors:
       - image: circleci/buildpack-deps
 jobs:
   build:
-    branches:
-      only: master
     executor: node/default
     steps:
       - checkout
@@ -19,7 +17,6 @@ jobs:
           node --version
           mkdir -p config && touch $_/local.js
           echo $FULL_CONFIG  > ./config/local.js
-          cat ./config/local.js
       - node/install-packages
       - run: npm run build
       - persist_to_workspace:
@@ -48,7 +45,7 @@ jobs:
           echo "Host *" > ~/.ssh/config
           echo " StrictHostKeyChecking no" >> ~/.ssh/config
       - attach_workspace:
-          at: ~/leopard/dist
+          at: ~/leopard
       - gh-pages/deploy:
           ssh-fingerprints: "5b:02:54:8b:a5:25:c3:91:88:6e:82:d5:1d:4a:43:4a"
 
@@ -56,6 +53,9 @@ workflows:
   build-deploy:
     jobs:
       - build:
+          branches:
+            only:
+              - master
           context: leopard-presales-ctx
       - deploy-artisol:
           context: leopard-presales-ctx
