@@ -11,8 +11,8 @@ jobs:
     executor: node/default
     steps:
       - checkout
-      - node/install:
-          node-version: 12.16.3
+      # - node/install:
+      #     node-version: 12.16.3
       - run: |
           node --version
           mkdir -p config && touch $_/local.js
@@ -58,9 +58,15 @@ workflows:
               only: master
           context: leopard-presales-ctx
       - deploy-artisol:
+          filters:
+            branches:
+              only: master
           context: leopard-presales-ctx
           requires:
             - build
       - deploy-gh-pages:
+          filters:
+            branches:
+              only: master
           requires:
             - build
