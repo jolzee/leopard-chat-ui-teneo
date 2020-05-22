@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@livechat/accounts-sdk": "^1.4.0",
-    "@livechat/agent-app-sdk": "^1.4.1",
+    "@livechat/agent-app-sdk": "^1.5.0",
     "@livechat/agent-app-widget-sdk": "^3.0.0",
     "@livechat/customer-auth": "^0.4.0-alpha.6",
     "@livechat/customer-sdk": "^2.0.0-beta.2",
