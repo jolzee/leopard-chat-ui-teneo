@@ -35,7 +35,7 @@ jobs:
           at: ~/leopard/dist
       - deploy:
           command: |
-            rsync -va -r -e "ssh -o StrictHostKeyChecking=no" --delete-after ./dist/ $SSH_USER@$SSH_HOST:$TARGET_DIR
+            rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after ~/leopard/dist/ $SSH_USER@$SSH_HOST:$TARGET_DIR
   deploy-gh-pages:
     executor: buildpack_deps
     working_directory: ~/leopard
