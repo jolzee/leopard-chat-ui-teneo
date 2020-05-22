@@ -2107,7 +2107,9 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
       };
       if (response.teneoResponse) {
         let ttsText = stripHtml(cleanEmptyChunks(response.teneoAnswer));
-        if (tResp.hasParameter("tts")) {
+        if (tResp.hasParameter("tts") && tResp.getParameter("tts").indexOf("<speak>") !== -1) {
+          ttsText = tResp.getParameter("tts");
+        } else if (tResp.hasParameter("tts")) {
           ttsText = stripHtml(tResp.getParameter("tts"));
         }
         context.commit("SET_ACCESSIBLE_ANNOUNCEMENT", "Chat Bot Said. " + ttsText + ".");

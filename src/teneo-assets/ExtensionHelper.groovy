@@ -8,13 +8,14 @@ import java.util.regex.PatternSyntaxException
 class ExtensionHelper {
 
     static String setUploadConfig(Map config) {
-        Map params = ['postUrl'            : config.postUrl,
-                      'postFileNameParam'  : config.get('postFileNameParam', 'file'),
-                      'postParams'         : config.get('postParams', [:]),
-                      'teneoSuccessQuery'  : config.get('teneoSuccessQuery', ''),
-                      'teneoFailureQuery'  : config.get('teneoFailureQuery', ''),
-                      'reqUserInputSuccess': config.get('reqUserInputSuccess', 'I have uploaded my file'),
-                      'reqUserInputFailure': config.get('reqUserInputFailure', 'I tried uploading but it didn\'t work')]
+        Map params = [
+            'postUrl'            : config.postUrl,
+            'postFileNameParam'  : config.get('postFileNameParam', 'file'),
+            'postParams'         : config.get('postParams', [:]),
+            'teneoSuccessQuery'  : config.get('teneoSuccessQuery', ''),
+            'teneoFailureQuery'  : config.get('teneoFailureQuery', ''),
+            'reqUserInputSuccess': config.get('reqUserInputSuccess', 'I have uploaded my file'),
+            'reqUserInputFailure': config.get('reqUserInputFailure', 'I tried uploading but it didn\'t work')]
         JsonOutput.toJson(['name': 'uploadConfig', 'parameters': params] as java.util.Map)
     }
 

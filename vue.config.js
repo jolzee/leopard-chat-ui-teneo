@@ -1,3 +1,4 @@
+const { config, leopardConfig } = require("./src/utils/buildConfig");
 const path = require("path");
 const fs = require("fs");
 const CompressionPlugin = require("compression-webpack-plugin");
@@ -6,43 +7,31 @@ const FileManagerPlugin = require("filemanager-webpack-plugin");
 const WebpackDeletePlugin = require("webpack-delete-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
-// devtool: isLocalDev ? "source-map" : produceSourceMaps ? "source-map" : "",
-
-const environmentVariables = process.env;
-const getEnvValue = (name, fallback = "") => {
-  let result = fallback;
-  if (name in environmentVariables && environmentVariables[name] !== "") {
-    result = environmentVariables[name];
-    if (result === "true") {
-      result = true;
-    } else if (result === "false") {
-      result = false;
-    }
-  }
-  return result;
-};
-
-const isDev = process.env.NODE_ENV === "development";
-const isLocalDev = getEnvValue("LOCAL", false);
+const isDev = leopardConfig.isDev;
+const isLocalDev = leopardConfig.isLocalDev;
 
 let produceSourceMaps = false;
 
-if (!isLocalDev && process.env.VUE_APP_SOURCE_MAP === "true") {
+if (!isLocalDev && config.get("assets.produceSourceMap", true)) {
   produceSourceMaps = true;
 } else {
   produceSourceMaps = false;
 }
 
-const enableCssCompression = getEnvValue("VUE_APP_BUILD_COMPRESS_CSS_ASSETS", true);
-const enableJavaScriptCompression = getEnvValue("VUE_APP_BUILD_COMPRESS_JAVASCRIPT_ASSETS", true);
+const enableCssCompression = config.get("assets.compressCss", true);
+const enableJavaScriptCompression = config.get("assets.compressJavascript", true);
 
 console.log(`NODE_ENV = ${process.env.NODE_ENV}`);
+
 if (isLocalDev) {
-  console.log(`Local Development - npm run serve: ${isLocalDev}`);
+  console.log(`Local Development Mode`);
 }
-console.log(`Produce Source Maps: ${produceSourceMaps}`);
-console.log(`Enable CSS Compression: ${enableCssCompression}`);
-console.log(`Enable JavaScript Compression: ${enableJavaScriptCompression}`);
+
+if (!isLocalDev) {
+  console.log(`Produce Source Maps: ${produceSourceMaps}`);
+  console.log(`Enable CSS Compression: ${enableCssCompression}`);
+  console.log(`Enable JavaScript Compression: ${enableJavaScriptCompression}`);
+}
 
 const compressionPluginTest = () => {
   let test = /\.css$|\.html$/;
@@ -64,28 +53,17 @@ const brotliPluginTest = () => {
   return test;
 };
 
-const useStaticSolutionConfig = getEnvValue("VUE_APP_GET_STATIC_DEFAULT_CONFIG", false);
+let useStaticSolutionConfig = isLocalDev ? false : leopardConfig.mustGetStaticDefaultConfig;
+console.log("useStaticSolutionConfig", useStaticSolutionConfig);
 
 if (!useStaticSolutionConfig) {
   console.log(
-    `Solutions Config ${process.env.VUE_APP_SOLUTION_CONFIG_FILE} being ported to /dist/assets/js/leopardConfig.*.js`
+    `Solutions Config ${config.get(
+      "solution.location.sourceFile"
+    )} being ported to /dist/assets/js/leopardConfig.*.js`
   );
 }
-const solutionConfigFile = getEnvValue("VUE_APP_SOLUTION_CONFIG_FILE", "./env.solution.json");
-
-let rawData = fs.readFileSync(`${process.env.VUE_APP_SOLUTION_CONFIG_FILE}`);
-let solutionConfig = JSON.parse(rawData);
-// if (useStaticSolutionConfig) {
-//   const vueVariables = {};
-//   for (let [key, value] of Object.entries(environmentVariables)) {
-//     if (key.startsWith("VUE_APP")) {
-//       vueVariables[key] = value;
-//     }
-//   }
-//   solutionConfig.env = vueVariables;
-// }
-// let data = JSON.stringify(solutionConfig,null, 2);
-// fs.writeFileSync("config.json", data);
+const solutionConfigFile = config.get("solution.location.sourceFile", "./env.solution.json");
 
 let buildConfig = {
   css: {
@@ -117,7 +95,7 @@ let buildConfig = {
       });
     config.plugin("define").tap(definitions => {
       Object.assign(definitions[0]["process.env"], {
-        VUE_APP_SOLUTION_CONFIG: JSON.stringify(solutionConfig)
+        LEOPARD_CONFIG: JSON.stringify(leopardConfig)
       });
       return definitions;
     });

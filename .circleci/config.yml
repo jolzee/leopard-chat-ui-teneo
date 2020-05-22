@@ -1,0 +1,63 @@
+version: 2.1
+orbs:
+  node: circleci/node@2.1.1
+  gh-pages: sugarshin/gh-pages@0.0.6
+executors:
+  buildpack_deps:
+    docker:
+      - image: circleci/buildpack-deps
+jobs:
+  build:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install:
+          node-version: 12.16.3
+      - run: |
+          node --version
+          mkdir -p config && touch $_/local.js
+          echo $FULL_CONFIG  > ./config/local.js
+      - node/install-packages
+      - run: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+  deploy-artisol:
+    working_directory: ~/leopard
+    docker:
+      - image: instrumentisto/rsync-ssh
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "5b:02:54:8b:a5:25:c3:91:88:6e:82:d5:1d:4a:43:4a"
+      - attach_workspace:
+          at: ~/leopard/dist
+      - deploy:
+          command: |
+            rsync -va -r -e "ssh -o StrictHostKeyChecking=no" --delete-after ./dist/ $SSH_USER@$SSH_HOST:$TARGET_DIR
+  deploy-gh-pages:
+    executor: buildpack_deps
+    working_directory: ~/leopard
+    steps:
+      - run: |
+          mkdir -p ~/.ssh
+          echo "Host *" > ~/.ssh/config
+          echo " StrictHostKeyChecking no" >> ~/.ssh/config
+      - attach_workspace:
+          at: ~/leopard/dist
+      - gh-pages/deploy:
+          ssh-fingerprints: "5b:02:54:8b:a5:25:c3:91:88:6e:82:d5:1d:4a:43:4a"
+
+workflows:
+  build-deploy:
+    jobs:
+      - build:
+          context: leopard-presales-ctx
+      - deploy-artisol:
+          context: leopard-presales-ctx
+          requires:
+            - build
+      - deploy-gh-pages:
+          requires:
+            - build
