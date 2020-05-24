@@ -32,7 +32,9 @@ jobs:
           fingerprints:
             - "5b:02:54:8b:a5:25:c3:91:88:6e:82:d5:1d:4a:43:4a"
       - attach_workspace:
-          at: ~/leopard/dist
+          at: ~/leopard
+      - run: |
+          ls -la
       - deploy:
           command: |
             rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after ~/leopard/dist/ $SSH_USER@$SSH_HOST:$TARGET_DIR
