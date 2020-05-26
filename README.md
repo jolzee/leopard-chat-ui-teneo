@@ -78,7 +78,7 @@ npm install
 
 #### Configuration
 
-Leopard is configured using [`.env`](https://jolzee.gitbook.io/leopard/installation#leopard-environment-variables) files and through the [`.env.solution.json`](https://jolzee.gitbook.io/leopard/configuration/leopard-config-page#default-configuration) file in the root of the project. If you want to make some changes prior to running/building Leopard then do so now.
+Leopard is configured using `/config/default.js` which is a **commented** JavaScript module. You can either directly add your configuration to default.js or to an adjacent `local.js` which takes precedence and is added to .gitignore. The conversational solutions are configured through the [`.env.solution.json`](https://jolzee.gitbook.io/leopard/configuration/leopard-config-page#default-configuration) file in the root of the project. If you want to make some changes prior to running/building Leopard then do so now.
 
 #### Run Locally in Development Mode
 
