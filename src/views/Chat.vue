@@ -531,16 +531,16 @@ div.chat-container .v-expansion-panel::before {
 
 .chat-card-left {
   padding-bottom: 3px !important;
-  -moz-border-radius: 3px 13px 13px 13px !important;
-  -webkit-border-radius: 3px 13px 13px 13px !important;
-  border-radius: 3px 13px 13px 13px !important;
+  -moz-border-radius: 0px 7px 7px 7px !important;
+  -webkit-border-radius: 0px 7px 7px 7px !important;
+  border-radius: 0px 7px 7px 7px !important;
 }
 
 .chat-card-right {
   margin-left: auto !important;
-  -moz-border-radius: 13px 3px 13px 13px !important;
-  -webkit-border-radius: 13px 3px 13px 13px !important;
-  border-radius: 13px 3px 13px 13px !important;
+  -moz-border-radius: 7px 0px 7px 7px !important;
+  -webkit-border-radius: 7px 0px 7px 7px !important;
+  border-radius: 7px 0px 7px 7px !important;
 }
 
 div.options-list a.v-list__tile--link {
