@@ -1,10 +1,13 @@
 <template>
   <v-row
     v-if="item.type === 'userInput'"
+    align="start"
+    justify="end"
     no-gutters
     :class="itemIndexInDialog === dialog.length - 1 ? 'pb-3 pl-3 pr-1 pt-2' : 'pl-3 pr-1 pt-2'"
   >
     <!-- user question -->
+    <!-- <v-col cols="1"></v-col> -->
     <v-col>
       <v-card
         :color="determineCardColor()"
@@ -55,7 +58,7 @@
           </v-btn>
         </template>
 
-        <v-list class="liveAgentAssitMenu">
+        <v-list class="liveAgentAssistMenu">
           <v-hover
             v-for="menuItem in agentAssist.menu"
             v-slot:default="{ hover }"
