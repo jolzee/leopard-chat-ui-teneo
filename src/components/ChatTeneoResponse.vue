@@ -30,7 +30,7 @@
             </v-btn>
           </template>
 
-          <v-list class="liveAgentAssitMenu">
+          <v-list class="liveAgentAssistMenu">
             <v-hover
               v-for="menuItem in dynamicAgentAssistMenu"
               v-slot:default="{ hover }"
@@ -78,6 +78,52 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- Additional Response Chunks -->
+    <div v-if="responseHasChunks">
+      <v-row
+        v-for="(chunkText, responseChunkIndex) in getChunks"
+        :key="responseChunkIndex + uuid"
+        no-gutters
+        class="pr-3 pl-1 pt-1"
+      >
+        <v-col v-if="showChatIcons" cols="2" class="text-center">
+          <!-- <v-btn
+            v-long-press="1000"
+            tabindex="-1"
+            @long-press-start="swapInputButton"
+            style="opacity: 0"
+            :color="`${responseLookAndFeel.iconColor} white--text`"
+            class="teneo-response-icon"
+            text
+            tile
+            icon
+            large
+          >
+            <v-icon large class="white--text">{{ getResponseIcon }}</v-icon>
+          </v-btn>-->
+        </v-col>
+        <v-col>
+          <v-card
+            class="chat-card chat-card-left text-left"
+            :ripple="false"
+            :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
+            :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
+          >
+            <span
+              class="teneo-reply"
+              :class="
+                `${leopardFont} ${
+                  responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''
+                }`
+              "
+            >
+              <span v-html="addAccessibilityPrefix(chunkText)"></span>
+            </span>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
 
     <Card v-if="hasCard(item) && isLastItem" :item="item" :ripple="false" class="mb-2" />
     <!-- Show Inline Components -->
@@ -136,51 +182,7 @@
         </v-col>
       </v-row>
     </span>
-    <!-- Additional Response Chunks -->
-    <div v-if="responseHasChunks">
-      <v-row
-        v-for="(chunkText, responseChunkIndex) in getChunks"
-        :key="responseChunkIndex + uuid"
-        no-gutters
-        class="pr-3 pl-1 pt-1"
-      >
-        <v-col v-if="showChatIcons" cols="2" class="text-center">
-          <!-- <v-btn
-            v-long-press="1000"
-            tabindex="-1"
-            @long-press-start="swapInputButton"
-            style="opacity: 0"
-            :color="`${responseLookAndFeel.iconColor} white--text`"
-            class="teneo-response-icon"
-            text
-            tile
-            icon
-            large
-          >
-            <v-icon large class="white--text">{{ getResponseIcon }}</v-icon>
-          </v-btn>-->
-        </v-col>
-        <v-col>
-          <v-card
-            class="chat-card chat-card-left text-left"
-            :ripple="false"
-            :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
-            :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
-          >
-            <span
-              class="teneo-reply"
-              :class="
-                `${leopardFont} ${
-                  responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''
-                }`
-              "
-            >
-              <span v-html="addAccessibilityPrefix(chunkText)"></span>
-            </span>
-          </v-card>
-        </v-col>
-      </v-row>
-    </div>
+
     <DelayedResponse v-if="showDelayedResponse && isLastItem"></DelayedResponse>
     <!-- show any options in the response: for example Yes, No Maybe -->
     <v-col v-if="routerCheckList && isLastItem" cols="12" class="px-3">
@@ -559,6 +561,8 @@ export default {
         if (tResp.hasEmotion() && tResp.getEmotion().indexOf("|") !== -1) {
           const rawEmotion = decodeURIComponent(tResp.getEmotion());
           icon = `mdi-${rawEmotion.split("|")[1].trim()}`;
+        } else if (tResp.hasParameter("icon")) {
+          icon = `mdi-${tResp.getParameter("icon")}`;
         }
       }
       return icon;
