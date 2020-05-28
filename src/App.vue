@@ -1605,7 +1605,7 @@ blockquote:before {
   font-size: 4em;
   line-height: 0.1em;
   vertical-align: -0.4em;
-  content: open-quote;
+  /* content: open-quote; */
 }
 blockquote p {
   display: inline;
