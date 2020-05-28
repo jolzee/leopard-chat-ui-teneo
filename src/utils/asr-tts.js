@@ -13,8 +13,8 @@ export function initializeTTS(locale) {
 
     if (locale === "en-us-male") {
       tts.ArtyomVoicesIdentifiers["en-US"] = [
-        "Google US English",
         "Microsoft David Desktop - English (United States)",
+        "Google US English",
         "en-US",
         "en_US"
       ];
