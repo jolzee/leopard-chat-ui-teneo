@@ -300,13 +300,14 @@ export default class Setup {
     logger.debug(`ipUrl`, ipUrl);
     superagent
       .get(ipUrl)
+      .timeout(3000)
       .then(res => {
         browserIp = res.text;
         let geoUrl = window.leopardConfig.geoUrl
           ? window.leopardConfig.geoUrl
           : `https://cors-anywhere.herokuapp.com/http://www.geoplugin.net/json.gp?ip=${res.text}`;
         logger.debug(`geoUrl`, geoUrl);
-        return superagent.get(geoUrl).accept("application/json");
+        return superagent.get(geoUrl).timeout(3000).accept("application/json");
       })
       .then(res => {
         const loc = JSON.parse(res.text);
@@ -480,6 +481,7 @@ export default class Setup {
           LocalStorage.get(STORAGE_KEY + "loc").then(data => {
             superagent
               .get(window.leopardConfig.ipUrl ? window.leopardConfig.ipUrl : "https://ipapi.co/ip/")
+              .timeout(3000)
               .then(res => {
                 if (res.text === data.ip) {
                   logger.debug(`📍 Found Location Info in LocalStorage. IP hasn't changed`, data);
