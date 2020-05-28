@@ -41,7 +41,7 @@
           <v-btn
             x-small
             style="opacity:0.8"
-            aria-label="Open Marterial Design Icons in a new window"
+            aria-label="Open Material Design Icons in a new window"
             :color="`teal darken-4 white--text`"
             href="https://petershaggynoble.github.io/MDI-Sandbox/"
             target="_blank"
@@ -289,7 +289,7 @@
               <v-col :cols="12">
                 <v-row align="center" justify="center" style=" height: 300px;min-height: 300px;">
                   <transition
-                    name="leoaprd-transition"
+                    name="leopard-transition"
                     :enter-active-class="solution.animations.in"
                     :leave-active-class="solution.animations.out"
                   >
@@ -438,7 +438,7 @@
                   </v-col>
                   <v-col cols="3" :sm="2" :md="2" class="text-right">
                     <v-btn
-                      aria-label="Chat icon representing the virtual assitant"
+                      aria-label="Chat icon representing the virtual assistant"
                       :color="solution.theme[solution.lookAndFeel.response.iconColor]"
                       text
                       tile
@@ -724,7 +724,7 @@
               </v-col>
 
               <v-col :cols="12" class="px-7">
-                <!-- Itterate over all CTX parameters and their values -->
+                <!-- Iterate over all CTX parameters and their values -->
                 <v-row
                   v-for="(contextParam, index) in solution.contextParams"
                   :key="index"
