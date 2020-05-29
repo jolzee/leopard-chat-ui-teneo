@@ -284,9 +284,16 @@ export const isDark = color => {
 };
 
 export const sendMessageToParent = message => {
-  if (window.parent) {
-    window.parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specifiy origin for each post.
+  const trustedDomains = window.leopardConfig.embed.leopardTrustedDomains;
+  if (
+    !window.parent ||
+    (window.parent &&
+      trustedDomains.length > 0 &&
+      !trustedDomains.includes(window.parent.location.origin))
+  ) {
+    return;
   }
+  window.parent.postMessage(message, "*");
 };
 
 export const replaceAll = (targetStr, findStr, replaceStr = "") => {

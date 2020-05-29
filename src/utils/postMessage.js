@@ -1,5 +1,7 @@
 const logger = require("@/utils/logging").getLogger("postMessage.js");
 
+const trustedDomains = window.leopardConfig.embed.leopardTrustedDomains;
+
 export default class PostMessage {
   constructor(store, config) {
     this.store = store;
@@ -18,16 +20,24 @@ export default class PostMessage {
   }
 
   sendMessageToParent(message) {
-    logger.debug(`store: sendMessageToParent: ${message}`);
-    if (parent) {
-      parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specify origin for each post.
-      logger.debug("Message from Leopard >> Embed : " + message);
+    if (
+      !parent ||
+      (parent && trustedDomains.length > 0 && !trustedDomains.includes(parent.location.origin))
+    ) {
+      return;
     }
+    logger.debug(`store: sendMessageToParent: ${message}`);
+    parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specify origin for each post.
+    logger.debug("Message from Leopard >> Embed : " + message);
   }
 
   receiveMessageFromParent(event) {
     try {
-      // if (event.origin !== "http://example.com:8080") return;
+      if (trustedDomains.length > 0 && !trustedDomains.includes(event.origin)) {
+        return;
+      }
+
+      // otherwise Leopard has been build with no official trusted domains = no restriction
 
       if (event.data) {
         let messageObject = JSON.parse(event.data);

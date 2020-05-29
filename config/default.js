@@ -33,7 +33,7 @@ const config = {
        * Uses both https://ipapi.co/ip/ & http://www.geoplugin.net
        * This setting can be costly on first run.
        */
-      sendAtLogin: false, // false = diabled, true = tries to obtain geo before greeting
+      sendAtLogin: false, // false = disabled, true = tries to obtain geo before greeting
       /**
        * Jaguar provides rest endpoint to proxy both the acquisition of the user's
        * IP and their geo location. This speeds up the whole process and deals with
@@ -66,8 +66,8 @@ const config = {
     initialStateOpen: false, // should leopard automatically open on first load
     killSessionWhenClosed: false, // should the conversational session be closed when x is clicked
     showCloseButton: true, // allows you to hide the close button
-    embedSupportedDomains: [],
-    leopardSupportedDomains: []
+    leopardTrustedDomains: [], // empty array = trust all domains // array of trusted domains - eg: ["https://my-domain.com", "https://my-other-domain.com"]
+    enableScriptEval: false // this disabled the sending of JavaScript from Teneo Responses in production
   },
   /**
    * Social Authentication is provided through https://firebase.google.com/

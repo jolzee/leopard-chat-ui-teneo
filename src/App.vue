@@ -511,6 +511,8 @@ import jsonpack from "jsonpack/main";
 // import { createDetailsWidget } from "@livechat/agent-app-sdk";
 // import { createMessageBoxWidget } from "@livechat/agent-app-sdk";
 
+
+
 export default {
   components: {
     OverlayAlert: () => import("@/components/OverlayAlert"),
@@ -993,11 +995,12 @@ export default {
       return result;
     },
     sendMessageToParent(message) {
-      if (parent) {
-        parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specify origin for each post.
-        logger.debug("Message from Leopard >> Embed : " + message);
+      const trustedDomains = window.leopardConfig.embed.leopardTrustedDomains;
+      if (!parent || (parent && trustedDomains.length > 0 && !trustedDomains.includes(parent.location.origin))) {
+        return;
       }
-      return true;
+      parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specify origin for each post.
+      logger.debug("Message from Leopard >> Embed : " + message);
     },
     importNewSolutionFromUrl() {
       this.importDialog = false;

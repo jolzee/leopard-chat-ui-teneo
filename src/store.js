@@ -1993,6 +1993,9 @@ function storeSetup(vuetify) {
   // setup Live Chat
   setupLiveChat();
 
+  // setup Embed Messaging
+  setupEmbedMessaging();
+
   // ok vuetify and store are setup
   return { vuetify, store };
 }
@@ -2012,6 +2015,10 @@ function buildQueryParamsObjectNewTeneoSession(context) {
   return queryObj;
 }
 
+function setupEmbedMessaging() {
+  postMessage = new PostMessage(store, setupConfig);
+}
+
 function setupLiveChat() {
   try {
     if (window.leopardConfig.liveChat.licenseKey) {
@@ -2021,7 +2028,6 @@ function setupLiveChat() {
   } catch (e) {
     logger.info(`Error setting up LiveChat`, e);
   }
-  postMessage = new PostMessage(store, setupConfig);
 }
 
 function setupAsr() {
@@ -2312,13 +2318,10 @@ function handleThemeResponse(tResp, vuetify) {
 }
 
 function handleScriptResponse(tResp, context) {
-  if (tResp.hasParameter("script")) {
+  if (tResp.hasParameter("script") && window.leopardConfig.embed.enableScriptEval) {
     let theScript = decodeURIComponent(tResp.getParameter("script"));
     if (context.getters.embed) {
       postMessage.sendMessageToParent("runLeopardScript|" + theScript);
-    } else {
-      // run locally
-      eval(theScript);
     }
   }
 }

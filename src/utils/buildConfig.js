@@ -11,7 +11,9 @@ let leopardConfig = {
   embed: {
     isInitialStateOpen: config.get("productionEmbed.initialStateOpen", false),
     showCloseButton: config.get("productionEmbed.showCloseButton", true),
-    killSessionOnCloseEmbed: config.get("productionEmbed.killSessionWhenClosed", false)
+    killSessionOnCloseEmbed: config.get("productionEmbed.killSessionWhenClosed", false),
+    leopardTrustedDomains: config.get("productionEmbed.leopardTrustedDomains", []),
+    enableScriptEval: config.get("productionEmbed.enableScriptEval", false)
   },
   solutionConfig: {
     buildConfig: solutionConfig
