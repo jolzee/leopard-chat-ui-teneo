@@ -1,5 +1,4 @@
-
-var leopardChatUi = (function() {
+var leopardChatUi = (function () {
     'use strict';
 
     /* eslint-disable */
@@ -14,8 +13,11 @@ var leopardChatUi = (function() {
         out: "zoomOutDown"
     };
     var shouldShowLeopard = false;
+    var trustedDomain = window.TENEOCTX && window.TENEOCTX.init && window.TENEOCTX.init.trustedDomain ? window.TENEOCTX.init.trustedDomain : "";
+    var allowScripts = window.TENEOCTX && window.TENEOCTX.init && window.TENEOCTX.init.allowScripts ? window.TENEOCTX.init.allowScripts : false;
+    console.log("Trusted Domain:", trustedDomain);
     var isLeopardAnimating = false; // eslint-disable-next-line no-unused-vars
-    var leopardChatTemplate = getLeopardTemplate(function hmltInAFunction() {
+    var leopardChatTemplate = getLeopardTemplate(function htmlInAFunction() {
         /*!
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
         <style>
@@ -235,15 +237,22 @@ var leopardChatUi = (function() {
     }
 
     function postMessageToLeopard(objPayload) {
+
         var teneoFrameWindow = window.frames.teneochatwidget;
 
         if (teneoFrameWindow && objPayload) {
-            teneoFrameWindow.postMessage(JSON.stringify(objPayload), "*");
+            var target = "*"
+            if (trustedDomain) {
+                target = trustedDomain;
+            }
+            teneoFrameWindow.postMessage(JSON.stringify(objPayload), target);
         }
     }
 
     function receiveLeopardMessage(event) {
-        /* if (event.origin !== "http://example.org:8080") return; */
+        if (trustedDomain && (trustedDomain !== event.origin)) {
+            return;
+        }
         try {
             if (event.data === "shiftTabLeopard") {
                 var teneoContainer = document.getElementById("leopardChatWindow");
@@ -322,19 +331,18 @@ var leopardChatUi = (function() {
                     leopardContainer.className = "teneo-chat-button-widget";
                     leopardContainer.style.display = "block";
                 }
-            } else if (event.data.startsWith("runLeopardScript")) {
+            } else if (event.data.startsWith("runLeopardScript") && allowScripts) {
                 var results = event.data.split("|");
                 eval(results[1]);
             }
         } catch (err) {
             console.log(err);
-            /* ignore as it's most likely another message from another source */
         }
     }
 
     function updateLeopardVariables() {
         var leopardVHeight = window.innerHeight;
-        var leoaprdViewWidth = window.innerWidth;
+        var leopardViewWidth = window.innerWidth;
         document.documentElement.style.setProperty(
             "--leopardvh",
             "".concat(leopardVHeight * 0.01, "px")
@@ -342,11 +350,11 @@ var leopardChatUi = (function() {
         var teneoFrameWindow = window.frames.teneochatwidget;
 
         if (teneoFrameWindow) {
-            var leoapardPayload = {
-                width: leoaprdViewWidth,
+            var leopardPayload = {
+                width: leopardViewWidth,
                 height: leopardVHeight
             };
-            teneoFrameWindow.postMessage(JSON.stringify(leoapardPayload), "*");
+            teneoFrameWindow.postMessage(JSON.stringify(leopardPayload), "*");
         }
     }
 
@@ -388,7 +396,7 @@ var leopardChatUi = (function() {
         if (window.TENEOCTX) {
             leopardChatTemplate = leopardChatTemplate.replace(
                 teneoCtxParamsRegex,
-                "&teneoCtx=".concat(encodeURIComponent(JSON.stringify(window.TENEOCTX)))
+                "&teneoCtx=".concat(encodeURIComponent(JSON.stringify(window.TENEOCTX.ctx ? window.TENEOCTX.ctx : window.TENEOCTX)))
             );
         } else {
             leopardChatTemplate = leopardChatTemplate.replace(teneoCtxParamsRegex, "");

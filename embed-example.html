@@ -9,11 +9,17 @@
       // [optional] only include this if you want to send info to Teneo via Leopard
       window.TENEOCTX || (TENEOCTX = {});
       TENEOCTX = {
-        eventSource: "leopard-embed",
-        pageTitle: document.title,
-        pageUrl: window.location.href,
-        pageTopic: "Help",
-        message: "This was sent from the customer's web site"
+        init: {
+          trustedDomain: "", // something like http://localhost:8080 // "" = receive and post messages to all domains
+          allowScripts: true // false = if you want to disable potential eval
+        },
+        ctx: {
+          eventSource: "leopard-embed",
+          pageTitle: document.title,
+          pageUrl: window.location.href,
+          pageTopic: "Help",
+          message: "This was sent from the customer's web site"
+        }
       };
 
       // [optional] If you want to be able to react client side to data send by Teneo via Leopard

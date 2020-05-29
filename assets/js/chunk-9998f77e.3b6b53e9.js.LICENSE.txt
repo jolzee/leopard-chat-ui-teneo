@@ -28,9 +28,3 @@ and limitations under the License.
  * @see https://sdkcarlos.github.io/sites/artyom.html
  * @see http://docs.ourcodeworld.com/projects/artyom-js
  */
-
-/**
- * vue-snotify v3.2.0
- * (c) 2018 artemsky <mr.artemsky@gmail.com>
- * @license MIT
- */
