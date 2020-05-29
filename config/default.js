@@ -65,7 +65,9 @@ const config = {
   productionEmbed: {
     initialStateOpen: false, // should leopard automatically open on first load
     killSessionWhenClosed: false, // should the conversational session be closed when x is clicked
-    showCloseButton: true // allows you to hide the close button
+    showCloseButton: true, // allows you to hide the close button
+    embedSupportedDomains: [],
+    leopardSupportedDomains: []
   },
   /**
    * Social Authentication is provided through https://firebase.google.com/
@@ -78,7 +80,7 @@ const config = {
       databaseUrl: "", // Firebase Realtime Database
       messagingSenderId: "",
       microsoft: {
-        domainHint: "", // mydomain.com
+        domainHint: "", // my-domain.com
         tenant: "" // Azure AD Tenant ID
       },
       projectId: "", // firebase project id
@@ -89,13 +91,13 @@ const config = {
   solution: {
     location: {
       placeInStaticFolder: false, // false = loaded client side via JavaScript ; true = .env.solution.json is placed in /static/config.json
-      sourceFile: ".env.solution.json" // relavtive path to your solution(s) config file - probably don't need to change
+      sourceFile: ".env.solution.json" // relative path to your solution(s) config file - probably don't need to change
     }
   },
   ui: {
     configArea: {
       shareLink: {
-        kuttItApiKey: "" // Optional - URL Shorener https://kutt.it/ can shortner shared links generated in the config area
+        kuttItApiKey: "" // Optional - URL Shortener https://kutt.it/ can shortener shared links generated in the config area
       }
     },
     hideConfigMenu: false, // true = Set in production | false when in demo/development mode
