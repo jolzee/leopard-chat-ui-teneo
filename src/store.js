@@ -1928,20 +1928,28 @@ function storeSetup(vuetify) {
       },
       endTeneoSessionLite(context) {
         context.commit("REMOVE_MODAL_ITEM");
-        TIE.close(context.getters.teneoUrl, context.getters.teneoSessionId).then(() => {
-          context.commit("CLEAR_TENEO_SESSION_ID");
-          logger.debug("Session Ended");
-        });
+        TIE.close(context.getters.teneoUrl, context.getters.teneoSessionId)
+          .then(() => {
+            context.commit("CLEAR_TENEO_SESSION_ID");
+            logger.debug("Session Ended");
+          })
+          .catch(err => {
+            logger.debug("End session lite error:", err);
+          });
       },
       endTeneoSession(context) {
         context.commit("CLEAR_DIALOGS");
         context.commit("REMOVE_MODAL_ITEM");
-        TIE.close(context.getters.teneoUrl, context.getters.teneoSessionId).then(() => {
-          context.commit("CLEAR_TENEO_SESSION_ID");
-          context.commit("HIDE_CHAT_LOADING");
-          context.commit("HIDE_UPLOAD_BUTTON");
-          logger.debug("Session Ended");
-        });
+        TIE.close(context.getters.teneoUrl, context.getters.teneoSessionId)
+          .then(() => {
+            context.commit("CLEAR_TENEO_SESSION_ID");
+            context.commit("HIDE_CHAT_LOADING");
+            context.commit("HIDE_UPLOAD_BUTTON");
+            logger.debug("Session Ended");
+          })
+          .catch(err => {
+            logger.debug("End session error:", err);
+          });
       },
       beginTeneoSession(context) {
         let that = this;
