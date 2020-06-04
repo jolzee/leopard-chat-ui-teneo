@@ -108,10 +108,17 @@ You can inject Leopard Chat UI into a specific element on a page. This might be 
 <script type="text/javascript">
   window.TENEOCTX || (TENEOCTX = {});
   TENEOCTX = {
-    pageTitle: document.title,
-    pageUrl: window.location.href,
-    pageTopic: "Help",
-    message: "This was sent from the customer's web site"
+    init: {
+      trustedDomain: "", // something like http://localhost:8080 // "" = receive and post messages to all domains
+      allowScripts: true // false = if you want to disable potential eval
+    },
+    ctx: {
+      eventSource: "leopard-embed",
+      pageTitle: document.title,
+      pageUrl: window.location.href,
+      pageTopic: "Help",
+      message: "This was sent from the customer's web site"
+    }
   };
 </script>
 
