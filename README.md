@@ -129,46 +129,45 @@ You can inject Leopard Chat UI into a specific element on a page. This might be 
 
 ## Features
 
-|                                                                                                                                                  | Supported |
-| ------------------------------------------------------------------------------------------------------------------------------------------------ | :-------: |
-| [ASR & TTS](https://jolzee.gitbook.io/leopard/configuration/asr-and-tts)                                                                         |    ✔️     |
-| [Alerts](https://jolzee.gitbook.io/leopard/configuration/components/modals/alerts)                                                               |    ✔️     |
-| [All modern browsers & IE 11](https://jolzee.gitbook.io/leopard/#browser-compatibility)                                                          |    ✔️     |
-| [Answer Text Formatting](https://jolzee.gitbook.io/leopard/configuration/response-options/answer-text-formatting) - HTML and Markdown            |    ✔️     |
-| [Audio Player](https://jolzee.gitbook.io/leopard/configuration/components/modals/audio)                                                          |    ✔️     |
-| [Auto Switch Solutions](https://jolzee.gitbook.io/leopard/configuration/language-auto-switch)                                                    |    ✔️     |
-| [Buttons](https://jolzee.gitbook.io/leopard/configuration/response-options/buttons-and-lists)                                                    |    ✔️     |
-| [Cards](https://jolzee.gitbook.io/leopard/configuration/response-options/card)                                                                   |    ✔️     |
-| [Custom Forms](https://jolzee.gitbook.io/leopard/configuration/components/modals/forms)                                                          |    ✔️     |
-| [Custom HTML Modals](https://jolzee.gitbook.io/leopard/configuration/components/modals/custom)                                                   |    ✔️     |
-| [Custom Response Icons](https://jolzee.gitbook.io/leopard/configuration/response-options/custom-response-icons)                                  |    ✔️     |
-| Dark Mode                                                                                                                                        |    ✔️     |
-| [Date and Time Pickers](https://jolzee.gitbook.io/leopard/configuration/components/date-and-time-pickers)                                        |    ✔️     |
-| [Deep Link to Question](https://jolzee.gitbook.io/leopard/configuration/deep-linked-question)                                                    |    ✔️     |
-| [Dynamic Theme Changes](https://jolzee.gitbook.io/leopard/configuration/response-options/dynamic-theme-change)                                   |    ✔️     |
-| [Emergency Button](https://jolzee.gitbook.io/leopard/configuration/response-options/emergency-button)                                            |    ✔️     |
-| [Expensive Operations](https://jolzee.gitbook.io/leopard/configuration/response-options/expensive-operations)                                    |    ✔️     |
-| [Extension Helper (Groovy)](https://jolzee.gitbook.io/leopard/installation#extensionhelper)                                                      |    ✔️     |
-| [Feedback Forms](https://jolzee.gitbook.io/leopard/configuration/response-options/feedback-form)                                                 |    ✔️     |
-| [Field Masks](https://jolzee.gitbook.io/leopard/configuration/response-options/field-masks)                                                      |    ✔️     |
-| [Field Types](https://jolzee.gitbook.io/leopard/configuration/response-options/field-types) - [email / password / location / upload]             |    ✔️     |
-| [Firebase Social Authentication](https://jolzee.gitbook.io/leopard/configuration/integrations/social-authentication#firebase-and-leopard-config) |    ✔️     |
-| [Geo Context Capture](https://jolzee.gitbook.io/leopard/context-parameters)                                                                      |    ✔️     |
-| [Hyperlinks that send input back to Teneo](https://jolzee.gitbook.io/leopard/configuration/response-options/hyperlinks)                          |    ✔️     |
-| [Image Carousels](https://jolzee.gitbook.io/leopard/configuration/components/modals/image-carousel)                                              |    ✔️     |
-| [Images](https://jolzee.gitbook.io/leopard/configuration/components/modals/image)                                                                |    ✔️     |
-| [Input Field Help Text](https://jolzee.gitbook.io/leopard/configuration/response-options/input-field-help-text)                                  |    ✔️     |
-| [LiveChatInc.com](https://jolzee.gitbook.io/leopard/configuration/integrations/live-chat)                                                        |    ✔️     |
-| [Maps](https://jolzee.gitbook.io/leopard/configuration/components/modals/maps)                                                                   |    ✔️     |
-| [Proactive Dialogs](https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling)                                                      |    ✔️     |
-| [Responsive](https://jolzee.gitbook.io/leopard/configuration/views/mobile)                                                                       |    ✔️     |
-| [Sentry and LogRocket](https://jolzee.gitbook.io/leopard/logging-reporting) - Logging and Reporting                                              |    ✔️     |
-| [Split Answers](https://jolzee.gitbook.io/leopard/configuration/response-options/splitting-a-response)                                           |    ✔️     |
-| [Tables](https://jolzee.gitbook.io/leopard/configuration/components/modals/table)                                                                |    ✔️     |
-| Themeable                                                                                                                                        |    ✔️     |
-| [Toasts](https://jolzee.gitbook.io/leopard/configuration/response-options/toasts)                                                                |    ✔️     |
-| [Video Player](https://jolzee.gitbook.io/leopard/configuration/components/modals/video) (YouTube, Vimeo, mp4)                                    |    ✔️     |
-| [i18n](https://jolzee.gitbook.io/leopard/configuration/asr-and-tts#supported-languages)                                                          |    ✔️     |
+|                                                                                                                   | Supported |
+| ----------------------------------------------------------------------------------------------------------------- | :-------: |
+| [ASR & TTS](https://jolzee.gitbook.io/leopard/configuration/asr-and-tts)                                          |    ✔️     |
+| [Alerts](https://jolzee.gitbook.io/leopard/components/alerts)                                                     |    ✔️     |
+| [All modern browsers & IE 11](https://jolzee.gitbook.io/leopard/#browser-compatibility)                           |    ✔️     |
+| [Answer Text Formatting](https://jolzee.gitbook.io/leopard/components/answer-text-formatting) - HTML and Markdown |    ✔️     |
+| [Audio Player](https://jolzee.gitbook.io/leopard/components/audio)                                                |    ✔️     |
+| [Auto Switch Solutions](https://jolzee.gitbook.io/leopard/components/language-auto-switch)                        |    ✔️     |
+| [Buttons](https://jolzee.gitbook.io/leopard/components/buttons-and-lists)                                         |    ✔️     |
+| [Cards](https://jolzee.gitbook.io/leopard/components/card)                                                        |    ✔️     |
+| [Custom Forms](https://jolzee.gitbook.io/leopard/components/forms-1/forms)                                        |    ✔️     |
+| [Custom HTML Modals](https://jolzee.gitbook.io/leopard/components/custom)                                         |    ✔️     |
+| [Custom Response Icons](https://jolzee.gitbook.io/leopard/components/custom-response-icons)                       |    ✔️     |
+| Dark Mode                                                                                                         |    ✔️     |
+| [Date and Time Pickers](https://jolzee.gitbook.io/leopard/components/date-and-time-pickers)                       |    ✔️     |
+| [Deep Link to Question](https://jolzee.gitbook.io/leopard/components/deep-linked-question)                        |    ✔️     |
+| [Dynamic Theme Changes](https://jolzee.gitbook.io/leopard/components/dynamic-theme-change)                        |    ✔️     |
+| [Emergency Button](https://jolzee.gitbook.io/leopard/components/emergency-button)                                 |    ✔️     |
+| [Expensive Operations](https://jolzee.gitbook.io/leopard/components/expensive-operations)                         |    ✔️     |
+| [Extension Helper (Groovy)](https://jolzee.gitbook.io/leopard/installation/extension-helper)                      |    ✔️     |
+| [Feedback Forms](https://jolzee.gitbook.io/leopard/components/forms-1/feedback-form)                              |    ✔️     |
+| [Field Masks](hhttps://jolzee.gitbook.io/leopard/components/field-masks)                                          |    ✔️     |
+| [Field Types](https://jolzee.gitbook.io/leopard/components/field-types) - [email / password / location / upload]  |    ✔️     |
+| [Firebase Social Authentication](https://jolzee.gitbook.io/leopard/integrations/social-authentication)            |    ✔️     |
+| [Geo Context Capture](https://jolzee.gitbook.io/leopard/installation/context-variables/context-parameters)        |    ✔️     |
+| [Hyperlinks that send input back to Teneo](https://jolzee.gitbook.io/leopard/components/hyperlinks)               |    ✔️     |
+| [Image Carousels](https://jolzee.gitbook.io/leopard/components/images/image-carousel)                             |    ✔️     |
+| [Images](https://jolzee.gitbook.io/leopard/components/images/image)                                               |    ✔️     |
+| [Input Field Help Text](https://jolzee.gitbook.io/leopard/components/input-field-help-text)                       |    ✔️     |
+| [LiveChatInc.com](https://jolzee.gitbook.io/leopard/integrations/live-chat)                                       |    ✔️     |
+| [Maps](https://jolzee.gitbook.io/leopard/components/maps)                                                         |    ✔️     |
+| [Proactive Dialogs](https://jolzee.gitbook.io/leopard/components/prompt-trigger-polling)                          |    ✔️     |
+| [Sentry and LogRocket](https://jolzee.gitbook.io/leopard/integrations/logging-reporting) - Logging and Reporting  |    ✔️     |
+| [Split Answers](https://jolzee.gitbook.io/leopard/components/splitting-a-response)                                |    ✔️     |
+| [Tables](https://jolzee.gitbook.io/leopard/components/tables)                                                     |    ✔️     |
+| Themeable                                                                                                         |    ✔️     |
+| [Toasts](https://jolzee.gitbook.io/leopard/components/toasts)                                                     |    ✔️     |
+| [Video Player](https://jolzee.gitbook.io/leopard/components/video) (YouTube, Vimeo, mp4)                          |    ✔️     |
+| [i18n](https://jolzee.gitbook.io/leopard/configuration/asr-and-tts)                                               |    ✔️     |
 
 ## Screenshots
 
