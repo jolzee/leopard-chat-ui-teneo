@@ -1,6 +1,7 @@
 const logger = require("@/utils/logging").getLogger("setup.js");
 import "@mdi/font/css/materialdesignicons.css";
 import { LocalStorage } from "ttl-localstorage";
+var mobile = require("is-mobile");
 
 import {
   doesParameterExist,
@@ -78,6 +79,7 @@ export default class Setup {
     this.IS_AGENT_ASSIST = doesParameterExist("plugin_id");
     this.EMBED = doesParameterExist("embed");
     this.sheetId = getParameterByName("sheetId");
+    this.SHOULD_TTS_ENABLED_AT_STARTUP = false;
     this.ENABLE_LIVE_CHAT = false;
     this.FLOAT = false;
     this.THEME = {
@@ -109,7 +111,7 @@ export default class Setup {
   init() {
     return new Promise((resolve, reject) => {
       this.getSolutionConfig()
-        .then(config => {
+        .then(async config => {
           this.chatConfig = fixSolutions(config);
 
           if (!this.EMBED) {
@@ -136,6 +138,10 @@ export default class Setup {
             this.LOCALE = this.activeSolution.locale;
             this.FLOAT = this.activeSolution.float;
             this.RESPONSE_ICON = this.activeSolution.responseIcon;
+
+
+            await this.determineIfTtsShouldBeEnabledAtStartup();
+
             // this.DIALOG = this.retrievePastDialog();
             this.SEND_CTX_PARAMS = this.activeSolution.sendContextParams
               ? this.activeSolution.sendContextParams
@@ -173,6 +179,34 @@ export default class Setup {
           reject(error);
         });
     });
+  }
+
+  determineIfTtsShouldBeEnabledAtStartup() {
+    return new Promise((resolve) => {
+      let that = this;
+      let enableAsrTtsOnOpen = this.activeSolution.enableAsrTtsOnOpen;
+      if (enableAsrTtsOnOpen && navigator && navigator.mediaDevices && !mobile()) {
+        var isChrome = /Chrome/.test(navigator.userAgent) &&
+          !/ OPR/.test(navigator.userAgent) &&
+          /Google Inc/.test(navigator.vendor);
+        if (isChrome) {
+          navigator.mediaDevices
+            .getUserMedia({ audio: true })
+            .then(function () {
+              that.SHOULD_TTS_ENABLED_AT_STARTUP = true;
+              logger.info("Enabling TTS at startup");
+              resolve();
+            })
+            .catch(function (err) {
+              logger.debug("ASR input is not allowed", err);
+              resolve();
+            });
+        }
+      } else {
+        resolve();
+      }
+    });
+
   }
 
   setupIframeInNonEmbedMode() {

@@ -168,6 +168,9 @@
                       <v-switch v-model="solution.float" color="purple darken-4" label="Float UI"></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch v-model="solution.enableAsrTtsOnOpen" color="purple darken-4" label="Enable ASR & TTS on open"></v-switch>
+                    </v-col>
+                    <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
                         v-model="solution.pulseButton"
                         color="purple darken-4"

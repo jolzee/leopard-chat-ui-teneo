@@ -20,7 +20,8 @@ import {
   isLight,
   queryParamStringAsObject,
   sleep,
-  uuid
+  uuid,
+  addTtsPauses
 } from "@/utils/utils";
 import { accountsSdk } from "@livechat/accounts-sdk";
 import LiveChat from "@livechat/agent-app-widget-sdk";
@@ -168,6 +169,7 @@ function storeSetup(vuetify) {
         showChatLoading: false
       },
       tts: {
+        isAsrTtsOnOpenEnabled: setupConfig.SHOULD_TTS_ENABLED_AT_STARTUP,
         speakBackResponses: false,
         tts: initializeTTS(setupConfig.LOCALE)
       },
@@ -199,6 +201,9 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      isAsrTtsOnOpenEnabled(state) {
+        return state.tts.isAsrTtsOnOpenEnabled;
+      },
       isAuthProviderEnabled: _state => provider => {
         let authProviders = window.leopardConfig.firebase.authProviders;
         if (authProviders) {
@@ -1620,7 +1625,12 @@ function storeSetup(vuetify) {
       },
       openChatWindow(context, mustLogin = true) {
         context.commit("HIDE_CHAT_BUTTON"); // toggle the chat button visibility
-        context.commit("STOP_TTS"); // always reset audio to not speak when chat button is clicked
+
+        if (context.getters.isAsrTtsOnOpenEnabled) {
+          context.commit("START_TTS");
+        } else {
+          context.commit("STOP_TTS");
+        }
         let siteFrame;
         //animate the IFrame
         if (!this.embed && !this.overlayChat) {
@@ -2120,7 +2130,7 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
         teneoResponse: json
       };
       if (response.teneoResponse) {
-        let ttsText = stripHtml(cleanEmptyChunks(response.teneoAnswer));
+        let ttsText = stripHtml(addTtsPauses(cleanEmptyChunks(tResp.getOutputText())));
         if (tResp.hasParameter("tts") && tResp.getParameter("tts").indexOf("<speak>") !== -1) {
           ttsText = tResp.getParameter("tts");
         } else if (tResp.hasParameter("tts")) {
@@ -2133,6 +2143,7 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
           Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
         ) {
           if (context.getters.tts && context.getters.speakBackResponses) {
+            console.log(`About to say: ${ttsText}`);
             context.getters.tts.say(ttsText);
           }
         }
@@ -2549,6 +2560,22 @@ function handleLoginResponse(context, json, vuetify, resolve) {
   }
   context.commit("HIDE_CHAT_LOADING"); // about to show the greeting - hide the chat loading spinner
   logger.debug(`Login Message from Teneo: ${cleanEmptyChunks(tResp.getOutputText())}`);
+
+  let ttsText = stripHtml(addTtsPauses(cleanEmptyChunks(tResp.getOutputText())));
+  if (tResp.hasParameter("tts") && tResp.getParameter("tts").indexOf("<speak>") !== -1) {
+    ttsText = tResp.getParameter("tts");
+  } else if (tResp.hasParameter("tts")) {
+    ttsText = stripHtml(tResp.getParameter("tts"));
+  }
+  // check if this browser supports the Web Speech API
+  if (context.getters.tts && context.getters.speakBackResponses &&
+    Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
+    Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
+  ) {
+      console.log(`About to say: ${ttsText}`);
+      context.getters.tts.say(ttsText);
+  }
+
   let hasExtraData = false;
   if (
     Object.keys(json.output.parameters).some(function (k) {

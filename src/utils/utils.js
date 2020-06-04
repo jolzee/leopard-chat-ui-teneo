@@ -32,6 +32,11 @@ export const fixSolution = solution => {
     // }
     solution.id = id;
   }
+
+  if (!("enableAsrTtsOnOpen" in solution)) {
+    solution.enableAsrTtsOnOpen = false;
+  }
+
   if (!("responseDelay" in solution)) {
     solution.responseDelay = 0;
   }
@@ -393,6 +398,10 @@ export const scrollTo = (to, callback, duration) => {
   animateScroll();
 };
 // end smooth scroll
+
+export const addTtsPauses = answerText => {
+  return replaceAll(answerText, "||", " ");
+}
 
 export const cleanEmptyChunks = answerText => {
   let finalAnswerText = "";

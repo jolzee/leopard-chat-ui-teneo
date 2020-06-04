@@ -24,6 +24,7 @@ okkay | ok
   deepLink: "",
   responseDelay: 0,
   enableLiveChat: false,
+  enableAsrTtsOnOpen: false,
   float: true,
   font: "leopard-font-normal",
   pulseButton: true,
