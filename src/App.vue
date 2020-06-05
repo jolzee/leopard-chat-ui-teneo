@@ -587,30 +587,27 @@ export default {
               let that = this;
               if (conf != null) {
                 setTimeout(function () {
-                  if (conf.title) {
+                  if (conf.title && conf.type) {
                     that.$snotify[conf.type](
                       conf.body,
                       conf.title,
                       conf.config
                     );
-                  } else {
+                  } else if (conf.type) {
                     that.$snotify[conf.type](conf.body, conf.config);
                   }
                 }, i * 2000);
               }
             }
-        } else {
-          if (snotifyConfig.title) {
-            this.$snotify[snotifyConfig.type](
-              snotifyConfig.body,
-              snotifyConfig.title,
-              snotifyConfig.config
-            );
-          } else {
-            this.$snotify[snotifyConfig.type](snotifyConfig.body, snotifyConfig.config);
-          }
+        } else if (snotifyConfig.title && snotifyConfig.type) {
+          this.$snotify[snotifyConfig.type](
+            snotifyConfig.body,
+            snotifyConfig.title,
+            snotifyConfig.config
+          );
+        } else if (snotifyConfig.type) {
+          this.$snotify[snotifyConfig.type](snotifyConfig.body, snotifyConfig.config);
         }
-
       }
     },
     isChatOpen: function(isOpenNew) {
