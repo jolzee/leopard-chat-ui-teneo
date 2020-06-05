@@ -1,6 +1,6 @@
 const isUndefined = e => typeof e === "undefined";
 
-const enableDrag = function() {
+const enableDrag = function () {
   // make vuetify dialogs movable
   const d = {};
   document.addEventListener("mousedown", e => {
@@ -67,7 +67,7 @@ const enableDrag = function() {
     d.el.style.margin = 0;
   });
   document.addEventListener("mouseup", () => {
-    if (isUndefined(d.el)) return;
+    if (isUndefined(d.el) || d.el === null) return;
     d.el.style.transition = d.oldTransition;
     d.el = undefined;
   });
