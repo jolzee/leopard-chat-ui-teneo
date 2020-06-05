@@ -142,7 +142,7 @@ You can inject Leopard Chat UI into a specific element on a page. This might be 
 | [Custom Forms](https://jolzee.gitbook.io/leopard/components/forms-1/forms)                                        |    ✔️     |
 | [Custom HTML Modals](https://jolzee.gitbook.io/leopard/components/custom)                                         |    ✔️     |
 | [Custom Response Icons](https://jolzee.gitbook.io/leopard/components/custom-response-icons)                       |    ✔️     |
-| Dark Mode                                                                                                         |    ✔️     |
+| [Dark Mode](http://lychee.joles.xyz/#15895788995003/15895789274934)                                               |    ✔️     |
 | [Date and Time Pickers](https://jolzee.gitbook.io/leopard/components/date-and-time-pickers)                       |    ✔️     |
 | [Deep Link to Question](https://jolzee.gitbook.io/leopard/components/deep-linked-question)                        |    ✔️     |
 | [Dynamic Theme Changes](https://jolzee.gitbook.io/leopard/components/dynamic-theme-change)                        |    ✔️     |
@@ -150,7 +150,7 @@ You can inject Leopard Chat UI into a specific element on a page. This might be 
 | [Expensive Operations](https://jolzee.gitbook.io/leopard/components/expensive-operations)                         |    ✔️     |
 | [Extension Helper (Groovy)](https://jolzee.gitbook.io/leopard/installation/extension-helper)                      |    ✔️     |
 | [Feedback Forms](https://jolzee.gitbook.io/leopard/components/forms-1/feedback-form)                              |    ✔️     |
-| [Field Masks](hhttps://jolzee.gitbook.io/leopard/components/field-masks)                                          |    ✔️     |
+| [Field Masks](https://jolzee.gitbook.io/leopard/components/field-masks)                                           |    ✔️     |
 | [Field Types](https://jolzee.gitbook.io/leopard/components/field-types) - [email / password / location / upload]  |    ✔️     |
 | [Firebase Social Authentication](https://jolzee.gitbook.io/leopard/integrations/social-authentication)            |    ✔️     |
 | [Geo Context Capture](https://jolzee.gitbook.io/leopard/installation/context-variables/context-parameters)        |    ✔️     |
