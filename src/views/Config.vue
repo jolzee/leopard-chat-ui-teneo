@@ -942,10 +942,10 @@ export default {
       });
     },
     closeConfigArea(skipRefreshDialog) {
-      if (this.selectedSolution === null) {
+      if (!this.selectedSolution) {
         this.selectedSolution = this.$store.getters.activeSolution;
       }
-      if (this.$store.getters.activeSolution) {
+      if (this.$store.getters.activeSolution && this.selectedSolution) {
         const activeSolutionPast = this.$store.getters.activeSolution;
         const activeSolutionCurrent = this.config.solutions.find(
           solution => solution.id === activeSolutionPast.id
