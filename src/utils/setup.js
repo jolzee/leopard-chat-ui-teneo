@@ -139,7 +139,6 @@ export default class Setup {
             this.FLOAT = this.activeSolution.float;
             this.RESPONSE_ICON = this.activeSolution.responseIcon;
 
-
             await this.determineIfTtsShouldBeEnabledAtStartup();
 
             // this.DIALOG = this.retrievePastDialog();
@@ -182,11 +181,12 @@ export default class Setup {
   }
 
   determineIfTtsShouldBeEnabledAtStartup() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       let that = this;
       let enableAsrTtsOnOpen = this.activeSolution.enableAsrTtsOnOpen;
       if (enableAsrTtsOnOpen && navigator && navigator.mediaDevices && !mobile()) {
-        var isChrome = /Chrome/.test(navigator.userAgent) &&
+        var isChrome =
+          /Chrome/.test(navigator.userAgent) &&
           !/ OPR/.test(navigator.userAgent) &&
           /Google Inc/.test(navigator.vendor);
         if (isChrome) {
@@ -206,7 +206,6 @@ export default class Setup {
         resolve();
       }
     });
-
   }
 
   setupIframeInNonEmbedMode() {
@@ -339,7 +338,7 @@ export default class Setup {
         browserIp = res.text;
         let geoUrl = window.leopardConfig.geoUrl
           ? window.leopardConfig.geoUrl
-          : `https://cors-anywhere.herokuapp.com/http://www.geoplugin.net/json.gp?ip=${res.text}`;
+          : `https://cors.joles.xyz/http://www.geoplugin.net/json.gp?ip=${res.text}`;
         logger.debug(`geoUrl`, geoUrl);
         return superagent.get(geoUrl).timeout(3000).accept("application/json");
       })

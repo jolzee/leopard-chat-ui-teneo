@@ -999,7 +999,7 @@ export default {
       const sharableLink = createSharableLink(this.selectedSolution);
       if (window.leopardConfig.kuttItKey) {
         superagent
-          .post("https://cors-anywhere.herokuapp.com/https://kutt.it/api/v2/links")
+          .post("https://cors.joles.xyz/https://kutt.it/api/v2/links")
           .send({
             target: sharableLink,
             reuse: true
