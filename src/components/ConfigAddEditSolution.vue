@@ -1426,7 +1426,7 @@ export default {
     getAsrLangCodes() {
       let languages = [];
       for (let [key, values] of Object.entries(this.webSpeechLanguages)) {
-        console.log(`Language: ${key}`);
+        // console.log(`Language: ${key}`);
         values.forEach(value => {
           languages.push({
             text: `${key} » ${value[0]}`,

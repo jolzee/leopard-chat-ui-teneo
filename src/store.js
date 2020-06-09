@@ -2154,7 +2154,7 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
           Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
         ) {
           if (context.getters.tts && context.getters.speakBackResponses) {
-            console.log(`About to say: ${ttsText}`);
+            // console.log(`About to say: ${ttsText}`);
             context.getters.isPollyEnabled
               ? polly.say(ttsText, context.getters.getPollyVoice)
               : context.getters.tts.say(ttsText);
@@ -2583,7 +2583,7 @@ function handleLoginResponse(context, json, vuetify, resolve) {
     Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
     Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
   ) {
-    console.log(`About to say: ${ttsText}`);
+    // console.log(`About to say: ${ttsText}`);
     context.getters.isPollyEnabled
       ? polly.say(ttsText, context.getters.getPollyVoice)
       : context.getters.tts.say(ttsText);

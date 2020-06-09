@@ -204,8 +204,8 @@ export default {
     };
   },
   watch: {
-    showLiveChatProcessing: function(val) {
-      console.log(`SHOW LIVE CHAT PROCESSING`, val);
+    showLiveChatProcessing: function() {
+      // console.log(`SHOW LIVE CHAT PROCESSING`, val);
       setTimeout(() => {
         this.mustScroll = true;
         this.scrollToBottom();
