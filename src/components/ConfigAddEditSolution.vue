@@ -168,7 +168,11 @@
                       <v-switch v-model="solution.float" color="purple darken-4" label="Float UI"></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
-                      <v-switch v-model="solution.enableAsrTtsOnOpen" color="purple darken-4" label="Enable ASR & TTS on open"></v-switch>
+                      <v-switch
+                        v-model="solution.enableAsrTtsOnOpen"
+                        color="purple darken-4"
+                        label="Enable ASR & TTS on open"
+                      ></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
@@ -264,18 +268,64 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col :cols="12">
+              <v-col :cols="12" class="pb-0">
                 <v-select
-                  v-model="solution.locale"
-                  :items="locales"
+                  v-model="solution.asrLangCode"
+                  :items="getAsrLangCodes"
                   color="teal darken-4"
                   menu-props="auto"
                   filled
-                  label="Specify Chat Locale"
+                  background-color="teal lighten-4"
+                  label="ASR - Speech Recognition Language"
                   append-icon="mdi-translate"
                 ></v-select>
               </v-col>
             </v-row>
+            <v-row v-if="isPollyConfigured">
+              <v-col :cols="12" class="py-0">
+                <v-select
+                  v-model="solution.ttsEngine"
+                  :items="ttsEngines"
+                  color="teal darken-4"
+                  background-color="light-blue lighten-4"
+                  menu-props="auto"
+                  filled
+                  label="TTS Engine"
+                  append-icon="mdi-account-voice"
+                ></v-select>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="solution.ttsEngine === 'Web Speech API'">
+              <v-col :cols="12" class="py-0">
+                <v-select
+                  v-model="solution.locale"
+                  :items="webSpeechTtsLocales"
+                  color="teal darken-4"
+                  background-color="purple lighten-4"
+                  menu-props="auto"
+                  filled
+                  label="TTS - Web Speech Synthesis Language"
+                  append-icon="mdi-translate"
+                ></v-select>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="solution.ttsEngine === 'AWS Polly'">
+              <v-col :cols="12" class="py-0">
+                <v-select
+                  v-model="solution.pollyVoice"
+                  :items="getPollyLanguages"
+                  color="teal darken-4"
+                  background-color="yellow lighten-4"
+                  menu-props="auto"
+                  filled
+                  label="Polly Voices"
+                  append-icon="mdi-aws"
+                ></v-select>
+              </v-col>
+            </v-row>
+
             <v-row>
               <v-col cols="12" class="my-0">
                 <v-subheader class="pb-10">Delay Teneo Responses in Milliseconds</v-subheader>
@@ -1026,24 +1076,282 @@ export default {
         "custom3"
       ],
       trueFalseOptions: ["true", "false"],
-      locales: [
-        "en-us-male",
-        "en-us-female",
-        "en-uk-male",
-        "en-uk-female",
-        "fr",
-        "es",
-        "nl",
-        "it",
-        "de",
-        "ru",
-        "sv",
-        "no",
-        "da",
-        "jp",
-        "cn",
-        "cn(hk)",
-        "id"
+      ttsEngines: ["Web Speech API", "AWS Polly"],
+      webSpeechLanguages: {
+        Afrikaans: [["South Africa", "af-ZA"]],
+        Arabic: [
+          ["Algeria", "ar-DZ"],
+          ["Bahrain", "ar-BH"],
+          ["Egypt", "ar-EG"],
+          ["Israel", "ar-IL"],
+          ["Iraq", "ar-IQ"],
+          ["Jordan", "ar-JO"],
+          ["Kuwait", "ar-KW"],
+          ["Lebanon", "ar-LB"],
+          ["Morocco", "ar-MA"],
+          ["Oman", "ar-OM"],
+          ["Palestinian Territory", "ar-PS"],
+          ["Qatar", "ar-QA"],
+          ["Saudi Arabia", "ar-SA"],
+          ["Tunisia", "ar-TN"],
+          ["UAE", "ar-AE"]
+        ],
+        Basque: [["Spain", "eu-ES"]],
+        Bulgarian: [["Bulgaria", "bg-BG"]],
+        Catalan: [["Spain", "ca-ES"]],
+        "Chinese Mandarin": [
+          ["China (Simp.)", "cmn-Hans-CN"],
+          ["Hong Kong SAR (Trad.)", "cmn-Hans-HK"],
+          ["Taiwan (Trad.)", "cmn-Hant-TW"]
+        ],
+        "Chinese Cantonese": [["Hong Kong", "yue-Hant-HK"]],
+        Croatian: [["Croatia", "hr_HR"]],
+        Czech: [["Czech Republic", "cs-CZ"]],
+        Danish: [["Denmark", "da-DK"]],
+        English: [
+          ["Australia", "en-AU"],
+          ["Canada", "en-CA"],
+          ["India", "en-IN"],
+          ["Ireland", "en-IE"],
+          ["New Zealand", "en-NZ"],
+          ["Philippines", "en-PH"],
+          ["South Africa", "en-ZA"],
+          ["United Kingdom", "en-GB"],
+          ["United States", "en-US"]
+        ],
+        Farsi: [["Iran", "fa-IR"]],
+        French: [["France", "fr-FR"]],
+        Filipino: [["Philippines", "fil-PH"]],
+        Galician: [["Spain", "gl-ES"]],
+        German: [["Germany", "de-DE"]],
+        Greek: [["Greece", "el-GR"]],
+        Finnish: [["Finland", "fi-FI"]],
+        Hebrew: [["Israel", "he-IL"]],
+        Hindi: [["India", "hi-IN"]],
+        Hungarian: [["Hungary", "hu-HU"]],
+        Indonesian: [["Indonesia", "id-ID"]],
+        Icelandic: [["Iceland", "is-IS"]],
+        Italian: [
+          ["Italy", "it-IT"],
+          ["Switzerland", "it-CH"]
+        ],
+        Japanese: [["Japan", "ja-JP"]],
+        Korean: [["Korea", "ko-KR"]],
+        Lithuanian: [["Lithuania", "lt-LT"]],
+        Malaysian: [["Malaysia", "ms-MY"]],
+        Dutch: [["Netherlands", "nl-NL"]],
+        Norwegian: [["Norway", "nb-NO"]],
+        Polish: [["Poland", "pl-PL"]],
+        Portuguese: [
+          ["Brazil", "pt-BR"],
+          ["Portugal", "pt-PT"]
+        ],
+        Romanian: [["Romania", "ro-RO"]],
+        Russian: [["Russia", "ru-RU"]],
+        Serbian: [["Serbia", "sr-RS"]],
+        Slovak: [["Slovakia", "sk-SK"]],
+        Slovenian: [["Slovenia", "sl-SI"]],
+        Spanish: [
+          ["Argentina", "es-AR"],
+          ["Bolivia", "es-BO"],
+          ["Chile", "es-CL"],
+          ["Colombia", "es-CO"],
+          ["Costa Rica", "es-CR"],
+          ["Dominican Republic", "es-DO"],
+          ["Ecuador", "es-EC"],
+          ["El Salvador", "es-SV"],
+          ["Guatemala", "es-GT"],
+          ["Honduras", "es-HN"],
+          ["México", "es-MX"],
+          ["Nicaragua", "es-NI"],
+          ["Panamá", "es-PA"],
+          ["Paraguay", "es-PY"],
+          ["Perú", "es-PE"],
+          ["Puerto Rico", "es-PR"],
+          ["Spain", "es-ES"],
+          ["Uruguay", "es-UY"],
+          ["United States", "es-US"],
+          ["Venezuela", "es-VE"]
+        ],
+        Swedish: [["Sweden", "sv-SE"]],
+        Thai: [["Thailand", "th-TH"]],
+        Turkish: [["Turkey", "tr-TR"]],
+        Ukrainian: [["Ukraine", "uk-UA"]],
+        Vietnamese: [["Viet Nam", "vi-VN"]],
+        Zulu: [["South Africa", "zu-ZA"]]
+      },
+      pollyLanguages: [
+        {
+          lang : "English",
+          region : "USA",
+          voices : {
+            male: ["Matthew", "Joey"],
+            female: ["Joanna", "Kendra", "Kimberly", "Salli"]
+          }
+        },
+        {
+          lang : "English",
+          region : "United Kingdom",
+          voices : {
+            male: ["Brian"],
+            female: ["Amy", "Emma"]
+          }
+        },
+        {
+          lang : "English",
+          region : "Australia",
+          voices : {
+            male: ["Russell"],
+            female: ["Nicole"]
+          }
+        },
+        {
+          lang : "English",
+          region : "Welsh",
+          voices : {
+            male: ["Geraint"],
+            female: []
+          }
+        },
+        {
+          lang : "English",
+          region : "India",
+          voices : {
+            male: ["Raveena"],
+            female: ["Aditi"]
+          }
+        },
+        {
+          lang : "French",
+          region : "France",
+          voices : {
+            male: ["Mathieu"],
+            female:  ["Celine", "Léa"]
+          }
+        },
+        {
+          lang : "French",
+          region : "Canada",
+          voices : {
+            male: [],
+            female:  ["Chantal"]
+          }
+        },
+        {
+          lang : "Russian",
+          region : "Russia",
+          voices : {
+            male: ["Maxim"],
+            female:  ["Tatyana"]
+          }
+        },
+        {
+          lang : "Danish",
+          region : "Denmark",
+          voices : {
+            male: ["Mads"],
+            female:  ["Naja"]
+          }
+        },
+        {
+          lang : "Swedish",
+          region : "Sweden",
+          voices : {
+            male: [],
+            female:  ["Astrid"]
+          }
+        },
+        {
+          lang : "Norwegian",
+          region : "Norway",
+          voices : {
+            male: [],
+            female:  ["Liv"]
+          }
+        },
+        {
+          lang : "Norwegian",
+          region : "Norway",
+          voices : {
+            male: [],
+            female:  ["Liv"]
+          }
+        },
+        {
+          lang : "German",
+          region : "Germany",
+          voices : {
+            male: ["Hans"],
+            female:  ["Marlene", "Vicki"]
+          }
+        },
+        {
+          lang : "Italian",
+          region : "Italy",
+          voices : {
+            male: ["Giorgio"],
+            female:  ["Carla", "Bianca"]
+          }
+        },
+        {
+          lang : "Dutch",
+          region : "Netherlands",
+          voices : {
+            male: ["Ruben"],
+            female:  ["Lotte"]
+          }
+        },
+        {
+          lang : "Spanish",
+          region : "Spain",
+          voices : {
+            male: ["Miguel"],
+            female:  ["Lupe", "Penelope"]
+          }
+        },
+        {
+          lang : "Spanish",
+          region : "Mexico",
+          voices : {
+            male: [],
+            female:  ["Mia"]
+          }
+        },
+        {
+          lang : "Japanese",
+          region : "Japan",
+          voices : {
+            male: ["Takumi"],
+            female:  ["Mizuki"]
+          }
+        },
+        {
+          lang : "Chinese",
+          region : "China",
+          voices : {
+            male: [],
+            female:  ["Zhiyu"]
+          }
+        }
+      ],
+      webSpeechTtsLocales: [
+        {text: "English » USA » Male", value: "en-us-male"},
+        {text: "English » USA » Female", value: "en-us-female"},
+        {text: "English » UK » Male", value: "en-uk-male"},
+        {text: "English » UK » Female", value: "en-uk-female"},
+        {text: "French", value: "fr"},
+        {text: "Spanish » Female", value: "es"},
+        {text: "Dutch", value: "nl"},
+        {text: "Italian", value: "it"},
+        {text: "German", value: "de"},
+        {text: "Russian", value: "ru"},
+        {text: "Swedish", value: "sv"},
+        {text: "Norwegian", value: "no"},
+        {text: "Danish", value: "da"},
+        {text: "Japanese", value: "jp"},
+        {text: "Chinese", value: "cn"},
+        {text: "Chinese (Hong Kong)", value: "cn(hk)"},
+        {text: "Indonesian", value: "id"}
       ],
       chatIcons: [
         "mdi-message-bulleted",
@@ -1096,6 +1404,38 @@ export default {
   },
   computed: {
     ...mapGetters(["embed", "textColor"]),
+    getPollyLanguages() {
+      let languages = [];
+      this.pollyLanguages.forEach(language => {
+        language.voices.male.forEach(voice => {
+            languages.push({
+            text: `${language.lang} » ${language.region} » [male] » ${voice}`,
+            value: `${voice}`
+          });
+        });
+        language.voices.female.forEach(voice => {
+            languages.push({
+            text: `${language.lang} » ${language.region} » [female] » ${voice}`,
+            value: `${voice}`
+          });
+        });
+      });
+
+      return languages;
+    },
+    getAsrLangCodes() {
+      let languages = [];
+      for (let [key, values] of Object.entries(this.webSpeechLanguages)) {
+        console.log(`Language: ${key}`);
+        values.forEach(value => {
+          languages.push({
+            text: `${key} » ${value[0]}`,
+            value: `${value[1]}`
+          });
+        });
+      }
+      return languages;
+    },
     themeColorsFiltered() {
       return this.themeColors.filter(color => {
         return color !== "white";
@@ -1132,6 +1472,9 @@ export default {
 
   updated() {},
   methods: {
+    isPollyConfigured() {
+      return window.leopardConfig.tts.url ? true : false;
+    },
     isLight(color) {
       return isLight(color);
     },

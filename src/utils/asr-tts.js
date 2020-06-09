@@ -3,37 +3,38 @@ import replaceString from "replace-string";
 const logger = require("@/utils/logging").getLogger("asr-tts.js");
 
 export function initializeTTS(locale) {
-  let tts = null;
+  let artyom = null;
   // Artyom Speech Recognition and TTS
   if (
     Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
     Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
   ) {
-    tts = new Artyom();
+    artyom = new Artyom();
 
+    // control the voices used by Web Speech API
     if (locale === "en-us-male") {
-      tts.ArtyomVoicesIdentifiers["en-US"] = [
+      artyom.ArtyomVoicesIdentifiers["en-US"] = [
         "Microsoft David Desktop - English (United States)",
         "Google US English",
         "en-US",
         "en_US"
       ];
     } else if (locale === "en-us-female") {
-      tts.ArtyomVoicesIdentifiers["en-US"] = [
+      artyom.ArtyomVoicesIdentifiers["en-US"] = [
         "Microsoft Zira Desktop - English (United States)",
         "Google US English",
         "en-US",
         "en_US"
       ];
     } else if (locale === "en-uk-male") {
-      tts.ArtyomVoicesIdentifiers["en-GB"] = [
+      artyom.ArtyomVoicesIdentifiers["en-GB"] = [
         "Google UK English Male",
         "Google UK English Female",
         "en-GB",
         "en_GB"
       ];
     } else {
-      tts.ArtyomVoicesIdentifiers["en-GB"] = [
+      artyom.ArtyomVoicesIdentifiers["en-GB"] = [
         "Google UK English Female",
         "Google UK English Male",
         "en-GB",
@@ -41,8 +42,36 @@ export function initializeTTS(locale) {
       ];
     }
 
-    // artyom.ArtyomVoicesIdentifiers["en-ZA"] = ["Google US English", "en-US", "en_US"];
-    tts.initialize({
+    // Control the Speech Recognition for Web Speech API
+    // artyom.ArtyomProperties = {
+    //   asrLang: "en-GB",
+    //   lang: "en-GB",
+    //   recognizing: false,
+    //   continuous: false,
+    //   speed: 1,
+    //   volume: 1,
+    //   listen: false,
+    //   mode: "normal",
+    //   debug: false,
+    //   helpers: {
+    //     redirectRecognizedTextOutput: null,
+    //     remoteProcessorHandler: null,
+    //     lastSay: null,
+    //     fatalityPromiseCallback: null
+    //   },
+    //   executionKeyword: null,
+    //   obeyKeyword: null,
+    //   speaking: false,
+    //   obeying: true,
+    //   soundex: true,
+    //   name: null
+    // };
+
+    if (window.leopardConfig.asrLangCode) {
+      artyom.ArtyomProperties.asrLang = window.leopardConfig.asrLangCode;
+    }
+
+    artyom.initialize({
       soundex: true,
       continuous: false,
       listen: false, // Start recognizing
@@ -75,11 +104,13 @@ export function initializeTTS(locale) {
           ? "id-ID"
           : locale.startsWith("en-us")
           ? "en-US"
-          : "en-GB",
+          : locale.startsWith("en-gb")
+          ? "en-GB"
+          : locale,
       debug: false
     });
   }
-  return tts;
+  return artyom;
 }
 
 export function initializeASR(store, asrCorrections) {

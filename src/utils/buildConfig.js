@@ -44,6 +44,12 @@ let leopardConfig = {
     storageBucket: config.get("socialAuthentication.firebase.storageBucket"),
     messagingSenderId: config.get("socialAuthentication.firebase.messagingSenderId")
   },
+  asr: {
+    langCode: config.get("asrLangCode", "en-GB")
+  },
+  tts: {
+    url: config.get("tts.url")
+  },
   auth: {
     microsoft: {
       tenant: config.get("socialAuthentication.firebase.microsoft.tenant"),

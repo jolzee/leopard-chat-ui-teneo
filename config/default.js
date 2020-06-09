@@ -94,6 +94,9 @@ const config = {
       sourceFile: ".env.solution.json" // relative path to your solution(s) config file - probably don't need to change
     }
   },
+  tts: {
+    url: "" // Jaguar URL if you plan to use AWS Polly instead of default Web Speech APIs TTS
+  },
   ui: {
     configArea: {
       shareLink: {

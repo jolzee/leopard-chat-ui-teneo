@@ -11,6 +11,7 @@ import Firebase from "@/utils/firebase";
 import liveChatConfig from "@/utils/livechat-config";
 import PostMessage from "@/utils/postMessage";
 import Setup from "@/utils/setup";
+import Polly from "@/utils/polly";
 // Controls Data Store and Flow for Components...
 import {
   cleanEmptyChunks,
@@ -38,6 +39,8 @@ import vuexI18n from "vuex-i18n"; // i18n the leopard interface
 const logger = require("@/utils/logging").getLogger("store.js");
 const replaceString = require("replace-string");
 const TIE = require("leopard-tie-client");
+
+const polly = new Polly();
 
 const snotifyOptions = {
   toast: {
@@ -201,6 +204,14 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      getPollyVoice(state) {
+        return state.activeSolution.pollyVoice;
+      },
+      isPollyEnabled(state) {
+        return window.leopardConfig.tts.url && state.activeSolution.ttsEngine === "AWS Polly"
+          ? true
+          : false;
+      },
       isAsrTtsOnOpenEnabled(state) {
         return state.tts.isAsrTtsOnOpenEnabled;
       },
@@ -1927,6 +1938,7 @@ function storeSetup(vuetify) {
         });
       },
       stopAudioCapture(context) {
+        polly.stop();
         if (context.getters.tts && context.getters.tts.isSpeaking()) {
           logger.debug("muted TTS!");
           context.getters.tts.shutUp();
@@ -1985,8 +1997,7 @@ function storeSetup(vuetify) {
         let now = new Date();
         let currentUserInput = "";
         currentUserInput = handlePromptBefore(params, now, currentUserInput, context);
-
-        playAudioConfirmation(currentUserInput);
+        if (currentUserInput) playAudioConfirmation();
 
         if (!context.getters.isLiveChat) {
           // normal user input - discussion with the VA
@@ -2144,7 +2155,9 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
         ) {
           if (context.getters.tts && context.getters.speakBackResponses) {
             console.log(`About to say: ${ttsText}`);
-            context.getters.tts.say(ttsText);
+            context.getters.isPollyEnabled
+              ? polly.say(ttsText, context.getters.getPollyVoice)
+              : context.getters.tts.say(ttsText);
           }
         }
 
@@ -2279,10 +2292,7 @@ function handlePromptPollingResponse(tResp, context, params) {
     params.indexOf("command=prompt") !== -1 &&
     cleanEmptyChunks(tResp.getOutputText()) !== ""
   ) {
-    try {
-      var audio = new Audio(require("@/assets/notification.mp3"));
-      audio.play();
-    } catch {}
+    playAudioConfirmation();
   }
   return mustStop;
 }
@@ -2486,13 +2496,12 @@ function handleLiveChatResponse(currentUserInput, context) {
   context.commit("CLEAR_USER_INPUT");
 }
 
-function playAudioConfirmation(currentUserInput) {
-  if (currentUserInput) {
-    try {
-      var audio = new Audio(require("@/assets/notification.mp3"));
-      audio.play();
-    } catch {}
-  }
+function playAudioConfirmation() {
+  try {
+    var audio = new Audio(require("@/assets/notification.mp3"));
+
+    audio.play();
+  } catch {}
 }
 
 function handlePromptBefore(params, now, currentUserInput, context) {
@@ -2568,12 +2577,16 @@ function handleLoginResponse(context, json, vuetify, resolve) {
     ttsText = stripHtml(tResp.getParameter("tts"));
   }
   // check if this browser supports the Web Speech API
-  if (context.getters.tts && context.getters.speakBackResponses &&
+  if (
+    context.getters.tts &&
+    context.getters.speakBackResponses &&
     Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
     Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
   ) {
-      console.log(`About to say: ${ttsText}`);
-      context.getters.tts.say(ttsText);
+    console.log(`About to say: ${ttsText}`);
+    context.getters.isPollyEnabled
+      ? polly.say(ttsText, context.getters.getPollyVoice)
+      : context.getters.tts.say(ttsText);
   }
 
   let hasExtraData = false;

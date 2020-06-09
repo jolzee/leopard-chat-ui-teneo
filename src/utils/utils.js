@@ -33,6 +33,10 @@ export const fixSolution = solution => {
     solution.id = id;
   }
 
+  if (!("ttsEngine" in solution)) {
+    solution.ttsEngine = "Web Speech API";
+  }
+
   if (!("enableAsrTtsOnOpen" in solution)) {
     solution.enableAsrTtsOnOpen = false;
   }
@@ -401,7 +405,7 @@ export const scrollTo = (to, callback, duration) => {
 
 export const addTtsPauses = answerText => {
   return replaceAll(answerText, "||", " ");
-}
+};
 
 export const cleanEmptyChunks = answerText => {
   let finalAnswerText = "";

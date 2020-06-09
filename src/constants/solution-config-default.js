@@ -40,6 +40,8 @@ okkay | ok
   responseIcon: "mdi-message-reply-text",
   sendContextParams: "login",
   showChatIcons: true,
+  ttsEngine: "Web Speech API",
+  enableAsrTtsOnOpen: false,
   lookAndFeel: {
     response: {
       iconColor: "secondary",
