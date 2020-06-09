@@ -32,7 +32,7 @@ let leopardConfig = {
     licenseKey: config.get("liveChatInc.key"),
     agentAssistServerUrl: config.get("liveChatInc.agentAssist.serverUrl")
   },
-  kuttItKey: config.get("ui.configArea.shareLink.kuttItApiKey"),
+  jaguarLinkShortenerUrl: config.get("ui.configArea.shareLink.jaguarLinkShortenerUrl"),
   pusherKey: "",
   locationIqKey: config.get("location.locationIq.key"),
   firebase: {

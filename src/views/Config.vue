@@ -997,18 +997,12 @@ export default {
     },
     createShareLinkForSolution() {
       const sharableLink = createSharableLink(this.selectedSolution);
-      if (window.leopardConfig.kuttItKey) {
-        superagent
-          .post("https://kutt.it/api/v2/links")
-          .send({
-            target: sharableLink,
-            reuse: true
-          })
-          .set("X-API-KEY", window.leopardConfig.kuttItKey)
-          .set("Accept", "application/json")
+      if (window.leopardConfig.jaguarLinkShortenerUrl) {
+        superagent.get(window.leopardConfig.jaguarLinkShortenerUrl)
+        .query({ url: sharableLink })
           .then(res => {
             copy(
-              `${res.body.link}#${slugify(this.selectedSolution.name)}-${dayjs().format(
+              `${res.body.url}#${slugify(this.selectedSolution.name)}-${dayjs().format(
                 "YYYY-MM-DD"
               )}`
             );

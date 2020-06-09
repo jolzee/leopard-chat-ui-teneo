@@ -100,7 +100,7 @@ const config = {
   ui: {
     configArea: {
       shareLink: {
-        kuttItApiKey: "" // Optional - URL Shortener https://kutt.it/ can shortener shared links generated in the config area
+        jaguarLinkShortenerUrl: "" // Optional - Use Jaguar's URL Shortener for https://tinyurl.com/ It can shortener shared links generated in the config area
       }
     },
     hideConfigMenu: false, // true = Set in production | false when in demo/development mode
