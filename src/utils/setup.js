@@ -329,16 +329,20 @@ export default class Setup {
 
   obtainLocation(resolve, vuetify) {
     let browserIp;
-    let ipUrl = window.leopardConfig.ipUrl ? window.leopardConfig.ipUrl : "https://ipapi.co/ip/";
+    let ipUrl = window.leopardConfig.ipUrl
+      ? window.leopardConfig.ipUrl
+      : "https://cors.joles.xyz/https://ipapi.co/ip/";
     logger.debug(`ipUrl`, ipUrl);
+
     superagent
       .get(ipUrl)
       .timeout(3000)
       .then(res => {
         browserIp = res.text;
+        logger.debug("Client IP Address", browserIp);
         let geoUrl = window.leopardConfig.geoUrl
-          ? window.leopardConfig.geoUrl
-          : `https://cors.joles.xyz/http://www.geoplugin.net/json.gp?ip=${res.text}`;
+          ? `${window.leopardConfig.geoUrl}?ip=${browserIp}`
+          : `https://cors.joles.xyz/http://www.geoplugin.net/json.gp?ip=${browserIp}`;
         logger.debug(`geoUrl`, geoUrl);
         return superagent.get(geoUrl).timeout(3000).accept("application/json");
       })
