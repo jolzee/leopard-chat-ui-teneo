@@ -1152,6 +1152,7 @@ function storeSetup(vuetify) {
         localStorage.setItem("isChatOpen", true);
       },
       TOGGLE_CHAT_WINDOW_DISPLAY(state, _getters) {
+        polly.stop();
         state.ui.showChatWindow = !state.ui.showChatWindow;
         logger.debug(
           `store: TOGGLE_CHAT_WINDOW_DISPLAY:  state.ui.showChatWindow has toggled to: ${state.ui.showChatWindow}`

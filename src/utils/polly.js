@@ -4,7 +4,8 @@ export default class Polly {
   }
 
   say(text, voice) {
-    if (text) {
+    if (text && voice) {
+      this.stop();
       this.audio = new Audio(
         `${window.leopardConfig.tts.url}?text=${encodeURIComponent(text)}&voice=${voice}`
       );
@@ -14,6 +15,7 @@ export default class Polly {
 
   stop() {
     if (this.audio) {
+      // console.log("Pausing Audio!!!");
       this.audio.pause();
       this.audio.src =
         "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAVFYAAFRWAAABAAgAZGF0YQAAAAA=";
