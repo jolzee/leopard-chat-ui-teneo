@@ -81,6 +81,9 @@ let buildConfig = {
       errors: false
     }
   },
+  parallel: process.env.CIRCLE_NODE_TOTAL
+    ? process.env.CIRCLE_NODE_TOTAL
+    : require("os").cpus().length > 1,
   configureWebpack: {
     devtool: isLocalDev ? "eval" : produceSourceMaps ? "source-map" : "",
     plugins: []
