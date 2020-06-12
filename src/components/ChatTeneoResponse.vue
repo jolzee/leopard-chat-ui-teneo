@@ -63,8 +63,14 @@
         <v-card
           :color="$vuetify.theme.dark ? '#333333' : `${responseLookAndFeel.blockBgColor}`"
           class="chat-card chat-card-left text-left"
+          :class="hasBorder(0) ? 'leopard-response-border' : ''"
           :ripple="false"
         >
+          <div
+            v-if="hasBorder(0)"
+            class="leopard-alert-border leopard-alert-border-left"
+            :style="`color: ${getBorderColor()};`"
+          ></div>
           <span
             class="teneo-reply"
             :class="
@@ -107,9 +113,14 @@
           <v-card
             class="chat-card chat-card-left text-left"
             :ripple="false"
-            :class="!showChatIcons || $vuetify.breakpoint.smAndDown ? 'ml-2' : ''"
+            :class="responseChunkStyles(responseChunkIndex + 1)"
             :color="$vuetify.theme.dark ? '#333333' : '#FFFFFF'"
           >
+            <div
+              v-if="hasBorder(responseChunkIndex + 1)"
+              class="leopard-alert-border leopard-alert-border-left"
+              :style="`color: ${getBorderColor(responseChunkIndex + 1)};`"
+            ></div>
             <span
               class="teneo-reply"
               :class="
@@ -801,6 +812,47 @@ export default {
     }
   },
   methods: {
+    responseChunkStyles(index = 0) {
+      let classes = !this.showChatIcons || this.$vuetify.breakpoint.smAndDown ? 'ml-2' : ''
+      classes += this.hasBorder(index) ? ' leopard-response-border' : '';
+      return classes;
+    },
+    hasBorder(index = 0) {
+      let borderExists = false;
+      if ("teneoResponse" in this.item) {
+        const tResp = TIE.wrap(this.item.teneoResponse);
+        if (tResp.hasParameter("border")) {
+          borderExists = true
+        }
+        if (tResp.hasParameter("borders")) {
+          let borders = tResp.getParameter("borders");
+          if (index < borders.length && borders[index]) {
+            borderExists =  true;
+          } else {
+            borderExists =  false;
+          }
+        }
+      }
+      return borderExists;
+    },
+    getBorderColor(index = 0) {
+      let borderColor = "";
+      if (this.hasBorder(index)) {
+        let tResp = TIE.wrap(this.item.teneoResponse);
+        if (tResp.hasParameter("border")) {
+          borderColor = tResp.getParameter("border")
+        }
+        if (tResp.hasParameter("borders")) {
+          let borders = tResp.getParameter("borders");
+          if (index < borders.length && borders[index]) {
+            borderColor = borders[index]
+          } else {
+            borderColor = "";
+          }
+        }
+      }
+      return borderColor;
+    },
     addAccessibilityPrefix(text) {
       const prefix508 = `<span class="sr-only">Chat bot said.</span>`;
       if (!isHtml(text)) {
@@ -975,6 +1027,10 @@ export default {
 </script>
 
 <style scoped>
+.leopard-response-border {
+  padding-left: 20px !important;
+}
+
 .teneo-button-options {
   padding: 0;
 }

@@ -1310,6 +1310,34 @@ export default {
 @import "~vue-snotify/styles/material.css";
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css";
 
+.leopard-alert-border {
+  border-style: solid;
+  border-width: 4px;
+  content: "";
+  position: absolute;
+  opacity: 0.8;
+}
+
+.leopard-alert-border-left,
+.leopard-alert-border-right {
+  bottom: 0;
+  top: 0;
+}
+
+.leopard-alert-border-left {
+  border-top-left-radius: unset !important;
+  border-top-right-radius: unset !important;
+  border-bottom-right-radius: unset !important;
+  border-bottom-left-radius: inherit !important;
+  left: 0;
+}
+
+.leopard-alert-border-right {
+  border-top-left-radius: initial !important;
+  border-top-right-radius: unset !important;
+  right: 0;
+}
+
 .v-application code {
   display: block !important;
   padding: 10px !important;
