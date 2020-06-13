@@ -271,6 +271,7 @@ export default {
       "dialogs",
       "dark",
       "float",
+      "isAsrEnabled",
       { userInput: "storeUserInput" },
       "inputHelpText",
       "isMobileDevice",
@@ -404,6 +405,8 @@ export default {
       }
     },
     swapInputButton() {
+      if (!this.isAsrEnabled) return;
+
       logger.debug(`Toggeling Input Button/Mic`);
       // check if we have access to the mic
       let that = this;

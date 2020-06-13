@@ -176,6 +176,20 @@
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
+                        v-model="solution.enableAsr"
+                        color="purple darken-4"
+                        label="Enable ASR"
+                      ></v-switch>
+                    </v-col>
+                    <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch
+                        v-model="solution.enableTts"
+                        color="purple darken-4"
+                        label="Enable TTS"
+                      ></v-switch>
+                    </v-col>
+                    <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch
                         v-model="solution.pulseButton"
                         color="purple darken-4"
                         label="Pulse Button"

@@ -204,6 +204,12 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      isAsrEnabled(state) {
+        return state.activeSolution.enableAsr;
+      },
+      isTtsEnabled(state) {
+        return state.activeSolution.enableTts;
+      },
       getPollyVoice(state) {
         return state.activeSolution.pollyVoice;
       },
@@ -2009,7 +2015,7 @@ function storeSetup(vuetify) {
         }
       },
       captureAudio(context) {
-        context.commit("START_AUDIO_CAPTURE");
+        if (context.getters.isAsrEnabled) context.commit("START_AUDIO_CAPTURE");
       }
     }
   });
@@ -2154,7 +2160,11 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
           Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
           Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
         ) {
-          if (context.getters.tts && context.getters.speakBackResponses) {
+          if (
+            context.getters.isTtsEnabled &&
+            context.getters.tts &&
+            (!context.getters.isAsrEnabled || context.getters.speakBackResponses)
+          ) {
             // console.log(`About to say: ${ttsText}`);
             context.getters.isPollyEnabled
               ? polly.say(ttsText, context.getters.getPollyVoice)
@@ -2579,8 +2589,10 @@ function handleLoginResponse(context, json, vuetify, resolve) {
   }
   // check if this browser supports the Web Speech API
   if (
+    context.getters.isTtsEnabled &&
     context.getters.tts &&
-    context.getters.speakBackResponses &&
+    (!context.getters.isAsrEnabled ||
+      (context.getters.isAsrEnabled && context.getters.speakBackResponses)) &&
     Object.prototype.hasOwnProperty.call(window, "webkitSpeechRecognition") &&
     Object.prototype.hasOwnProperty.call(window, "speechSynthesis")
   ) {

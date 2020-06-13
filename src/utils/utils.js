@@ -33,12 +33,20 @@ export const fixSolution = solution => {
     solution.id = id;
   }
 
+  if (!("enableTts" in solution)) {
+    solution.enableTts = solutionDefault.enableTts;
+  }
+
+  if (!("enableAsr" in solution)) {
+    solution.enableAsr = solutionDefault.enableAsr;
+  }
+
   if (!("ttsEngine" in solution)) {
-    solution.ttsEngine = "Web Speech API";
+    solution.ttsEngine = solutionDefault.ttsEngine;
   }
 
   if (!("enableAsrTtsOnOpen" in solution)) {
-    solution.enableAsrTtsOnOpen = false;
+    solution.enableAsrTtsOnOpen = solutionDefault.enableAsrTtsOnOpen;
   }
 
   if (!("responseDelay" in solution)) {
