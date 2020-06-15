@@ -1456,6 +1456,7 @@ function storeSetup(vuetify) {
         state.asr.stopAudioCapture = true;
       },
       START_AUDIO_CAPTURE(state) {
+        polly.stop();
         if (state.asr.asr !== null) {
           if (state.tts.tts.isSpeaking()) {
             logger.debug(`TTS was speaking. Stopping the existing chatter.`);
