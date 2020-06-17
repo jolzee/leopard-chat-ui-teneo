@@ -310,7 +310,7 @@ var leopardChatUi = (function () {
                             var leopardFrame;
                             do {
                                 leopardFrame = document.getElementById('teneo-chat-widget');
-                                if (leopardFrame) {
+                                if (leopardFrame && leopardFrame.contentDocument) {
                                     var leopardFrameInnerButton = leopardFrame.contentDocument.getElementById('leopard-embed-open-close-button');
                                     if (leopardFrameInnerButton) {
                                         leopardFocusIframe(leopardFrame);
