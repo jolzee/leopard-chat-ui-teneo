@@ -3,9 +3,9 @@ export default class Polly {
     this.audio = null;
   }
 
-  async say(text, voice) {
+  say(text, voice) {
     if (text && voice) {
-      await waitForPollyToFinish();
+      waitForPollyToFinish();
       this.stop();
       this.audio = new Audio(
         `${window.leopardConfig.tts.url}?text=${encodeURIComponent(text)}&voice=${voice}`
