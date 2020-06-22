@@ -5,7 +5,7 @@ export default class Polly {
 
   say(text, voice) {
     if (text && voice) {
-      waitForPollyToFinish();
+      this.waitForPollyToFinish();
       this.stop();
       this.audio = new Audio(
         `${window.leopardConfig.tts.url}?text=${encodeURIComponent(text)}&voice=${voice}`
@@ -16,11 +16,15 @@ export default class Polly {
 
   async waitForPollyToFinish() {
     while (true) {
-      if (!isPlaying()) {
+      if (this.isPaused()) {
         return;
       }
       await null; // prevents app from hanging
     }
+  }
+
+  isPaused() {
+    return this.audio.paused;
   }
 
   isPlaying() {
