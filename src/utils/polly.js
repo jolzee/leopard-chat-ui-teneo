@@ -24,11 +24,11 @@ export default class Polly {
   }
 
   isPaused() {
-    return this.audio.paused;
+    return this.audio ? this.audio.paused : true;
   }
 
   isPlaying() {
-    return !this.audio.paused;
+    return !this.isPaused();
   }
 
   stop() {
