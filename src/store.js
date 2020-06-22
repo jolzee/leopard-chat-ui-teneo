@@ -1532,6 +1532,10 @@ function storeSetup(vuetify) {
         state.tts.tts = initializeTTS(lang);
         initializeASR(store, setupConfig.ASR_CORRECTIONS_MERGED);
       },
+      CHANGE_POLLY_VOICE(state, voice) {
+        state.activeSolution.pollyVoice = voice;
+        state.activeSolution.ttsEngine = "AWS Polly";
+      },
       CLEAR_USER_INFO(state) {
         state.auth.userInfo.user = null;
       }
@@ -2239,6 +2243,10 @@ function handleTieUrlSwitchResponse(tResp, context) {
       context.commit("UPDATE_UI_LOCALE", tResp.getParameter("lang"));
       context.commit("CHANGE_ASR_TTS", tResp.getParameter("lang"));
     }
+    if (tResp.hasParameter("voice")) {
+      context.commit("CHANGE_POLLY_VOICE", tResp.getParameter("voice"));
+    }
+
     if (tResp.hasParameter("langurl")) {
       context.commit("UPDATE_FRAME_URL", tResp.getParameter("langurl"));
     }
