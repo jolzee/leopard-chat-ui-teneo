@@ -4,14 +4,20 @@ export default class Polly {
   }
 
   say(text, voice) {
-    if (text && voice) {
+    if (text && voice && this.audio) {
       this.waitForPollyToFinish();
-      this.stop();
-      this.audio = new Audio(
-        `${window.leopardConfig.tts.url}?text=${encodeURIComponent(text)}&voice=${voice}`
-      );
-      this.audio.play();
+      this.playAudio(text, voice);
+    } else if (text && voice) {
+      this.playAudio(text, voice);
     }
+  }
+
+  playAudio(text, voice) {
+    this.stop();
+    this.audio = new Audio(
+      `${window.leopardConfig.tts.url}?text=${encodeURIComponent(text)}&voice=${voice}`
+    );
+    this.audio.play();
   }
 
   async waitForPollyToFinish() {
