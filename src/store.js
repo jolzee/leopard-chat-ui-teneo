@@ -1148,6 +1148,8 @@ function storeSetup(vuetify) {
         state.ui.showChatWindow = false;
       },
       HIDE_CHAT_WINDOW(state) {
+        polly.stop();
+        polly.destroy();
         logger.debug(`store: HIDE_CHAT_WINDOW`);
         state.ui.showChatWindow = false;
       },
@@ -1159,6 +1161,7 @@ function storeSetup(vuetify) {
       },
       TOGGLE_CHAT_WINDOW_DISPLAY(state, _getters) {
         polly.stop();
+        polly.destroy();
         state.ui.showChatWindow = !state.ui.showChatWindow;
         logger.debug(
           `store: TOGGLE_CHAT_WINDOW_DISPLAY:  state.ui.showChatWindow has toggled to: ${state.ui.showChatWindow}`

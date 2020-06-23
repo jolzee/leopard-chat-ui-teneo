@@ -1,3 +1,4 @@
+const logger = require("@/utils/logging").getLogger("polly.js");
 export default class Polly {
   constructor() {
     this.audio = null;
@@ -5,11 +6,17 @@ export default class Polly {
 
   async say(text, voice) {
     if (text && voice && this.audio) {
+      logger.debug("Audio is not null - wait for polly to finish");
       await this.waitForPollyToFinish();
       this.playAudio(text, voice);
     } else if (text && voice) {
+      logger.debug("Audio is null - play audio");
       this.playAudio(text, voice);
     }
+  }
+
+  destroy() {
+    this.audio = null;
   }
 
   playAudio(text, voice) {
@@ -26,8 +33,9 @@ export default class Polly {
         resolve();
       }
       let that = this;
-      setInterval(() => {
+      let interval = setInterval(() => {
         if (that.isPaused()) {
+          clearInterval(interval);
           resolve();
         }
       }, 300);
@@ -43,7 +51,7 @@ export default class Polly {
   }
 
   stop() {
-    if (this.audio) {
+    if (this.isPlaying()) {
       // console.log("Pausing Audio!!!");
       this.audio.pause();
       this.audio.src =
