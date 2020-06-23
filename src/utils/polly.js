@@ -4,10 +4,10 @@ export default class Polly {
     this.audio = null;
   }
 
-  async say(text, voice) {
-    if (text && voice && this.audio) {
+  async say(text, voice, waitToFinish = false) {
+    if (text && voice && this.audio !== null) {
       logger.debug("Audio is not null - wait for polly to finish");
-      await this.waitForPollyToFinish();
+      if (waitToFinish) await this.waitForPollyToFinish();
       this.playAudio(text, voice);
     } else if (text && voice) {
       logger.debug("Audio is null - play audio");
@@ -20,10 +20,17 @@ export default class Polly {
   }
 
   playAudio(text, voice) {
+    logger.debug(`About to have Polly(${voice}) say: ${text}`);
     this.stop();
-    this.audio = new Audio(
-      `${window.leopardConfig.tts.url}?text=${encodeURIComponent(text)}&voice=${voice}`
-    );
+    const audioUrl = `${window.leopardConfig.tts.url}?text=${encodeURIComponent(
+      text
+    )}&voice=${voice}`;
+    if (this.audio) {
+      this.audio.src = audioUrl;
+    } else {
+      this.audio = new Audio(audioUrl);
+    }
+
     this.audio.play();
   }
 
@@ -31,12 +38,14 @@ export default class Polly {
     return new Promise(resolve => {
       if (this.isPaused()) {
         resolve();
+        return;
       }
       let that = this;
       let interval = setInterval(() => {
         if (that.isPaused()) {
           clearInterval(interval);
           resolve();
+          return;
         }
       }, 300);
     });
@@ -51,11 +60,16 @@ export default class Polly {
   }
 
   stop() {
+    logger.debug(`Asking Polly to stop.`);
     if (this.isPlaying()) {
       // console.log("Pausing Audio!!!");
       this.audio.pause();
+      this.audio.currentTime = 0;
       this.audio.src =
         "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAVFYAAFRWAAABAAgAZGF0YQAAAAA=";
+      logger.debug("Polly audio stopped because it was playing.");
+      return;
     }
+    logger.debug("Didn't need to stop Polly audio as it wasn't playing.");
   }
 }

@@ -1160,9 +1160,11 @@ function storeSetup(vuetify) {
         localStorage.setItem("isChatOpen", true);
       },
       TOGGLE_CHAT_WINDOW_DISPLAY(state, _getters) {
-        polly.stop();
-        polly.destroy();
         state.ui.showChatWindow = !state.ui.showChatWindow;
+        if (!state.ui.showChatWindow) {
+          polly.stop();
+          polly.destroy();
+        }
         logger.debug(
           `store: TOGGLE_CHAT_WINDOW_DISPLAY:  state.ui.showChatWindow has toggled to: ${state.ui.showChatWindow}`
         );
@@ -1456,6 +1458,7 @@ function storeSetup(vuetify) {
         state.modals.showModal = true;
       },
       STOP_AUDIO_CAPTURE(state) {
+        polly.stop(); // leave
         state.asr.stopAudioCapture = true;
       },
       START_AUDIO_CAPTURE(state) {
@@ -1953,7 +1956,6 @@ function storeSetup(vuetify) {
         });
       },
       stopAudioCapture(context) {
-        polly.stop();
         if (context.getters.tts && context.getters.tts.isSpeaking()) {
           logger.debug("muted TTS!");
           context.getters.tts.shutUp();
@@ -2175,7 +2177,11 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
           ) {
             // console.log(`About to say: ${ttsText}`);
             context.getters.isPollyEnabled
-              ? polly.say(ttsText, context.getters.getPollyVoice)
+              ? polly.say(
+                  ttsText,
+                  context.getters.getPollyVoice,
+                  params.indexOf("langSwitch") === -1 ? false : true
+                )
               : context.getters.tts.say(ttsText);
           }
         }
@@ -2610,7 +2616,7 @@ function handleLoginResponse(context, json, vuetify, resolve) {
   ) {
     // console.log(`About to say: ${ttsText}`);
     context.getters.isPollyEnabled
-      ? polly.say(ttsText, context.getters.getPollyVoice)
+      ? polly.say(ttsText, context.getters.getPollyVoice, false)
       : context.getters.tts.say(ttsText);
   }
 
