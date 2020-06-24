@@ -69,8 +69,8 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small color="error" text @click="hideFeedback">Close</v-btn>
-          <v-btn small color="success" @click="sendFeedback">Send</v-btn>
+          <v-btn small color="error" text @click="hideFeedback">{{ $t('forms.close') }}</v-btn>
+          <v-btn small color="success" @click="sendFeedback">{{ $t('forms.send') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

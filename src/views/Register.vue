@@ -6,7 +6,7 @@
     class="px-3 mx-0 fill-height leopard-alternative-views"
   >
     <v-col cols="12" class="mt-2">
-      <p class="subheading font-weight-medium">Choose one of the following sign up methods.</p>
+      <p class="subheading font-weight-medium">{{ $t("social.register.title") }}</p>
     </v-col>
     <v-col cols="12" class="d-flex justify-center flex-wrap mb-6">
       <v-btn

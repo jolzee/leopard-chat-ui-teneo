@@ -284,7 +284,7 @@
             <v-row>
               <v-col :cols="12" class="pb-0">
                 <v-select
-                  v-model="solution.asrLangCode"
+                  v-model="asrLangCode"
                   :items="getAsrLangCodes"
                   color="teal darken-4"
                   menu-props="auto"
@@ -903,7 +903,7 @@
           small
           light
           @click="closeAddNewSolutionDialog"
-        >Close</v-btn>
+        >{{ $t('forms.close') }}</v-btn>
         <v-btn
           class="mr-2"
           :color="`teal darken-3 white--text`"
@@ -1418,6 +1418,34 @@ export default {
   },
   computed: {
     ...mapGetters(["embed", "textColor"]),
+    asrLangCode: {
+        get () {
+            return this.solution.asrLangCode;
+        },
+        set (val) {
+            if (val) {
+              console.log(`Setting new asr lang code ${val}`);
+              this.solution.asrLangCode = val;
+              switch (val) {
+                case "cmn-Hans-CN":
+                  this.solution.locale = "cn";
+                  break;
+                case "cmn-Hans-HK":
+                  this.solution.locale = "cn(hk)";
+                  break;
+                case "cmn-Hant-TW":
+                  this.solution.locale = "cn(tw)";
+                  break;
+                case "yue-Hant-HK":
+                  this.solution.locale = "cn-cantonese(hk)";
+                  break;
+                default:
+                  this.solution.locale = val.split("-")[0];
+                  break;
+              }
+            }
+        }
+    },
     getPollyLanguages() {
       let languages = [];
       this.pollyLanguages.forEach(language => {

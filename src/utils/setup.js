@@ -136,6 +136,12 @@ export default class Setup {
             this.IFRAME_URL = this.activeSolution.iframeUrl;
             this.KNOWLEDGE_DATA = this.activeSolution.knowledgeData;
             this.LOCALE = this.activeSolution.locale;
+            // if (
+            //   this.activeSolution.asrLangCode &&
+            //   this.activeSolution.ttsEngine !== "Web Speech API"
+            // ) {
+            //   this.LOCALE = this.activeSolution.asrLangCode.split("-")[0];
+            // }
             this.FLOAT = this.activeSolution.float;
             this.RESPONSE_ICON = this.activeSolution.responseIcon;
 

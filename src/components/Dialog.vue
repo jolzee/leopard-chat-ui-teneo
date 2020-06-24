@@ -74,7 +74,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <slot name="buttons">
-            <v-btn small color="secondary white--text" @click="close">Close</v-btn>
+            <v-btn small color="secondary white--text" @click="close">{{ $t('forms.close') }}</v-btn>
           </slot>
         </v-card-actions>
       </v-card>

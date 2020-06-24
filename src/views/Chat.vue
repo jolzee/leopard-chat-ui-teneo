@@ -4,7 +4,7 @@
       <!-- <ChatNoHistory v-if="noHistory && isHistoryPage"></ChatNoHistory> -->
 
       <!-- show the listening modal when recognizing audio input -->
-      <teneo-listening v-bind:value="listening" :message="$t('listening')"></teneo-listening>
+      <teneo-listening v-bind:value="listening" :message="$t('asr.listening')"></teneo-listening>
 
       <v-col
         cols="12"
@@ -112,8 +112,8 @@
       <v-dialog ref="dialogDate" v-model="showDate" :return-value.sync="date" width="290px">
         <v-date-picker header-color="primary" color="secondary" v-model="date" scrollable>
           <v-spacer></v-spacer>
-          <v-btn small color="secondary" @click="showDate = false">Cancel</v-btn>
-          <v-btn small color="success" @click="triggerSend">OK</v-btn>
+          <v-btn small color="secondary" @click="showDate = false">{{ $t('pickers.cancel') }}</v-btn>
+          <v-btn small color="success" @click="triggerSend">{{ $t('pickers.ok') }}</v-btn>
         </v-date-picker>
       </v-dialog>
     </v-col>
@@ -130,8 +130,8 @@
           ></v-time-picker>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn small color="secondary" @click="showTime = false">Cancel</v-btn>
-            <v-btn small color="success" @click="triggerSend">OK</v-btn>
+            <v-btn small color="secondary" @click="showTime = false">{{ $t('pickers.cancel') }}</v-btn>
+            <v-btn small color="success" @click="triggerSend">{{ $t('pickers.ok') }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

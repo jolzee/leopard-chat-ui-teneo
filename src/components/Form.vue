@@ -21,9 +21,9 @@
                 @click="overlay = false"
               >
                 {{
-                  formConfig.validationFailedMessage
-                    ? formConfig.validationFailedMessage
-                    : "Please complete all required fields"
+                formConfig.validationFailedMessage
+                ? formConfig.validationFailedMessage
+                : "Please complete all required fields"
                 }}
               </v-alert>
             </v-overlay>
@@ -45,12 +45,9 @@
               tag="button"
               :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
               @click="fullscreen = !fullscreen"
-              >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon
-            >
+            >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon>
 
-            <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close"
-              >mdi-close</v-icon
-            >
+            <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close">mdi-close</v-icon>
           </v-system-bar>
 
           <v-app-bar :color="`primary ${textColor('primary')}`" dense>
@@ -91,11 +88,7 @@
                       >
                         <template v-slot:placeholder>
                           <v-row class="fill-height ma-0" align="center" justify="center">
-                            <v-progress-circular
-                              :size="50"
-                              indeterminate
-                              color="primary"
-                            ></v-progress-circular>
+                            <v-progress-circular :size="50" indeterminate color="primary"></v-progress-circular>
                           </v-row>
                         </template>
                       </v-img>
@@ -128,8 +121,7 @@
                         :tile="field.alert.tile ? field.alert.tile : false"
                         :outlined="field.alert.outlined ? field.alert.outlined : false"
                         class="mb-0"
-                        >{{ field.alert.text }}</v-alert
-                      >
+                      >{{ field.alert.text }}</v-alert>
 
                       <ValidationProvider
                         v-if="field.textInput"
@@ -571,16 +563,16 @@
           <v-card-actions>
             <v-btn @click="close">
               {{
-                formConfig.button && formConfig.button.closeButtonText
-                  ? formConfig.button.closeButtonText
-                  : "Close"
+              formConfig.button && formConfig.button.closeButtonText
+              ? formConfig.button.closeButtonText
+              : $t('forms.close')
               }}
             </v-btn>
             <v-btn @click="clear">
               {{
-                formConfig.button && formConfig.button.clearButtonText
-                  ? formConfig.button.clearButtonText
-                  : "Clear"
+              formConfig.button && formConfig.button.clearButtonText
+              ? formConfig.button.clearButtonText
+              : $t('forms.clear')
               }}
             </v-btn>
             <v-spacer></v-spacer>
@@ -591,13 +583,13 @@
               @click="submit"
             >
               {{ formConfig.button.text ? formConfig.button.text : "Submit" }}
-              <v-icon v-if="formConfig.button.icon" right dark>{{
+              <v-icon v-if="formConfig.button.icon" right dark>
+                {{
                 formConfig.button.icon ? `mdi-${formConfig.button.icon}` : ""
-              }}</v-icon>
+                }}
+              </v-icon>
             </v-btn>
-            <v-btn v-else color="primary" :disabled="invalid || !validated" @click="submit"
-              >Submit</v-btn
-            >
+            <v-btn v-else color="primary" :disabled="invalid || !validated" @click="submit">Submit</v-btn>
           </v-card-actions>
         </v-card>
         <!--div class='resizer'></div-->

@@ -1,7 +1,7 @@
 <template>
   <v-row align="start" justify="start" class="px-3 mx-0 fill-height leopard-alternative-views">
     <v-col cols="12">
-      <p class="subheading font-weight-medium">Login with one of the following methods.</p>
+      <p class="subheading font-weight-medium">{{ $t("social.login.title") }}</p>
     </v-col>
     <v-col cols="12" class="d-flex justify-center flex-wrap mb-3">
       <v-btn

@@ -561,7 +561,7 @@
                       light
                       small
                       @click="closeUploadDialog"
-                    >Close</v-btn>
+                    >{{ $t('forms.close') }}</v-btn>
                     <v-btn
                       :disabled="getUploadConfig === ''"
                       small

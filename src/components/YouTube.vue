@@ -20,8 +20,7 @@
       dark
       :href="`https://www.youtube.com/watch?v=${videoId}`"
       target="_blank"
-      >Open in YouTube</v-btn
-    >
+    >{{ $t('youtube.open') }}</v-btn>
   </div>
 </template>
 <script>

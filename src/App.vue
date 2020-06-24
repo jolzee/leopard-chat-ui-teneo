@@ -115,7 +115,7 @@
                     tabindex="-1"
                     class="headline white--text font-weight-medium"
                     id="leopard-first-drawer-item"
-                  >Chat Menu</h1>
+                  >{{ $t("menu.title") }}</h1>
                 </div>
               </v-col>
             </v-row>
@@ -134,7 +134,10 @@
                     <v-icon medium :class="menuClass">mdi-comment-arrow-left-outline</v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title class="subheading" :class="menuClassText">Back to chat</v-list-item-title>
+                    <v-list-item-title
+                      class="subheading"
+                      :class="menuClassText"
+                    >{{ $t('menu.back.to.chat') }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -173,7 +176,7 @@
                     <v-list-item-title
                       class="subheading"
                       :class="menuClassText"
-                    >{{ $vuetify.theme.dark ? "Light Mode" : "Dark Mode" }}</v-list-item-title>
+                    >{{ $vuetify.theme.dark ? $t('menu.light.mode') : $t('menu.dark.mode') }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -191,7 +194,10 @@
                     <v-icon medium :class="menuClass">mdi-backburger</v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title class="subheading" :class="menuClassText">Close</v-list-item-title>
+                    <v-list-item-title
+                      class="subheading"
+                      :class="menuClassText"
+                    >{{ $t('menu.close') }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -234,7 +240,7 @@
                   >
                     <img
                       src="@/assets/powered-by-teneo.png"
-                      alt="Powered by Teneo"
+                      :alt="$t('menu.powered.by')"
                       class="text-center"
                       width="150"
                     />
