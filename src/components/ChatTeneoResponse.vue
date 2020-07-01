@@ -226,7 +226,7 @@
     </v-col>
 
     <v-card
-      v-if="hasCollection && (isLastItem || hasPermanentOptions)"
+      v-if="hasCollection && getOptions && (isLastItem || hasPermanentOptions)"
       class="mb-1 mx-3 pt-0 px-1 pb-2 elevation-0 text-center transparent teneo-response-collection"
     >
       <!-- Button Options -->
