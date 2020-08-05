@@ -37,6 +37,10 @@ export const fixSolution = solution => {
     solution.enableTts = solutionDefault.enableTts;
   }
 
+  if (!("playResponseBeep" in solution)) {
+    solution.playResponseBeep = solutionDefault.playResponseBeep;
+  }
+
   if (!("enableAsr" in solution)) {
     solution.enableAsr = solutionDefault.enableAsr;
   }

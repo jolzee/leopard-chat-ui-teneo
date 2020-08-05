@@ -204,6 +204,9 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      playResponseBeep(state) {
+        return state.activeSolution.playResponseBeep;
+      },
       isAsrEnabled(state) {
         return state.activeSolution.enableAsr;
       },
@@ -2014,7 +2017,7 @@ function storeSetup(vuetify) {
         let now = new Date();
         let currentUserInput = "";
         currentUserInput = handlePromptBefore(params, now, currentUserInput, context);
-        if (currentUserInput) playAudioConfirmation();
+        if (currentUserInput) playAudioConfirmation(context);
 
         if (!context.getters.isLiveChat) {
           // normal user input - discussion with the VA
@@ -2321,7 +2324,7 @@ function handlePromptPollingResponse(tResp, context, params) {
     params.indexOf("command=prompt") !== -1 &&
     cleanEmptyChunks(tResp.getOutputText()) !== ""
   ) {
-    playAudioConfirmation();
+    playAudioConfirmation(context);
   }
   return mustStop;
 }
@@ -2525,12 +2528,13 @@ function handleLiveChatResponse(currentUserInput, context) {
   context.commit("CLEAR_USER_INPUT");
 }
 
-function playAudioConfirmation() {
-  try {
-    var audio = new Audio(require("@/assets/notification.mp3"));
-
-    audio.play();
-  } catch {}
+function playAudioConfirmation(context) {
+  if (context.getters.playResponseBeep) {
+    try {
+      var audio = new Audio(require("@/assets/notification.mp3"));
+      audio.play();
+    } catch {}
+  }
 }
 
 function handlePromptBefore(params, now, currentUserInput, context) {

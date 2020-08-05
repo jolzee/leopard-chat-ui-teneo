@@ -204,6 +204,13 @@
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
+                        v-model="solution.playResponseBeep"
+                        color="purple darken-4"
+                        label="Response Beep"
+                      ></v-switch>
+                    </v-col>
+                    <v-col cols="12" :lg="4" :sm="6">
+                      <v-switch
                         v-model="solution.displayAccent"
                         color="purple darken-4"
                         label="Show Accent"
@@ -1196,176 +1203,176 @@ export default {
       },
       pollyLanguages: [
         {
-          lang : "English",
-          region : "USA",
-          voices : {
+          lang: "English",
+          region: "USA",
+          voices: {
             male: ["Matthew", "Joey"],
             female: ["Joanna", "Kendra", "Kimberly", "Salli"]
           }
         },
         {
-          lang : "English",
-          region : "United Kingdom",
-          voices : {
+          lang: "English",
+          region: "United Kingdom",
+          voices: {
             male: ["Brian"],
             female: ["Amy", "Emma"]
           }
         },
         {
-          lang : "English",
-          region : "Australia",
-          voices : {
+          lang: "English",
+          region: "Australia",
+          voices: {
             male: ["Russell"],
             female: ["Nicole"]
           }
         },
         {
-          lang : "English",
-          region : "Welsh",
-          voices : {
+          lang: "English",
+          region: "Welsh",
+          voices: {
             male: ["Geraint"],
             female: []
           }
         },
         {
-          lang : "English",
-          region : "India",
-          voices : {
+          lang: "English",
+          region: "India",
+          voices: {
             male: ["Raveena"],
             female: ["Aditi"]
           }
         },
         {
-          lang : "French",
-          region : "France",
-          voices : {
+          lang: "French",
+          region: "France",
+          voices: {
             male: ["Mathieu"],
-            female:  ["Celine", "Léa"]
+            female: ["Celine", "Léa"]
           }
         },
         {
-          lang : "French",
-          region : "Canada",
-          voices : {
+          lang: "French",
+          region: "Canada",
+          voices: {
             male: [],
-            female:  ["Chantal"]
+            female: ["Chantal"]
           }
         },
         {
-          lang : "Russian",
-          region : "Russia",
-          voices : {
+          lang: "Russian",
+          region: "Russia",
+          voices: {
             male: ["Maxim"],
-            female:  ["Tatyana"]
+            female: ["Tatyana"]
           }
         },
         {
-          lang : "Danish",
-          region : "Denmark",
-          voices : {
+          lang: "Danish",
+          region: "Denmark",
+          voices: {
             male: ["Mads"],
-            female:  ["Naja"]
+            female: ["Naja"]
           }
         },
         {
-          lang : "Swedish",
-          region : "Sweden",
-          voices : {
+          lang: "Swedish",
+          region: "Sweden",
+          voices: {
             male: [],
-            female:  ["Astrid"]
+            female: ["Astrid"]
           }
         },
         {
-          lang : "Norwegian",
-          region : "Norway",
-          voices : {
+          lang: "Norwegian",
+          region: "Norway",
+          voices: {
             male: [],
-            female:  ["Liv"]
+            female: ["Liv"]
           }
         },
         {
-          lang : "Norwegian",
-          region : "Norway",
-          voices : {
+          lang: "Norwegian",
+          region: "Norway",
+          voices: {
             male: [],
-            female:  ["Liv"]
+            female: ["Liv"]
           }
         },
         {
-          lang : "German",
-          region : "Germany",
-          voices : {
+          lang: "German",
+          region: "Germany",
+          voices: {
             male: ["Hans"],
-            female:  ["Marlene", "Vicki"]
+            female: ["Marlene", "Vicki"]
           }
         },
         {
-          lang : "Italian",
-          region : "Italy",
-          voices : {
+          lang: "Italian",
+          region: "Italy",
+          voices: {
             male: ["Giorgio"],
-            female:  ["Carla", "Bianca"]
+            female: ["Carla", "Bianca"]
           }
         },
         {
-          lang : "Dutch",
-          region : "Netherlands",
-          voices : {
+          lang: "Dutch",
+          region: "Netherlands",
+          voices: {
             male: ["Ruben"],
-            female:  ["Lotte"]
+            female: ["Lotte"]
           }
         },
         {
-          lang : "Spanish",
-          region : "Spain",
-          voices : {
+          lang: "Spanish",
+          region: "Spain",
+          voices: {
             male: ["Miguel"],
-            female:  ["Lupe", "Penelope"]
+            female: ["Lupe", "Penelope"]
           }
         },
         {
-          lang : "Spanish",
-          region : "Mexico",
-          voices : {
+          lang: "Spanish",
+          region: "Mexico",
+          voices: {
             male: [],
-            female:  ["Mia"]
+            female: ["Mia"]
           }
         },
         {
-          lang : "Japanese",
-          region : "Japan",
-          voices : {
+          lang: "Japanese",
+          region: "Japan",
+          voices: {
             male: ["Takumi"],
-            female:  ["Mizuki"]
+            female: ["Mizuki"]
           }
         },
         {
-          lang : "Chinese",
-          region : "China",
-          voices : {
+          lang: "Chinese",
+          region: "China",
+          voices: {
             male: [],
-            female:  ["Zhiyu"]
+            female: ["Zhiyu"]
           }
         }
       ],
       webSpeechTtsLocales: [
-        {text: "English » USA » Male", value: "en-us-male"},
-        {text: "English » USA » Female", value: "en-us-female"},
-        {text: "English » UK » Male", value: "en-uk-male"},
-        {text: "English » UK » Female", value: "en-uk-female"},
-        {text: "French", value: "fr"},
-        {text: "Spanish » Female", value: "es"},
-        {text: "Dutch", value: "nl"},
-        {text: "Italian", value: "it"},
-        {text: "German", value: "de"},
-        {text: "Russian", value: "ru"},
-        {text: "Swedish", value: "sv"},
-        {text: "Norwegian", value: "no"},
-        {text: "Danish", value: "da"},
-        {text: "Japanese", value: "jp"},
-        {text: "Chinese", value: "cn"},
-        {text: "Chinese (Hong Kong)", value: "cn(hk)"},
-        {text: "Indonesian", value: "id"}
+        { text: "English » USA » Male", value: "en-us-male" },
+        { text: "English » USA » Female", value: "en-us-female" },
+        { text: "English » UK » Male", value: "en-uk-male" },
+        { text: "English » UK » Female", value: "en-uk-female" },
+        { text: "French", value: "fr" },
+        { text: "Spanish » Female", value: "es" },
+        { text: "Dutch", value: "nl" },
+        { text: "Italian", value: "it" },
+        { text: "German", value: "de" },
+        { text: "Russian", value: "ru" },
+        { text: "Swedish", value: "sv" },
+        { text: "Norwegian", value: "no" },
+        { text: "Danish", value: "da" },
+        { text: "Japanese", value: "jp" },
+        { text: "Chinese", value: "cn" },
+        { text: "Chinese (Hong Kong)", value: "cn(hk)" },
+        { text: "Indonesian", value: "id" }
       ],
       chatIcons: [
         "mdi-message-bulleted",
@@ -1419,44 +1426,44 @@ export default {
   computed: {
     ...mapGetters(["embed", "textColor"]),
     asrLangCode: {
-        get () {
-            return this.solution.asrLangCode;
-        },
-        set (val) {
-            if (val) {
-              console.log(`Setting new asr lang code ${val}`);
-              this.solution.asrLangCode = val;
-              switch (val) {
-                case "cmn-Hans-CN":
-                  this.solution.locale = "cn";
-                  break;
-                case "cmn-Hans-HK":
-                  this.solution.locale = "cn(hk)";
-                  break;
-                case "cmn-Hant-TW":
-                  this.solution.locale = "cn(tw)";
-                  break;
-                case "yue-Hant-HK":
-                  this.solution.locale = "cn-cantonese(hk)";
-                  break;
-                default:
-                  this.solution.locale = val.split("-")[0];
-                  break;
-              }
-            }
+      get() {
+        return this.solution.asrLangCode;
+      },
+      set(val) {
+        if (val) {
+          console.log(`Setting new asr lang code ${val}`);
+          this.solution.asrLangCode = val;
+          switch (val) {
+            case "cmn-Hans-CN":
+              this.solution.locale = "cn";
+              break;
+            case "cmn-Hans-HK":
+              this.solution.locale = "cn(hk)";
+              break;
+            case "cmn-Hant-TW":
+              this.solution.locale = "cn(tw)";
+              break;
+            case "yue-Hant-HK":
+              this.solution.locale = "cn-cantonese(hk)";
+              break;
+            default:
+              this.solution.locale = val.split("-")[0];
+              break;
+          }
         }
+      }
     },
     getPollyLanguages() {
       let languages = [];
       this.pollyLanguages.forEach(language => {
         language.voices.male.forEach(voice => {
-            languages.push({
+          languages.push({
             text: `${language.lang} » ${language.region} » [male] » ${voice}`,
             value: `${voice}`
           });
         });
         language.voices.female.forEach(voice => {
-            languages.push({
+          languages.push({
             text: `${language.lang} » ${language.region} » [female] » ${voice}`,
             value: `${voice}`
           });
@@ -1492,7 +1499,7 @@ export default {
   },
   watch: {
     // eslint-disable-next-line func-names
-    "font.fontIndex": function(newIndex) {
+    "font.fontIndex": function (newIndex) {
       if (this.solution) {
         this.solution.font = this.font.ticksLabels[newIndex];
       }

@@ -31,6 +31,7 @@ okkay | ok
   float: true,
   font: "leopard-font-normal",
   pulseButton: true,
+  playResponseBeep: true,
   promptTriggers: {
     enabled: false,
     pollSeconds: "10"
