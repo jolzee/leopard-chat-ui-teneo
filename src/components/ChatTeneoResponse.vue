@@ -323,8 +323,8 @@
             style="opacity: 0.7 !important;"
           >mdi-file-document-edit-outline</v-icon>
           {{
-          getFormConfig && getFormConfig.openFormButtonText
-          ? getFormConfig.openFormButtonText
+          getFormConfig() && getFormButtonText()
+          ? getFormButtonText()
           : "Form"
           }}
         </v-btn>
@@ -813,8 +813,8 @@ export default {
   },
   methods: {
     responseChunkStyles(index = 0) {
-      let classes = !this.showChatIcons || this.$vuetify.breakpoint.smAndDown ? 'ml-2' : ''
-      classes += this.hasBorder(index) ? ' leopard-response-border' : '';
+      let classes = !this.showChatIcons || this.$vuetify.breakpoint.smAndDown ? "ml-2" : "";
+      classes += this.hasBorder(index) ? " leopard-response-border" : "";
       return classes;
     },
     hasBorder(index = 0) {
@@ -822,14 +822,14 @@ export default {
       if ("teneoResponse" in this.item) {
         const tResp = TIE.wrap(this.item.teneoResponse);
         if (tResp.hasParameter("border")) {
-          borderExists = true
+          borderExists = true;
         }
         if (tResp.hasParameter("borders")) {
           let borders = tResp.getParameter("borders");
           if (index < borders.length && borders[index]) {
-            borderExists =  true;
+            borderExists = true;
           } else {
-            borderExists =  false;
+            borderExists = false;
           }
         }
       }
@@ -840,12 +840,12 @@ export default {
       if (this.hasBorder(index)) {
         let tResp = TIE.wrap(this.item.teneoResponse);
         if (tResp.hasParameter("border")) {
-          borderColor = tResp.getParameter("border")
+          borderColor = tResp.getParameter("border");
         }
         if (tResp.hasParameter("borders")) {
           let borders = tResp.getParameter("borders");
           if (index < borders.length && borders[index]) {
-            borderColor = borders[index]
+            borderColor = borders[index];
           } else {
             borderColor = "";
           }
@@ -975,6 +975,13 @@ export default {
       const tResp = TIE.wrap(this.item.teneoResponse);
       if (tResp.hasParameter("formConfig")) {
         return tResp.getParameter("formConfig");
+      }
+      return null;
+    },
+    getFormButtonText() {
+      const tResp = TIE.wrap(this.item.teneoResponse);
+      if (tResp.hasParameter("formConfig")) {
+        return tResp.getParameter("formConfig").openFormButtonText;
       }
       return null;
     },
