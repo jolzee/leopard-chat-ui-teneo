@@ -420,6 +420,7 @@ export default {
               this.transactionItems = [];
               extension.parameters.transactions.transactions.forEach(transaction => {
                 logger.debug(transaction);
+                this.tableEnableSearch = false;
                 this.transactionItems.push({
                   date: transaction.Date,
                   description: transaction.Description,

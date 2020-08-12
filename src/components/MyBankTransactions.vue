@@ -5,9 +5,12 @@
       <td class="text-left">{{ props.item.description }}</td>
       <td class="text-left">{{ props.item.amount }}</td>
     </template>
-    <v-alert slot="no-results" :value="true" color="error" icon="mdi-alert-octagram"
-      >Your search for "{{ search }}" found no results.</v-alert
-    >
+    <v-alert
+      slot="no-results"
+      :value="true"
+      color="error"
+      icon="mdi-alert-octagram"
+    >Your search for "{{ search }}" found no results.</v-alert>
   </v-data-table>
 </template>
 
@@ -23,7 +26,7 @@ export default {
       required: true
     },
     search: {
-      type: Boolean,
+      type: String,
       required: false
     }
   }
