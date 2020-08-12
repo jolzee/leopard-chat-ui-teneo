@@ -1,3 +1,4 @@
+
 <template>
   <ValidationObserver ref="observer" v-slot="{ invalid, validated }">
     <v-row v-if="dialog" align="start" justify="start">
@@ -126,6 +127,7 @@
                       <ValidationProvider
                         v-if="field.textInput"
                         v-slot="{ errors, valid }"
+                        :name="formatLabel(field.textInput.label)"
                         :rules="field.textInput.validations ? field.textInput.validations : ''"
                       >
                         <v-text-field
@@ -193,6 +195,7 @@
                       <ValidationProvider
                         v-if="field.textarea"
                         v-slot="{ errors, valid }"
+                        :name="formatLabel(field.textArea.label)"
                         :rules="field.textarea.validations ? field.textarea.validations : ''"
                       >
                         <v-textarea
@@ -260,6 +263,7 @@
                       <ValidationProvider
                         v-if="field.comboBox"
                         v-slot="{ errors, valid }"
+                        :name="formatLabel(field.comboBox.label)"
                         :rules="field.comboBox.validations ? field.comboBox.validations : ''"
                       >
                         <v-autocomplete
@@ -330,6 +334,7 @@
                       <ValidationProvider
                         v-if="field.select"
                         v-slot="{ errors, valid }"
+                        :name="formatLabel(field.select.label)"
                         :rules="field.select.validations ? field.select.validations : ''"
                       >
                         <v-select
@@ -391,6 +396,7 @@
                       <ValidationProvider
                         v-if="field.checkbox"
                         v-slot="{ errors }"
+                        :name="formatLabel(field.checkbox.label)"
                         :rules="
                           field.checkbox.mustBeChecked ? { required: { allowFalse: false } } : ''
                         "
@@ -413,6 +419,7 @@
                       <ValidationProvider
                         v-if="field.switch"
                         v-slot="{ errors }"
+                        :name="formatLabel(field.switch.label)"
                         :rules="field.switch.validations ? field.switch.validations : ''"
                       >
                         <v-switch
@@ -434,6 +441,7 @@
                       <ValidationProvider
                         v-if="field.radio"
                         v-slot="{ errors }"
+                        :name="formatLabel(field.radio.label)"
                         :rules="field.radio.validations ? field.radio.validations : ''"
                       >
                         <v-radio-group
@@ -476,6 +484,7 @@
                       <ValidationProvider
                         v-if="field.slider"
                         v-slot="{ errors }"
+                        :name="formatLabel(field.slider.label)"
                         :rules="field.slider.validations ? field.slider.validations : ''"
                       >
                         <v-slider
@@ -598,11 +607,21 @@
   </ValidationObserver>
 </template>
 <script>
-import { ValidationObserver, ValidationProvider } from "vee-validate";
+/* eslint-disable no-unused-vars */
+import { ValidationObserver, ValidationProvider, extend } from "vee-validate";
+import * as rules from "vee-validate/dist/rules";
+import { messages } from "vee-validate/dist/locale/en.json";
 import { mask } from "vue-the-mask";
 import { mapGetters } from "vuex";
 
 const logger = require("@/utils/logging").getLogger("Form.vue");
+
+Object.keys(rules).forEach(rule => {
+  extend(rule, {
+    ...rules[rule], // copies rule configuration
+    message: messages[rule] // assign message
+  });
+});
 
 export default {
   name: "Form",
@@ -634,6 +653,9 @@ export default {
     this.setDefaults();
   },
   methods: {
+    formatLabel(label) {
+      return `"${label}"`;
+    },
     getColumnDescription(field) {
       const fieldInfo = field[Object.keys(field)[0]];
       if (fieldInfo && fieldInfo.description) {
