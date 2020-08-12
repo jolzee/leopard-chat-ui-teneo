@@ -52,7 +52,7 @@
     "dayjs": "^1.8.28",
     "element-matches": "^0.1.2",
     "firebase": "^7.15.5",
-    "gravatar": "^1.8.0",
+    "gravatar": "^1.8.1",
     "is-html": "^2.0.0",
     "is-mobile": "^2.2.2",
     "jsonpack": "^1.1.5",
@@ -61,6 +61,7 @@
     "logrocket-vuex": "0.0.3",
     "markdown-it": "^11.0.0",
     "markdown-it-for-inline": "^0.1.1",
+    "mikro-config": "^2.0.3",
     "plyr": "^3.6.2",
     "prismjs": "^1.20.0",
     "promised-location": "^1.0.1",
@@ -88,8 +89,7 @@
     "vuetify-upload-button": "^2.0.2",
     "vuex": "^3.5.1",
     "vuex-i18n": "^1.13.1",
-    "wicg-inert": "^3.0.3",
-    "mikro-config": "^2.0.3"
+    "wicg-inert": "^3.0.3"
   },
   "devDependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
@@ -115,7 +115,7 @@
     "prettier": "^2.0.5",
     "prettier-eslint": "^11.0.0",
     "prettier-stylelint": "^0.4.2",
-    "release-it": "^13.6.4",
+    "release-it": "^13.6.6",
     "sass": "^1.26.9",
     "sass-loader": "^8.0.2",
     "stylelint": "^13.6.1",
