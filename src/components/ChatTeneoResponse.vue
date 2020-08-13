@@ -1,11 +1,13 @@
 <template>
   <!-- Reply -->
   <div v-if="item.type === 'reply'" :class="isLastItem ? 'pb-3' : ''">
-    <v-row v-if="beforeAnswerAlert" no-gutters class="pt-2">
-      <v-col cols="12">
-        <Alert :config="beforeAnswerAlert"></Alert>
-      </v-col>
-    </v-row>
+    <span v-for="(extension, index) in itemExtensions(item)" :key="index + 'alerts' + uuid">
+      <v-row v-if="beforeAnswerAlert(extension)" no-gutters class="pt-2">
+        <v-col cols="12">
+          <Alert :config="beforeAnswerAlert(extension)"></Alert>
+        </v-col>
+      </v-row>
+    </span>
     <v-row v-if="itemText !== '<span>'" justify="start" no-gutters class="pr-3 pl-1 pt-2">
       <v-col
         v-if="showChatIcons && !$vuetify.breakpoint.smAndDown"
@@ -139,9 +141,9 @@
     <Card v-if="hasCard(item) && isLastItem" :item="item" :ripple="false" class="mb-2" />
     <!-- Show Inline Components -->
     <span v-for="(extension, index) in itemExtensions(item)" :key="index + 'inlines' + uuid">
-      <v-row v-if="afterAnswerAlert" no-gutters class="pt-2">
+      <v-row v-if="afterAnswerAlert(extension)" no-gutters class="pt-2">
         <v-col cols="12">
-          <Alert :config="afterAnswerAlert"></Alert>
+          <Alert :config="afterAnswerAlert(extension)"></Alert>
         </v-col>
       </v-row>
       <v-row v-if="hasInlineType(extension, 'youTube')" no-gutters class="px-3 pt-2">
@@ -528,30 +530,6 @@ export default {
     isLastItem() {
       return this.itemIndexInDialog === this.dialog.length - 1;
     },
-    beforeAnswerAlert() {
-      const extensions = this.itemExtensions(this.item);
-      let alertConfig = null;
-
-      extensions.forEach(extension => {
-        if (String(extension.name).startsWith("displayAlert") && extension.beforeAnswer === true) {
-          alertConfig = extension;
-        }
-      });
-
-      return alertConfig;
-    },
-    afterAnswerAlert() {
-      const extensions = this.itemExtensions(this.item);
-      let alertConfig = null;
-
-      extensions.forEach(extension => {
-        if (String(extension.name).startsWith("displayAlert") && extension.beforeAnswer === false) {
-          alertConfig = extension;
-        }
-      });
-
-      return alertConfig;
-    },
     routerCheckList() {
       const extensions = this.itemExtensions(this.item);
       let routerCheckList = null;
@@ -812,6 +790,38 @@ export default {
     }
   },
   methods: {
+    beforeAnswerAlert(extension) {
+      // const extensions = this.itemExtensions(this.item);
+      let alertConfig = null;
+
+      // extensions.forEach(extension => {
+      //   if (String(extension.name).startsWith("displayAlert") && extension.beforeAnswer === true) {
+      //     alertConfig = extension;
+      //   }
+      // });
+
+      if (String(extension.name).startsWith("displayAlert") && extension.beforeAnswer === true) {
+        alertConfig = extension;
+      }
+
+      return alertConfig;
+    },
+    afterAnswerAlert(extension) {
+      // const extensions = this.itemExtensions(this.item);
+      let alertConfig = null;
+
+      // extensions.forEach(extension => {
+      //   if (String(extension.name).startsWith("displayAlert") && extension.beforeAnswer === false) {
+      //     alertConfig = extension;
+      //   }
+      // });
+
+      if (String(extension.name).startsWith("displayAlert") && extension.beforeAnswer === false) {
+        alertConfig = extension;
+      }
+
+      return alertConfig;
+    },
     responseChunkStyles(index = 0) {
       let classes = !this.showChatIcons || this.$vuetify.breakpoint.smAndDown ? "ml-2" : "";
       classes += this.hasBorder(index) ? " leopard-response-border" : "";

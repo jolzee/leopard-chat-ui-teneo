@@ -10,7 +10,7 @@
     :icon="config.icon ? `mdi-${config.icon}` : undefined"
     :outlined="config.outlined ? config.outlined : false"
     :prominent="config.prominent ? config.prominent : false"
-    class="mx-4"
+    class="mx-4 mb-1"
   >
     <span v-html="config.text"></span>
   </v-alert>
