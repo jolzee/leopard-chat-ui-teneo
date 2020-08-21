@@ -45,9 +45,12 @@ export default {
         });
       }
       return hasHeaders;
-    },
+    }
   }
 };
 </script>
 <style>
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+  padding: 0 6px;
+}
 </style>
