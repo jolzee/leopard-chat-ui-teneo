@@ -1,4 +1,3 @@
-
 <template>
   <ValidationObserver ref="observer" v-slot="{ invalid, validated }">
     <v-row v-if="dialog" align="start" justify="start">
@@ -22,9 +21,9 @@
                 @click="overlay = false"
               >
                 {{
-                formConfig.validationFailedMessage
-                ? formConfig.validationFailedMessage
-                : "Please complete all required fields"
+                  formConfig.validationFailedMessage
+                    ? formConfig.validationFailedMessage
+                    : "Please complete all required fields"
                 }}
               </v-alert>
             </v-overlay>
@@ -38,7 +37,7 @@
             }"
             dark
           >
-            <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
+            <v-spacer style="height: 30px" class="teneo-systembar-spacer"></v-spacer>
 
             <v-icon
               v-if="!embed && !$vuetify.breakpoint.mdAndDown"
@@ -46,9 +45,12 @@
               tag="button"
               :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
               @click="fullscreen = !fullscreen"
-            >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon>
+              >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon
+            >
 
-            <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close">mdi-close</v-icon>
+            <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close"
+              >mdi-close</v-icon
+            >
           </v-system-bar>
 
           <v-app-bar :color="`primary ${textColor('primary')}`" dense>
@@ -57,7 +59,7 @@
           </v-app-bar>
 
           <v-card-text
-            style="height: 90%;"
+            style="height: 90%"
             class="px-3 py-0"
             :class="{ 'dark-scroll': dark, 'light-scroll': !dark }"
           >
@@ -89,7 +91,11 @@
                       >
                         <template v-slot:placeholder>
                           <v-row class="fill-height ma-0" align="center" justify="center">
-                            <v-progress-circular :size="50" indeterminate color="primary"></v-progress-circular>
+                            <v-progress-circular
+                              :size="50"
+                              indeterminate
+                              color="primary"
+                            ></v-progress-circular>
                           </v-row>
                         </template>
                       </v-img>
@@ -122,7 +128,8 @@
                         :tile="field.alert.tile ? field.alert.tile : false"
                         :outlined="field.alert.outlined ? field.alert.outlined : false"
                         class="mb-0"
-                      >{{ field.alert.text }}</v-alert>
+                        >{{ field.alert.text }}</v-alert
+                      >
 
                       <ValidationProvider
                         v-if="field.textInput"
@@ -195,7 +202,7 @@
                       <ValidationProvider
                         v-if="field.textarea"
                         v-slot="{ errors, valid }"
-                        :name="formatLabel(field.textArea.label)"
+                        :name="formatLabel(field.textarea.label)"
                         :rules="field.textarea.validations ? field.textarea.validations : ''"
                       >
                         <v-textarea
@@ -572,16 +579,16 @@
           <v-card-actions>
             <v-btn @click="close">
               {{
-              formConfig.button && formConfig.button.closeButtonText
-              ? formConfig.button.closeButtonText
-              : $t('forms.close')
+                formConfig.button && formConfig.button.closeButtonText
+                  ? formConfig.button.closeButtonText
+                  : $t("forms.close")
               }}
             </v-btn>
             <v-btn @click="clear">
               {{
-              formConfig.button && formConfig.button.clearButtonText
-              ? formConfig.button.clearButtonText
-              : $t('forms.clear')
+                formConfig.button && formConfig.button.clearButtonText
+                  ? formConfig.button.clearButtonText
+                  : $t("forms.clear")
               }}
             </v-btn>
             <v-spacer></v-spacer>
@@ -593,12 +600,12 @@
             >
               {{ formConfig.button.text ? formConfig.button.text : "Submit" }}
               <v-icon v-if="formConfig.button.icon" right dark>
-                {{
-                formConfig.button.icon ? `mdi-${formConfig.button.icon}` : ""
-                }}
+                {{ formConfig.button.icon ? `mdi-${formConfig.button.icon}` : "" }}
               </v-icon>
             </v-btn>
-            <v-btn v-else color="primary" :disabled="invalid || !validated" @click="submit">Submit</v-btn>
+            <v-btn v-else color="primary" :disabled="invalid || !validated" @click="submit"
+              >Submit</v-btn
+            >
           </v-card-actions>
         </v-card>
         <!--div class='resizer'></div-->
