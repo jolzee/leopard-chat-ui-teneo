@@ -407,7 +407,7 @@
                 </template>
               </v-app-bar>
 
-              <v-content app id="scrolling-techniques content-area" class="pt-0">
+              <v-main app id="scrolling-techniques content-area" class="pt-0">
                 <OverlayAlert />
                 <router-view
                   :drawer="drawer"
@@ -415,7 +415,7 @@
                   v-if="['config'].indexOf($route.name) === -1"
                 />
                 <teneo-modal></teneo-modal>
-              </v-content>
+              </v-main>
             </div>
           </div>
         </transition>
