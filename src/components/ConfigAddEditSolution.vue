@@ -17,7 +17,7 @@
         }"
         dark
       >
-        <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
+        <v-spacer style="height: 30px" class="teneo-systembar-spacer"></v-spacer>
 
         <v-icon
           v-if="!embed && !$vuetify.breakpoint.mdAndDown"
@@ -25,13 +25,15 @@
           tag="button"
           :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
           @click="toggleFullscreen"
-        >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon>
+          >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon
+        >
         <v-icon
           tag="button"
           aria-label="Close dialog"
           tabindex="0"
           @click="closeAddNewSolutionDialog"
-        >mdi-close</v-icon>
+          >mdi-close</v-icon
+        >
       </v-system-bar>
 
       <v-app-bar :color="`teal darken-3 white--text`" dense>
@@ -40,13 +42,14 @@
         <span class="d-none d-md-inline-block">
           <v-btn
             x-small
-            style="opacity:0.8"
+            style="opacity: 0.8"
             aria-label="Open Material Design Icons in a new window"
             :color="`teal darken-4 white--text`"
             href="https://petershaggynoble.github.io/MDI-Sandbox/"
             target="_blank"
             dark
-          >MDI Icons (mdi-icon-name)</v-btn>
+            >MDI Icons (mdi-icon-name)</v-btn
+          >
         </span>
       </v-app-bar>
 
@@ -126,7 +129,7 @@
                 <v-text-field
                   v-if="
                     ('useInProduction' in solution && !solution.useInProduction) ||
-                      !('useInProduction' in solution)
+                    !('useInProduction' in solution)
                   "
                   v-model.trim="solution.iframeUrl"
                   filled
@@ -165,7 +168,11 @@
                       ></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
-                      <v-switch v-model="solution.float" color="purple darken-4" label="Float UI"></v-switch>
+                      <v-switch
+                        v-model="solution.float"
+                        color="purple darken-4"
+                        label="Float UI"
+                      ></v-switch>
                     </v-col>
                     <v-col cols="12" :lg="4" :sm="6">
                       <v-switch
@@ -361,7 +368,7 @@
             </v-row>
             <v-row>
               <v-col :cols="12">
-                <v-row align="center" justify="center" style=" height: 300px;min-height: 300px;">
+                <v-row align="center" justify="center" style="height: 300px; min-height: 300px">
                   <transition
                     name="leopard-transition"
                     :enter-active-class="solution.animations.in"
@@ -537,8 +544,7 @@
                       "
                     >
                       <span>
-                        Hello and welcome! My name is Leo and I’m here to answer your
-                        questions.
+                        Hello and welcome! My name is Leo and I’m here to answer your questions.
                       </span>
                     </v-card>
                   </v-col>
@@ -687,7 +693,8 @@
                   <a
                     target="_blank"
                     href="https://jolzee.gitbook.io/leopard/configuration/prompt-trigger-polling"
-                  >Leopard Documentation</a>
+                    >Leopard Documentation</a
+                  >
                 </v-alert>
                 <v-text-field
                   v-if="solution.promptTriggers.enabled"
@@ -759,11 +766,9 @@
                     ></v-text-field>
                   </v-col>
                   <v-col cols="1" class="pl-2 pt-3">
-                    <v-icon
-                      color="red"
-                      dark
-                      @click="solution.knowledgeData.splice(index, 1)"
-                    >mdi-minus-circle</v-icon>
+                    <v-icon color="red" dark @click="solution.knowledgeData.splice(index, 1)"
+                      >mdi-minus-circle</v-icon
+                    >
                   </v-col>
                 </v-row>
               </v-col>
@@ -825,7 +830,8 @@
                           dark
                           v-on="on"
                           @click="solution.contextParams.splice(index, 1)"
-                        >mdi-minus-circle</v-icon>
+                          >mdi-minus-circle</v-icon
+                        >
                       </template>
                       <span>Remove CTX Parameter</span>
                     </v-tooltip>
@@ -837,7 +843,8 @@
                           dark
                           v-on="on"
                           @click="addNewContextParameterValue(index)"
-                        >mdi-plus-circle</v-icon>
+                          >mdi-plus-circle</v-icon
+                        >
                       </template>
                       <span>Add Parameter Value</span>
                     </v-tooltip>
@@ -858,7 +865,8 @@
                             dark
                             v-on="on"
                             @click="contextParam.values.splice(valueIndex, 1)"
-                          >mdi-minus-circle</v-icon>
+                            >mdi-minus-circle</v-icon
+                          >
                         </template>
                         <span>Delete Parameter Value</span>
                       </v-tooltip>
@@ -874,7 +882,7 @@
                             "
                           >
                             {{
-                            value.active ? "mdi-checkbox-marked" : "mdi-checkbox-blank-outline"
+                              value.active ? "mdi-checkbox-marked" : "mdi-checkbox-blank-outline"
                             }}
                           </v-icon>
                         </template>
@@ -910,7 +918,8 @@
           small
           light
           @click="closeAddNewSolutionDialog"
-        >{{ $t('forms.close') }}</v-btn>
+          >{{ $t("forms.close") }}</v-btn
+        >
         <v-btn
           class="mr-2"
           :color="`teal darken-3 white--text`"
@@ -921,11 +930,9 @@
           Save
           <v-icon right dark>mdi-content-save</v-icon>
         </v-btn>
-        <v-snackbar
-          v-model="snackbar"
-          :timeout="snackbarTimeout"
-          class="mb-5"
-        >🧟‍ Please fix all form validation errors.</v-snackbar>
+        <v-snackbar v-model="snackbar" :timeout="snackbarTimeout" class="mb-5"
+          >🧟‍ Please fix all form validation errors.</v-snackbar
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -1339,6 +1346,22 @@ export default {
           }
         },
         {
+          lang: "Portuguese",
+          region: "European",
+          voices: {
+            male: ["Cristiano"],
+            female: ["Inês"]
+          }
+        },
+        {
+          lang: "Portuguese",
+          region: "Brazilian",
+          voices: {
+            male: ["Ricardo"],
+            female: ["Camila"]
+          }
+        },
+        {
           lang: "Japanese",
           region: "Japan",
           voices: {
@@ -1365,6 +1388,8 @@ export default {
         { text: "Dutch", value: "nl" },
         { text: "Italian", value: "it" },
         { text: "German", value: "de" },
+        { text: "Portuguese European", value: "pt-PT" },
+        { text: "Portuguese Brazillian", value: "pt-BR" },
         { text: "Russian", value: "ru" },
         { text: "Swedish", value: "sv" },
         { text: "Norwegian", value: "no" },
