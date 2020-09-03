@@ -34,9 +34,9 @@
       "
       :fullscreen="
         fullscreen ||
-          currentModalSize === 'fullscreen' ||
-          currentModalPosition === 'fullscreen' ||
-          $vuetify.breakpoint.mdAndDown
+        currentModalSize === 'fullscreen' ||
+        currentModalPosition === 'fullscreen' ||
+        $vuetify.breakpoint.mdAndDown
       "
     >
       <v-card>
@@ -49,7 +49,8 @@
               type="info"
               elevation="2"
               @click="overlay = false"
-            >{{ overlayMessage }}</v-alert>
+              >{{ overlayMessage }}</v-alert
+            >
           </v-overlay>
         </v-fade-transition>
         <v-system-bar
@@ -62,31 +63,33 @@
           }"
           dark
         >
-          <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
+          <v-spacer style="height: 30px" class="teneo-systembar-spacer"></v-spacer>
           <v-icon
             v-if="
               currentModalPosition !== 'fullscreen' &&
-                currentModalSize !== 'fullscreen' &&
-                !embed &&
-                !$vuetify.breakpoint.mdAndDown
+              currentModalSize !== 'fullscreen' &&
+              !embed &&
+              !$vuetify.breakpoint.mdAndDown
             "
             tabindex="0"
             tag="button"
             :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
             @click="toggleFullscreen"
-          >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon>
-          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="hideModal">mdi-close</v-icon>
+            >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon
+          >
+          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="hideModal"
+            >mdi-close</v-icon
+          >
         </v-system-bar>
 
         <v-app-bar :dense="title.length < 43" :color="`primary ${textColor('primary')}`">
-          <h2
-            class="subtitle-1"
-            :aria-label="aria ? aria : title ? title : $t('more.info.title')"
-          >{{ title ? title : $t("more.info.title") }}</h2>
+          <h2 class="subtitle-1" :aria-label="aria ? aria : title ? title : $t('more.info.title')">
+            {{ title ? title : $t("more.info.title") }}
+          </h2>
           <v-spacer></v-spacer>
         </v-app-bar>
         <v-card-text
-          style="height: 90%;"
+          style="height: 90%"
           class="px-2 mx-0 py-0"
           :class="{ 'dark-scroll': dark, 'light-scroll': !dark }"
         >
@@ -190,7 +193,8 @@
             small
             @click.native="hideModal"
             @shortkey.native="hideModal"
-          >{{ $t("back.to.chat.button") }}</v-btn>
+            >{{ $t("back.to.chat.button") }}</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -735,7 +739,7 @@ export default {
   left: unset !important;
 }
 
-.modal-container {
+.custom-container {
   padding: 0;
 }
 

@@ -41,9 +41,7 @@
               <v-list-item :class="hover ? 'primary' : ''" @click="menuItem.method">
                 <v-list-item-title :class="hover ? 'white--text' : ''">
                   <v-icon :color="hover ? 'secondary' : ''" class="mr-2">
-                    {{
-                    menuItem.icon
-                    }}
+                    {{ menuItem.icon }}
                   </v-icon>
                   {{ menuItem.title }}
                 </v-list-item-title>
@@ -56,7 +54,8 @@
           large
           :color="!$vuetify.theme.dark ? responseLookAndFeel.iconColor : 'indigo'"
           class="teneo-response-icon"
-        >{{ getResponseIcon }}</v-icon>
+          >{{ getResponseIcon }}</v-icon
+        >
       </v-col>
       <v-col
         class="text-left"
@@ -75,11 +74,9 @@
           ></div>
           <span
             class="teneo-reply"
-            :class="
-              `${leopardFont} ${
-                responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''
-              }`
-            "
+            :class="`${leopardFont} ${
+              responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''
+            }`"
           >
             <span v-html="addAccessibilityPrefix(itemText)"></span>
           </span>
@@ -125,11 +122,9 @@
             ></div>
             <span
               class="teneo-reply"
-              :class="
-                `${leopardFont} ${
-                  responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''
-                }`
-              "
+              :class="`${leopardFont} ${
+                responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''
+              }`"
             >
               <span v-html="addAccessibilityPrefix(chunkText)"></span>
             </span>
@@ -138,7 +133,8 @@
       </v-row>
     </div>
 
-    <Card v-if="hasCard(item) && isLastItem" :item="item" :ripple="false" class="mb-2" />
+    <Card v-if="hasCard() && isLastItem" :item="item" :ripple="false" class="mb-2" />
+    <CardCustomHtml v-if="hasCardCustomHtml()" :item="item" class="mb-2" />
     <!-- Show Inline Components -->
     <span v-for="(extension, index) in itemExtensions(item)" :key="index + 'inlines' + uuid">
       <v-row v-if="afterAnswerAlert(extension)" no-gutters class="pt-2">
@@ -194,6 +190,11 @@
           <SimpleTable :extension="extension"></SimpleTable>
         </v-col>
       </v-row>
+      <v-row v-if="hasInlineType(extension, 'cardCustomHtml')" no-gutters class="px-3 pt-2">
+        <v-col cols="12">
+          <CardCustomHtml :item="item" class="mb-2" />
+        </v-col>
+      </v-row>
     </span>
 
     <DelayedResponse v-if="showDelayedResponse && isLastItem"></DelayedResponse>
@@ -221,7 +222,9 @@
           </div>
 
           <v-avatar class="ma-3" size="100" tile>
-            <v-img src="https://wi.presales.artificial-solutions.com/media/mytelco/router.png"></v-img>
+            <v-img
+              src="https://wi.presales.artificial-solutions.com/media/mytelco/router.png"
+            ></v-img>
           </v-avatar>
         </div>
       </v-card>
@@ -244,11 +247,9 @@
             :aria-label="option.aria ? option.aria : option.name"
             @click="optionClicked(option)"
           >
-            <v-icon
-              v-if="option.icon"
-              left
-              style="padding-top: 2px; opacity: 0.7 !important;"
-            >{{ `mdi-${option.icon}` }}</v-icon>
+            <v-icon v-if="option.icon" left style="padding-top: 2px; opacity: 0.7 !important">{{
+              `mdi-${option.icon}`
+            }}</v-icon>
             {{ option.name }}
           </v-btn>
         </span>
@@ -263,7 +264,7 @@
               tag="a"
               :aria-label="option.aria ? option.aria : option.name"
               class="text-left pl-2 pr-2"
-              style="height: 40px;"
+              style="height: 40px"
               :color="option.color || ``"
               dense
               ripple
@@ -271,11 +272,16 @@
               @click="optionClicked(option)"
             >
               <v-list-item-icon v-if="!('showIcon' in option) || option.showIcon" class="mr-4">
-                <v-icon>{{ option.icon ? `mdi-${option.icon}` : getLongListIcon(altOptionIndex) }}</v-icon>
+                <v-icon>{{
+                  option.icon ? `mdi-${option.icon}` : getLongListIcon(altOptionIndex)
+                }}</v-icon>
               </v-list-item-icon>
               <v-list-item-content class="text-left">
                 <!-- <v-list-item-title v-html="option.name"></v-list-item-title> -->
-                <v-list-item-subtitle style="white-space: unset;" v-html="option.name"></v-list-item-subtitle>
+                <v-list-item-subtitle
+                  style="white-space: unset"
+                  v-html="option.name"
+                ></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -292,12 +298,10 @@
           small
           @click="displayFeedbackForm"
         >
-          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;">mdi-thumbs-up-down</v-icon>
-          {{
-          getFeedbackFormConfig.label
-          ? getFeedbackFormConfig.label
-          : "Leave Feedback"
-          }}
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important"
+            >mdi-thumbs-up-down</v-icon
+          >
+          {{ getFeedbackFormConfig.label ? getFeedbackFormConfig.label : "Leave Feedback" }}
         </v-btn>
       </v-col>
     </v-row>
@@ -319,16 +323,10 @@
           small
           @click="showForm()"
         >
-          <v-icon
-            left
-            class="teneo-icon"
-            style="opacity: 0.7 !important;"
-          >mdi-file-document-edit-outline</v-icon>
-          {{
-          getFormConfig() && getFormButtonText()
-          ? getFormButtonText()
-          : "Form"
-          }}
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important"
+            >mdi-file-document-edit-outline</v-icon
+          >
+          {{ getFormConfig() && getFormButtonText() ? getFormButtonText() : "Form" }}
         </v-btn>
       </v-col>
     </v-row>
@@ -348,7 +346,9 @@
           small
           @click="showModal"
         >
-          <v-icon left class="teneo-icon" style="opacity: 0.7 !important;">{{ modalButtonIcon }}</v-icon>
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important">{{
+            modalButtonIcon
+          }}</v-icon>
           {{ modalButtonText.text }}
         </v-btn>
       </v-col>
@@ -364,7 +364,7 @@
           :color="`success ${textColor('success')}`"
           @click="toggleDate()"
         >
-          <v-icon class="teneo-icon" style="opacity: 0.7 !important;">mdi-calendar-clock</v-icon>
+          <v-icon class="teneo-icon" style="opacity: 0.7 !important">mdi-calendar-clock</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -380,7 +380,7 @@
           :color="`success ${textColor('success')}`"
           @click="toggleTime()"
         >
-          <v-icon large class="teneo-icon" style="opacity: 0.7 !important;">mdi-clock</v-icon>
+          <v-icon large class="teneo-icon" style="opacity: 0.7 !important">mdi-clock</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -391,7 +391,8 @@
       color="primary"
       :timeout="snackBarTimeout"
       top
-    >{{ snackBarText }}</v-snackbar>
+      >{{ snackBarText }}</v-snackbar
+    >
     <AgentAssistCannedResponseForm
       v-if="agentAssist.cannedResponseForm"
       :text="agentAssist.cannedResponseText"
@@ -408,6 +409,7 @@ import copy from "copy-to-clipboard";
 const TIE = require("leopard-tie-client");
 
 const logger = require("@/utils/logging").getLogger("ChatTeneoResponse.vue");
+logger.info("Boom");
 const isHtml = require("is-html");
 const stripHtml = require("striptags");
 
@@ -421,6 +423,7 @@ export default {
     Alert: () => import("@/components/Alert"),
     Audio: () => import("@/components/Audio"),
     Card: () => import("@/components/Card"),
+    CardCustomHtml: () => import("@/components/CardCustomHtml"),
     Carousel: () => import("@/components/Carousel"),
     DelayedResponse: () => import("@/components/DelayedResponse"),
     Form: () => import("@/components/Form"),
@@ -505,6 +508,7 @@ export default {
       "itemAnswerTextCropped",
       "showChatIcons",
       "itemExtensions",
+      "getNamedExtension",
       "getFeedbackFormConfig",
       "imageUrl",
       "carouselImageArray",
@@ -995,12 +999,23 @@ export default {
       }
       return null;
     },
-    hasCard(item) {
-      const tResp = TIE.wrap(item.teneoResponse);
+    hasCard() {
+      const tResp = TIE.wrap(this.item.teneoResponse);
       if (tResp.hasParameter("displayCard")) {
+        logger.info("Yes there is a card");
         return true;
       }
       return false;
+    },
+    hasCardCustomHtml() {
+      const cardCustomHtml = this.getNamedExtension(this.item, "displayCardCustomHtml");
+      logger.info("...Yes there is a custom html card", cardCustomHtml, this.item);
+      if (cardCustomHtml) {
+        logger.info("Yes there is a custom html card");
+        return true;
+      } else {
+        return false;
+      }
     },
     getLongListIcon(altOptionIndex) {
       let iconName = "mdi-numeric-9-plus-box-outline";

@@ -669,6 +669,17 @@ function storeSetup(vuetify) {
 
         return hasModal;
       },
+      getNamedExtension: (_state, getters) => (item, name) => {
+        let extensions = getters.itemExtensions(item);
+        let foundExtension = null;
+        extensions.forEach(extension => {
+          if (extension.name && extension.name.toLowerCase() === name.toLowerCase()) {
+            foundExtension = extension;
+          }
+        });
+
+        return foundExtension;
+      },
       hasInline: (_state, getters) => item => {
         let extensions = getters.itemExtensions(item);
         let hasInline = false;
@@ -716,6 +727,11 @@ function storeSetup(vuetify) {
                 return true;
               }
               break;
+            case "cardCutomHtml":
+              if (extension.name === "displayCardCutomHtml") {
+                return true;
+              }
+              break;
             case "vimeo":
               if (getters.vimeoId(extension)) {
                 return true;
@@ -757,6 +773,11 @@ function storeSetup(vuetify) {
               break;
             case "alert":
               if (extension.name === "displayAlert") {
+                return true;
+              }
+              break;
+            case "cardCustomHtml":
+              if (extension.name === "displayCardCutomHtml") {
                 return true;
               }
               break;

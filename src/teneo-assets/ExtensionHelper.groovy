@@ -137,6 +137,26 @@ class ExtensionHelper {
         JsonOutput.toJson(attachment)
     }
 
+    static String displayCardCustomHtml(def model, String template) {
+        def result = ""
+        def items = []
+
+        try {
+            Pattern regex = Pattern.compile("(?:\\s|^)(\\w*)\\.(\\w*)", Pattern.CANON_EQ)
+            Matcher regexMatcher = regex.matcher(template)
+            while (regexMatcher.find()) {
+                def item = [type: regexMatcher.group(1), value: model[regexMatcher.group(2),]]
+                items.add(item)
+
+            }
+            Map attachment = ['name': 'displayCardCustomHtml', 'items': items, inline: true]
+            result = JsonOutput.toJson(attachment)
+        } catch (PatternSyntaxException ex) {
+            ex.printStackTrace()
+        }
+        return result
+    }
+
     static String displayModal(def model, String template) {
         def result = ""
         def items = []
