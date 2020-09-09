@@ -52,7 +52,10 @@
           color="primary"
           accesskey="+"
           :class="`elevation-4 leopard-system-bar ${textColor('primary')}`"
-          style=" border-right: 4px solid yellowgreen !important;border-left: 4px solid yellowgreen !important;"
+          style="
+            border-right: 4px solid yellowgreen !important;
+            border-left: 4px solid yellowgreen !important;
+          "
           @click="maximizeChat = true"
           v-on:keydown.enter.prevent="maximizeChat = true"
         >
@@ -76,11 +79,9 @@
               @click="toggleChat"
               v-show="showChatButton && !isChatOpen"
               tabindex="0"
-              :class="
-                `leopard-open-close-button ${textColor('primary')} ${
-                  pulseButton && !isChatOpen ? 'pulse' : ''
-                }`
-              "
+              :class="`leopard-open-close-button ${textColor('primary')} ${
+                pulseButton && !isChatOpen ? 'pulse' : ''
+              }`"
               :style="customCssButtonToolbar"
             >
               <v-icon v-text="isChatOpen ? 'mdi-close' : 'mdi-message-text'"></v-icon>
@@ -109,13 +110,15 @@
             width="250"
           >
             <v-row align="center" justify="center">
-              <v-col class="primary darken-2 pa-0 ma-0 elevation-2" style="height:64px">
+              <v-col class="primary darken-2 pa-0 ma-0 elevation-2" style="height: 64px">
                 <div class="text-center pa-5 pt-4">
                   <h1
                     tabindex="-1"
                     class="headline white--text font-weight-medium"
                     id="leopard-first-drawer-item"
-                  >{{ $t("menu.title") }}</h1>
+                  >
+                    {{ $t("menu.title") }}
+                  </h1>
                 </div>
               </v-col>
             </v-row>
@@ -134,10 +137,9 @@
                     <v-icon medium :class="menuClass">mdi-comment-arrow-left-outline</v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title
-                      class="subheading"
-                      :class="menuClassText"
-                    >{{ $t('menu.back.to.chat') }}</v-list-item-title>
+                    <v-list-item-title class="subheading" :class="menuClassText">{{
+                      $t("menu.back.to.chat")
+                    }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -148,9 +150,7 @@
                   </v-list-item-action>
                   <v-list-item-content>
                     <v-list-item-title class="subheading" :class="menuClassText">
-                      {{
-                      $t(menuItem.titleKey)
-                      }}
+                      {{ $t(menuItem.titleKey) }}
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
@@ -173,10 +173,9 @@
                     ></v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title
-                      class="subheading"
-                      :class="menuClassText"
-                    >{{ $vuetify.theme.dark ? $t('menu.light.mode') : $t('menu.dark.mode') }}</v-list-item-title>
+                    <v-list-item-title class="subheading" :class="menuClassText">{{
+                      $vuetify.theme.dark ? $t("menu.light.mode") : $t("menu.dark.mode")
+                    }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -194,10 +193,9 @@
                     <v-icon medium :class="menuClass">mdi-backburger</v-icon>
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title
-                      class="subheading"
-                      :class="menuClassText"
-                    >{{ $t('menu.close') }}</v-list-item-title>
+                    <v-list-item-title class="subheading" :class="menuClassText">{{
+                      $t("menu.close")
+                    }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -217,9 +215,7 @@
                 </v-list-item-action>
                 <v-list-item-content>
                   <v-list-item-title class="subheading" :class="menuClassText">
-                    {{
-                    $t("menu.logout")
-                    }}
+                    {{ $t("menu.logout") }}
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -229,7 +225,7 @@
                 v-if="keepBranding()"
                 align="center"
                 justify="center"
-                style="height:90px; background-color: #2F286E;"
+                style="height: 90px; background-color: #2f286e"
               >
                 <div class="pa-2">
                   <a
@@ -343,7 +339,13 @@
                     small
                     ripple
                     accesskey="."
-                    :color="emergencyConfig.color ? emergencyConfig.color : isLightColor('primary') ? 'black' : 'white'"
+                    :color="
+                      emergencyConfig.color
+                        ? emergencyConfig.color
+                        : isLightColor('primary')
+                        ? 'black'
+                        : 'white'
+                    "
                     aria-label="Minimize Chat"
                     class="embed-button-center mr-1"
                     @click="sendEmergencyCode"
@@ -437,7 +439,8 @@
             color="deep-orange"
             icon="mdi-fire"
             class="ma-0 elevation-3"
-          >You already have a solution with the same name or deep link.</v-alert>
+            >You already have a solution with the same name or deep link.</v-alert
+          >
 
           <v-simple-table>
             <template v-slot:default>
@@ -457,8 +460,9 @@
                       <prism
                         language="json"
                         class="leopard-import"
-                        style="background-color: unset; display: block;"
-                      >{{ JSON.stringify(value, null, 2) }}</prism>
+                        style="background-color: unset; display: block"
+                        >{{ JSON.stringify(value, null, 2) }}</prism
+                      >
                     </td>
                   </tr>
                 </template>
@@ -467,7 +471,9 @@
           </v-simple-table>
 
           <template v-slot:buttons>
-            <v-btn small color="green lighten-4 black--text" @click="importDialog = false">Cancel</v-btn>
+            <v-btn small color="green lighten-4 black--text" @click="importDialog = false"
+              >Cancel</v-btn
+            >
             <v-btn
               v-if="!importDialogMessages.hasConflictingSolution"
               small
@@ -516,8 +522,6 @@ import jsonpack from "jsonpack/main";
 
 // import { createDetailsWidget } from "@livechat/agent-app-sdk";
 // import { createMessageBoxWidget } from "@livechat/agent-app-sdk";
-
-
 
 export default {
   components: {
@@ -585,26 +589,22 @@ export default {
     };
   },
   watch: {
-    snotify: function(snotifyConfig) {
+    snotify: function (snotifyConfig) {
       if (snotifyConfig) {
         if (snotifyConfig instanceof Array) {
-           for (let i = 0; i <= snotifyConfig.length; i++) {
-              let conf = snotifyConfig[i];
-              let that = this;
-              if (conf != null) {
-                setTimeout(function () {
-                  if (conf.title && conf.type) {
-                    that.$snotify[conf.type](
-                      conf.body,
-                      conf.title,
-                      conf.config
-                    );
-                  } else if (conf.type) {
-                    that.$snotify[conf.type](conf.body, conf.config);
-                  }
-                }, i * 2000);
-              }
+          for (let i = 0; i <= snotifyConfig.length; i++) {
+            let conf = snotifyConfig[i];
+            let that = this;
+            if (conf != null) {
+              setTimeout(function () {
+                if (conf.title && conf.type) {
+                  that.$snotify[conf.type](conf.body, conf.title, conf.config);
+                } else if (conf.type) {
+                  that.$snotify[conf.type](conf.body, conf.config);
+                }
+              }, i * 2000);
             }
+          }
         } else if (snotifyConfig.title && snotifyConfig.type) {
           this.$snotify[snotifyConfig.type](
             snotifyConfig.body,
@@ -616,22 +616,22 @@ export default {
         }
       }
     },
-    isChatOpen: function(isOpenNew) {
+    isChatOpen: function (isOpenNew) {
       if (isOpenNew) {
         const element = this.$el.querySelector("#teneo-input-field");
         if (element) {
           if (!this.isMobileDevice) {
+            element.focus();
+            this.$nextTick(() => {
+              // this.$refs.userInput.focus(); // possibly duplicated below
+              element.addEventListener("focusin", e => e.stopPropagation()); // to stop flickering
               element.focus();
-              this.$nextTick(() => {
-                // this.$refs.userInput.focus(); // possibly duplicated below
-                element.addEventListener("focusin", e => e.stopPropagation()); // to stop flickering
-                element.focus();
-                try {
-                  element.click();
-                } catch (e) {
-                  // ignore
-                }
-              });
+              try {
+                element.click();
+              } catch (e) {
+                // ignore
+              }
+            });
           } else {
             element.addEventListener("focusin", e => e.stopPropagation()); // to stop flickering
             document.activeElement.blur();
@@ -639,7 +639,7 @@ export default {
         }
       }
     },
-    mustCloseBecauseOfEscape: function(mustClose) {
+    mustCloseBecauseOfEscape: function (mustClose) {
       if (mustClose) {
         if (this.embed) {
           this.closeChatEmbedded();
@@ -650,7 +650,7 @@ export default {
         this.$store.commit("RESET_MUST_CLOSE");
       }
     },
-    drawer: function(isDrawerOpen) {
+    drawer: function (isDrawerOpen) {
       if (isDrawerOpen) {
         this.$nextTick(() => {
           document.getElementById("leopard-first-drawer-item").focus();
@@ -681,7 +681,7 @@ export default {
       // window.addEventListener("keyup", debounce(this.handleKeyUpEmbed, 200, false), false);
       window.addEventListener("keyup", this.handleKeyUpEmbed, true);
     }
-    this.$nextTick(function() {
+    this.$nextTick(function () {
       if (this.isMobileDevice) {
         window.addEventListener("resize", this.onResizeOrEmbed, false);
       } else {
@@ -954,7 +954,7 @@ export default {
       this.maximizeChat = false;
 
       setTimeout(
-        function() {
+        function () {
           let systemBarElement = document.getElementById("leopardSystemBarMinimized");
           if (systemBarElement) {
             systemBarElement.focus();
@@ -966,7 +966,6 @@ export default {
       );
     },
     isChatOpenLocalStorage() {
-
       let isChatOpen = localStorage.getItem("isChatOpen");
       if (isChatOpen === null) {
         isChatOpen = false;
@@ -999,7 +998,10 @@ export default {
     },
     sendMessageToParent(message) {
       const trustedDomains = window.leopardConfig.embed.leopardTrustedDomains;
-      if (!parent || (parent && trustedDomains.length > 0 && !trustedDomains.includes(parent.location.origin))) {
+      if (
+        !parent ||
+        (parent && trustedDomains.length > 0 && !trustedDomains.includes(parent.location.origin))
+      ) {
         return;
       }
       parent.postMessage(message, "*"); // post multiple times to each domain you want leopard on. Specify origin for each post.
@@ -1068,7 +1070,7 @@ export default {
       logger.debug("Open Chat Window from Embed Button");
       this.$store.commit("HIDE_CHAT_BUTTON");
       setTimeout(
-        function() {
+        function () {
           this.$store.commit("OPEN_CHAT_WINDOW_DISPLAY_EMBED");
         }.bind(this),
         800
@@ -1096,7 +1098,7 @@ export default {
           siteFrame.setAttribute("class", ""); // start resizing the iframe - make it larger
         }
         setTimeout(
-          function() {
+          function () {
             this.$store.commit("TOGGLE_CHAT_WINDOW_DISPLAY"); // close the chat window - i want the iframe to resize first and then the chat window to close
             if (chatButton) {
               chatButton.setAttribute("class", ""); // wait a sec for button hide animation and then reposition chat button
@@ -1211,7 +1213,7 @@ export default {
         // this.$store.commit("SHOW_CHAT_LOADING"); // display the loading spinner
         let isChatUiFloating = this.float;
         setTimeout(
-          function() {
+          function () {
             logger.debug(`In move button left: ${isChatUiFloating}`);
             // wait just a bit before animating things - need the chat button to hide first
             if (chatButton && !this.embed) {
@@ -1260,7 +1262,7 @@ export default {
           .then(() => {
             logger.debug("Successfully logged into chat");
             setTimeout(
-              function() {
+              function () {
                 this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
               }.bind(this),
               1500
@@ -1287,14 +1289,14 @@ export default {
           this.$store.commit("CLEAR_CHAT_HISTORY"); // clear the dialogs once we have successfully ended the session
           // show the loading gif as the window is closing. Although delay a bit
           setTimeout(
-            function() {
+            function () {
               this.$store.commit("SHOW_CHAT_LOADING");
             }.bind(this),
             100
           );
 
           setTimeout(
-            function() {
+            function () {
               let appElement = document.getElementById("app");
               appElement.setAttribute("style", "");
               this.$store.commit("SHOW_CHAT_BUTTON"); // only show the open chat button once the session has ended
@@ -1318,7 +1320,7 @@ export default {
 
 .leopard-alert-border {
   border-style: solid;
-  border-width: 4px;
+  /* border-width: 4px; */
   content: "";
   position: absolute;
   opacity: 0.8;
