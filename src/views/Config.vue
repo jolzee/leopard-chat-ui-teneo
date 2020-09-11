@@ -11,7 +11,7 @@
     :fullscreen="fullscreen || $vuetify.breakpoint.mdAndDown"
     light
   >
-    <v-card style="background-color: #FAFAFA">
+    <v-card style="background-color: #fafafa">
       <v-system-bar
         height="30px"
         light
@@ -35,13 +35,15 @@
           tag="button"
           :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
           @click="toggleFullscreen"
-        >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon>
+          >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon
+        >
         <v-icon
           tabindex="0"
           tag="button"
           aria-label="Close Config Area"
           @click="closeConfigArea(false)"
-        >mdi-close</v-icon>
+          >mdi-close</v-icon
+        >
       </v-system-bar>
       <v-app-bar color="#2F286B" max-height="64px">
         <!-- show the nicely formatted view of the full configuration -->
@@ -137,24 +139,7 @@
           </template>
           <span>Run audit of all TIE urls</span>
         </v-tooltip>
-        <v-tooltip open-delay="300" bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              aria-label="Toggle a visual display of all solution configurations as JSON"
-              class="mr-2"
-              v-bind="attrs"
-              v-on="on"
-              fab
-              dark
-              small
-              color="deep-purple"
-              @click="toggleDisplayOfSolutionConfig"
-            >
-              <v-icon dark>{{ displayFullSolutionConfig ? "mdi-eye" : "mdi-eye-off" }}</v-icon>
-            </v-btn>
-          </template>
-          <span>Toggle display of the configuration for all solutions</span>
-        </v-tooltip>
+
         <v-tooltip open-delay="300" bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -183,7 +168,7 @@
           :aria-label="`There are ${config.solutions.length} known teneo solutions`"
           class="mr-2 d-none d-sm-inline"
         >
-          <span slot="badge" style="background-color: #4051B1">{{ config.solutions.length }}</span>
+          <span slot="badge" style="background-color: #4051b1">{{ config.solutions.length }}</span>
           <v-icon large color="grey lighten-1">mdi-counter</v-icon>
         </v-badge>
         <!-- <v-chip
@@ -206,7 +191,7 @@
                 <v-row>
                   <v-col cols="12" v-if="hasSolutions" class="pb-0">
                     <v-autocomplete
-                      style="max-width: 520px;"
+                      style="max-width: 520px"
                       color="#2F2869"
                       item-avatar="userIcon"
                       autofocus
@@ -233,7 +218,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col style="min-height: 72px;">
+                  <v-col style="min-height: 72px">
                     <template v-if="selectedSolution">
                       <v-tooltip open-delay="300" bottom>
                         <template v-slot:activator="{ on, attrs }">
@@ -252,9 +237,9 @@
                             >
                               <v-icon dark>
                                 {{
-                                selectedSolution && config.activeSolution === selectedSolution.id
-                                ? "mdi-checkbox-marked"
-                                : "mdi-checkbox-blank-outline"
+                                  selectedSolution && config.activeSolution === selectedSolution.id
+                                    ? "mdi-checkbox-marked"
+                                    : "mdi-checkbox-blank-outline"
                                 }}
                               </v-icon>
                             </v-btn>
@@ -480,10 +465,6 @@
                 </v-row>
               </v-container>
 
-              <div v-if="displayFullSolutionConfig && !displayAddEditDialog">
-                <prism language="json">{{ prettyPrintFullConfig }}</prism>
-              </div>
-
               <!-- upload new configuration -->
               <v-dialog
                 v-model="uploadDialog"
@@ -500,20 +481,21 @@
                     :class="{ 'grab-cursor': !embed && !$vuetify.breakpoint.mdAndDown }"
                     dark
                   >
-                    <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
+                    <v-spacer style="height: 30px" class="teneo-systembar-spacer"></v-spacer>
 
                     <v-icon
                       tag="button"
                       aria-label="Close dialog"
                       tabindex="0"
                       @click="closeUploadDialog"
-                    >mdi-close</v-icon>
+                      >mdi-close</v-icon
+                    >
                   </v-system-bar>
 
                   <v-app-bar
                     :color="`primary ${textColor('primary')}`"
                     dense
-                    style="max-height:48px"
+                    style="max-height: 48px"
                   >
                     <v-toolbar-title>Import Solution(s)</v-toolbar-title>
                   </v-app-bar>
@@ -561,7 +543,8 @@
                       light
                       small
                       @click="closeUploadDialog"
-                    >{{ $t('forms.close') }}</v-btn>
+                      >{{ $t("forms.close") }}</v-btn
+                    >
                     <v-btn
                       :disabled="getUploadConfig === ''"
                       small
@@ -578,7 +561,8 @@
                       color="#2F2869"
                       :timeout="globalSnackbarTimeout"
                       v-model="uploadSnackbar"
-                    >{{ globalSnackbarMessage }}</v-snackbar>
+                      >{{ globalSnackbarMessage }}</v-snackbar
+                    >
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -608,15 +592,15 @@
                     <br />
                     <br />
                     <span class="leopard-code">
-                      {{
-                      selectedSolution ? selectedSolution.name : ""
-                      }}
+                      {{ selectedSolution ? selectedSolution.name : "" }}
                     </span>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="green darken-1" text @click="closeConfigArea(true)">No</v-btn>
-                    <v-btn color="green darken-1" text @click="doRefreshToSelectedSolution">Yes</v-btn>
+                    <v-btn color="green darken-1" text @click="doRefreshToSelectedSolution"
+                      >Yes</v-btn
+                    >
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -644,7 +628,8 @@
                             :href="result.solution.url"
                             :title="result.solution.url"
                             target="_blank"
-                          >{{ result.solution.url }}</a>
+                            >{{ result.solution.url }}</a
+                          >
                         </td>
                         <td>
                           <v-progress-circular
@@ -664,11 +649,9 @@
                             transition="slide-y-reverse-transition"
                           >
                             <template v-slot:activator>
-                              <v-icon
-                                v-if="result.status === 'success'"
-                                large
-                                color="blue darken-2"
-                              >mdi-check-network-outline</v-icon>
+                              <v-icon v-if="result.status === 'success'" large color="blue darken-2"
+                                >mdi-check-network-outline</v-icon
+                              >
                               <v-icon v-else large color="error darken-2">mdi-close-network</v-icon>
                             </template>
                             <v-btn
@@ -712,9 +695,7 @@
       <v-card-actions class="grey lighten-3">
         <v-spacer></v-spacer>
         <v-btn color="#2F2869" dark small @click="closeConfigArea(false)">
-          {{
-          $t("back.to.chat.button")
-          }}
+          {{ $t("back.to.chat.button") }}
         </v-btn>
       </v-card-actions>
       <!-- global snackbar -->
@@ -723,7 +704,8 @@
         :timeout="globalSnackbarTimeout"
         v-model="globalSnackbar"
         :color="globalSnackbarColor"
-      >{{ globalSnackbarMessage }}</v-snackbar>
+        >{{ globalSnackbarMessage }}</v-snackbar
+      >
     </v-card>
   </v-dialog>
 </template>
@@ -742,23 +724,17 @@ import {
   createSharableLink
 } from "@/utils/utils";
 import dayjs from "dayjs";
-// import Prism from "prismjs";
 import copy from "copy-to-clipboard";
 import { STORAGE_KEY, SOLUTION_DEFAULT } from "@/constants/solution-config-default";
-import "prismjs/prism";
-import "prismjs/themes/prism-funky.css";
-import "prismjs/components/prism-json.min";
 import { mapGetters } from "vuex";
 import { slugify } from "../utils/utils";
 const TIE = require("leopard-tie-client");
 // import ConfigAddEditSolution from "@/components/ConfigAddEditSolution";
 // import Dialog from "@/components/Dialog";
-// import Prism from "vue-prism-component";
 
 export default {
   name: "ConfigView",
   components: {
-    Prism: () => import("vue-prism-component"),
     ConfigAddEditSolution: () => import("@/components/ConfigAddEditSolution"),
     Dialog: () => import("@/components/Dialog")
   },
@@ -782,7 +758,6 @@ export default {
       globalSnackbarTimeout: 2000,
       globalSnackbarColor: "#2F2869",
       uploadTextAreaLoading: false,
-      displayFullSolutionConfig: false,
       showProgressUpload: false,
       displayAddEditDialog: false,
       currentModeEdit: "",
@@ -850,10 +825,10 @@ export default {
       return this.config.solutions.slice().sort(this.compareSolutions);
     },
     getUploadConfig: {
-      get: function() {
+      get: function () {
         return this.uploadConfig;
       },
-      set: function(newValue) {
+      set: function (newValue) {
         this.uploadConfig = newValue;
       }
     },
@@ -889,7 +864,7 @@ export default {
       return result;
     }
   },
-  updated: function() {},
+  updated: function () {},
   created() {
     // add new JSON config if missing
     this.config = fixSolutions(this.config);
@@ -998,8 +973,9 @@ export default {
     createShareLinkForSolution() {
       const sharableLink = createSharableLink(this.selectedSolution);
       if (window.leopardConfig.jaguarLinkShortenerUrl) {
-        superagent.get(window.leopardConfig.jaguarLinkShortenerUrl)
-        .query({ url: sharableLink })
+        superagent
+          .get(window.leopardConfig.jaguarLinkShortenerUrl)
+          .query({ url: sharableLink })
           .then(res => {
             copy(
               `${res.body.url}#${slugify(this.selectedSolution.name)}-${dayjs().format(
@@ -1033,13 +1009,10 @@ export default {
       this.currentModeEdit = "";
       this.saveToLocalStorage();
       const self = this;
-      setTimeout(function() {
+      setTimeout(function () {
         self.solution = cloneObject(SOLUTION_DEFAULT);
         self.solution.id = uuid();
       }, 1000);
-    },
-    toggleDisplayOfSolutionConfig() {
-      this.displayFullSolutionConfig = !this.displayFullSolutionConfig;
     },
     importSolution(newSolution) {
       let existingSolutionsWithId = this.config.solutions.findIndex(
@@ -1115,7 +1088,7 @@ export default {
 
       let reader = new FileReader();
       let self = this;
-      reader.onload = function() {
+      reader.onload = function () {
         self.uploadConfig = reader.result;
         self.showProgressUpload = false;
       };
@@ -1272,7 +1245,7 @@ export default {
         } else if (this.config.solutions.length > 1) {
           let self = this;
           this.selectedSolution = cloneObject(
-            this.config.solutions.find(function(solution) {
+            this.config.solutions.find(function (solution) {
               return solution.id === self.config.activeSolution;
             })
           );
