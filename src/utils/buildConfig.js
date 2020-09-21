@@ -30,6 +30,7 @@ let leopardConfig = {
   requestParams: "",
   liveChat: {
     licenseKey: config.get("liveChatInc.key"),
+    clientId: config.get("liveChatInc.clientId"),
     agentAssistServerUrl: config.get("liveChatInc.agentAssist.serverUrl")
   },
   jaguarLinkShortenerUrl: config.get("ui.configArea.shareLink.jaguarLinkShortenerUrl"),

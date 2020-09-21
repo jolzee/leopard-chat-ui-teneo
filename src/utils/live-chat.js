@@ -42,7 +42,9 @@ export class LiveChat {
       if (this.store.getters.enableLiveChat && window.leopardConfig.liveChat.licenseKey) {
         this.sdk = CustomerSDK.init({
           licenseId: parseInt(window.leopardConfig.liveChat.licenseKey),
-          clientId: "5e68dfc9597a892b27eb97740abe1fee"
+          clientId: window.leopardConfig.liveChat.clientId
+            ? window.leopardConfig.liveChat.clientId
+            : "5e68dfc9597a892b27eb97740abe1fee"
         });
 
         // this.sdk = CustomerSDK.debug(
@@ -243,16 +245,23 @@ export class LiveChat {
         this.sdk.on("connected", payload => {
           logger.debug(`CUSTOMER DATA`, payload.customer);
           logger.debug(`LiveChat > Connected`, payload);
-          this.sdk.listChats().then(existingChats => {
-            logger.info(`Existing LiveChats`, existingChats);
-            if (existingChats.chatsSummary.length > 0) {
-              this.chatId = existingChats.chatsSummary[0].id;
-              this.lastMessage = existingChats.chatsSummary[0].lastEventsPerType.message.text;
-              this.lastMessageAuthorId =
-                existingChats.chatsSummary[0].lastEventsPerType.message.author;
-              this.isActiveChat = existingChats.chatsSummary[0].active;
-            }
-          });
+          this.sdk
+            .listChats()
+            .then(existingChats => {
+              logger.info(`Existing LiveChats`, existingChats);
+              if (existingChats.chatsSummary.length > 0) {
+                this.chatId = existingChats.chatsSummary[0].id;
+                this.lastMessage = existingChats.chatsSummary[0].lastEventsPerType.message.text;
+                this.lastMessageAuthorId =
+                  existingChats.chatsSummary[0].lastEventsPerType.message.author;
+                this.isActiveChat = existingChats.chatsSummary[0].active;
+              } else {
+                this.isActiveChat = true;
+              }
+            })
+            .catch(() => {
+              this.isActiveChat = true;
+            });
         });
       }
     } catch (e) {
@@ -336,13 +345,20 @@ export class LiveChat {
    */
   sendMessage(message) {
     if (!this.chatId && this.sdk) {
-      this.sdk.listChats().then(existingChats => {
-        logger.info(`Existing LiveChats`, existingChats);
-        if (existingChats.chatsSummary.length > 0) {
-          this.chatId = existingChats.chatsSummary[0].id;
+      this.sdk
+        .listChats()
+        .then(existingChats => {
+          logger.info(`Existing LiveChats`, existingChats);
+          if (existingChats.chatsSummary.length > 0) {
+            this.chatId = existingChats.chatsSummary[0].id;
+            this.communicateWithAgent(message);
+          } else {
+            this.communicateWithAgent(message);
+          }
+        })
+        .catch(() => {
           this.communicateWithAgent(message);
-        }
-      });
+        });
     } else if (this.chatId && this.sdk) {
       this.communicateWithAgent(message);
     }
@@ -430,7 +446,9 @@ export class LiveChat {
           }
         })
         .then(chat => {
-          this.chatId = chat;
+          if (chat) {
+            this.chatId = chat.id;
+          }
           logger.debug(`Live Chat Response`, chat);
         })
         .catch(error => {
