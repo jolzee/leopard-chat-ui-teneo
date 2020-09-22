@@ -433,7 +433,6 @@ export class LiveChat {
             this.agent = response.users.find(user => user.type === "agent");
             logger.debug("Agent info", this.agent);
             if (!isEmptyObject(this.agent)) {
-              this.agent = user;
               this.store.commit("AGENT_NAME", this.agent.name);
               this.store.commit("AGENT_ID", this.agent.id);
               this.store.commit("AGENT_AVATAR", this.agent.avatar);
