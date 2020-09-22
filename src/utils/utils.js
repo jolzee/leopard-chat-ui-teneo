@@ -290,6 +290,10 @@ export const isEmpty = obj => {
   return true;
 };
 
+export const isEmptyObject = obj => {
+  return Object.keys(obj).length === 0 && obj.constructor === Object;
+};
+
 export const isLight = color => {
   if (lightOrDark(color) === "light") {
     return true;

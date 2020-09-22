@@ -4,6 +4,7 @@ import * as CustomerSDK from "@livechat/customer-sdk"; // live chat
 // customerSDK.auth.getToken().then(token => logger.debug(token));
 var stripHtml = require("striptags");
 var iterator = require("markdown-it-for-inline");
+import { isEmptyObject } from "@/utils/utils";
 
 var md = require("markdown-it")({
   html: true,
@@ -145,6 +146,9 @@ export class LiveChat {
                 this.store.state.liveAgent.isLiveChat
               );
 
+              if (!this.agent.id && event.authorId) {
+                this.agent.id = event.authorId;
+              }
               if (event.authorId === this.agent.id) {
                 if (!this.store.state.liveAgent.isLiveChat || !this.store.state.ui.showChatWindow) {
                   this.startLiveChat();
@@ -258,6 +262,12 @@ export class LiveChat {
               } else {
                 this.isActiveChat = true;
               }
+              if (existingChats.users && isEmptyObject(this.agent)) {
+                this.agent = existingChats.users.find(user => user.type === "agent");
+                this.store.commit("AGENT_NAME", this.agent.name);
+                this.store.commit("AGENT_ID", this.agent.id);
+                this.store.commit("AGENT_AVATAR", this.agent.avatar);
+              }
             })
             .catch(() => {
               this.isActiveChat = true;
@@ -367,7 +377,8 @@ export class LiveChat {
   communicateWithAgent(message) {
     if (this.chatId && this.sdk && this.isActiveChat) {
       logger.debug(
-        "Have existing chatId, chat is active and Sending message to LiveChat Agent:" + message
+        "Have existing chatId, chat is active and Sending message to LiveChat Agent:" + message,
+        this.chatId
       );
       this.sdk
         .sendEvent({
@@ -415,8 +426,19 @@ export class LiveChat {
         })
         .then(response => {
           logger.debug(`Live Chat Chat Reactivation`, response);
+          logger.debug(`Apparently the Chat ID is ${response.chat.id}`, response.chat);
           this.chatId = response.chat.id;
           this.isActiveChat = response.chat.thread.active;
+          if (isEmptyObject(this.agent)) {
+            this.agent = response.users.find(user => user.type === "agent");
+            logger.debug("Agent info", this.agent);
+            if (!isEmptyObject(this.agent)) {
+              this.agent = user;
+              this.store.commit("AGENT_NAME", this.agent.name);
+              this.store.commit("AGENT_ID", this.agent.id);
+              this.store.commit("AGENT_AVATAR", this.agent.avatar);
+            }
+          }
           this.displayQueueNotification(response);
         })
         .catch(error => {
@@ -461,13 +483,21 @@ export class LiveChat {
 
   displayQueueNotification(response) {
     try {
-      let secondsWait = response.chat.thread.queue.waitTime;
-      let message =
-        "Chat request sent to agent. You are number " +
-        response.chat.thread.queue.position +
-        " in the queue. Average wait time is " +
-        (Math.floor(secondsWait / 60) + " min " + ("0" + Math.floor(secondsWait % 60)).slice(-2)) +
-        " seconds";
+      let message = "";
+      if (response.chat.thread.queue && response.chat.thread.queue.waitTime) {
+        let secondsWait = response.chat.thread.queue.waitTime;
+        message =
+          "Chat request sent to agent. You are number " +
+          response.chat.thread.queue.position +
+          " in the queue. Average wait time is " +
+          (Math.floor(secondsWait / 60) +
+            " min " +
+            ("0" + Math.floor(secondsWait % 60)).slice(-2)) +
+          " seconds";
+      } else {
+        message = "Chat request sent to agent.";
+      }
+
       // only display messages if live chat is active (check for isLiveChat prevents messages from showing when user refreshed the page)
       let liveChatStatus = {
         type: "liveChatQueue",
