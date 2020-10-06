@@ -2,27 +2,24 @@
   <v-data-table
     v-if="items && items.length"
     :headers="headers"
-    :items="items"
+    :items="makeHtml()"
     :search="search"
     :footer-props="{
       itemsPerPageOptions: calcRowsPerPage
     }"
   >
-    <template slot="
-    items" slot-scope="props">
-      <td
-        v-for="(header, key) in headers"
-        :key="key"
-        class="text-left"
-        v-html="props.item[header.value]"
-      ></td>
+    <template v-slot:body="{ items }">
+      <tbody>
+        <tr v-for="(item, dex) in items" :key="dex + getUuid">
+          <template v-for="(cellValue, j) in getValues(item)">
+            <td v-html="cellValue" :key="j + getUuid"></td>
+          </template>
+        </tr>
+      </tbody>
     </template>
-    <v-alert
-      slot="no-results"
-      :value="true"
-      color="error"
-      icon="mdi-alert-octagram"
-    >Your search for "{{ search }}" found no results.</v-alert>
+    <v-alert slot="no-results" :value="true" color="error" icon="mdi-alert-octagram"
+      >Your search for "{{ search }}" found no results.</v-alert
+    >
     <template v-if="footer" slot="footer">
       <td colspan="100%">
         <strong>{{ footer }}</strong>
@@ -32,6 +29,8 @@
 </template>
 
 <script>
+const logger = require("@/utils/logging").getLogger("Table.vue");
+import { uuid } from "@/utils/utils";
 export default {
   props: {
     headers: {
@@ -53,6 +52,33 @@ export default {
     rowsPerPage: {
       type: Array,
       required: true
+    }
+  },
+  methods: {
+    getValues(item) {
+      return Object.values(item);
+    },
+    getUuid() {
+      return uuid();
+    },
+    isEnabled(slot) {
+      return this.enabled === slot;
+    },
+    unescapeHTML(html) {
+      var txt = document.createElement("textarea");
+      txt.innerHTML = html;
+      return txt.value;
+    },
+    makeHtml() {
+      let that = this;
+      const unescapedItems = this.items.map(item => {
+        Object.keys(item).forEach(function (key) {
+          item[key] = that.unescapeHTML(item[key]);
+        });
+        return item;
+      });
+      console.log(unescapedItems);
+      return unescapedItems;
     }
   },
   computed: {
