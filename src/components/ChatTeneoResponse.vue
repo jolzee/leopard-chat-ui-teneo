@@ -240,7 +240,7 @@
         <div v-if="getOptions.html" class="elevation-2 mt-2" v-html="getOptions.items"></div>
         <span v-for="(option, optionIndex) in getOptions.items" v-else :key="optionIndex + uuid">
           <v-btn
-            height="25"
+            min-height="25"
             class="option-btn mr-2 mt-2"
             x-small
             :color="option.color || `success ${textColor('success')}`"
@@ -1071,6 +1071,9 @@ export default {
   font-size: 13px;
   white-space: normal;
   text-transform: unset;
+  height: unset !important;
+  display: unset;
+  min-height: 25px;
 }
 
 .modal-btn {
