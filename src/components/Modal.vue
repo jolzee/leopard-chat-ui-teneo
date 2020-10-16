@@ -202,7 +202,7 @@
 </template>
 
 <script>
-import { stripHtmlTags, removeAll } from "@/utils/utils";
+import { stripHtmlTags, removeAll, replaceAll } from "@/utils/utils";
 import { mapGetters } from "vuex";
 
 const logger = require("@/utils/logging").getLogger("Modal.vue");
@@ -357,7 +357,9 @@ export default {
         if (transcript && this.isLiveChat) {
           this.$store.commit(
             "LIVE_CHAT",
-            `======= VIRTUAL ASSISTANT CONVERSATION HISTORY =======\n${transcript}====================================================\n`
+            `======= VIRTUAL ASSISTANT CONVERSATION HISTORY =======\n${this.chunksToNewLines(
+              transcript
+            )}\n====================================================\n`
           );
           this.$store.commit("HIDE_CHAT_MODAL"); // stops the transcript from being sent back constantly during a live chat
         }
@@ -594,6 +596,9 @@ export default {
     }
   },
   methods: {
+    chunksToNewLines(target) {
+      return replaceAll(target, "||", "\n\n");
+    },
     // handleFocus() {
     //   this.$store.commit("HIDE_508_CONTENT");
     //   logger.info(`Modal Has Focus - Hiding 508 content in the chat window`);

@@ -179,6 +179,7 @@ function storeSetup(vuetify) {
       ui: {
         vuetify: vuetify,
         chatTitle: setupConfig.CHAT_TITLE,
+        css: null,
         dark: localStorage.getItem(STORAGE_KEY + "darkTheme")
           ? localStorage.getItem(STORAGE_KEY + "darkTheme") === "true"
           : false,
@@ -1104,6 +1105,9 @@ function storeSetup(vuetify) {
       },
       SET_SNOTIFY(state, config) {
         state.ui.snotify = config;
+      },
+      SET_CUSTOM_CSS(state, config) {
+        state.ui.css = config;
       },
       SET_TENEO_SESSION_ID(state, newSessionId) {
         state.teneoSessionId = newSessionId;
@@ -2144,6 +2148,7 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
 
       let tResp = handleTeneoResponseEarly(context, json);
       handleToastResponse(tResp, context);
+      handleCustomCSSResponse(tResp, context);
       handleThemeResponse(tResp, vuetify);
 
       let mustStop = handlePromptPollingResponse(tResp, context, params);
@@ -2390,6 +2395,12 @@ function handleTeneoResponseEarly(context, json) {
 function handleToastResponse(tResp, context) {
   if (tResp.hasParameter("toast")) {
     context.commit("SET_SNOTIFY", tResp.getParameter("toast"));
+  }
+}
+
+function handleCustomCSSResponse(tResp, context) {
+  if (tResp.hasParameter("css")) {
+    context.commit("SET_CUSTOM_CSS", tResp.getParameter("css"));
   }
 }
 
