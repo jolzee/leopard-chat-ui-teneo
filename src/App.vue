@@ -346,7 +346,7 @@
                         ? 'black'
                         : 'white'
                     "
-                    aria-label="Minimize Chat"
+                    aria-label="Send Emergency Code"
                     class="embed-button-center mr-1"
                     @click="sendEmergencyCode"
                   >
@@ -589,6 +589,13 @@ export default {
     };
   },
   watch: {
+    minimize: function (delay) {
+      if (delay) {
+        setTimeout(() => {
+          this.minimizeChat();
+        }, delay * 1000);
+      }
+    },
     snotify: function (snotifyConfig) {
       if (snotifyConfig) {
         if (snotifyConfig instanceof Array) {
@@ -753,6 +760,7 @@ export default {
       "float",
       "firebase",
       "hideConfigMenu",
+      "minimize",
       "overlayChat",
       "progressBar",
       "pulseButton",

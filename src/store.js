@@ -189,6 +189,7 @@ function storeSetup(vuetify) {
         hideConfigMenu: window.leopardConfig.hideConfigMenu,
         isWebSite: true,
         snotify: null,
+        minimize: null,
         overlayChat: setupConfig.FLOAT,
         responseIcon: setupConfig.RESPONSE_ICON,
         theme: setupConfig.THEME,
@@ -315,6 +316,10 @@ function storeSetup(vuetify) {
       isChatOpen(state) {
         logger.debug(`store:getters:isChatOpen: ${state.ui.showChatWindow}`);
         return state.ui.showChatWindow;
+      },
+      minimize(state) {
+        logger.debug(`store:getters:minimize: ${state.ui.minimize}`);
+        return state.ui.minimize;
       },
       hideConfigMenu(state) {
         return state.ui.hideConfigMenu;
@@ -1334,6 +1339,12 @@ function storeSetup(vuetify) {
       DISABLE_LIVE_CHAT(state) {
         state.liveAgent.enableLiveChat = false;
       },
+      MINIMIZE_DELAY(state, delaySeconds) {
+        state.ui.minimize = delaySeconds;
+      },
+      MINIMIZE_DELAY_REMOVE(state) {
+        state.ui.minimize = null;
+      },
       CHANGE_THEME(state) {
         state.ui.dark = !state.ui.dark;
         localStorage.setItem(
@@ -2149,6 +2160,7 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
       let tResp = handleTeneoResponseEarly(context, json);
       handleToastResponse(tResp, context);
       handleCustomCSSResponse(tResp, context);
+      handleMinimizeResponse(tResp, context);
       handleThemeResponse(tResp, vuetify);
 
       let mustStop = handlePromptPollingResponse(tResp, context, params);
@@ -2404,6 +2416,14 @@ function handleCustomCSSResponse(tResp, context) {
   }
 }
 
+function handleMinimizeResponse(tResp, context) {
+  if (tResp.hasParameter("minimize")) {
+    context.commit("MINIMIZE_DELAY", tResp.getParameter("minimize"));
+  } else if (context.getters.minimize) {
+    context.commit("MINIMIZE_DELAY_REMOVE");
+  }
+}
+
 function handleThemeResponse(tResp, vuetify) {
   if (tResp.hasParameter("theme")) {
     Object.assign(vuetify.framework.theme.themes.light, tResp.getParameter("theme"));
@@ -2592,6 +2612,8 @@ function handleLoginResponse(context, json, vuetify, resolve) {
   logger.info("PARSED Teneo Resp: ", json);
   const tResp = TIE.wrap(json);
   context.commit("HIDE_CHAT_LOADING");
+
+  handleMinimizeResponse(tResp, context);
   if (tResp.hasParameter("theme")) {
     Object.assign(vuetify.framework.theme.themes.light, tResp.getParameter("theme"));
   }
