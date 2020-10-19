@@ -68,8 +68,7 @@
             v-if="
               currentModalPosition !== 'fullscreen' &&
               currentModalSize !== 'fullscreen' &&
-              !embed &&
-              !$vuetify.breakpoint.mdAndDown
+              ((!embed && !$vuetify.breakpoint.mdAndDown) || embed)
             "
             tabindex="0"
             tag="button"
@@ -202,7 +201,7 @@
 </template>
 
 <script>
-import { stripHtmlTags, removeAll, replaceAll } from "@/utils/utils";
+import { stripHtmlTags, sendMessageToParent, removeAll, replaceAll } from "@/utils/utils";
 import { mapGetters } from "vuex";
 
 const logger = require("@/utils/logging").getLogger("Modal.vue");
@@ -328,7 +327,9 @@ export default {
     fullscreen(mustBeFullscreen) {
       if (mustBeFullscreen) {
         this.removeCustomStylesFromModal();
+        this.makeLeopardWide();
       } else {
+        this.makeLeopardNormalWidth();
         this.modalClass();
       }
     },
@@ -596,6 +597,16 @@ export default {
     }
   },
   methods: {
+    makeLeopardNormalWidth() {
+      if (this.embed) {
+        sendMessageToParent("normalWidthLeopard");
+      }
+    },
+    makeLeopardWide() {
+      if (this.embed) {
+        sendMessageToParent("wideLeopard");
+      }
+    },
     chunksToNewLines(target) {
       return replaceAll(target, "||", "\n\n");
     },
@@ -605,7 +616,10 @@ export default {
     // },
     toggleFullscreen() {
       const modalElements = document.getElementsByClassName("teneo-modal");
-      modalElements[0].setAttribute("style", "");
+      if (modalElements.length > 0) {
+        modalElements[0].setAttribute("style", "");
+      }
+
       this.fullscreen = !this.fullscreen;
     },
     getFirstChunk(text) {
@@ -692,6 +706,7 @@ export default {
       this.$store.commit("SET_USER_INPUT", userInput);
     },
     hideModal() {
+      this.makeLeopardNormalWidth();
       this.$store.commit("HIDE_CHAT_MODAL");
       this.$store.commit("SHOW_508_CONTENT");
       const that = this;
