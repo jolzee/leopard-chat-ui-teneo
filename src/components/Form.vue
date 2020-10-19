@@ -40,7 +40,7 @@
             <v-spacer style="height: 30px" class="teneo-systembar-spacer"></v-spacer>
 
             <v-icon
-              v-if="!embed && !$vuetify.breakpoint.mdAndDown"
+              v-if="(!embed && !$vuetify.breakpoint.mdAndDown) || embed"
               tabindex="0"
               tag="button"
               :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
@@ -620,6 +620,7 @@ import * as rules from "vee-validate/dist/rules";
 import { messages } from "vee-validate/dist/locale/en.json";
 import { mask } from "vue-the-mask";
 import { mapGetters } from "vuex";
+import { sendMessageToParent } from "@/utils/utils";
 
 const logger = require("@/utils/logging").getLogger("Form.vue");
 
@@ -650,6 +651,15 @@ export default {
       fullscreen: false,
       overlay: false
     };
+  },
+  watch: {
+    fullscreen: function (newVal) {
+      if (newVal && this.embed) {
+        sendMessageToParent("wideLeopard");
+      } else if (!newVal && this.embed) {
+        sendMessageToParent("normalWidthLeopard");
+      }
+    }
   },
   computed: {
     ...mapGetters(["uuid", "dark", "embed", "fullscreenEmbed", "textColor"])
@@ -688,7 +698,13 @@ export default {
         }
       });
     },
+    normalWidth() {
+      if (this.embed) {
+        sendMessageToParent("normalWidthLeopard");
+      }
+    },
     close() {
+      this.normalWidth();
       this.$emit("hideForm");
       this.$store.commit("SHOW_508_CONTENT");
     },
@@ -700,6 +716,7 @@ export default {
       });
     },
     async submit() {
+      this.normalWidth();
       const isValid = await this.$refs.observer.validate();
       if (!isValid) {
         this.overlay = true;

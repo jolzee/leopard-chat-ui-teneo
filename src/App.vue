@@ -51,7 +51,9 @@
           id="leopardSystemBarMinimized"
           color="primary"
           accesskey="+"
-          :class="`elevation-4 leopard-system-bar ${textColor('primary')}`"
+          :class="`elevation-4 ${
+            embed ? 'leopard-system-bar-embed' : 'leopard-system-bar'
+          } ${textColor('primary')}`"
           style="
             border-right: 4px solid yellowgreen !important;
             border-left: 4px solid yellowgreen !important;
@@ -354,6 +356,23 @@
                   </v-btn>
                 </v-fab-transition>
                 <template v-if="embedAndShowClose">
+                  <!-- showing minimize button for embed -->
+                  <v-fab-transition>
+                    <v-btn
+                      icon
+                      text
+                      tile
+                      small
+                      ripple
+                      accesskey="."
+                      :color="isLightColor('primary') ? 'black' : 'white'"
+                      aria-label="Minimize Chat"
+                      class="embed-button-center mr-1"
+                      @click="minimizeChatEmbedded"
+                    >
+                      <v-icon>mdi-image-size-select-small</v-icon>
+                    </v-btn>
+                  </v-fab-transition>
                   <span @click="closeChatEmbedded">
                     <v-fab-transition>
                       <v-btn
@@ -589,6 +608,11 @@ export default {
     };
   },
   watch: {
+    maximizeChat: function (newVal) {
+      if (newVal) {
+        this.sendMessageToParent("maximizeLeopard");
+      }
+    },
     minimize: function (delay) {
       if (delay) {
         setTimeout(() => {
@@ -1072,6 +1096,24 @@ export default {
       }
       logger.debug("Close Chat Embedded");
       this.$store.commit("HIDE_CHAT_BUTTON");
+    },
+    minimizeChatEmbedded() {
+      //localStorage.setItem("isChatOpen", "false");
+      this.maximizeChat = false;
+      setTimeout(() => {
+        sendMessageToParent("hideLeopardMinimize");
+        this.calculateMobileHeight(); // only called on mobile devices
+
+        logger.debug("Minimized Chat Embedded");
+
+        let systemBarElement = document.getElementById("leopardSystemBarMinimized");
+        if (systemBarElement) {
+          systemBarElement.focus();
+        }
+      }, 50);
+
+      // let appElement = document.getElementById("app");
+      // appElement.setAttribute("style", "");
     },
     openEmbedButton() {
       this.calculateMobileHeight(); // only called on mobile devices
@@ -1586,6 +1628,15 @@ p {
   position: fixed;
   right: 50px;
   bottom: 30px;
+  width: 240px;
+  border-radius: 0.5em;
+  cursor: pointer;
+}
+
+.leopard-system-bar-embed {
+  position: fixed;
+  right: 4px;
+  bottom: 0px;
   width: 240px;
   border-radius: 0.5em;
   cursor: pointer;

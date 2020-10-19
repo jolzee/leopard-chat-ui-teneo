@@ -45,20 +45,57 @@ var leopardChatUi = (function () {
             -webkit-border-radius: 13px;
             height: calc(var(--leopardvh, 1vh) * 85);
         }
+        .teneo-chat-widget-wide {
+            -webkit-box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
+            -moz-box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
+            box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
+            opacity: 1;
+            visibility: visible;
+            z-index: 9000;
+            position: fixed;
+            right: 30px;
+            bottom: 50px;
+            width: 70%;
+            height: 85%;
+            max-width: 100%;
+            max-height: 655px;
+            min-height: 260px;
+            min-width: 257px;
+            background-color: transparent !important;
+            border: 0px;
+            transition: none 0s ease 0s;
+            border-radius: 13px;
+            -moz-border-radius: 13px;
+            -webkit-border-radius: 13px;
+            height: calc(var(--leopardvh, 1vh) * 85);
+        }
         .teneo-transparent::-moz-selection { background: transparent !important; background-color: transparent !important;}
         .teneo-transparent::selection { background: transparent !important; background-color: transparent !important; }
         .teneo-chat-button-widget {
-        opacity: 1;
-        visibility: visible;
-        z-index: 9000;
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 90px;
-        height: 82px;
-        background-color: transparent !important;
-        border: 0px;
-        transition: none 0s ease 0s !important;
+            opacity: 1;
+            visibility: visible;
+            z-index: 9000;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 90px;
+            height: 82px;
+            background-color: transparent !important;
+            border: 0px;
+            transition: none 0s ease 0s !important;
+        }
+        .teneo-chat-minimize-widget {
+            opacity: 1;
+            visibility: visible;
+            z-index: 9000;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 248px;
+            height: 32px;
+            background-color: transparent !important;
+            border: 0px;
+            transition: none 0s ease 0s !important;
         }
         @media only screen and (max-width: 480px) {
         .teneo-chat-widget {
@@ -331,6 +368,35 @@ var leopardChatUi = (function () {
                     leopardContainer.className = "teneo-chat-button-widget";
                     leopardContainer.style.display = "block";
                 }
+            } else if (event.data === "maximizeLeopard") {
+                var node = document.getElementById("teneo-chat-widget-container");
+                node.className = "teneo-chat-widget";
+            } else if (event.data === "wideLeopard") {
+                var node = document.getElementById("teneo-chat-widget-container");
+                node.className = "teneo-chat-widget-wide";
+            } else if (event.data === "normalWidthLeopard") {
+                var node = document.getElementById("teneo-chat-widget-container");
+                node.className = "teneo-chat-widget";
+            } else if (event.data === "hideLeopardMinimize") {
+                    //shouldShowLeopard = false;
+                    var node = document.getElementById("teneo-chat-widget-container");
+                    node.className = "teneo-chat-minimize-widget";
+                    node.style.display = "block";
+                    isLeopardAnimating = false;
+                    // setTimeout(function addFocusToButton() {
+                    //     var leopardFrame;
+                    //     do {
+                    //         leopardFrame = document.getElementById('teneo-chat-widget');
+                    //         if (leopardFrame && leopardFrame.contentDocument) {
+                    //             var leopardFrameInnerButton = leopardFrame.contentDocument.getElementById('leopard-embed-minimize-button'); //leopard-embed-open-close-button
+                    //             if (leopardFrameInnerButton) {
+                    //                 leopardFocusIframe(leopardFrame);
+                    //                 leopardFrameInnerButton.focus();
+                    //             }
+                    //         }
+                    //     }
+                    //     while (!leopardFrame);
+                    // }, 800);
             } else if (event.data.startsWith("runLeopardScript") && allowScripts) {
                 var results = event.data.split("|");
                 eval(results[1]);
