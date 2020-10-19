@@ -725,6 +725,7 @@ export default {
           this.$store.commit("SET_USER_INPUT", ""); // Clear user input
           params = `&formData=${encodeURIComponent(JSON.stringify(this.formData))}`;
         }
+        this.$store.commit("SHOW_508_CONTENT");
         logger.debug(JSON.stringify(this.formData));
         this.$store.dispatch("sendUserInput", params).then(() => {
           this.$emit("completed");
