@@ -617,6 +617,7 @@ export default {
       if (delay) {
         setTimeout(() => {
           this.minimizeChat();
+          this.$store.commit("MINIMIZE_DELAY_REMOVE");
         }, delay * 1000);
       }
     },
@@ -747,7 +748,7 @@ export default {
     }
     // this.toggleChat(); // will automatically open the chat window on load
     if (!this.showButtonOnly) {
-      if (window.innerWidth <= 480 || this.embed) {
+      if (window.innerWidth <= 464 || this.embed) {
         this.onResizeOrEmbed();
       }
       this.$store.dispatch("setUserInformation");
@@ -1212,7 +1213,7 @@ export default {
       }
 
       if (
-        (window.innerWidth <= 480 &&
+        (window.innerWidth <= 464 &&
           !this.loginPerformed &&
           !this.embed &&
           this.dialogs.length === 0) ||
@@ -1243,10 +1244,10 @@ export default {
         return;
       }
       if (
-        (window.innerWidth <= 480 && !this.embed) ||
+        (window.innerWidth <= 464 && !this.embed) ||
         (this.embed && this.isChatOpenLocalStorage())
       ) {
-        logger.debug(`window.innerWidth <= 480 && !this.embed`);
+        logger.debug(`window.innerWidth <= 464 && !this.embed`);
         this.$store.commit("HIDE_CHAT_BUTTON");
         this.$store.commit("SHOW_CHAT_WINDOW"); // show the chat window
         //animate the IFrame
@@ -1280,7 +1281,7 @@ export default {
           }.bind(this),
           400
         );
-      } else if (window.innerWidth > 480 && this.isChatOpen) {
+      } else if (window.innerWidth > 464 && this.isChatOpen) {
         this.$store.commit("SHOW_CHAT_BUTTON");
       }
     },
@@ -1941,7 +1942,7 @@ iframe#site-frame {
   padding-left: 1.5em;
 }
 
-@media only screen and (max-height: 480px) {
+@media only screen and (max-height: 464px) {
   .leopard-alternative-views {
     overflow-x: hidden;
     overflow-y: auto;
@@ -1992,7 +1993,7 @@ iframe#site-frame {
   }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 464px) {
   .leopard-alternative-views {
     overflow-x: hidden;
     overflow-y: auto;

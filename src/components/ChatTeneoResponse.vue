@@ -305,6 +305,32 @@
         </v-btn>
       </v-col>
     </v-row>
+    <!-- Show button that minimizes chat on mobile when redirect url is present -->
+    <v-row
+      v-if="
+        (isMobileDevice || isSimulatedMobileDevice) &&
+        isLastItem &&
+        hasOutputUrl() &&
+        $vuetify.breakpoint.mdAndDown
+      "
+      no-gutters
+      class="mr-3"
+    >
+      <v-col cols="12" class="text-right mb-2">
+        <v-btn
+          :color="`success ${textColor('success')}`"
+          aria-label="Minimize Chat Window"
+          class="modal-btn mt-2"
+          small
+          @click="minimizeChat()"
+        >
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important"
+            >mdi-page-previous-outline</v-icon
+          >
+          Page
+        </v-btn>
+      </v-col>
+    </v-row>
     <v-row v-if="!completedForm && hasForm()" no-gutters class="mr-4">
       <v-col cols="12" class="text-right mb-2">
         <Form
@@ -409,7 +435,6 @@ import copy from "copy-to-clipboard";
 const TIE = require("leopard-tie-client");
 
 const logger = require("@/utils/logging").getLogger("ChatTeneoResponse.vue");
-logger.info("Boom");
 const isHtml = require("is-html");
 const stripHtml = require("striptags");
 
@@ -511,6 +536,8 @@ export default {
       "getNamedExtension",
       "getFeedbackFormConfig",
       "imageUrl",
+      "isMobileDevice",
+      "isSimulatedMobileDevice",
       "carouselImageArray",
       "responseIcon",
       "uuid",
@@ -794,6 +821,15 @@ export default {
     }
   },
   methods: {
+    minimizeChat() {
+      logger.info("Minimizing chat because output URL is present and button clicked");
+      this.$store.commit("MINIMIZE_NOW");
+    },
+    hasOutputUrl() {
+      const tResp = TIE.wrap(this.item.teneoResponse);
+      logger.info(`Boom:: `, tResp.hasLink());
+      return tResp.hasLink();
+    },
     beforeAnswerAlert(extension) {
       // const extensions = this.itemExtensions(this.item);
       let alertConfig = null;

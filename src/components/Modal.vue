@@ -857,7 +857,7 @@ export default {
   left: 20px;
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 464px) {
   .modal-fly-out {
     width: 100% !important;
   }

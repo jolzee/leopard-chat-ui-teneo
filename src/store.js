@@ -118,6 +118,7 @@ function storeSetup(vuetify) {
       },
       browser: {
         isMobile: mobile(),
+        isSimulatedMobile: doesParameterExist("mobile"),
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       },
       auth: {
@@ -254,7 +255,7 @@ function storeSetup(vuetify) {
         return state.ui.theme;
       },
       fullscreenEmbed(state) {
-        return state.ui.embed && state.ui.parent.width && state.ui.parent.width <= 480;
+        return state.ui.embed && state.ui.parent.width && state.ui.parent.width <= 464;
       },
       accessibleAnnouncement(state) {
         return state.accessibleAnnouncement;
@@ -378,6 +379,7 @@ function storeSetup(vuetify) {
         return uploadConfigJson;
       },
       isMobileDevice: state => state.browser.isMobile,
+      isSimulatedMobileDevice: state => state.browser.isSimulatedMobile,
       socialAuthEnabled: state => (state.auth.firebase ? true : false),
       lastReplyItem: state => {
         return state.conversation.dialog
@@ -1338,6 +1340,9 @@ function storeSetup(vuetify) {
       },
       DISABLE_LIVE_CHAT(state) {
         state.liveAgent.enableLiveChat = false;
+      },
+      MINIMIZE_NOW(state) {
+        state.ui.minimize = 0.1;
       },
       MINIMIZE_DELAY(state, delaySeconds) {
         state.ui.minimize = delaySeconds;

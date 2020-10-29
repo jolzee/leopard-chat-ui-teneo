@@ -38,7 +38,11 @@
             >
               <ChatBroadcastMessage :item="item" class="pb-1"></ChatBroadcastMessage>
 
-              <LiveChatResponse :itemIndexInDialog="i" :item="item" class="mt-1 pb-1"></LiveChatResponse>
+              <LiveChatResponse
+                :itemIndexInDialog="i"
+                :item="item"
+                class="mt-1 pb-1"
+              ></LiveChatResponse>
 
               <ChatTeneoResponse
                 :item="item"
@@ -64,7 +68,7 @@
         <div
           v-if="showLiveChatProcessing"
           class="text-left ma-2"
-          style="background-color: transparent; align-items: left;"
+          style="background-color: transparent; align-items: left"
         >
           <v-alert
             min-width="100%"
@@ -112,8 +116,10 @@
       <v-dialog ref="dialogDate" v-model="showDate" :return-value.sync="date" width="290px">
         <v-date-picker header-color="primary" color="secondary" v-model="date" scrollable>
           <v-spacer></v-spacer>
-          <v-btn small color="secondary" @click="showDate = false">{{ $t('pickers.cancel') }}</v-btn>
-          <v-btn small color="success" @click="triggerSend">{{ $t('pickers.ok') }}</v-btn>
+          <v-btn small color="secondary" @click="showDate = false">{{
+            $t("pickers.cancel")
+          }}</v-btn>
+          <v-btn small color="success" @click="triggerSend">{{ $t("pickers.ok") }}</v-btn>
         </v-date-picker>
       </v-dialog>
     </v-col>
@@ -130,8 +136,10 @@
           ></v-time-picker>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn small color="secondary" @click="showTime = false">{{ $t('pickers.cancel') }}</v-btn>
-            <v-btn small color="success" @click="triggerSend">{{ $t('pickers.ok') }}</v-btn>
+            <v-btn small color="secondary" @click="showTime = false">{{
+              $t("pickers.cancel")
+            }}</v-btn>
+            <v-btn small color="success" @click="triggerSend">{{ $t("pickers.ok") }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -155,7 +163,7 @@ import ChatInput from "@/components/ChatInput";
 import { mapGetters } from "vuex";
 
 if (window.Element && !Element.prototype.closest) {
-  Element.prototype.closest = function(s) {
+  Element.prototype.closest = function (s) {
     let matches = (this.document || this.ownerDocument).querySelectorAll(s),
       i,
       el = this;
@@ -204,30 +212,30 @@ export default {
     };
   },
   watch: {
-    showLiveChatProcessing: function() {
+    showLiveChatProcessing: function () {
       // console.log(`SHOW LIVE CHAT PROCESSING`, val);
       setTimeout(() => {
         this.mustScroll = true;
         this.scrollToBottom();
       }, 8000);
     },
-    date: function(newDate) {
+    date: function (newDate) {
       if (newDate !== "") {
         this.updateInputBox(dayjs(newDate).format("D MMMM YYYY"));
       }
     },
-    storeUserInput: debounce(function(userInputStore) {
+    storeUserInput: debounce(function (userInputStore) {
       if (this.userInput !== userInputStore) {
         this.userInput = userInputStore;
       }
     }, 500),
-    dialog: function(newDialog) {
+    dialog: function (newDialog) {
       if (newDialog.length !== this.oldDialogLength) {
         this.mustScroll = true;
         this.oldDialogLength = newDialog.length;
       }
     },
-    showLiveChatProcessing: debounce(function(isLiveChatPersonTyping) {
+    showLiveChatProcessing: debounce(function (isLiveChatPersonTyping) {
       if (isLiveChatPersonTyping) {
         this.mustScroll = true;
       }
@@ -271,7 +279,7 @@ export default {
     ]),
 
     getNarrowMobile() {
-      if (window.innerWidth <= 480) {
+      if (window.innerWidth <= 464) {
         return "min-height: calc(var(--vh, 1vh) * 80 - 130px);";
       } else {
         return "";
@@ -296,7 +304,7 @@ export default {
       }
     }
   },
-  updated: debounce(function() {
+  updated: debounce(function () {
     try {
       if (this.mustScroll) {
         this.mustScroll = false;
@@ -349,7 +357,6 @@ export default {
       logger.debug("Scroll to bottom");
       const endChatTarget = this.$refs.endChat;
       if (endChatTarget) {
-
         this.isScrolling = true;
         let scrollToElement = document.getElementById("teneo-chat-scroll");
         const options = {
@@ -617,7 +624,7 @@ span.teneo-reply ul {
     0px -3px 0px 0px rgba(0, 0, 0, 0.04);
 }
 
-@media only screen and (max-height: 480px) {
+@media only screen and (max-height: 464px) {
   .chat-responses,
   .chat-responses-float {
     min-height: calc(100vh - 130px);
@@ -629,7 +636,7 @@ span.teneo-reply ul {
   }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 464px) {
   .v-footer,
   .chat-container,
   .teneo-dialog,
