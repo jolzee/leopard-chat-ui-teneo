@@ -97,7 +97,7 @@ var leopardChatUi = (function () {
             border: 0px;
             transition: none 0s ease 0s !important;
         }
-        @media only screen and (max-width: 480px) {
+        @media only screen and (max-width: 464px) {
         .teneo-chat-widget {
             z-index: 10000;
             top: 0;
