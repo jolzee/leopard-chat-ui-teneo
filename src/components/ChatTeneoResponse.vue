@@ -52,7 +52,7 @@
         <v-icon
           v-else
           large
-          :color="!$vuetify.theme.dark ? responseLookAndFeel.iconColor : 'indigo'"
+          :color="!$vuetify.theme.dark ? getResponseIconColor : 'indigo'"
           class="teneo-response-icon"
           >{{ getResponseIcon }}</v-icon
         >
@@ -572,6 +572,18 @@ export default {
       });
 
       return routerCheckList;
+    },
+    getResponseIconColor() {
+      let iconColor = this.responseLookAndFeel.iconColor;
+      if ("teneoResponse" in this.item) {
+        const tResp = TIE.wrap(this.item.teneoResponse);
+        if (tResp.hasParameter("iconColor")) {
+          iconColor = tResp.getParameter("iconColor");
+          logger.info("Custom Icon Color:" + iconColor);
+        }
+      }
+
+      return iconColor;
     },
     getResponseIcon() {
       let icon = this.responseIcon;
