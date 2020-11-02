@@ -107,10 +107,7 @@ export default {
   filters: {
     tagify(value) {
       if (!value) return "";
-      value = value
-        .toString()
-        .toLowerCase()
-        .replace(/\s/g, "");
+      value = value.toString().toLowerCase().replace(/\s/g, "");
       return value;
     }
   },
@@ -221,16 +218,13 @@ export default {
       });
     },
     hideDialog() {
-      this.$emit("hideDialog");
+      this.$emit("hide-dialog");
     },
     edit(index, item) {
       if (!this.editing) {
         if (item && item.text) {
           logger.debug(`Item Text: ${item.text}`);
-          item.text = item.text
-            .toString()
-            .toLowerCase()
-            .replace(/\s/g, "");
+          item.text = item.text.toString().toLowerCase().replace(/\s/g, "");
         }
 
         this.editing = item;
@@ -247,14 +241,8 @@ export default {
 
       let text = hasValue(itemText);
       let query = hasValue(queryText);
-      query = query
-        .toString()
-        .toLowerCase()
-        .replace(/\s/g, "");
-      text = text
-        .toString()
-        .toLowerCase()
-        .replace(/\s/g, "");
+      query = query.toString().toLowerCase().replace(/\s/g, "");
+      text = text.toString().toLowerCase().replace(/\s/g, "");
 
       return text.indexOf(query) > -1;
     }

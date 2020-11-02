@@ -4,7 +4,7 @@
       <!-- <ChatNoHistory v-if="noHistory && isHistoryPage"></ChatNoHistory> -->
 
       <!-- show the listening modal when recognizing audio input -->
-      <teneo-listening v-bind:value="listening" :message="$t('asr.listening')"></teneo-listening>
+      <teneo-listening v-bind:visible="listening" :message="$t('asr.listening')"></teneo-listening>
 
       <v-col
         cols="12"
@@ -25,8 +25,8 @@
         <Feedback
           v-if="showFeedback"
           :feedbackConfig="getFeedbackFormConfig"
-          @showFeedback="showFeedback = true"
-          @hideFeedback="showFeedback = false"
+          @show-feedback="showFeedback = true"
+          @hide-feedback="showFeedback = false"
         />
         <v-container class="chat-container-inner">
           <div aria-live="polite">
@@ -47,18 +47,18 @@
               <ChatTeneoResponse
                 :item="item"
                 :itemIndexInDialog="i"
-                @swapInputButton="swapInputButton"
-                @handleFocus="handleFocus = true"
-                @toggleDate="showDate = !showDate"
-                @toggleTime="showTime = !showTime"
-                @showFeedback="showFeedback = true"
+                @swap-input-button="swapInputButton"
+                @handle-focus="handleFocus = true"
+                @toggle-date="showDate = !showDate"
+                @toggle-time="showTime = !showTime"
+                @show-feedback="showFeedback = true"
               ></ChatTeneoResponse>
 
               <ChatUserQuestion
                 :item="item"
                 :itemIndexInDialog="i"
                 @clicked="updateInputBox"
-                @swapInputButton="swapInputButton"
+                @swap-input-button="swapInputButton"
               ></ChatUserQuestion>
             </v-container>
           </div>
@@ -242,7 +242,7 @@ export default {
     }, 300)
   },
   beforeRouteLeave(from, to, next) {
-    this.$emit("closeMenu");
+    this.$emit("close-menu");
     next();
   },
   computed: {

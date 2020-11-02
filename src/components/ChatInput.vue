@@ -12,9 +12,9 @@
                   v-show="textFieldShowCondition"
                   :disabled="textFieldDisabledCondition"
                   v-shortkey="{
-                  toggle1: ['ctrl', 'alt', '/'],
-                  toggle2: ['ctrl', 'alt', 'arrowdown']
-                }"
+                    toggle1: ['ctrl', 'alt', '/'],
+                    toggle2: ['ctrl', 'alt', 'arrowdown']
+                  }"
                   @shortkey.native="swapInputButton"
                   @keyup.esc="handleEscapeKey"
                   :prepend-inner-icon="innerIconCondition"
@@ -108,10 +108,10 @@
                     ripple
                     v-if="showAudioInput"
                     v-shortkey="{
-                    recordAudioOne: ['ctrl', 'alt', '.'],
-                    recordAudioTwo: ['ctrl', 'alt', '`'],
-                    recordAudioThree: ['ctrl', 'alt', 'arrowup']
-                  }"
+                      recordAudioOne: ['ctrl', 'alt', '.'],
+                      recordAudioTwo: ['ctrl', 'alt', '`'],
+                      recordAudioThree: ['ctrl', 'alt', 'arrowup']
+                    }"
                     @shortkey.native="captureAudio"
                     :color="audioButtonColor"
                     :class="!$vuetify.theme.dark ? 'white--text' : 'black--text'"
@@ -199,39 +199,39 @@ export default {
     valid: false
   }),
   watch: {
-    storeUserInput: function(storeInput) {
+    storeUserInput: function (storeInput) {
       if (this.userInput !== storeInput) {
         this.userInput = storeInput;
       }
     },
-    drawer: function(newDrawer) {
+    drawer: function (newDrawer) {
       if (!newDrawer) {
         this.handleFocus();
       }
     },
-    dialogs: function() {
+    dialogs: function () {
       this.handleFocus();
     },
-    mustSend: function(mustSend) {
+    mustSend: function (mustSend) {
       if (mustSend) {
         this.valid = true;
         this.sendUserInput();
       }
     },
-    handleInputFocus: function(shouldFocus) {
+    handleInputFocus: function (shouldFocus) {
       if (shouldFocus) {
         this.handleFocus();
       }
     },
-    toggleButton: function() {
+    toggleButton: function () {
       this.swapInputButton();
     },
-    passUserInput: function(newInput) {
+    passUserInput: function (newInput) {
       if (newInput) {
         this.userInput = newInput;
       }
     },
-    userInputReadyForSending: function(readyForSend) {
+    userInputReadyForSending: function (readyForSend) {
       if (readyForSend) {
         this.valid = true;
         this.sendUserInput();
@@ -332,7 +332,7 @@ export default {
         if (parentEl.classList.contains("v-input__icon--clear")) {
           clearElement.tabIndex = 0;
           clearElement.setAttribute("aria-label", "Clear Chat");
-          clearElement.addEventListener("keyup", function(event) {
+          clearElement.addEventListener("keyup", function (event) {
             event.preventDefault();
             if (event.keyCode === 13) {
               clearElement.click();
@@ -363,7 +363,7 @@ export default {
               if (this.showAudioInput) {
                 this.$emit("asr");
               }
-              // this.$emit("changeKey");
+              // this.$emit("change-key");
             })
             .catch(err => {
               logger.error("Error Sending User Input", err);
@@ -419,11 +419,11 @@ export default {
         if (isChrome) {
           navigator.mediaDevices
             .getUserMedia({ audio: true })
-            .then(function() {
+            .then(function () {
               that.showAudioInput = !that.showAudioInput;
               that.$store.commit("TTS_ENABLE", that.showAudioInput);
             })
-            .catch(function(err) {
+            .catch(function (err) {
               logger.debug("ASR input is not allowed", err);
               that.$store.commit(
                 "SHOW_MESSAGE_IN_CHAT",
@@ -491,7 +491,7 @@ export default {
                 : postResultQueryParam
             );
           })
-          .catch(function(response) {
+          .catch(function (response) {
             uploadProgress = 100;
             successfullUpload = false;
             //handle error

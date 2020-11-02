@@ -20,13 +20,11 @@
         "
       >
         <p
-          :class="
-            `${
-              !$vuetify.theme.dark && questionLookAndFeel.blockTextColor === 'light'
-                ? 'white--text'
-                : ''
-            }`
-          "
+          :class="`${
+            !$vuetify.theme.dark && questionLookAndFeel.blockTextColor === 'light'
+              ? 'white--text'
+              : ''
+          }`"
         >
           <span class="sr-only">I said.</span>
           {{ item.text }}
@@ -104,13 +102,9 @@
           <v-icon large>{{ userIcon }}</v-icon>
         </v-btn>
       </template>
-      <v-snackbar
-        v-model="snackbar"
-        absolute
-        color="primary"
-        :timeout="snackBarTimeout"
-        top
-      >{{ snackBarText }}</v-snackbar>
+      <v-snackbar v-model="snackbar" absolute color="primary" :timeout="snackBarTimeout" top>{{
+        snackBarText
+      }}</v-snackbar>
       <AgentAssistTrainBotForm
         v-if="agentAssist.trainForm"
         :question="agentAssist.trainFormQuestion"
@@ -244,7 +238,7 @@ export default {
       this.$emit("clicked", userInput);
     },
     swapInputButton() {
-      this.$emit("swapInputButton");
+      this.$emit("swap-input-button");
     }
   }
 };

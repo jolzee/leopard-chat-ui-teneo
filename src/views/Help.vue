@@ -57,7 +57,7 @@ export default {
     return {};
   },
   beforeRouteLeave(from, to, next) {
-    this.$emit("closeMenu");
+    this.$emit("close-menu");
     next();
   },
   computed: {

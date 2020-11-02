@@ -6,7 +6,7 @@ export default class Firebase {
 
   static init() {
     if (!Firebase.initialized) {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         Promise.all([
           import(/* webpackChunkName: "firebase" */ "firebase/app"),
           import(/* webpackChunkName: "firebase" */ "firebase/auth")

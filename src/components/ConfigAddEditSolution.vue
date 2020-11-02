@@ -1594,6 +1594,7 @@ export default {
         logger.debug("About to save an edit to an existing solution");
         for (let index = 0; index < this.config.solutions.length; index += 1) {
           if (this.config.solutions[index].id === this.solution.id) {
+            /* eslint-disable-next-line */
             this.config.solutions.splice(index, 1, cloneObject(this.solution));
             break;
           }
@@ -1601,10 +1602,12 @@ export default {
         // adding a new solution config
       } else {
         logger.debug("About to add a new solution");
+        /* eslint-disable-next-line */
         this.config.solutions.push(cloneObject(this.solution));
         // this.selectedSolution = cloneObject(this.solution);
         if (this.config.solutions.length === 1) {
           // first one added. Make it active
+          /* eslint-disable-next-line */
           this.config.activeSolution = this.solution.id;
         }
       }

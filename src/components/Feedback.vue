@@ -12,7 +12,7 @@
           <v-spacer></v-spacer>
         </v-app-bar>
 
-        <v-card-text style="height: 360px;" class="px-2">
+        <v-card-text style="height: 360px" class="px-2">
           <v-container fluid>
             <v-row>
               <v-col cols="12" class="mb-0 pb-0">
@@ -69,8 +69,8 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small color="error" text @click="hideFeedback">{{ $t('forms.close') }}</v-btn>
-          <v-btn small color="success" @click="sendFeedback">{{ $t('forms.send') }}</v-btn>
+          <v-btn small color="error" text @click="hideFeedback">{{ $t("forms.close") }}</v-btn>
+          <v-btn small color="success" @click="sendFeedback">{{ $t("forms.send") }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     hideFeedback() {
-      this.$emit("hideFeedback");
+      this.$emit("hide-feedback");
     },
     sendFeedback() {
       logger.debug(`Rating: ${this.rating} Reasons: ${this.reasons} Comment: ${this.comment}`);

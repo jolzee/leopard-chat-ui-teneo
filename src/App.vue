@@ -432,7 +432,7 @@
                 <OverlayAlert />
                 <router-view
                   :drawer="drawer"
-                  @closeMenu="drawer = false"
+                  @close-menu="drawer = false"
                   v-if="['config'].indexOf($route.name) === -1"
                 />
                 <teneo-modal></teneo-modal>

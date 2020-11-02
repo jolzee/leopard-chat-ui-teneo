@@ -705,7 +705,7 @@ export default {
     },
     close() {
       this.normalWidth();
-      this.$emit("hideForm");
+      this.$emit("hide-form");
       this.$store.commit("SHOW_508_CONTENT");
     },
     async clear() {
@@ -746,7 +746,7 @@ export default {
         logger.debug(JSON.stringify(this.formData));
         this.$store.dispatch("sendUserInput", params).then(() => {
           this.$emit("completed");
-          this.$emit("handleFocus");
+          this.$emit("handle-focus");
           if (this.formConfig.postback && this.formConfig.postback.confirmationAlert) {
             this.$store.commit("SHOW_MESSAGE_IN_CHAT", this.formConfig.postback.confirmationAlert);
           }

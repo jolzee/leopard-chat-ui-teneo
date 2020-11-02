@@ -5,9 +5,9 @@
     leave-active-class="fadeOutRightBig"
   >
     <v-dialog
-      v-show="show"
+      v-show="isVisible"
       id="leopard-dialog"
-      v-model="show"
+      v-model="isVisible"
       :transition="undefined"
       persistent
       scrollable
@@ -26,7 +26,8 @@
               type="info"
               elevation="2"
               @click="overlay = false"
-            >"Welcome to my dialog!!"</v-alert>
+              >"Welcome to my dialog!!"</v-alert
+            >
           </v-overlay>
         </v-fade-transition>
         <v-system-bar
@@ -39,7 +40,7 @@
           }"
           dark
         >
-          <v-spacer style="height:30px" class="teneo-systembar-spacer"></v-spacer>
+          <v-spacer style="height: 30px" class="teneo-systembar-spacer"></v-spacer>
 
           <v-icon
             v-if="!embed && !$vuetify.breakpoint.mdAndDown"
@@ -47,9 +48,12 @@
             tag="button"
             :aria-label="fullscreen ? 'Restore dialog size' : 'Maximize dialog'"
             @click="toggleFullscreen"
-          >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon>
+            >{{ fullscreen ? "mdi-window-restore" : "mdi-window-maximize" }}</v-icon
+          >
 
-          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close">mdi-close</v-icon>
+          <v-icon tag="button" aria-label="Close dialog" tabindex="0" @click="close"
+            >mdi-close</v-icon
+          >
         </v-system-bar>
 
         <v-app-bar :color="`primary ${textColor('primary')}`" dense>
@@ -58,7 +62,7 @@
         </v-app-bar>
 
         <v-card-text
-          style="height: 90%;"
+          style="height: 90%"
           class="px-3 py-0"
           :class="{ 'dark-scroll': dark, 'light-scroll': !dark }"
         >
@@ -74,7 +78,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <slot name="buttons">
-            <v-btn small color="secondary white--text" @click="close">{{ $t('forms.close') }}</v-btn>
+            <v-btn small color="secondary white--text" @click="close">{{
+              $t("forms.close")
+            }}</v-btn>
           </slot>
         </v-card-actions>
       </v-card>
@@ -103,8 +109,14 @@ export default {
   data() {
     return {
       fullscreen: false,
-      overlay: false
+      overlay: false,
+      isVisible: false
     };
+  },
+  watch: {
+    show() {
+      this.isVisible = this.$props.show;
+    }
   },
   computed: {
     ...mapGetters(["uuid", "dark", "embed", "fullscreenEmbed", "textColor"])

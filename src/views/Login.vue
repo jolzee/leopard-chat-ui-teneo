@@ -93,9 +93,7 @@
     </v-form>-->
     <v-col cols="12" class="d-flex justify-center flex-wrap">
       <v-btn color="primary" aria-label="Back to Chat Bot" ripple to="/">
-        {{
-        $t("back.to.chat.button")
-        }}
+        {{ $t("back.to.chat.button") }}
       </v-btn>
     </v-col>
   </v-row>
@@ -138,7 +136,7 @@ export default {
     });
   },
   beforeRouteLeave(from, to, next) {
-    this.$emit("closeMenu");
+    this.$emit("close-menu");
     next();
   },
   updated() {
@@ -188,9 +186,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      "isAuthProviderEnabled"
-    ])
+    ...mapGetters(["isAuthProviderEnabled"])
   }
 };
 </script>

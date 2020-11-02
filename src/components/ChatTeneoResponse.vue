@@ -336,10 +336,10 @@
         <Form
           v-if="mustShowForm()"
           :form-config="getFormConfig()"
-          @showForm="showForm()"
-          @hideForm="hideForm()"
+          @show-form="showForm()"
+          @hide-form="hideForm()"
           @completed="completed()"
-          @handleFocus="handleFocus()"
+          @handle-focus="handleFocus()"
         />
 
         <v-btn
@@ -422,7 +422,7 @@
     <AgentAssistCannedResponseForm
       v-if="agentAssist.cannedResponseForm"
       :text="agentAssist.cannedResponseText"
-      @hideDialog="agentAssist.cannedResponseForm = false"
+      @hide-dialog="agentAssist.cannedResponseForm = false"
       @saved="handleAgentAssistCannedResponseSave"
     />
   </div>
@@ -994,7 +994,7 @@ export default {
       return this.itemIndexInDialog === this.dialog.length - 1;
     },
     handleFocus() {
-      this.$emit("handleFocus");
+      this.$emit("handle-focus");
     },
     mustShowForm() {
       if (this.displayForm) {
@@ -1078,16 +1078,16 @@ export default {
       this.$store.commit("SHOW_CHAT_MODAL", this.item);
     },
     displayFeedbackForm() {
-      this.$emit("showFeedback");
+      this.$emit("show-feedback");
     },
     toggleDate() {
-      this.$emit("toggleDate");
+      this.$emit("toggle-date");
     },
     toggleTime() {
-      this.$emit("toggleTime");
+      this.$emit("toggle-time");
     },
     swapInputButton() {
-      this.$emit("swapInputButton");
+      this.$emit("swap-input-button");
     },
     optionClicked(option) {
       this.$store.commit("SHOW_PROGRESS_BAR");
@@ -1099,7 +1099,7 @@ export default {
           option.params ? `&${option.params}${optionClickParam}` : optionClickParam
         )
         .then(() => {
-          this.$emit("handleFocus");
+          this.$emit("handle-focus");
         });
     }
   }
