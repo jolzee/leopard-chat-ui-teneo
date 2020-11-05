@@ -3,6 +3,7 @@ var leopardChatUi = (function () {
 
     /* eslint-disable */
     var leopardUrl;
+    var leopardLoaded = false;
     var leopardEmbedSrc = null;
     var leopardUrlRegex = /\[leopardUrl\]/g;
     var teneoCtxParamsRegex = /\[teneoCtxParams\]/g;
@@ -190,11 +191,15 @@ var leopardChatUi = (function () {
     }
 
     function loadLeopard() {
-        var leopardTargetElement = document.getElementById("leopardChatWindow");
-        if (leopardTargetElement) {
-            leopardTargetElement.innerHTML = leopardChatTemplate;
-        } else {
-            document.body.insertAdjacentHTML("afterbegin", leopardChatTemplate);
+        if (!leopardLoaded) {
+            var leopardTargetElement = document.getElementById("leopardChatWindow");
+            if (leopardTargetElement) {
+                leopardTargetElement.innerHTML = leopardChatTemplate;
+            } else {
+                document.body.insertAdjacentHTML("afterbegin", leopardChatTemplate);
+            }
+            leopardLoaded = true;
+            document.removeEventListener('DOMContentLoaded', loadLeopard);
         }
     }
 
