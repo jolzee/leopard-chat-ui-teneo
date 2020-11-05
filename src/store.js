@@ -1778,9 +1778,12 @@ function storeSetup(vuetify) {
         queryObj.text = ""; // it's a login we don't have to say anything yet
         queryObj.feedback = JSON.stringify(feedback);
 
-        TIE.sendInput(context.getters.teneoUrl, context.getters.teneoSessionId, queryObj).then(() =>
-          logger.debug("Feedback sent to Teneo")
-        );
+        TIE.sendInput(
+          context.getters.teneoUrl,
+          context.getters.teneoSessionId,
+          queryObj,
+          window.leopardConfig.tieTimeoutSecs
+        ).then(() => logger.debug("Feedback sent to Teneo"));
       },
       setUserInformation({ commit, getters }) {
         if (!window.leopardConfig.firebase.apiKey) {
@@ -2011,7 +2014,11 @@ function storeSetup(vuetify) {
       },
       endTeneoSessionLite(context) {
         context.commit("REMOVE_MODAL_ITEM");
-        TIE.close(context.getters.teneoUrl, context.getters.teneoSessionId)
+        TIE.close(
+          context.getters.teneoUrl,
+          context.getters.teneoSessionId,
+          window.leopardConfig.tieTimeoutSecs
+        )
           .then(() => {
             context.commit("CLEAR_TENEO_SESSION_ID");
             logger.debug("Session Ended");
@@ -2023,7 +2030,11 @@ function storeSetup(vuetify) {
       endTeneoSession(context) {
         context.commit("CLEAR_DIALOGS");
         context.commit("REMOVE_MODAL_ITEM");
-        TIE.close(context.getters.teneoUrl, context.getters.teneoSessionId)
+        TIE.close(
+          context.getters.teneoUrl,
+          context.getters.teneoSessionId,
+          window.leopardConfig.tieTimeoutSecs
+        )
           .then(() => {
             context.commit("CLEAR_TENEO_SESSION_ID");
             context.commit("HIDE_CHAT_LOADING");
@@ -2041,7 +2052,12 @@ function storeSetup(vuetify) {
         return new Promise((resolve, reject) => {
           let queryObj = buildQueryParamsObjectNewTeneoSession(context); // it's a login we don't have to say anything yet
 
-          TIE.sendInput(context.getters.teneoUrl, context.getters.teneoSessionId, queryObj)
+          TIE.sendInput(
+            context.getters.teneoUrl,
+            context.getters.teneoSessionId,
+            queryObj,
+            window.leopardConfig.tieTimeoutSecs
+          )
             .then(json => {
               handleLoginResponse(context, json, vuetify, resolve);
             })
@@ -2155,7 +2171,12 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
   logger.debug("Question 💬", currentUserInput.trim());
   await sleep(context.getters.responseDelay); // delay responses if needed
   let queryObj = buildQueryParamsObjectUserInput(params, context, currentUserInput);
-  TIE.sendInput(context.getters.teneoUrl, context.getters.teneoSessionId, queryObj)
+  TIE.sendInput(
+    context.getters.teneoUrl,
+    context.getters.teneoSessionId,
+    queryObj,
+    window.leopardConfig.tieTimeoutSecs
+  )
     .then(json => {
       // live chat assist - train
       if (params.indexOf("command=train") !== -1) {

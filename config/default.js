@@ -4,6 +4,9 @@ const config = {
     compressJavascript: true, // gzip and brotli compress JavaScript
     produceSourceMap: false // in production you probably want to disable
   },
+  tie: {
+    timeoutSecs: 20 // Timeout value for request to TIE
+  },
   demoMode: true, // true = stores configs in local storage. In production it should be false
   /**
    * https://www.livechat.com/ integration - live chat handover

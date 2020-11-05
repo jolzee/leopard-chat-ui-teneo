@@ -18,6 +18,7 @@ let leopardConfig = {
   solutionConfig: {
     buildConfig: solutionConfig
   },
+  tieTimeoutSecs: config.get("tie.timeoutSecs", 20),
   mustSendLocationAtLogin: config.get("location.login.sendAtLogin", true),
   ipUrl: config.get("location.login.serviceUrls.ip"),
   geoUrl: config.get("location.login.serviceUrls.geo"),
