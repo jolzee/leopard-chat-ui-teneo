@@ -186,6 +186,7 @@ function storeSetup(vuetify) {
           : false,
         embed: setupConfig.EMBED,
         emergencyConfig: null,
+        printConfig: null,
         showDelayedResponse: false,
         hideConfigMenu: window.leopardConfig.hideConfigMenu,
         isWebSite: true,
@@ -241,6 +242,9 @@ function storeSetup(vuetify) {
       },
       emergencyConfig(state) {
         return state.ui.emergencyConfig;
+      },
+      printConfig(state) {
+        return state.ui.printConfig;
       },
       snotify(state) {
         return state.ui.snotify;
@@ -1109,6 +1113,9 @@ function storeSetup(vuetify) {
       SET_EMERGENCY_CONFIG(state, config) {
         config.payload = config.payload.split("?").join("&");
         state.ui.emergencyConfig = config;
+      },
+      SET_PRINT_CONFIG(state, config) {
+        state.ui.printConfig = config;
       },
       SET_SNOTIFY(state, config) {
         state.ui.snotify = config;
@@ -2652,6 +2659,9 @@ function handleLoginResponse(context, json, vuetify, resolve) {
   }
   if (tResp.hasParameter("emergency")) {
     context.commit("SET_EMERGENCY_CONFIG", tResp.getParameter("emergency"));
+  }
+  if (tResp.hasParameter("print")) {
+    context.commit("SET_PRINT_CONFIG", tResp.getParameter("print"));
   }
   if (tResp.hasParameter("numActiveFlows")) {
     let numActiveFlows = parseInt(tResp.getParameter("numActiveFlows"));

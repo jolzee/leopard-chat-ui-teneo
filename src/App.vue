@@ -333,6 +333,28 @@
                     </v-btn>
                   </v-fab-transition>
                 </span>
+                <v-fab-transition v-if="$router.currentRoute.path === '/' && printConfig">
+                  <v-btn
+                    icon
+                    text
+                    tile
+                    small
+                    ripple
+                    accesskey="."
+                    :color="
+                      printConfig.color
+                        ? printConfig.color
+                        : isLightColor('primary')
+                        ? 'black'
+                        : 'white'
+                    "
+                    aria-label="Print dialogue"
+                    class="embed-button-center mr-1"
+                    @click="print"
+                  >
+                    <v-icon>{{ `mdi-${printConfig.icon}` }}</v-icon>
+                  </v-btn>
+                </v-fab-transition>
                 <v-fab-transition v-if="emergencyConfig">
                   <v-btn
                     icon
@@ -760,6 +782,7 @@ export default {
   computed: {
     ...mapGetters([
       "emergencyConfig",
+      "printConfig",
       "isLiveAgentAssist",
       "accessibleAnnouncement",
       "mustCloseBecauseOfEscape",
@@ -907,6 +930,9 @@ export default {
     }
   },
   methods: {
+    print() {
+      window.print();
+    },
     sendEmergencyCode() {
       if (this.$router.currentRoute.path !== "/") {
         this.$router.push({ name: "chat" }); // make sure we show the main chat window
@@ -2046,6 +2072,57 @@ iframe#site-frame {
     -moz-border-radius: unset !important;
     -webkit-border-radius: unset !important;
     border-radius: unset !important;
+  }
+}
+
+@media print {
+  html,
+  body {
+    overflow: auto !important;
+    overscroll-behavior-y: unset !important;
+    padding: 20px;
+  }
+  iframe#site-frame {
+    display: none !important;
+  }
+  .chat-container {
+    width: 700px !important;
+  }
+  #teneo-chat-scroll {
+    width: 700px;
+  }
+  .v-application {
+    height: unset !important;
+    max-height: unset !important;
+    max-width: 700px;
+  }
+  .teneo-input-loading {
+    width: 700px;
+  }
+  .container {
+    width: 700px;
+    max-width: unset;
+    margin-right: inherit;
+    margin-left: inherit;
+  }
+  #teneo {
+    width: 700px;
+  }
+  .v-application,
+  .application-float {
+    position: unset !important;
+    height: unset !important;
+    max-height: unset !important;
+  }
+  .chat-responses,
+  .chat-responses-float {
+    height: unset !important;
+    min-height: unset !important;
+    max-height: unset !important;
+    overflow: hidden !important;
+  }
+  .v-application--wrap {
+    min-height: unset !important;
   }
 }
 </style>
