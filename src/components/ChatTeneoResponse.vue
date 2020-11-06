@@ -243,6 +243,7 @@
             min-height="25"
             class="option-btn mr-2 mt-2"
             x-small
+            :disabled="hasPermanentOptions && !isLastItem && shouldDisable ? true : false"
             :color="option.color || `success ${textColor('success')}`"
             :aria-label="option.aria ? option.aria : option.name"
             @click="optionClicked(option)"
@@ -765,6 +766,19 @@ export default {
       }
       // history in session storage
       return this.getLatestDialogHistory ? this.getLatestDialogHistory : [];
+    },
+    shouldDisable() {
+      const extensions = this.itemExtensions(this.item);
+      let shouldDisable = false;
+      extensions.forEach(extension => {
+        if (String(extension.name).startsWith("displayCollection")) {
+          logger.info(`Buttons are going to be disabled when not last`, extension);
+          if (extension.disabled !== "undefined") {
+            shouldDisable = extension.disabled;
+          }
+        }
+      });
+      return shouldDisable;
     },
     hasPermanentOptions() {
       const extensions = this.itemExtensions(this.item);

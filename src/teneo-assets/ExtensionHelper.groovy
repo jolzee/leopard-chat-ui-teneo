@@ -63,12 +63,16 @@ class ExtensionHelper {
 
     static String displayClickableList(Map config) {
         Map attachment = ['name'     : 'displayCollection', 'hasLongOptions': config.get('hasLongOptions', false),
-                          'permanent': config.get('permanent', false), 'parameters': ['content': config.content]]
+                          'permanent': config.get('permanent', false), 'disabled': config.get('disabled', false), 'parameters': ['content': config.content]]
         JsonOutput.toJson(attachment)
     }
 
     static String displayPermanentClickableList(def content, def channel, boolean hasLongOptions = false) {
         return displayClickableList(['content': content, hasLongOptions: hasLongOptions, 'permanent': true] as Map)
+    }
+
+    static String displayPermanentDisabledClickableList(def content, def channel, boolean hasLongOptions = false) {
+        return displayClickableList(['content': content, hasLongOptions: hasLongOptions, 'permanent': true, 'disabled': true] as Map)
     }
 
     static String displayClickableList(def content, def channel, def hasLongOptions = false) {
