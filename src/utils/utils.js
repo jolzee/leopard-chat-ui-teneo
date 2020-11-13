@@ -877,6 +877,49 @@ export const download = (data, filename, type = "text/plain") => {
   }
 };
 
+export const handleIcons = myString => {
+  var regexp = /\[\[(.{1,30}?)\]/g;
+  const matches = myString.matchAll(regexp);
+
+  let reformattedStr = "";
+  let cursorPos = 0;
+
+  for (const match of matches) {
+    console.log(match);
+    // the complete match
+    const index = match.index;
+
+    const fullMatch = match[0];
+    // console.log(fullMatch);
+
+    // append string content from the last match
+    reformattedStr += myString.substr(cursorPos, index - cursorPos);
+
+    //update cursorPos to end of match.
+    cursorPos = index + fullMatch.length;
+
+    // isolating each capture group match
+    const group1 = match[1];
+
+    const leopardInfo = group1.split("|");
+    // console.log(leopardInfo);
+
+    if (leopardInfo.length > 0 && leopardInfo[0] === "i") {
+      let html = `<i aria-hidden="true" class="v-icon mdi mdi-${leopardInfo[1]} ${
+        leopardInfo[2] ? leopardInfo[2].toLowerCase() + "--text" : ""
+      }"></i>`;
+      reformattedStr += html;
+    }
+  }
+
+  // if there is still string content present after the last match, append it here
+  if (cursorPos < myString.length) {
+    reformattedStr += myString.substr(cursorPos, myString.length - cursorPos);
+  }
+
+  return reformattedStr;
+};
+
 export const getBase64Image = img => {
   const canvas = document.createElement("canvas");
   canvas.width = img.width;

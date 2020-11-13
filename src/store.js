@@ -22,7 +22,8 @@ import {
   queryParamStringAsObject,
   sleep,
   uuid,
-  addTtsPauses
+  addTtsPauses,
+  handleIcons
 } from "@/utils/utils";
 import { accountsSdk } from "@livechat/accounts-sdk";
 import LiveChat from "@livechat/agent-app-widget-sdk";
@@ -2226,8 +2227,10 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
       const response = {
         userInput: currentUserInput,
         id: uuid(),
-        teneoAnswer: md.render(
-          cleanEmptyChunks(tResp.getOutputText()).replace(/onclick="[^"]+"/g, 'class="sendInput"')
+        teneoAnswer: handleIcons(
+          md.render(
+            cleanEmptyChunks(tResp.getOutputText()).replace(/onclick="[^"]+"/g, 'class="sendInput"')
+          )
         ),
         teneoResponse: json
       };
@@ -2734,8 +2737,10 @@ function handleLoginResponse(context, json, vuetify, resolve) {
   const response = {
     type: "reply",
     id: uuid(),
-    text: md.render(
-      cleanEmptyChunks(tResp.getOutputText()).replace(/onclick="[^"]+"/g, 'class="sendInput"')
+    text: handleIcons(
+      md.render(
+        cleanEmptyChunks(tResp.getOutputText()).replace(/onclick="[^"]+"/g, 'class="sendInput"')
+      )
     ),
     bodyText: "",
     teneoResponse: json,
