@@ -75,6 +75,7 @@ class ExtensionHelper {
         return displayClickableList(['content': content, hasLongOptions: hasLongOptions, 'permanent': true, 'disabled': true] as Map)
     }
 
+
     static String displayClickableList(def content, def channel, def hasLongOptions = false) {
         return displayClickableList(['content': content, hasLongOptions: hasLongOptions, 'permanent': false] as Map)
     }
@@ -265,6 +266,10 @@ class ExtensionHelper {
         Map params = ['content': content]
         Map attachment = [name: 'displayPanelCard', title: title, aria: title, parameters: params]
         JsonOutput.toJson(attachment)
+    }
+
+    static String removeIconSyntax(def content) {
+        return content.replaceAll("\\[\\[(.{1,30}?)\\]", "");
     }
 
     private static String dateFormat(String isoDate) {
