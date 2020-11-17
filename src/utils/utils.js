@@ -904,9 +904,9 @@ export const handleIcons = myString => {
     const leopardInfo = group1.split("|");
     // console.log(leopardInfo);
 
-    if (leopardInfo.length > 0 && leopardInfo[0] === "i") {
+    if (leopardInfo.length > 0 && leopardInfo[0].trim() === "i") {
       let html = `<i aria-hidden="true" class="v-icon mdi mdi-${leopardInfo[1]} ${
-        leopardInfo[2] ? leopardInfo[2].toLowerCase() + "--text" : ""
+        leopardInfo[2] ? leopardInfo[2].trim().toLowerCase() + "--text" : ""
       }"></i>`;
       reformattedStr += html;
     }
