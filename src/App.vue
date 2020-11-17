@@ -746,8 +746,11 @@ export default {
     // Looks for deeplink ?question=Hello there
     const urlParams = new URLSearchParams(window.location.search);
     const initialUserInput = urlParams.get("question");
-    if (initialUserInput && !this.isChatOpen) {
-      this.toggleChat();
+
+    if (initialUserInput) {
+      if (!this.isChatOpen && !this.isMobileDevice) {
+        this.toggleChat();
+      }
       setTimeout(() => {
         this.$store.commit("SET_USER_INPUT", initialUserInput);
         this.$store.commit("USER_INPUT_READY_FOR_SENDING");
