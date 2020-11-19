@@ -1173,6 +1173,9 @@ function storeSetup(vuetify) {
       SHOW_RESPONSE_DELAY(state) {
         state.ui.showDelayedResponse = true;
       },
+      SET_USER_INFO(_state, properties) {
+        setupConfig.liveChat.updateCustomer(properties);
+      },
       HIDE_RESPONSE_DELAY(state) {
         state.ui.showDelayedResponse = false;
       },
@@ -2193,6 +2196,7 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
 
       let tResp = handleTeneoResponseEarly(context, json);
       handleToastResponse(tResp, context);
+      handleUserInfoResponse(tResp, context);
       handleCustomCSSResponse(tResp, context);
       handleMinimizeResponse(tResp, context);
       handleThemeResponse(tResp, vuetify);
@@ -2456,6 +2460,12 @@ function handleCustomCSSResponse(tResp, context) {
   }
 }
 
+function handleUserInfoResponse(tResp, context) {
+  if (tResp.hasParameter("userInfo")) {
+    context.commit("SET_USER_INFO", tResp.getParameter("userInfo"));
+  }
+}
+
 function handleMinimizeResponse(tResp, context) {
   if (tResp.hasParameter("minimize")) {
     context.commit("MINIMIZE_DELAY", tResp.getParameter("minimize"));
@@ -2654,12 +2664,14 @@ function handleLoginResponse(context, json, vuetify, resolve) {
   context.commit("HIDE_CHAT_LOADING");
 
   handleMinimizeResponse(tResp, context);
-  if (tResp.hasParameter("theme")) {
-    Object.assign(vuetify.framework.theme.themes.light, tResp.getParameter("theme"));
-  }
-  if (tResp.hasParameter("toast")) {
-    context.commit("SET_SNOTIFY", tResp.getParameter("toast"));
-  }
+  handleThemeResponse(tResp, context);
+  handleToastResponse(tResp, context);
+  // if (tResp.hasParameter("theme")) {
+  //   Object.assign(vuetify.framework.theme.themes.light, tResp.getParameter("theme"));
+  // }
+  // if (tResp.hasParameter("toast")) {
+  //   context.commit("SET_SNOTIFY", tResp.getParameter("toast"));
+  // }
   if (tResp.hasParameter("emergency")) {
     context.commit("SET_EMERGENCY_CONFIG", tResp.getParameter("emergency"));
   }

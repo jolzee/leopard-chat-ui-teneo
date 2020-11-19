@@ -311,6 +311,19 @@ export class LiveChat {
     }
   }
 
+  updateCustomer(properties) {
+    // const properties = {
+    //   name: "John Doe",
+    //   email: "john.doe@example.com",
+    //   sessionFields: {
+    //     custom_property: "BasketValue=10usd",
+    //     any_key_is_ok: "sample custom field"
+    //   }
+    // };
+    logger.debug(`LiveChat Customer Info`, properties);
+    this.sdk.updateCustomer(properties);
+  }
+
   // disableLiveChat() {
   //   this.sdk.disconnect();
   //   this.sdk.destroy();
