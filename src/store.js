@@ -594,6 +594,7 @@ function storeSetup(vuetify) {
         extensions.forEach(extension => {
           if (
             !getters.extensionIsInline(extension) &&
+            extension.name &&
             !extension.name.startsWith("displayCollection")
           ) {
             modalExtensions.push(extension);

@@ -567,7 +567,7 @@ export default {
       let routerCheckList = null;
 
       extensions.forEach(extension => {
-        if (String(extension.name).startsWith("displayRouterCheckList")) {
+        if (extension.name && String(extension.name).startsWith("displayRouterCheckList")) {
           routerCheckList = extension.parameters;
         }
       });
