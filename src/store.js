@@ -683,6 +683,9 @@ function storeSetup(vuetify) {
 
         return hasModal;
       },
+      getChatOpenIcon(state) {
+        return state.activeSolution.chatOpenIcon;
+      },
       getNamedExtension: (_state, getters) => (item, name) => {
         let extensions = getters.itemExtensions(item);
         let foundExtension = null;

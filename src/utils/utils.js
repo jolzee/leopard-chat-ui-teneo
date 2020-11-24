@@ -26,11 +26,15 @@ export const hasConflictingSolution = (solution, allSolutions) => {
 export const fixSolution = solution => {
   if (!("id" in solution)) {
     const id = uuid();
-    // TODO: I know I need to fix this...
-    // if (solution.name === allSolutions.activeSolution) {
-    //   allSolutions.activeSolution = id;
-    // }
     solution.id = id;
+  }
+
+  if (!("asrLangCode" in solution)) {
+    solution.enableTts = solutionDefault.asrLangCode;
+  }
+
+  if (!("chatOpenIcon" in solution)) {
+    solution.enableTts = solutionDefault.chatOpenIcon;
   }
 
   if (!("enableTts" in solution)) {

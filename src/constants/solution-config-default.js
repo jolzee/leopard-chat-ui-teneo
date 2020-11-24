@@ -76,7 +76,9 @@ okkay | ok
   url: "",
   useLocalStorage: false,
   userIcon: "mdi-comment-quote-outline",
-  useInProduction: false
+  chatOpenIcon: "mdi-message-text",
+  useInProduction: false,
+  asrLangCode: "en-GB"
 };
 
 export const STORAGE_KEY = window.location.hostname + window.location.pathname + ":";

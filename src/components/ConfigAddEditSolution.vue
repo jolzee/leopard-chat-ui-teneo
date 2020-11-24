@@ -241,7 +241,7 @@
                   filled
                   validate-on-blur
                   color="teal darken-4"
-                  label="Response Icon - MDI Icons (mdi-icon-name)"
+                  label="Bot Response Icon on the Left 👈 - MDI Icons (mdi-icon-name)"
                   :append-icon="solution.responseIcon"
                   :rules="[ruleMustHaveValue]"
                 ></v-text-field>
@@ -271,7 +271,7 @@
                   filled
                   validate-on-blur
                   color="teal darken-4"
-                  label="User Icon - MDI Icons (mdi-icon-name)"
+                  label="User/Customer Icon on the Right 👉 - MDI Icons (mdi-icon-name)"
                   :aria-label="`Set the icon representing the customer in the chat UI`"
                   :append-icon="solution.userIcon"
                   :rules="[ruleMustHaveValue]"
@@ -290,6 +290,38 @@
                   icon
                   :color="solution.userIcon === icon ? 'orange darken-4' : 'indigo'"
                   @click="solution.userIcon = icon"
+                >
+                  <v-icon>{{ icon }}</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+            <!-- Chat OPEN icon -->
+            <v-row>
+              <v-col :cols="12" class="pb-0">
+                <v-text-field
+                  v-model.trim="solution.chatOpenIcon"
+                  filled
+                  validate-on-blur
+                  color="teal darken-4"
+                  label="Chat Open Icon 🔘 - MDI Icons (mdi-icon-name)"
+                  :aria-label="`Set the icon used to open the chat UI`"
+                  :append-icon="solution.chatOpenIcon"
+                  :rules="[ruleMustHaveValue]"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col :cols="12" class="py-0">
+                <v-btn
+                  v-for="(icon, index) in openIcons"
+                  :key="index + 'open-icons'"
+                  :aria-label="`Set the icon used to open the chat UI to ${icon}`"
+                  dark
+                  small
+                  :elevation="solution.chatOpenIcon === icon ? '2' : '0'"
+                  icon
+                  :color="solution.chatOpenIcon === icon ? 'orange darken-4' : 'indigo'"
+                  @click="solution.chatOpenIcon = icon"
                 >
                   <v-icon>{{ icon }}</v-icon>
                 </v-btn>
@@ -1398,6 +1430,28 @@ export default {
         { text: "Chinese", value: "cn" },
         { text: "Chinese (Hong Kong)", value: "cn(hk)" },
         { text: "Indonesian", value: "id" }
+      ],
+      openIcons: [
+        "mdi-message-bulleted",
+        "mdi-comment-arrow-left",
+        "mdi-comment-arrow-left-outline",
+        "mdi-comment-arrow-right",
+        "mdi-comment-arrow-right-outline ",
+        "mdi-comment-question",
+        "mdi-comment-question-outline",
+        "mdi-comment-quote",
+        "mdi-comment-quote-outline",
+        "mdi-comment-text-outline",
+        "mdi-message-text",
+        "mdi-message-outline",
+        "mdi-message",
+        "mdi-chat-outline",
+        "mdi-chat",
+        "mdi-message-reply",
+        "mdi-message-reply-text",
+        "mdi-android-messages",
+        "mdi-assistant",
+        "mdi-bullseye-arrow"
       ],
       chatIcons: [
         "mdi-message-bulleted",

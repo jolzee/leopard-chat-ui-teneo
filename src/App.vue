@@ -18,7 +18,7 @@
             :class="`leopard-open-close-button embed-button-center pulse ${textColor('primary')}`"
             :style="customCssButtonToolbar"
           >
-            <v-icon>mdi-message-text</v-icon>
+            <v-icon>{{ getChatOpenIcon }}</v-icon>
           </v-btn>
         </v-fab-transition>
       </div>
@@ -61,7 +61,7 @@
           @click="maximizeChat = true"
           v-on:keydown.enter.prevent="maximizeChat = true"
         >
-          <v-icon color="secondary">mdi-message-text</v-icon>
+          <v-icon color="secondary">{{ getChatOpenIcon }}</v-icon>
           <span>Continue conversation..</span>
           <v-spacer></v-spacer>
           <v-icon color="secondary">mdi-arrow-expand-all</v-icon>
@@ -86,7 +86,7 @@
               }`"
               :style="customCssButtonToolbar"
             >
-              <v-icon v-text="isChatOpen ? 'mdi-close' : 'mdi-message-text'"></v-icon>
+              <v-icon v-text="isChatOpen ? 'mdi-close' : getChatOpenIcon"></v-icon>
             </v-btn>
           </v-fab-transition>
         </div>
@@ -805,6 +805,7 @@ export default {
       "dialogs",
       "chatTitle",
       "customCssButtonToolbar",
+      "getChatOpenIcon",
       "getAnimatedIn",
       "getAnimatedOut",
       "embed",
