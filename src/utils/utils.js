@@ -34,7 +34,7 @@ export const fixSolution = solution => {
   }
 
   if (!("chatOpenIcon" in solution)) {
-    solution.enableTts = solutionDefault.chatOpenIcon;
+    solution.chatOpenIcon = solutionDefault.chatOpenIcon;
   }
 
   if (!("enableTts" in solution)) {
