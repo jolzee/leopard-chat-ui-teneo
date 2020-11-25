@@ -5,7 +5,6 @@
     leave-active-class="fadeOutRightBig"
   >
     <v-dialog
-      v-show="isVisible"
       id="leopard-dialog"
       v-model="isVisible"
       :transition="undefined"
@@ -109,17 +108,19 @@ export default {
   data() {
     return {
       fullscreen: false,
-      overlay: false,
-      isVisible: false
+      overlay: false
     };
   },
   watch: {
-    show() {
-      this.isVisible = this.$props.show;
+    show(newVal) {
+      this.isVisible = newVal;
     }
   },
   computed: {
-    ...mapGetters(["uuid", "dark", "embed", "fullscreenEmbed", "textColor"])
+    ...mapGetters(["uuid", "dark", "embed", "fullscreenEmbed", "textColor"]),
+    isVisible() {
+      return this.show;
+    }
   },
   methods: {
     close() {

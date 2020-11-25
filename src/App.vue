@@ -463,9 +463,8 @@
           </div>
         </transition>
         <Dialog
-          v-if="importDialog"
-          title="Solution Import"
           :show="importDialog"
+          title="Solution Import"
           width="800px"
           @close="importDialog = false"
         >
