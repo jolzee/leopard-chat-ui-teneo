@@ -744,8 +744,8 @@ function storeSetup(vuetify) {
                 return true;
               }
               break;
-            case "cardCutomHtml":
-              if (extension.name === "displayCardCutomHtml") {
+            case "cardCustomHtml":
+              if (extension.name === "displayCardCustomHtml") {
                 return true;
               }
               break;
@@ -794,7 +794,7 @@ function storeSetup(vuetify) {
               }
               break;
             case "cardCustomHtml":
-              if (extension.name === "displayCardCutomHtml") {
+              if (extension.name === "displayCardCustomHtml") {
                 return true;
               }
               break;
