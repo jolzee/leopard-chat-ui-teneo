@@ -25,6 +25,7 @@ import {
   addTtsPauses,
   handleIcons
 } from "@/utils/utils";
+import SimpleSyntax from "@/utils/simpleSyntax";
 import { accountsSdk } from "@livechat/accounts-sdk";
 import LiveChat from "@livechat/agent-app-widget-sdk";
 import dayjs from "dayjs";
@@ -2199,6 +2200,7 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
       }
 
       let tResp = handleTeneoResponseEarly(context, json);
+      tResp = handleEasyMessageTypesResponse(tResp, context);
       handleToastResponse(tResp, context);
       handleUserInfoResponse(tResp, context);
       handleCustomCSSResponse(tResp, context);
@@ -2493,6 +2495,12 @@ function handleScriptResponse(tResp, context) {
   }
 }
 
+function handleEasyMessageTypesResponse(tResp, _context) {
+  let simpleSyntax = new SimpleSyntax(tResp);
+  tResp = simpleSyntax.expandAll();
+  return tResp;
+}
+
 function handleUploadResponse(tResp, context) {
   if (tResp.hasParameter("inputType") && tResp.getParameter("inputType") === "upload") {
     context.commit("SHOW_UPLOAD_BUTTON");
@@ -2664,9 +2672,9 @@ function handlePromptBefore(params, now, currentUserInput, context) {
 function handleLoginResponse(context, json, vuetify, resolve) {
   context.commit("SET_TENEO_SESSION_ID", json.sessionId);
   logger.info("PARSED Teneo Resp: ", json);
-  const tResp = TIE.wrap(json);
+  let tResp = TIE.wrap(json);
   context.commit("HIDE_CHAT_LOADING");
-
+  tResp = handleEasyMessageTypesResponse(tResp, context);
   handleMinimizeResponse(tResp, context);
   handleThemeResponse(tResp, context);
   handleToastResponse(tResp, context);

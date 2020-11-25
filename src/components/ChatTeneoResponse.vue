@@ -258,6 +258,11 @@
       <!-- Line based List Options -->
 
       <v-list v-else class="mt-2 elevation-2" :color="getListColor">
+        <h2
+          v-if="getOptions.title"
+          class="subtitle-1 font-weight-bold"
+          v-text="getOptions.title"
+        ></h2>
         <v-list-item-group>
           <template v-for="(option, altOptionIndex) in getOptions.items">
             <v-list-item
@@ -1071,7 +1076,6 @@ export default {
     },
     hasCardCustomHtml() {
       const cardCustomHtml = this.getNamedExtension(this.item, "displayCardCustomHtml");
-      logger.info("...Yes there is a custom html card", cardCustomHtml, this.item);
       if (cardCustomHtml) {
         logger.info("Yes there is a custom html card");
         return true;
