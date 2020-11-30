@@ -1,6 +1,39 @@
 export default class SimpleSyntax {
   constructor(tResp) {
     this.tResp = tResp;
+    this.order = this.determineStartingIndex();
+  }
+
+  determineStartingIndex() {
+    let startingIndex = 1;
+    if (this.tResp.hasParametersStartingWith("extensions")) {
+      for (let key of Object.keys(this.tResp.getParametersStartingWith("extensions"))) {
+        if (key.length > 10) {
+          let possibleNum = key.substring(10);
+          if (possibleNum.match(/^-?\d+$/) && possibleNum > startingIndex) {
+            startingIndex = possibleNum;
+          }
+        }
+      }
+    }
+    return startingIndex;
+  }
+
+  addOrderedExtension(componentName, value) {
+    if (this.tResp.hasParameter("combo_order")) {
+      let comboOrderRaw = this.tResp.getParameter("combo_order");
+      let orderingRules = comboOrderRaw.split("|");
+      let index = orderingRules.indexOf(componentName, 0);
+      if (index === -1) {
+        this.tResp.addParameter("extensions" + this.order, value);
+        this.order = this.order + 1;
+      } else {
+        this.tResp.addParameter("extensions" + (15 + index), value);
+      }
+    } else {
+      this.tResp.addParameter("extensions" + this.order, value);
+      this.order = this.order + 1;
+    }
   }
 
   expandAll() {
@@ -77,7 +110,7 @@ export default class SimpleSyntax {
       let rowElements = row.split("|").map(x => x.trim());
       output.rows.push(rowElements);
     }
-    this.tResp.addParameter("extensions", output);
+    this.addOrderedExtension("table", output);
   }
 
   map() {
@@ -88,7 +121,7 @@ export default class SimpleSyntax {
       },
       inline: true
     };
-    this.tResp.addParameter("extensions", output);
+    this.addOrderedExtension("map", output);
   }
 
   audio() {
@@ -99,7 +132,7 @@ export default class SimpleSyntax {
       },
       inline: true
     };
-    this.tResp.addParameter("extensions", output);
+    this.addOrderedExtension("audio", output);
   }
 
   video() {
@@ -110,7 +143,7 @@ export default class SimpleSyntax {
       },
       inline: true
     };
-    this.tResp.addParameter("extensions", output);
+    this.addOrderedExtension("video", output);
   }
 
   image() {
@@ -121,7 +154,7 @@ export default class SimpleSyntax {
       },
       inline: true
     };
-    this.tResp.addParameter("extensions", output);
+    this.addOrderedExtension("image", output);
   }
 
   imageCarousel(paramName) {
@@ -132,7 +165,7 @@ export default class SimpleSyntax {
       },
       inline: true
     };
-    this.tResp.addParameter("extensions", output);
+    this.addOrderedExtension(paramName, output);
   }
 
   system() {
@@ -141,7 +174,7 @@ export default class SimpleSyntax {
       inline: true,
       text: this.tResp.getParameter("system")
     };
-    this.tResp.addParameter("extensions", output);
+    this.addOrderedExtension("system", output);
   }
 
   quickReply() {
@@ -163,7 +196,7 @@ export default class SimpleSyntax {
         output.parameters.content.items.push({ name: buttonVal.trim() });
       });
 
-    this.tResp.addParameter("extensions", output);
+    this.addOrderedExtension("quickreply", output);
   }
 
   linkButtons() {
@@ -194,7 +227,7 @@ export default class SimpleSyntax {
         });
       });
 
-    this.tResp.addParameter("extensions", output);
+    this.addOrderedExtension("linkbuttons", output);
   }
 
   buttons() {
@@ -219,7 +252,7 @@ export default class SimpleSyntax {
     if (this.tResp.hasParameter("buttons_title")) {
       output.parameters.content.title = this.tResp.getParameter("buttons_title");
     }
-    this.tResp.addParameter("extensions", output);
+    this.addOrderedExtension("buttons", output);
   }
 
   clickableList() {
@@ -244,7 +277,7 @@ export default class SimpleSyntax {
     if (this.tResp.hasParameter("clickablelist_title")) {
       output.parameters.content.title = this.tResp.getParameter("clickablelist_title");
     }
-    this.tResp.addParameter("extensions", output);
+    this.addOrderedExtension("clickablelist", output);
   }
 
   card() {
