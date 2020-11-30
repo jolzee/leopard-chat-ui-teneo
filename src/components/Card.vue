@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="isValidCard" class="mx-2 mt-2" max-width="400">
+  <v-card v-if="isValidCard" class="mx-2 mt-2">
     <v-img
       v-if="config.imageUrl"
       class="white--text align-end"
@@ -8,7 +8,7 @@
       :alt="config.imageAlt ? config.imageAlt : ''"
     ></v-img>
     <v-card-title
-      v-if="config.title"
+      v-if="config.title && !mustHideTitle"
       class="subtitle-2 white--text primary cardTitleBackground mb-5"
       >{{ config.title }}</v-card-title
     >
@@ -102,20 +102,36 @@ export default {
     item: {
       type: Object,
       required: true
+    },
+    hideTitle: {
+      type: Boolean,
+      required: false
+    },
+    paramName: {
+      type: String,
+      required: false
     }
   },
   data() {
     return {
-      chipSelectionIndex: null
+      chipSelectionIndex: null,
+      hideTitleDefault: false,
+      defaultParamName: "displayCard"
     };
   },
   computed: {
     ...mapGetters(["uuid"]),
+    mustHideTitle() {
+      return this.hideTitle ? this.hideTitle : this.hideTitleDefault;
+    },
+    finalParamName() {
+      return this.paramName ? this.paramName : this.defaultParamName;
+    },
     isValidCard() {
       let result = false;
       if (this.item.teneoResponse) {
         const tResp = TIE.wrap(this.item.teneoResponse);
-        if (tResp.hasParameter("displayCard")) {
+        if (tResp.hasParameter(this.finalParamName)) {
           result = true;
         }
       }
@@ -123,7 +139,7 @@ export default {
     },
     config() {
       const tResp = TIE.wrap(this.item.teneoResponse);
-      let theConfig = tResp.getParameter("displayCard");
+      let theConfig = tResp.getParameter(this.finalParamName);
       logger.debug(`Card JSON`, theConfig);
       return theConfig;
     }
@@ -156,6 +172,7 @@ export default {
       }
     },
     buttonClicked(text) {
+      this.$emit("close");
       this.$store.commit("SHOW_PROGRESS_BAR");
       this.$store.commit("SET_USER_INPUT", text);
       this.$store.dispatch("sendUserInput").then(() => {

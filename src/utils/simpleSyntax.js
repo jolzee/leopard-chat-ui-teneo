@@ -8,6 +8,9 @@ export default class SimpleSyntax {
       if (param.trim() === "card_title") {
         this.card();
       }
+      if (param.trim() === "modal_title") {
+        this.modal();
+      }
       switch (param) {
         case "audio":
           this.audio();
@@ -15,8 +18,20 @@ export default class SimpleSyntax {
         case "video":
           this.video();
           break;
+        case "table":
+          this.table();
+          break;
         case "image":
           this.image();
+          break;
+        case "images":
+          this.imageCarousel("images");
+          break;
+        case "carousel":
+          this.imageCarousel("carousel");
+          break;
+        case "map":
+          this.map();
           break;
         case "system":
           this.system();
@@ -38,6 +53,39 @@ export default class SimpleSyntax {
       }
     });
     return this.tResp;
+  }
+
+  table() {
+    let output = {
+      name: "displaySimpleTable",
+      inline: true,
+      dense: true,
+      height: null,
+      fixedHeader: false,
+      headers: [],
+      rows: []
+    };
+    const tableDef = this.tResp.getParameter("table");
+    let elements = tableDef.split(/\r?\n/);
+    let headers = elements[0].split("|").map(x => x.trim());
+    output.headers = headers;
+    for (let index = 1; index < elements.length; index++) {
+      const row = elements[index];
+      let rowElements = row.split("|").map(x => x.trim());
+      output.rows.push(rowElements);
+    }
+    this.tResp.addParameter("extensions", output);
+  }
+
+  map() {
+    let output = {
+      name: "displayMap",
+      parameters: {
+        address: this.tResp.getParameter("map")
+      },
+      inline: true
+    };
+    this.tResp.addParameter("extensions", output);
   }
 
   audio() {
@@ -67,6 +115,17 @@ export default class SimpleSyntax {
       name: "displayImage",
       parameters: {
         image_url: this.tResp.getParameter("image")
+      },
+      inline: true
+    };
+    this.tResp.addParameter("extensions", output);
+  }
+
+  imageCarousel(paramName) {
+    let output = {
+      name: "displayImageCarousel",
+      parameters: {
+        images: this.tResp.getParameter(paramName).split("|")
       },
       inline: true
     };
@@ -218,6 +277,72 @@ export default class SimpleSyntax {
     }
 
     this.tResp.addParameter("displayCard", output);
+  }
+
+  modal() {
+    // eslint-disable-next-line no-unused-vars
+    let output = {
+      title: this.tResp.getParameter("modal_title"),
+      subTitle: this.tResp.getParameter("modal_subtitle"),
+      bodyText: this.tResp.getParameter("modal_bodytext"),
+      buttons: [],
+      clickableList: [],
+      linkButtons: []
+    };
+
+    if (this.tResp.hasParameter("modal_image")) {
+      let imageAtts = this.tResp.getParameter("modal_image").split("|");
+      output.imageUrl = imageAtts[0];
+      output.imageAlt = imageAtts[1] ? imageAtts[1] : "";
+    }
+
+    if (this.tResp.hasParameter("modal_buttons")) {
+      this.tResp
+        .getParameter("modal_buttons")
+        .split("|")
+        .forEach(element => {
+          output.buttons.push(element.trim());
+        });
+    }
+
+    if (this.tResp.hasParameter("modal_clickablelist")) {
+      this.tResp
+        .getParameter("modal_clickablelist")
+        .split("|")
+        .forEach(element => {
+          output.clickableList.push(element.trim());
+        });
+    }
+
+    if (this.tResp.hasParameter("modal_linkbuttons")) {
+      this.tResp
+        .getParameter("modal_linkbuttons")
+        .split("|")
+        .forEach(linkRaw => {
+          const linkElements = linkRaw.split(",");
+          output.linkButtons.push({
+            title: linkElements[0].trim(),
+            url: linkElements[1].trim(),
+            target: linkElements[2] ? linkElements[2].trim() : ""
+          });
+        });
+    }
+
+    if (this.tResp.hasParameter("modal_links")) {
+      this.tResp
+        .getParameter("modal_links")
+        .split("|")
+        .forEach(linkRaw => {
+          const linkElements = linkRaw.split(",");
+          output.linkButtons.push({
+            title: linkElements[0].trim(),
+            url: linkElements[1].trim(),
+            target: linkElements[2] ? linkElements[2].trim() : ""
+          });
+        });
+    }
+
+    this.tResp.addParameter("displaySimpleModal", output);
   }
 
   text() {

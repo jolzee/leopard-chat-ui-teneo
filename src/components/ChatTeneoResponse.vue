@@ -337,6 +337,37 @@
         </v-btn>
       </v-col>
     </v-row>
+    <v-row v-if="hasSimpleModal()" no-gutters class="mr-4">
+      <v-col cols="12" class="text-right mb-2">
+        <Dialog
+          v-if="displaySimpleModal"
+          :title="getModalTitle()"
+          :show="displaySimpleModal"
+          width="450"
+          @close="displaySimpleModal = false"
+        >
+          <Card
+            :item="item"
+            :ripple="false"
+            :hide-title="true"
+            @close="displaySimpleModal = false"
+            paramName="displaySimpleModal"
+          />
+        </Dialog>
+
+        <v-btn
+          :color="`success ${textColor('success')}`"
+          aria-label="Simple modal in a new window"
+          class="modal-btn mt-2"
+          small
+          @click="showSimpleModal()"
+        >
+          <v-icon left class="teneo-icon" style="opacity: 0.7 !important"
+            >mdi-arrow-up-bold-box-outline</v-icon
+          >More Info</v-btn
+        >
+      </v-col>
+    </v-row>
     <v-row v-if="!completedForm && hasForm()" no-gutters class="mr-4">
       <v-col cols="12" class="text-right mb-2">
         <Form
@@ -457,6 +488,7 @@ export default {
     CardCustomHtml: () => import("@/components/CardCustomHtml"),
     Carousel: () => import("@/components/Carousel"),
     DelayedResponse: () => import("@/components/DelayedResponse"),
+    Dialog: () => import("@/components/Dialog"),
     Form: () => import("@/components/Form"),
     ImageAnimation: () => import("@/components/ImageAnimation"),
     Map: () => import("@/components/Map"),
@@ -526,7 +558,8 @@ export default {
       },
       displayForm: false,
       hasFormAutomaticallyDisplayed: false,
-      completedForm: false
+      completedForm: false,
+      displaySimpleModal: false
     };
   },
   computed: {
@@ -852,6 +885,11 @@ export default {
     }
   },
   methods: {
+    getModalTitle() {
+      const tResp = TIE.wrap(this.item.teneoResponse);
+      const modalConfig = tResp.getParameter("displaySimpleModal");
+      return modalConfig.title;
+    },
     minimizeChat() {
       logger.info("Minimizing chat because output URL is present and button clicked");
       this.$store.commit("MINIMIZE_NOW");
@@ -1039,6 +1077,9 @@ export default {
       this.completedForm = true;
       this.$store.commit("REMOVE_FORM_CONFIG", this.item.id);
     },
+    showSimpleModal() {
+      this.displaySimpleModal = true;
+    },
     showForm() {
       this.displayForm = true;
     },
@@ -1065,6 +1106,14 @@ export default {
         return tResp.getParameter("formConfig").openFormButtonText;
       }
       return null;
+    },
+    hasSimpleModal() {
+      const tResp = TIE.wrap(this.item.teneoResponse);
+      if (tResp.hasParameter("displaySimpleModal")) {
+        logger.info("Yes there is a simple modal");
+        return true;
+      }
+      return false;
     },
     hasCard() {
       const tResp = TIE.wrap(this.item.teneoResponse);

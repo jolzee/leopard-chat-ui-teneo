@@ -62,7 +62,7 @@
 
         <v-card-text
           style="height: 90%"
-          class="px-3 py-0"
+          class="px-0 py-0"
           :class="{ 'dark-scroll': dark, 'light-scroll': !dark }"
         >
           <v-container fluid>
