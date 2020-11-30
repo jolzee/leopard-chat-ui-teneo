@@ -21,6 +21,9 @@ export default class SimpleSyntax {
         case "table":
           this.table();
           break;
+        case "linkbuttons":
+          this.linkButtons();
+          break;
         case "image":
           this.image();
           break;
@@ -158,6 +161,37 @@ export default class SimpleSyntax {
       .split("|")
       .forEach(buttonVal => {
         output.parameters.content.items.push({ name: buttonVal.trim() });
+      });
+
+    this.tResp.addParameter("extensions", output);
+  }
+
+  linkButtons() {
+    let output = {
+      name: "displayCollection",
+      hasLongOptions: false,
+      permanent: false,
+      parameters: {
+        content: {
+          items: []
+        }
+      }
+    };
+
+    if (this.tResp.hasParameter("linkbuttons_title")) {
+      output.parameters.content.title = this.tResp.getParameter("linkbuttons_title");
+    }
+
+    this.tResp
+      .getParameter("linkbuttons")
+      .split("|")
+      .forEach(linkRaw => {
+        const linkElements = linkRaw.split(",");
+        output.parameters.content.items.push({
+          name: linkElements[0].trim(),
+          url: linkElements[1].trim(),
+          target: linkElements[2] ? linkElements[2].trim() : ""
+        });
       });
 
     this.tResp.addParameter("extensions", output);

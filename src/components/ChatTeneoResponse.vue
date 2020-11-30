@@ -239,7 +239,32 @@
         <h2 class="subtitle-1 font-weight-bold" v-text="getOptions.title"></h2>
         <div v-if="getOptions.html" class="elevation-2 mt-2" v-html="getOptions.items"></div>
         <span v-for="(option, optionIndex) in getOptions.items" v-else :key="optionIndex + uuid">
+          <div v-if="'url' in option" class="text-center">
+            <span class="ma-1">
+              <v-btn
+                min-height="25"
+                class="option-btn mr-2 mt-2"
+                x-small
+                :disabled="hasPermanentOptions && !isLastItem && shouldDisable ? true : false"
+                :color="option.color || `success ${textColor('success')}`"
+                :aria-label="option.name"
+                @click="linkButtonClicked(option)"
+              >
+                <v-icon left style="padding-top: 2px; opacity: 0.7 !important">{{
+                  `mdi-${
+                    option.icon
+                      ? option.icon
+                      : option.target && option.target === "_blank"
+                      ? "open-in-new"
+                      : "link-box-variant"
+                  }`
+                }}</v-icon>
+                {{ option.name }}
+              </v-btn>
+            </span>
+          </div>
           <v-btn
+            v-else
             min-height="25"
             class="option-btn mr-2 mt-2"
             x-small
@@ -885,6 +910,14 @@ export default {
     }
   },
   methods: {
+    linkButtonClicked(linkButton) {
+      if (linkButton.target && linkButton.target === "_blank") {
+        let win = window.open(linkButton.url, "_blank");
+        win.focus();
+      } else {
+        window.location.href = linkButton.url;
+      }
+    },
     getModalTitle() {
       const tResp = TIE.wrap(this.item.teneoResponse);
       const modalConfig = tResp.getParameter("displaySimpleModal");
