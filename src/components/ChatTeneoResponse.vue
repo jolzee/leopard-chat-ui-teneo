@@ -134,7 +134,7 @@
     </div>
 
     <Card v-if="hasCard() && isLastItem" :item="item" :ripple="false" class="mb-2" />
-    <CardCustomHtml v-if="hasCardCustomHtml()" :item="item" class="mb-2" />
+
     <!-- Show Inline Components -->
     <span v-for="(extension, index) in itemExtensions(item)" :key="index + 'inlines' + uuid">
       <v-row v-if="afterAnswerAlert(extension)" no-gutters class="pt-2">
@@ -190,7 +190,7 @@
           <SimpleTable :extension="extension"></SimpleTable>
         </v-col>
       </v-row>
-      <v-row v-if="hasInlineType(extension, 'cardCustomHtml')" no-gutters class="px-3 pt-2">
+      <v-row v-if="hasInlineType(extension, 'cardCustomHtml')" no-gutters class="px-0 pt-2">
         <v-col cols="12">
           <CardCustomHtml :item="item" class="mb-2" />
         </v-col>
