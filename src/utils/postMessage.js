@@ -1,4 +1,5 @@
 const logger = require("@/utils/logging").getLogger("postMessage.js");
+import { STORAGE_KEY } from "@/constants/solution-config-default";
 
 const trustedDomains = window.leopardConfig.embed.leopardTrustedDomains;
 
