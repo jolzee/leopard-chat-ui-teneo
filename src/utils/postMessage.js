@@ -42,6 +42,7 @@ export default class PostMessage {
 
       if (event.data) {
         let messageObject = JSON.parse(event.data);
+        logger.info("Received Message Object from Parent: CTX Query Params", messageObject);
         if ("info" in messageObject && "id" in messageObject) {
           return true;
         }
@@ -77,9 +78,11 @@ export default class PostMessage {
           logger.debug(
             `receiveMessageFromParent: height: ${messageObject.height} width: ${messageObject.width}`
           );
-        } else {
-          this.store.state.connection.ctxParameters = messageObject;
         }
+        // } else {
+        //   logger.info(`Received message from parent RE CTX Query Params`, messageObject);
+        //   this.store.state.connection.ctxParameters = messageObject;
+        // }
       }
     } catch (error) {
       return true;
