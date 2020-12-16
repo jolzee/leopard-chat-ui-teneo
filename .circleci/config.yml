@@ -2,6 +2,7 @@ version: 2.1
 orbs:
   node: circleci/node@2.1.1
   gh-pages: sugarshin/gh-pages@0.0.6
+  ms-teams: cloudradar-monitoring/ms-teams@1.0.0
 executors:
   buildpack_deps:
     docker:
@@ -38,6 +39,9 @@ jobs:
       - deploy:
           command: |
             rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after ~/leopard/dist/ $SSH_USER@$SSH_HOST:$TARGET_DIR
+      - ms-teams/report:
+          only_on_fail: false
+          webhook_url: $MS_TEAMS_WEBHOOK_URL
   deploy-gh-pages:
     executor: buildpack_deps
     working_directory: ~/leopard
