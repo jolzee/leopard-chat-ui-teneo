@@ -198,7 +198,7 @@
     </span>
 
     <DelayedResponse v-if="showDelayedResponse && isLastItem"></DelayedResponse>
-    <!-- show any options in the response: for example Yes, No Maybe -->
+    <!-- router checklist -->
     <v-col v-if="routerCheckList && isLastItem" cols="12" class="px-3">
       <v-card>
         <div class="d-flex flex-no-wrap justify-space-between">
@@ -229,7 +229,7 @@
         </div>
       </v-card>
     </v-col>
-
+    <!-- show any options in the response: for example Yes, No Maybe -->
     <v-card
       v-if="hasCollection && getOptions && (isLastItem || hasPermanentOptions)"
       class="mb-1 mx-3 pt-0 px-1 pb-2 elevation-0 text-center transparent teneo-response-collection"
@@ -300,7 +300,7 @@
               dense
               ripple
               :input-value="option.color ? true : false"
-              @click="optionClicked(option)"
+              @click="'url' in option ? linkButtonClicked(option) : optionClicked(option)"
             >
               <v-list-item-icon v-if="!('showIcon' in option) || option.showIcon" class="mr-4">
                 <v-icon>{{

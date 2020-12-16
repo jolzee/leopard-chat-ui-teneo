@@ -6,6 +6,7 @@
         :value="true"
         dense
         border="left"
+        colored-border
         prominent
         :color="$vuetify.theme.dark ? 'info darken-3' : 'info lighten-2'"
         icon="mdi-counter"
@@ -69,11 +70,9 @@
           <p class="sr-only">Live agent said.</p>
           <p
             class="teneo-reply"
-            :class="
-              `${leopardFont} ${
-                responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''
-              }`
-            "
+            :class="`${leopardFont} ${
+              responseLookAndFeel.blockTextColor === 'light' ? 'white--text' : ''
+            }`"
             v-html="item.text"
           ></p>
         </v-card>

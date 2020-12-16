@@ -476,6 +476,7 @@
             text
             outlined
             border="left"
+            colored-border
             color="deep-orange"
             icon="mdi-fire"
             class="ma-0 elevation-3"

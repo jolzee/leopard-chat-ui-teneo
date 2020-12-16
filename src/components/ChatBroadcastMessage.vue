@@ -5,7 +5,8 @@
       :border="item.borderPosition"
       :value="true"
       :prominent="item.prominent"
-      :outlined="item.uutlined"
+      colored-border
+      :outlined="item.outlined"
       :type="item.alertType ? item.alertType : null"
       :color="item.color"
       :icon="item.icon"
