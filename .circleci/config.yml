@@ -1,26 +1,16 @@
 version: 2.1
 orbs:
-  node: circleci/node@2.1.1
+  node: circleci/node@4.1.0
   gh-pages: sugarshin/gh-pages@0.0.6
-  mstw: pay-justice/ms-teams-webhooks@0.0.1
 executors:
   buildpack_deps:
     docker:
       - image: circleci/buildpack-deps
 jobs:
   build:
-    environment:
-      GIT_COMMIT_DESC: $(git log --format=oneline -n 1 $CIRCLE_SHA1)
     executor: node/default
     steps:
-      - mstw/send_simple_card:
-          webhook_url: $MS_TEAMS_WEBHOOK_URL
-          title: "New Commit [${CIRCLE_SHA1:0:7}](https://github.com/jolzee/leopard-chat-ui-teneo/commit/$CIRCLE_SHA1)"
-          text: >-
-            ${GIT_COMMIT_DESC}
       - checkout
-      # - node/install:
-      #     node-version: 12.16.3
       - run: |
           node --version
           mkdir -p config && touch $_/local.js
