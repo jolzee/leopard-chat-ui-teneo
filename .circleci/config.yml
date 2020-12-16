@@ -15,12 +15,9 @@ jobs:
     steps:
       - mstw/send_simple_card:
           webhook_url: $MS_TEAMS_WEBHOOK_URL
-          title: "Commit pushed to ([$CIRCLE_BRANCH])($CIRCLE_REPOSITORY_URL)"
+          title: "New Commit [${CIRCLE_SHA1:0:7}](https://github.com/jolzee/leopard-chat-ui-teneo/commit/$CIRCLE_SHA1)"
           text: >-
-            ----
-            *Message:* $GIT_COMMIT_DESC
-            *Commit #:*  [${CIRCLE_SHA1:0:7}]($CIRCLE_REPOSITORY_URL/commit/$CIRCLE_SHA1)
-            by _$CIRCLE_USERNAME_)
+            ${GIT_COMMIT_DESC}
       - checkout
       # - node/install:
       #     node-version: 12.16.3
