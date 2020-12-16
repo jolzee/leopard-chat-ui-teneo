@@ -9,8 +9,18 @@ executors:
       - image: circleci/buildpack-deps
 jobs:
   build:
+    environment:
+      GIT_COMMIT_DESC: $(git log --format=oneline -n 1 $CIRCLE_SHA1)
     executor: node/default
     steps:
+      - mstw/send_simple_card:
+          webhook_url: $MS_TEAMS_WEBHOOK_URL
+          title: "Commit pushed to ([$CIRCLE_BRANCH])($CIRCLE_REPOSITORY_URL)"
+          text: >-
+            ----
+            *Message:* ${GIT_COMMIT_DESC}
+            *Commit #:*  [${CIRCLE_SHA1:0:7}]($CIRCLE_REPOSITORY_URL/commit/$CIRCLE_SHA1)
+            by _$CIRCLE_USERNAME_)
       - checkout
       # - node/install:
       #     node-version: 12.16.3
@@ -24,13 +34,7 @@ jobs:
           root: .
           paths:
             - dist
-      - mstw/send_simple_card:
-          webhook_url: $MS_TEAMS_WEBHOOK_URL
-          title: "leopard-chat-ui-teneo ($CIRCLE_BRANCH): CircleCI Build"
-          text: >-
-            New commit found
-            ([${CIRCLE_SHA1:0:7}](https://github.com/jolzee/leopard-chat-ui-teneo/commit/$CIRCLE_SHA1)
-            by $CIRCLE_USERNAME)
+
   deploy-artisol:
     working_directory: ~/leopard
     docker:
