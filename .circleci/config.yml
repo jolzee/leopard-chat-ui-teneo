@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   node: circleci/node@2.1.1
   gh-pages: sugarshin/gh-pages@0.0.6
-  ms-teams: cloudradar-monitoring/ms-teams@1.0.0
+  mstw: pay-justice/ms-teams-webhooks@0.0.1
 executors:
   buildpack_deps:
     docker:
@@ -24,6 +24,13 @@ jobs:
           root: .
           paths:
             - dist
+      - mstw/send_simple_card:
+          webhook_url: $MS_TEAMS_WEBHOOK_URL
+          title: "leopard-chat-ui-teneo ($CIRCLE_BRANCH): CircleCI Build"
+          text: >-
+            New commit found
+            ([${CIRCLE_SHA1:0:7}](https://github.com/jolzee/leopard-chat-ui-teneo/commit/$CIRCLE_SHA1)
+            by $CIRCLE_USERNAME)
   deploy-artisol:
     working_directory: ~/leopard
     docker:
@@ -39,9 +46,6 @@ jobs:
       - deploy:
           command: |
             rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after ~/leopard/dist/ $SSH_USER@$SSH_HOST:$TARGET_DIR
-      - ms-teams/report:
-          only_on_fail: false
-          webhook_url: $MS_TEAMS_WEBHOOK_URL
   deploy-gh-pages:
     executor: buildpack_deps
     working_directory: ~/leopard
