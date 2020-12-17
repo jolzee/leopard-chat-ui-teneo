@@ -781,6 +781,7 @@ function storeSetup(vuetify) {
         }
         return false;
       },
+      // checks to see if an extension is marked as inline
       hasInlineType: (_state, getters) => (extension, type) => {
         if (extension && extension.inline) {
           switch (type) {
