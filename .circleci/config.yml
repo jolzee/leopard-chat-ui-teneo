@@ -38,8 +38,8 @@ jobs:
           name: rsync over SSH
           command: |
             rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after ~/leopard/dist/ $SSH_USER@$SSH_HOST:$TARGET_DIR
-      - command:
-          - >-
+      - run:
+          command: >-
             curl --insecure -XPOST -H "Content-type: application/json" -d '{
             "@context": "https://schema.org/extensions",
             "@type": "MessageCard",
