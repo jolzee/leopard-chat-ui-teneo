@@ -35,66 +35,71 @@ jobs:
       - run: |
           ls -la
       - deploy:
+          name: rsync over SSH
           command: |
             rsync -r -e "ssh -o StrictHostKeyChecking=no" --delete-after ~/leopard/dist/ $SSH_USER@$SSH_HOST:$TARGET_DIR
-            curl --insecure -XPOST -H "Content-type: application/json" -d '{
-            "@context": "https://schema.org/extensions",
-            "@type": "MessageCard",
-            "themeColor": "16C60C",
-            "title": "Successfully Deployed",
-            "text": "Leopard has been successfully built and deployed",
-            "potentialAction": [
-                {
-                    "@type": "OpenUri",
-                    "name": "Leopard Chat UI",
-                    "targets": [
-                        {
-                            "os": "default",
-                            "uri": "https://wi.presales.artificial-solutions.com/leopard-chat/#/"
-                        }
-                    ]
-                },
-                {
-                    "@type": "OpenUri",
-                    "name": "Diffs",
-                    "targets": [
-                        {
-                            "os": "default",
-                            "uri": "https://github.com/jolzee/leopard-chat-ui-teneo/commit/master"
-                        }
-                    ]
-                },
-                {
-                    "@type": "OpenUri",
-                    "name": "All Commits",
-                    "targets": [
-                        {
-                            "os": "default",
-                            "uri": "https://github.com/jolzee/leopard-chat-ui-teneo/commits/master"
-                        }
-                    ]
-                },
-                {
-                    "@type": "OpenUri",
-                    "name": "Releases",
-                    "targets": [
-                        {
-                            "os": "default",
-                            "uri": "https://github.com/jolzee/leopard-chat-ui-teneo/releases/"
-                        }
-                    ]
-                },
-                {
-                    "@type": "OpenUri",
-                    "name": "Documentation",
-                    "targets": [
-                        {
-                            "os": "default",
-                            "uri": "https://jolzee.gitbook.io/leopard/"
-                        }
-                    ]
-                }
-            ]}' $MS_TEAMS_WEBHOOK_URL
+      - notify:
+          name: notify teams of deployment
+          command:
+            - >-
+              curl --insecure -XPOST -H "Content-type: application/json" -d '{
+              "@context": "https://schema.org/extensions",
+              "@type": "MessageCard",
+              "themeColor": "16C60C",
+              "title": "Successfully Deployed",
+              "text": "Leopard has been successfully built and deployed",
+              "potentialAction": [
+                  {
+                      "@type": "OpenUri",
+                      "name": "Leopard Chat UI",
+                      "targets": [
+                          {
+                              "os": "default",
+                              "uri": "https://wi.presales.artificial-solutions.com/leopard-chat/#/"
+                          }
+                      ]
+                  },
+                  {
+                      "@type": "OpenUri",
+                      "name": "Diffs",
+                      "targets": [
+                          {
+                              "os": "default",
+                              "uri": "https://github.com/jolzee/leopard-chat-ui-teneo/commit/master"
+                          }
+                      ]
+                  },
+                  {
+                      "@type": "OpenUri",
+                      "name": "All Commits",
+                      "targets": [
+                          {
+                              "os": "default",
+                              "uri": "https://github.com/jolzee/leopard-chat-ui-teneo/commits/master"
+                          }
+                      ]
+                  },
+                  {
+                      "@type": "OpenUri",
+                      "name": "Releases",
+                      "targets": [
+                          {
+                              "os": "default",
+                              "uri": "https://github.com/jolzee/leopard-chat-ui-teneo/releases/"
+                          }
+                      ]
+                  },
+                  {
+                      "@type": "OpenUri",
+                      "name": "Documentation",
+                      "targets": [
+                          {
+                              "os": "default",
+                              "uri": "https://jolzee.gitbook.io/leopard/"
+                          }
+                      ]
+                  }
+              ]}' $MS_TEAMS_WEBHOOK_URL
 
   deploy-gh-pages:
     executor: buildpack_deps
