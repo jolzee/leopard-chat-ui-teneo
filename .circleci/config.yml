@@ -94,7 +94,7 @@ jobs:
                         }
                     ]
                 }
-            ]}' '$MS_TEAMS_WEBHOOK_URL'
+            ]}' $MS_TEAMS_WEBHOOK_URL
 
   deploy-gh-pages:
     executor: buildpack_deps
