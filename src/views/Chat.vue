@@ -14,9 +14,12 @@
         :class="{
           'grey darken-4 dark-scroll': $vuetify.theme.dark,
           'light-scroll grey lighten-4': !$vuetify.theme.dark,
-          'chat-responses-float': float,
-          'chat-responses': !float,
-          'chat-responses-float-mobile': isMobileDevice
+          'chat-responses-float': float && !hidden,
+          'chat-responses': !float && !hidden,
+          'chat-responses-float-mobile': isMobileDevice && !hidden,
+          'chat-responses-float-hide': float && hidden,
+          'chat-responses-hide': !float && hidden,
+          'chat-responses-float-mobile-hide': isMobileDevice && hidden
         }"
         ref="chatContainer"
       >
@@ -99,6 +102,7 @@
     </v-row>
 
     <ChatInput
+      v-if="!hidden"
       :toggleButton="showAudioInput"
       :passUserInput="userInput"
       :handleInputFocus="handleFocus"
@@ -256,6 +260,7 @@ export default {
       "getLatestDialogHistory",
       "dark",
       "float",
+      "hidden",
       "inputHelpText",
       "isMobileDevice",
       "itemInputMask",
@@ -583,8 +588,20 @@ div.options-list a.v-list__tile--link {
   max-height: calc(80vh - 130px);
 }
 
+.chat-responses-float-hide {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: calc(80vh - 75px);
+  min-height: calc(80vh - 75px);
+  max-height: calc(80vh - 75px);
+}
+
 .chat-responses-float-mobile {
   height: calc(var(--vh, 1vh) * 80 - 130px) !important;
+}
+
+.chat-responses-float-mobile-hide {
+  height: calc(var(--vh, 1vh) * 80 - 75px) !important;
 }
 
 .chat-responses {
@@ -593,6 +610,14 @@ div.options-list a.v-list__tile--link {
   height: calc(100vh - 130px);
   min-height: calc(100vh - 130px);
   max-height: calc(100vh - 130px);
+}
+
+.chat-responses-hide {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: calc(100vh - 75px);
+  min-height: calc(100vh - 75px);
+  max-height: calc(100vh - 75px);
 }
 
 .chat-container {
@@ -634,6 +659,16 @@ span.teneo-reply ul {
     height: calc(var(--vh, 1vh) * 100 - 130px);
     min-height: calc(var(--vh, 1vh) * 100 - 130px);
   }
+
+  .chat-responses-hide,
+  .chat-responses-float-hide {
+    min-height: calc(100vh - 75px);
+  }
+
+  .chat-responses-float-mobile-hide {
+    height: calc(var(--vh, 1vh) * 100 - 75px);
+    min-height: calc(var(--vh, 1vh) * 100 - 75px);
+  }
 }
 
 @media only screen and (max-width: 464px) {
@@ -658,6 +693,16 @@ span.teneo-reply ul {
   .chat-responses-float-mobile {
     height: calc(var(--vh, 1vh) * 100 - 130px);
     min-height: calc(var(--vh, 1vh) * 100 - 130px);
+  }
+
+  .chat-responses-hide,
+  .chat-responses-float-hide {
+    min-height: calc(100vh - 75px);
+  }
+
+  .chat-responses-float-mobile-hide {
+    height: calc(var(--vh, 1vh) * 100 - 75px);
+    min-height: calc(var(--vh, 1vh) * 100 - 75px);
   }
 }
 </style>

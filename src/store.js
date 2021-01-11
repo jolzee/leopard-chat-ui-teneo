@@ -190,6 +190,7 @@ function storeSetup(vuetify) {
         emergencyConfig: null,
         printConfig: null,
         showDelayedResponse: false,
+        hideInput: false,
         hideConfigMenu: window.leopardConfig.hideConfigMenu,
         isWebSite: true,
         snotify: null,
@@ -210,6 +211,10 @@ function storeSetup(vuetify) {
       }
     },
     getters: {
+      // display state of input box
+      hidden(state) {
+        return state.ui.hideInput;
+      },
       playResponseBeep(state) {
         return state.activeSolution.playResponseBeep;
       },
@@ -1135,6 +1140,10 @@ function storeSetup(vuetify) {
       },
       CLEAR_TENEO_SESSION_ID(state) {
         state.teneoSessionId = null;
+      },
+      SET_INPUT_DISPLAY_STATE(state, shouldHideInput) {
+        state.ui.hideInput = shouldHideInput;
+        logger.debug(`Should the input box be hidden ${shouldHideInput}`);
       },
       HIDE_508_CONTENT(state) {
         state.hide508 = true;
@@ -2203,6 +2212,7 @@ async function handleTeneoResponse(currentUserInput, context, params, vuetify) {
       let tResp = handleTeneoResponseEarly(context, json);
       tResp = handleEasyMessageTypesResponse(tResp, context);
       handleToastResponse(tResp, context);
+      handleHideInputResponse(tResp, context);
       handleUserInfoResponse(tResp, context);
       handleCustomCSSResponse(tResp, context);
       handleMinimizeResponse(tResp, context);
@@ -2461,6 +2471,12 @@ function handleToastResponse(tResp, context) {
   }
 }
 
+function handleHideInputResponse(tResp, context) {
+  if (tResp.hasParameter("hideInput")) {
+    context.commit("SET_INPUT_DISPLAY_STATE", tResp.getParameter("hideInput"));
+  }
+}
+
 function handleCustomCSSResponse(tResp, context) {
   if (tResp.hasParameter("css")) {
     context.commit("SET_CUSTOM_CSS", tResp.getParameter("css"));
@@ -2679,6 +2695,7 @@ function handleLoginResponse(context, json, vuetify, resolve) {
   handleMinimizeResponse(tResp, context);
   handleThemeResponse(tResp, context);
   handleToastResponse(tResp, context);
+  handleHideInputResponse(tResp, context);
   // if (tResp.hasParameter("theme")) {
   //   Object.assign(vuetify.framework.theme.themes.light, tResp.getParameter("theme"));
   // }
