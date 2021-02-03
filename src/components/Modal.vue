@@ -112,7 +112,7 @@
                 <!-- Misc Video -->
                 <Video :url="videoUrl" :type="videoType"></Video>
 
-                <!-- Gogle Map -->
+                <!-- Google Map -->
                 <Map v-if="address" :address="address"></Map>
 
                 <!-- show an image if available -->
@@ -121,7 +121,11 @@
                 <!-- show a carousel of images if available -->
                 <Carousel :image-items="images"></Carousel>
 
-                <!-- Show the body text, flight itineary, and any tables if available -->
+                <div v-if="sabreItineraryResult">
+                  <SabreResult :itinerary="sabreItineraryResult"></SabreResult>
+                </div>
+
+                <!-- Show the body text, flight itinerary, and any tables if available -->
                 <div v-if="itinerary || bodyText || transactionItems.length || tableRows.length">
                   <!-- Show the flight itinerary -->
                   <FlightItinerary v-if="itinerary" :itinerary="itinerary"></FlightItinerary>
@@ -212,6 +216,7 @@ export default {
     Carousel: () => import("@/components/Carousel"),
     CustomModal: () => import("@/components/CustomModal"),
     FlightItinerary: () => import("@/components/FlightItinerary"),
+    SabreResult: () => import("@/components/SabreResult"),
     ImageAnimation: () => import("@/components/ImageAnimation"),
     MyBankTransactions: () => import("@/components/MyBankTransactions"),
     Map: () => import("@/components/Map"),
@@ -232,6 +237,7 @@ export default {
       images: [],
       imageUrl: "",
       itinerary: "",
+      sabreItineraryResult: "",
       fullscreen: false,
       overlay: false,
       overlayMessage: "",
@@ -403,7 +409,13 @@ export default {
               this.itinerary = extension.parameters;
             }
 
-            // check for displayTranactionTable - myBank
+            // check for Sabre priced itinerary
+            if (extension.name === "displaySabreResult") {
+              this.title = "Flight details";
+              this.sabreItineraryResult = extension.parameters;
+            }
+
+            // check for displayTransactionTable - myBank
             if (extension.name === "displayTable") {
               if ("overrideTitle" in extension.parameters && extension.parameters.overrideTitle) {
                 // this.title = extension.parameters.title;
@@ -419,7 +431,7 @@ export default {
               this.tableRowsPerPage = extension.parameters.rowsPerPage;
             }
 
-            // check for displayTranactionTable - myBank
+            // check for displayTransactionTable - myBank
             if (extension.name === "displayTransactionsTable") {
               // if (!this.title) {
               //   this.title = this.getFirstChunk(item.text);
@@ -724,6 +736,7 @@ export default {
       this.imageUrl = "";
       this.images = [];
       this.itinerary = null;
+      this.sabreItineraryResult = null;
       this.fullscreen = false;
       this.overlay = false;
       this.overlayMessage = "";

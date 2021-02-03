@@ -318,6 +318,18 @@ class ExtensionHelper {
         JsonOutput.toJson(action as java.util.Map)
     }
 
+    static String displaySabreResult(def pricedItineraryResult) {
+
+        def result = ""
+        Map params = [
+            'result': pricedItineraryResult
+        ]
+        Map attachment = ["name": 'displaySabreResult', "parameters": params]
+        result = JsonOutput.toJson(attachment)
+
+        return result
+    }
+
     // CARRYME
     static String displayItinerary(def userFirstName, Map details, def channel) {
 
