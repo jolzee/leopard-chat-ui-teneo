@@ -64,7 +64,7 @@
     "markdown-it-for-inline": "^0.1.1",
     "mikro-config": "^2.0.3",
     "plyr": "^3.6.3",
-    "prismjs": "^1.23.0",
+    "prismjs": "^1.25.0",
     "promised-location": "^1.0.1",
     "replace-string": "^3.1.0",
     "smoothscroll-polyfill": "^0.4.4",
