@@ -71,7 +71,7 @@
     "striptags": "^3.1.1",
     "superagent": "^6.1.0",
     "ttl-localstorage": "^1.5.4",
-    "url-parse": "^1.4.7",
+    "url-parse": "^1.5.6",
     "url-regex": "^5.0.0",
     "uuid": "^8.3.2",
     "vee-validate": "^3.4.5",
